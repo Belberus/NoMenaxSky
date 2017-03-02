@@ -241,6 +241,8 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-
 *.vcxproj*
 *.sln
+
+build/*
+!build/assets/

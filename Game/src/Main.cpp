@@ -1,6 +1,4 @@
-#define GLEW_STATIC
-
-#include <GL/glew.h>
+#include <GL/gl3w.h>
 #include "GLFW/glfw3.h"
 #include "Texture.h"
 #include "Shaders.h"
@@ -60,8 +58,7 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
+	if (gl3wInit())
 	{
 		return -1;
 	}
@@ -70,8 +67,8 @@ int main()
 	glClearColor(1, 0, 0, 0);
 	glfwSetKeyCallback(window, key_callback);
 	Shaders shaders;
-	Texture texture1("img.png");
-	Texture texture2("img2.png");
+	Texture texture1("assets/img.png");
+	Texture texture2("assets/img2.png");
 	std::shared_ptr<Actor> actor1(new Actor(glm::vec3(0, 0, 0), glm::vec2(960, 540), texture1, shaders));
 	std::shared_ptr<Actor> actor2( new Actor(glm::vec3(480, 270, 1), glm::vec2(100, 100), texture2, shaders));
 	aux = actor2;

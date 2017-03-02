@@ -1,0 +1,9 @@
+[submodule "Game/lib/gl3w"]
+	path = Game/lib/gl3w
+	url = https://github.com/skaslev/gl3w
+[submodule "Game/lib/glfw"]
+	path = Game/lib/glfw
+	url = https://github.com/glfw/glfw
+[submodule "Game/lib/glm"]
+	path = Game/lib/glm
+	url = https://github.com/g-truc/glm

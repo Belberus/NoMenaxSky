@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.3)
 project (Game)
 set (CMAKE_CXX_STANDARD 11)
+cmake_policy(SET CMP0024 OLD)
 
 # GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -22,7 +23,7 @@ include_directories(${GL3W_INCLUDE})
 
 # FREEIMAGE
 find_library(FREE_IMAGE NAMES freeimage FreeImage)
-if (FREE_IMAGE) 
+if (FREE_IMAGE)
     include_directories(${FREE_IMAGE_INCLUDE_DIRS})
     file(GLOB_RECURSE SOURCE_FILES src/*)
     set_source_files_properties(${GL3W_SOURCES} PROPERTIES GENERATED TRUE)

@@ -1,14 +1,13 @@
 #pragma once
 #include <vector>
-#include <functional>
-#include "Actor.h"
-class Scene
-{
-	std::vector<std::reference_wrapper<Actor>> actors;
-public:
-	Scene();
-	void addActor(Actor &actor);
-	void draw();
-	~Scene();
-};
+class Actor;
+class Window;
+class Shaders;
+class Scene {
+  std::vector<Actor *> actors;
 
+public:
+  void addActor(Actor *actor);
+  void checkCollision(Actor &actor);
+  void update(Window &window, Shaders &shaders);
+};

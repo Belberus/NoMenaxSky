@@ -1,56 +1,36 @@
 #include "Actor.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "Scene.h"
+#include "Window.h"
+#include "Texture.h"
 
-Actor::Actor(glm::vec3 position, glm::vec2 size, Texture &texture, Shaders &shaders) : 
-	position(position), size(size), texture(texture), shaders(shaders)
-{
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &ebo);
-	glGenBuffers(1, &buf);
+Actor::Actor(glm::vec3 position, glm::vec2 size, Texture *texture,
+             GraphicsComponent *graphicsComponent,
+             InputComponent *inputComponent, PhysicsComponent *physicsComponent)
+    : position(position), size(size), texture(texture),
+      graphicsComponent(graphicsComponent), inputComponent(inputComponent),
+      physicsComponent(physicsComponent) {}
+
+void Actor::update(Window &window, Scene &scene, Shaders &shaders) {
+  inputComponent->update(window, *this);
+  physicsComponent->update(*this, scene);
+  graphicsComponent->update(*this, shaders);
 }
 
-void Actor::draw()
-{
-	texture.load();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBindVertexArray(vao);
+void Actor::setPosition(glm::vec3 pos) { position = pos; }
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+glm::vec3 const &Actor::getPosition() const { return position; }
 
-	glBindBuffer(GL_ARRAY_BUFFER, buf);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+void Actor::setVelocity(glm::vec2 v) { velocity = v; }
 
-	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(position));
-	model = glm::scale(model, glm::vec3(size, 1.0f));
+glm::vec2 const &Actor::getVelocity() const { return velocity; }
 
-	shaders.useProgram();
+Texture const *Actor::getTexture() const { return texture; }
 
-	glUniformMatrix4fv(glGetUniformLocation(shaders.getProgram(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(glGetUniformLocation(shaders.getProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)));
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
+glm::vec2 const &Actor::getSize() const { return size; }
 
-void Actor::setPosition(glm::vec3 pos)
-{
-	position = pos;
-}
-
-glm::vec3 Actor::getPosition()
-{
-	return position;
-}
-
-
-Actor::~Actor()
-{
-	glDeleteBuffers(1, &ebo);
-	glDeleteBuffers(1, &buf);
-	glDeleteVertexArrays(1, &vao);
+Actor::~Actor() {
+  delete graphicsComponent;
+  delete inputComponent;
+  delete physicsComponent;
+  delete texture;
 }

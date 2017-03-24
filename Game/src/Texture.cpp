@@ -19,8 +19,18 @@ Texture::Texture(std::string path) {
   glGenTextures(1, &id);
 }
 
-void Texture::load() const {
-  glBindTexture(GL_TEXTURE_2D, 0);
+Texture::Texture(const Texture &tex) {
+  id = tex.id;
+  img = FreeImage_Clone(tex.img);
+}
+
+Texture &Texture::operator=(const Texture &rhs) {
+  id = rhs.id;
+  img = FreeImage_Clone(rhs.img);
+  return *this;
+}
+
+void Texture::load() {
   glBindTexture(GL_TEXTURE_2D, id);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -29,7 +39,6 @@ void Texture::load() const {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_BGRA,
                GL_UNSIGNED_BYTE, (GLvoid *)FreeImage_GetBits(img));
 }
-
 int Texture::getWidth() const { return FreeImage_GetWidth(img); }
 
 int Texture::getHeight() const { return FreeImage_GetHeight(img); }

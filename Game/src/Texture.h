@@ -4,13 +4,15 @@
 #include <string>
 
 class Texture {
-  FIBITMAP *img;
+  FIBITMAP* img;
   GLuint id;
 
-public:
+ public:
   Texture(std::string path);
+  Texture(const Texture& tex);
+  Texture& operator=(const Texture& rhs);
   ~Texture();
-  void load() const;
+  void load();
   int getWidth() const;
   int getHeight() const;
 };

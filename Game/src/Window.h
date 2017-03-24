@@ -1,3 +1,4 @@
+#pragma once
 #include <GLFW/glfw3.h>
 #include <string>
 class Window {
@@ -6,16 +7,17 @@ class Window {
   int width;
   GLFWwindow *window;
 
-public:
+ public:
   Window(std::string title, int width, int height);
   ~Window();
   void clear();
-  void update();
+  void swapBuffers();
+  void pollEvents();
   bool isClosed();
   int getWidth();
   int getHeight();
   GLFWwindow *getGLFWwindow();
 
-private:
+ private:
   bool init();
 };

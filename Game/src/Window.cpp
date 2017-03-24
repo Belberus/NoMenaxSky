@@ -11,10 +11,9 @@ void Window::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
 GLFWwindow *Window::getGLFWwindow() { return window; }
 
-void Window::update() {
-  glfwPollEvents();
-  glfwSwapBuffers(window);
-}
+void Window::pollEvents() { glfwPollEvents(); }
+
+void Window::swapBuffers() { glfwSwapBuffers(window); }
 
 void resize(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -43,6 +42,8 @@ bool Window::init() {
   }
   glfwSetWindowSizeCallback(window, resize);
   glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+  // Desactiva V-Sync
+  // glfwSwapInterval(0);
   // glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

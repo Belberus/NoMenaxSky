@@ -103,9 +103,9 @@ class CollisionSystem : public entityx::System<CollisionSystem> {
 
     for (entityx::Entity e1 : es.entities_with_components(body1, pos, phy)) {
       for (entityx::Entity e2 : es.entities_with_components(body2)) {
-        if (e2 != e1 && areColliding(*body1.get(), *body2.get())) {
-          glm::vec2 depth = depthOfCollision(*body1.get(), *body2.get());
-          resolveCollision(*body1.get(), *pos.get(), depth);
+        if (e2 != e1 && areColliding(*body1, *body2)) {
+          glm::vec2 depth = depthOfCollision(*body1, *body2);
+          resolveCollision(*body1, *pos, depth);
         }
       }
     }
@@ -123,20 +123,20 @@ class GraphicsSystem : public entityx::System<GraphicsSystem> {
     entityx::ComponentHandle<Position> position;
     for (entityx::Entity entity :
          es.entities_with_components(graphics, position)) {
-      graphics.get()->texture.load();
-      glBindVertexArray(graphics.get()->vao);
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, graphics.get()->ebo);
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(graphics.get()->indices),
-                   graphics.get()->indices, GL_STATIC_DRAW);
-      glBindBuffer(GL_ARRAY_BUFFER, graphics.get()->buf);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(graphics.get()->quad),
-                   graphics.get()->quad, GL_STATIC_DRAW);
+      graphics->texture.load();
+      glBindVertexArray(graphics->vao);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, graphics->ebo);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(graphics->indices),
+                   graphics->indices, GL_STATIC_DRAW);
+      glBindBuffer(GL_ARRAY_BUFFER, graphics->buf);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(graphics->quad),
+                   graphics->quad, GL_STATIC_DRAW);
       glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT),
                             (GLvoid *)0);
       glEnableVertexAttribArray(0);
       glm::mat4 model;
-      model = glm::translate(model, glm::vec3(position.get()->position));
-      model = glm::scale(model, glm::vec3(graphics.get()->size, 1.0f));
+      model = glm::translate(model, glm::vec3(position->position));
+      model = glm::scale(model, glm::vec3(graphics->size, 1.0f));
       shaders.useProgram();
       glUniformMatrix4fv(glGetUniformLocation(shaders.getProgram(), "model"), 1,
                          GL_FALSE, glm::value_ptr(model));
@@ -161,16 +161,16 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
     for (entityx::Entity entity :
          es.entities_with_components(player, physics)) {
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
-        physics.get()->velocity.y = SPEED;
+        physics->velocity.y = SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
-        physics.get()->velocity.y = -SPEED;
+        physics->velocity.y = -SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
-        physics.get()->velocity.x = -SPEED;
+        physics->velocity.x = -SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
-        physics.get()->velocity.x = SPEED;
+        physics->velocity.x = SPEED;
       }
 
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -187,17 +187,15 @@ class PhysicsSystem : public entityx::System<PhysicsSystem> {
     entityx::ComponentHandle<Physics> physics;
     for (entityx::Entity entity :
          es.entities_with_components(position, physics)) {
-      auto phy = physics.get();
-      auto pos = position.get();
-      pos->position.x += phy->velocity.x * dt;
-      pos->position.y += phy->velocity.y * dt;
+      position->position.x += physics->velocity.x * dt;
+      position->position.y += physics->velocity.y * dt;
       if (entity.has_component<Body>()) {
         auto body = entity.component<Body>();
-        body.get()->position.x += phy->velocity.x * dt;
-        body.get()->position.y += phy->velocity.y * dt;
+        body->position.x += physics->velocity.x * dt;
+        body->position.y += physics->velocity.y * dt;
       }
-      phy->velocity.x = 0;
-      phy->velocity.y = 0;
+      physics->velocity.x = 0;
+      physics->velocity.y = 0;
     }
   }
 };

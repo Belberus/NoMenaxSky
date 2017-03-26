@@ -2,8 +2,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Components.h"
-#include "Window.h"
 #include "Shaders.h"
+#include "Window.h"
 
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
   void getNext(entityx::ComponentHandle<KnightAnimation> knightAnimation,
@@ -129,8 +129,8 @@ class GraphicsSystem : public entityx::System<GraphicsSystem> {
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(graphics->indices),
                    graphics->indices, GL_STATIC_DRAW);
       glBindBuffer(GL_ARRAY_BUFFER, graphics->buf);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(graphics->quad),
-                   graphics->quad, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(graphics->quad), graphics->quad,
+                   GL_STATIC_DRAW);
       glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT),
                             (GLvoid *)0);
       glEnableVertexAttribArray(0);
@@ -153,6 +153,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
 
  public:
   PlayerInputSystem(Window &window) : window(window) {}
+
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override {
     entityx::ComponentHandle<Player> player;
@@ -160,21 +161,30 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
 #define SPEED 300  // pixels por segundo
     for (entityx::Entity entity :
          es.entities_with_components(player, physics)) {
+      glm::vec2 v;
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
-        physics->velocity.y = SPEED;
-      }
-      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
-        physics->velocity.y = -SPEED;
+        v.y = SPEED;
+      } else if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
+        v.y = -SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
-        physics->velocity.x = -SPEED;
+        v.x = -SPEED;
+      } else if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
+        v.x = SPEED;
       }
-      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
-        physics->velocity.x = SPEED;
-      }
+      physics->velocity = decompose(v);
 
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
       }
+    }
+  }
+
+ private:
+  glm::vec2 decompose(const glm::vec2 &v) {
+    if (v.x != 0 && v.y != 0) {
+      return glm::vec2(v.x * std::cos(M_PI_4), v.y * std::sin(M_PI_4));
+    } else {
+      return v;
     }
   }
 };

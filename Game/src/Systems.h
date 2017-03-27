@@ -71,10 +71,6 @@ class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
 
 class CollisionSystem : public entityx::System<CollisionSystem> {
   bool areColliding(Body const &body1, Body const &body2) {
-    auto pos1 = body1.position;
-    auto pos2 = body2.position;
-    auto length1 = body1.length;
-    auto length2 = body2.length;
     if (body1.position.x < body2.position.x + body2.length.x &&
         body1.position.x + body1.length.x > body2.position.x &&
         body1.position.y < body2.position.y + body2.length.y &&
@@ -86,8 +82,8 @@ class CollisionSystem : public entityx::System<CollisionSystem> {
   }
 
   glm::vec2 depthOfCollision(Body const &body1, Body const &body2) {
-    int depthX = 0;
-    int depthY = 0;
+    double depthX = 0;
+    double depthY = 0;
     if (body1.position.x > body2.position.x) {
       depthX = body2.position.x + body2.length.x - body1.position.x;
     } else {

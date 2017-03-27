@@ -6,7 +6,7 @@
 #include "Window.h"
 
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
-  void getNext(entityx::ComponentHandle<KnightAnimation> knightAnimation,
+  bool getNext(entityx::ComponentHandle<KnightAnimation> knightAnimation,
                entityx::ComponentHandle<Graphics> graphics,
                entityx::TimeDelta dt, std::shared_ptr<AnimationClip> whatClip) {
     if (knightAnimation->which != whatClip) {
@@ -23,6 +23,11 @@ class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
         knightAnimation->time = 0;
       }
     }
+    if (knightAnimation->index % whatClip->clip.size() == 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
  public:
@@ -31,9 +36,27 @@ class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
     entityx::ComponentHandle<KnightAnimation> knightAnimation;
     entityx::ComponentHandle<Physics> physics;
     entityx::ComponentHandle<Graphics> graphics;
-    for (entityx::Entity e1 :
-         es.entities_with_components(knightAnimation, physics, graphics)) {
-      if (physics->velocity.x > 0) {
+    entityx::ComponentHandle<KnightAttack> attack;
+    for (entityx::Entity e1 : es.entities_with_components(
+             knightAnimation, physics, graphics, attack)) {
+      if (attack->isAttacking) {
+        std::shared_ptr<AnimationClip> which;
+        switch (attack->orientation) {
+          case KnightAttack::Orientation::UP:
+            which = knightAnimation->atk_n_top;
+            break;
+          case KnightAttack::Orientation::DOWN:
+            which = knightAnimation->atk_n_down;
+            break;
+          case KnightAttack::Orientation::LEFT:
+            which = knightAnimation->atk_n_left;
+            break;
+          case KnightAttack::Orientation::RIGHT:
+            which = knightAnimation->atk_n_right;
+            break;
+        }
+        attack->isAttacking = !getNext(knightAnimation, graphics, dt, which);
+      } else if (physics->velocity.x > 0) {
         getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
       } else if (physics->velocity.x < 0) {
         getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
@@ -158,23 +181,44 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
               entityx::TimeDelta dt) override {
     entityx::ComponentHandle<Player> player;
     entityx::ComponentHandle<Physics> physics;
+    entityx::ComponentHandle<KnightAttack> attack;
 #define SPEED 300  // pixels por segundo
     for (entityx::Entity entity :
-         es.entities_with_components(player, physics)) {
+         es.entities_with_components(player, physics, attack)) {
       glm::vec2 v;
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
-        v.y = SPEED;
-      } else if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
-        v.y = -SPEED;
+        attack->orientation = KnightAttack::Orientation::UP;
+        v.y += SPEED;
+      }
+      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
+        attack->orientation = KnightAttack::Orientation::DOWN;
+        v.y += -SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
-        v.x = -SPEED;
-      } else if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
-        v.x = SPEED;
+        attack->orientation = KnightAttack::Orientation::LEFT;
+        v.x += -SPEED;
+      }
+      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
+        attack->orientation = KnightAttack::Orientation::RIGHT;
+        v.x += SPEED;
       }
       physics->velocity = decompose(v);
 
+      /*if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+        attack->orientation = KnightAttack::Orientation::UP;
+      }
+      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+        attack->orientation = KnightAttack::Orientation::DOWN;
+      }
+      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
+        attack->orientation = KnightAttack::Orientation::LEFT;
+      }
+      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        attack->orientation = KnightAttack::Orientation::RIGHT;
+      }*/
+
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
+        attack->isAttacking = true;
       }
     }
   }

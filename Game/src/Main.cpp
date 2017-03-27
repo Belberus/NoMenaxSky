@@ -16,7 +16,8 @@ class Scene : public entityx::EntityX {
     player.assign<Physics>(glm::vec2(0, 0));
     player.assign<Position>(glm::vec3(0, 0, 0));
     player.assign<Player>();
-    player.assign<Body>(glm::vec2(0, 0), glm::vec2(70, 70));
+    player.assign<Body>(glm::vec2(0, 0), glm::vec2(50, 50));
+    player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
 
     std::vector<std::string> mov_right_str;
     mov_right_str.push_back("assets/pp_caballero/mov_right/ppc_step1.png");
@@ -55,10 +56,10 @@ class Scene : public entityx::EntityX {
     atk_n_down_str.push_back("assets/pp_caballero/atk_n_down/ppc_n_atk3.png");
 
     player.assign<KnightAnimation>(
-        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_top_str, 300)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_down_str, 300)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_left_str, 300)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_right_str, 300)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_top_str, 100)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_down_str, 100)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_left_str, 100)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_right_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_top_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
@@ -72,7 +73,7 @@ class Scene : public entityx::EntityX {
     glGenBuffers(1, &buf);
     player.assign<Graphics>(
         Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"), vao, ebo, buf,
-        glm::vec2(70, 70));
+        glm::vec2(50, 50));
 
     entityx::Entity enemy = entities.create();
     enemy.assign<Position>(glm::vec3(400, 400, 0));

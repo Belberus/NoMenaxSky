@@ -26,8 +26,14 @@ struct Body {
 };
 
 struct KnightAttack {
+  enum Orientation { UP, DOWN, RIGHT, LEFT };
+
   bool isAttacking;
   int damage;
+  Orientation orientation;
+
+  KnightAttack(int damage, Orientation orientation)
+      : isAttacking(false), damage(damage), orientation(orientation) {}
 };
 
 struct Player {};

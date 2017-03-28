@@ -9,4 +9,4 @@
 	url = https://github.com/g-truc/glm
 [submodule "Game/lib/entityx"]
 	path = Game/lib/entityx
-	url = git@github.com:alecthomas/entityx.git
+	url = https://github.com/alecthomas/entityx

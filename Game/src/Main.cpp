@@ -12,11 +12,34 @@
 class Scene : public entityx::EntityX {
  public:
   Scene(Window &window, Shaders &shaders) {
+
+    GLuint vao;
+    GLuint ebo;
+    GLuint buf;
+
+    entityx::Entity room = entities.create();
+    room.assign<Position>(glm::vec3(0, 0, 0));
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &ebo);
+    glGenBuffers(1, &buf);
+    room.assign<Graphics>(
+        Texture("assets/escenario/habitacion/habitacion_transparente.png"), vao, ebo, buf,
+        glm::vec2(960, 540));
+    entityx::Entity leftWall = entities.create();
+    entityx::Entity rightWall = entities.create();
+    entityx::Entity topWall = entities.create();
+    entityx::Entity bottomWall = entities.create();
+    leftWall.assign<Body>(glm::vec2(0, 0), glm::vec2(20, 540));
+    rightWall.assign<Body>(glm::vec2(940, 0), glm::vec2(20, 540));
+    topWall.assign<Body>(glm::vec2(0, 520), glm::vec2(960, 20));
+    bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
+
+
     entityx::Entity player = entities.create();
     player.assign<Physics>(glm::vec2(0, 0));
-    player.assign<Position>(glm::vec3(0, 0, 0));
+    player.assign<Position>(glm::vec3(100, 100, 0));
     player.assign<Player>();
-    player.assign<Body>(glm::vec2(0, 0), glm::vec2(50, 50));
+    player.assign<Body>(glm::vec2(100, 100), glm::vec2(40, 40));
     player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
 
     std::vector<std::string> mov_right_str;
@@ -64,25 +87,13 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 300)));
-
-    GLuint vao;
-    GLuint ebo;
-    GLuint buf;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &ebo);
     glGenBuffers(1, &buf);
     player.assign<Graphics>(
         Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"), vao, ebo, buf,
-        glm::vec2(50, 50));
+        glm::vec2(40, 40));
 
-    entityx::Entity enemy = entities.create();
-    enemy.assign<Position>(glm::vec3(400, 400, 0));
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &ebo);
-    glGenBuffers(1, &buf);
-    enemy.assign<Graphics>(Texture("assets/sombra.png"), vao, ebo, buf,
-                           glm::vec2(100, 100));
-    enemy.assign<Body>(glm::vec2(400, 400), glm::vec2(100, 100));
 
     systems.add<GraphicsSystem>(shaders);
     systems.add<KnightAnimationSystem>();

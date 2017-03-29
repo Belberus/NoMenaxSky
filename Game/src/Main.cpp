@@ -64,7 +64,7 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 100)));
     player.assign<Graphics>(
-        Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"),
+        Texture("assets/pp_caballero/static/ppc_front.png"),
         glm::vec2(40, 40));
   }
 
@@ -84,10 +84,12 @@ class Scene : public entityx::EntityX {
     bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
   }
 
-  void addEntityGhost(entityx::EntityManager &entities) {
-    entityx::Entity player = entities.create();
-    player.assign<Position>(glm::vec3(100, 150, 0));
-    player.assign<Body>(glm::vec2(115, 165), glm::vec2(10, 10));
+  void addEntityGhost(entityx::EntityManager &entities,glm::vec3 position,glm::vec2 body) {
+    // Inicializa Ghost y da valores iniciales a las variables
+    entityx::Entity ghost = entities.create();
+    ghost.assign<Position>(position);              //posicion inicial
+    ghost.assign<Body>(body, glm::vec2(10, 29));   //posicion del body y tamaño
+    ghost.assign<Health>(100);                     //vida
 
     std::vector<std::string> mov_right_str;
     mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
@@ -105,12 +107,12 @@ class Scene : public entityx::EntityX {
     mov_down_str.push_back("assets/Enemigo_Fantasma/front/front1.png");
     mov_down_str.push_back("assets/Enemigo_Fantasma/front/front2.png");
 
-    player.assign<GhostAnimation>(
+    ghost.assign<GhostAnimation>(
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_top_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 300)));
-    player.assign<Graphics>(
+    ghost.assign<Graphics>(
         Texture("assets/Enemigo_Fantasma/front/front1.png"),
         glm::vec2(40, 40));   
   }
@@ -118,7 +120,8 @@ class Scene : public entityx::EntityX {
  public:
   Scene(Window &window, Shaders &shaders) {
     addEntityRoom(entities);
-    addEntityGhost(entities);
+    addEntityGhost(entities,glm::vec3 (165,350,0),glm::vec2 (175,360));
+    addEntityGhost(entities,glm::vec3 (265,250,0),glm::vec2 (275,260));
     addEntityKnight(entities);
 
     systems.add<GraphicsSystem>(shaders);

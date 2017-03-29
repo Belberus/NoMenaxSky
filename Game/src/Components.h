@@ -17,6 +17,16 @@ struct Physics {
   Physics(glm::vec2 velocity) : velocity(velocity) {}
 };
 
+struct Health {
+  int health;
+  Health(int h):health(h){};
+};
+
+struct Energy {
+  int energy;
+  Energy(int e):energy(e){};
+};
+
 struct Body {
   glm::vec2 position;
   glm::vec2 length;
@@ -37,6 +47,8 @@ struct KnightAttack {
 };
 
 struct Player {};
+
+struct Ghost {};
 
 struct Graphics {
   Texture texture;

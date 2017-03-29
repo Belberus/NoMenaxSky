@@ -4,6 +4,7 @@
 #include "Components.h"
 #include "Shaders.h"
 #include "Window.h"
+#include "Messages.h"
 
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
   bool getNext(entityx::ComponentHandle<KnightAnimation> knightAnimation,
@@ -285,4 +286,37 @@ class PhysicsSystem : public entityx::System<PhysicsSystem> {
       physics->velocity.y = 0;
     }
   }
+};
+
+class HealthSystem : public entityx::System<HealthSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override {
+    entityx::ComponentHandle<Health> health;
+    for (entityx::Entity entity :
+         es.entities_with_components(health)) {
+      if(health->health <= 0){
+        events.emit<DeathMessage>(entity);
+        entity.destroy();
+      };
+    }
+  }
+};
+
+class DeathListener : public entityx::System<DeathListener>,public entityx::Receiver<DeathMessage> {
+private:
+  //entityx::EntityManager &entityManager;
+  public:
+    //void DeathListener(entityx::EntityManager &entityManager):entityManager(entityManager){}
+    void configure(entityx::EventManager &event_manager) {
+      event_manager.subscribe<DeathMessage>(*this);
+    }
+
+    void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt) {
+      
+    }
+
+    void receive(const DeathMessage &deathMessage) {
+      //deathMessage.entity.destroy();
+    }
 };

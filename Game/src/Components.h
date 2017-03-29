@@ -43,15 +43,22 @@ struct Graphics {
   GLuint vao;
   GLuint ebo;
   GLuint buf;
-  GLfloat quad[16] = {  // Vertices	// Texture coordinates
-      0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-      1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
+  static GLfloat const quad[16];
   GLuint indices[6] = {0, 1, 2, 0, 3, 2};
   glm::vec2 size;
 
-  Graphics(Texture texture, GLuint vao, GLuint ebo, GLuint buf, glm::vec2 size)
-      : texture(texture), vao(vao), ebo(ebo), buf(buf), size(size) {}
+  Graphics(Texture texture, glm::vec2 size) : texture(texture), size(size) {
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &ebo);
+    glGenBuffers(1, &buf);
+  }
 };
+GLfloat const Graphics::quad[16] = {
+  // vertex   // texture
+  0.0f, 0.0f, 0.0f, 0.0f,
+  1.0f, 0.0f, 1.0f, 0.0f,
+  1.0f, 1.0f, 1.0f, 1.0f,
+  0.0f, 1.0f, 0.0f, 1.0f };
 
 struct AnimationClip {
   std::vector<Texture> clip;

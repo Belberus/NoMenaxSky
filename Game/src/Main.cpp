@@ -10,31 +10,7 @@
 #include "Systems.h"
 
 class Scene : public entityx::EntityX {
- public:
-  Scene(Window &window, Shaders &shaders) {
-
-    GLuint vao;
-    GLuint ebo;
-    GLuint buf;
-
-    entityx::Entity room = entities.create();
-    room.assign<Position>(glm::vec3(0, 0, 0));
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &ebo);
-    glGenBuffers(1, &buf);
-    room.assign<Graphics>(
-        Texture("assets/escenario/habitacion/habitacion_transparente.png"), vao, ebo, buf,
-        glm::vec2(960, 540));
-    entityx::Entity leftWall = entities.create();
-    entityx::Entity rightWall = entities.create();
-    entityx::Entity topWall = entities.create();
-    entityx::Entity bottomWall = entities.create();
-    leftWall.assign<Body>(glm::vec2(0, 0), glm::vec2(20, 540));
-    rightWall.assign<Body>(glm::vec2(940, 0), glm::vec2(20, 540));
-    topWall.assign<Body>(glm::vec2(0, 520), glm::vec2(960, 20));
-    bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
-
-
+  void addEntityKnight(entityx::EntityManager &entities) {
     entityx::Entity player = entities.create();
     player.assign<Physics>(glm::vec2(0, 0));
     player.assign<Position>(glm::vec3(100, 100, 0));
@@ -87,13 +63,31 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 300)));
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &ebo);
-    glGenBuffers(1, &buf);
     player.assign<Graphics>(
-        Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"), vao, ebo, buf,
+        Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"),
         glm::vec2(40, 40));
+  }
 
+  void addEntityRoom(entityx::EntityManager &entities) {
+    entityx::Entity room = entities.create();
+    room.assign<Position>(glm::vec3(0, 0, 0));
+    room.assign<Graphics>(
+        Texture("assets/escenario/habitacion/habitacion_transparente.png"),
+        glm::vec2(960, 540));
+    entityx::Entity leftWall = entities.create();
+    entityx::Entity rightWall = entities.create();
+    entityx::Entity topWall = entities.create();
+    entityx::Entity bottomWall = entities.create();
+    leftWall.assign<Body>(glm::vec2(0, 0), glm::vec2(20, 540));
+    rightWall.assign<Body>(glm::vec2(940, 0), glm::vec2(20, 540));
+    topWall.assign<Body>(glm::vec2(0, 520), glm::vec2(960, 20));
+    bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
+  }
+
+ public:
+  Scene(Window &window, Shaders &shaders) {
+    addEntityRoom(entities);
+    addEntityKnight(entities);
 
     systems.add<GraphicsSystem>(shaders);
     systems.add<KnightAnimationSystem>();

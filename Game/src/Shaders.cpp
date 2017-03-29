@@ -3,7 +3,7 @@
 
 Shaders::Shaders() {
   static const GLchar *vertexShaderSource[] = {
-      "#version 400 core\n"
+      "#version 330 core\n"
       "layout (location = 0) in vec4 position;\n"
       "out vec2 TexCoord;\n"
       "uniform mat4 model;\n"
@@ -15,7 +15,7 @@ Shaders::Shaders() {
       "}\n"};
 
   static const GLchar *fragmentShaderSource[] = {
-      "#version 400 core\n"
+      "#version 330 core\n"
       "out vec4 color;\n"
       "in vec2 TexCoord;\n"
       "uniform sampler2D ourTexture;\n"

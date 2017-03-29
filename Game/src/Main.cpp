@@ -64,7 +64,7 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 100)));
     player.assign<Graphics>(
-        Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"),
+        Texture("assets/pp_caballero/static/ppc_front.png"),
         glm::vec2(40, 40));
   }
 

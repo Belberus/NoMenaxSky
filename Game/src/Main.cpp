@@ -59,10 +59,10 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_down_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_left_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(atk_n_right_str, 100)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(mov_top_str, 300)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
-        std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 300)));
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_top_str, 100)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 100)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 100)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 100)));
     player.assign<Graphics>(
         Texture("assets/pp_caballero/atk_n_down/ppc_n_atk1.png"),
         glm::vec2(40, 40));

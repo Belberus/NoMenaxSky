@@ -105,3 +105,25 @@ struct KnightAnimation {
         index(0),
         time(0) {}
 };
+
+struct GhostAnimation {
+  std::shared_ptr<AnimationClip> mov_top;
+  std::shared_ptr<AnimationClip> mov_down;
+  std::shared_ptr<AnimationClip> mov_left;
+  std::shared_ptr<AnimationClip> mov_right;
+  std::shared_ptr<AnimationClip> which;
+  std::vector<std::shared_ptr<Texture>>::size_type index;
+  entityx::TimeDelta time;
+
+  GhostAnimation( std::shared_ptr<AnimationClip> mov_top,
+                  std::shared_ptr<AnimationClip> mov_down,
+                  std::shared_ptr<AnimationClip> mov_left,
+                  std::shared_ptr<AnimationClip> mov_right)
+      : mov_top(mov_top),
+        mov_down(mov_down),
+        mov_left(mov_left),
+        mov_right(mov_right),
+        which(nullptr),
+        index(0),
+        time(0) {}
+};

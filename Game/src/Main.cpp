@@ -84,13 +84,46 @@ class Scene : public entityx::EntityX {
     bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
   }
 
+  void addEntityGhost(entityx::EntityManager &entities) {
+    entityx::Entity player = entities.create();
+    player.assign<Position>(glm::vec3(100, 150, 0));
+    player.assign<Body>(glm::vec2(115, 165), glm::vec2(10, 10));
+
+    std::vector<std::string> mov_right_str;
+    mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
+    mov_right_str.push_back("assets/Enemgio_Fantasma/right/right2.png");
+
+    std::vector<std::string> mov_left_str;
+    mov_left_str.push_back("assets/Enemigo_Fantasma/left/left1.png");
+    mov_left_str.push_back("assets/Enemigo_Fantasma/left/left2.png");
+
+    std::vector<std::string> mov_top_str;
+    mov_top_str.push_back("assets/Enemigo_Fantasma/back/back1.png");
+    mov_top_str.push_back("assets/Enemigo_Fantasma/back/back2.png");
+
+    std::vector<std::string> mov_down_str;
+    mov_down_str.push_back("assets/Enemigo_Fantasma/front/front1.png");
+    mov_down_str.push_back("assets/Enemigo_Fantasma/front/front2.png");
+
+    player.assign<GhostAnimation>(
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_top_str, 300)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
+        std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 300)));
+    player.assign<Graphics>(
+        Texture("assets/Enemigo_Fantasma/front/front1.png"),
+        glm::vec2(40, 40));   
+  }
+
  public:
   Scene(Window &window, Shaders &shaders) {
     addEntityRoom(entities);
+    addEntityGhost(entities);
     addEntityKnight(entities);
 
     systems.add<GraphicsSystem>(shaders);
     systems.add<KnightAnimationSystem>();
+    systems.add<GhostAnimationSystem>();
     systems.add<PlayerInputSystem>(window);
     systems.add<PhysicsSystem>();
     systems.add<CollisionSystem>();
@@ -100,6 +133,7 @@ class Scene : public entityx::EntityX {
   void update(entityx::TimeDelta dt) {
     systems.update<PlayerInputSystem>(dt);
     systems.update<KnightAnimationSystem>(dt);
+    systems.update<GhostAnimationSystem>(dt);   
     systems.update<PhysicsSystem>(dt);
     systems.update<CollisionSystem>(dt);
     systems.update<GraphicsSystem>(dt);
@@ -107,7 +141,7 @@ class Scene : public entityx::EntityX {
 };
 
 int main() {
-  Window window("Gauntleto", 960, 540);
+  Window window("No Menax Sky", 960, 540);
   Shaders shaders;
   Scene scene(window, shaders);
   double t1_f = glfwGetTime();

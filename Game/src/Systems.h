@@ -69,6 +69,43 @@ class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
   }
 };
 
+class GhostAnimationSystem : public entityx::System<GhostAnimationSystem> {
+  bool getNext(entityx::ComponentHandle<GhostAnimation> ghostAnimation,
+               entityx::ComponentHandle<Graphics> graphics,
+               entityx::TimeDelta dt, std::shared_ptr<AnimationClip> whatClip) {
+    if (ghostAnimation->which != whatClip) {
+      ghostAnimation->index = 0;
+      ghostAnimation->time = 0;
+      ghostAnimation->which = whatClip;
+      graphics->texture =
+          whatClip->clip[ghostAnimation->index++ % whatClip->clip.size()];
+    } else {
+     ghostAnimation->time += dt;
+      if (ghostAnimation->time >= whatClip->timePerFrame / 1000.0) {
+        graphics->texture =
+            whatClip->clip[ghostAnimation->index++ % whatClip->clip.size()];
+        ghostAnimation->time = 0;
+      }
+    }
+    if (ghostAnimation->index % whatClip->clip.size() == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override { 
+    entityx::ComponentHandle<GhostAnimation> ghostAnimation;
+    entityx::ComponentHandle<Graphics> graphics;
+    for (entityx::Entity e1 : es.entities_with_components(
+             ghostAnimation, graphics)) {
+      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
+    }
+  }
+};
+
 class CollisionSystem : public entityx::System<CollisionSystem> {
   bool areColliding(Body const &body1, Body const &body2) {
     if (body1.position.x < body2.position.x + body2.length.x &&

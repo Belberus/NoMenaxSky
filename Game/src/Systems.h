@@ -221,37 +221,35 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
          es.entities_with_components(player, physics, attack)) {
       glm::vec2 v;
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
-        attack->orientation = KnightAttack::Orientation::UP;
         v.y += SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
-        attack->orientation = KnightAttack::Orientation::DOWN;
         v.y += -SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
-        attack->orientation = KnightAttack::Orientation::LEFT;
         v.x += -SPEED;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
-        attack->orientation = KnightAttack::Orientation::RIGHT;
         v.x += SPEED;
       }
       physics->velocity = decompose(v);
 
-      /*if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
         attack->orientation = KnightAttack::Orientation::UP;
+        attack->isAttacking = true;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
         attack->orientation = KnightAttack::Orientation::DOWN;
+        attack->isAttacking = true;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
         attack->orientation = KnightAttack::Orientation::LEFT;
+        attack->isAttacking = true;
       }
       if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
         attack->orientation = KnightAttack::Orientation::RIGHT;
-      }*/
-
-      if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
+        attack->isAttacking = true;
+      }
         attack->isAttacking = true;
       }
     }

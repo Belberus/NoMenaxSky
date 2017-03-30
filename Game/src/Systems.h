@@ -250,8 +250,6 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
         attack->orientation = KnightAttack::Orientation::RIGHT;
         attack->isAttacking = true;
       }
-        attack->isAttacking = true;
-      }
     }
   }
 

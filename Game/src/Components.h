@@ -19,12 +19,12 @@ struct Physics {
 
 struct Health {
   int health;
-  Health(int h):health(h){};
+  Health(int h) : health(h){};
 };
 
 struct Energy {
   int energy;
-  Energy(int e):energy(e){};
+  Energy(int e) : energy(e){};
 };
 
 struct Body {
@@ -127,10 +127,10 @@ struct GhostAnimation {
   std::vector<std::shared_ptr<Texture>>::size_type index;
   entityx::TimeDelta time;
 
-  GhostAnimation( std::shared_ptr<AnimationClip> mov_top,
-                  std::shared_ptr<AnimationClip> mov_down,
-                  std::shared_ptr<AnimationClip> mov_left,
-                  std::shared_ptr<AnimationClip> mov_right)
+  GhostAnimation(std::shared_ptr<AnimationClip> mov_top,
+                 std::shared_ptr<AnimationClip> mov_down,
+                 std::shared_ptr<AnimationClip> mov_left,
+                 std::shared_ptr<AnimationClip> mov_right)
       : mov_top(mov_top),
         mov_down(mov_down),
         mov_left(mov_left),

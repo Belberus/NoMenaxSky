@@ -2,9 +2,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Components.h"
+#include "Messages.h"
 #include "Shaders.h"
 #include "Window.h"
-#include "Messages.h"
 
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
   bool getNext(entityx::ComponentHandle<KnightAnimation> knightAnimation,
@@ -81,7 +81,7 @@ class GhostAnimationSystem : public entityx::System<GhostAnimationSystem> {
       graphics->texture =
           whatClip->clip[ghostAnimation->index++ % whatClip->clip.size()];
     } else {
-     ghostAnimation->time += dt;
+      ghostAnimation->time += dt;
       if (ghostAnimation->time >= whatClip->timePerFrame / 1000.0) {
         graphics->texture =
             whatClip->clip[ghostAnimation->index++ % whatClip->clip.size()];
@@ -97,11 +97,11 @@ class GhostAnimationSystem : public entityx::System<GhostAnimationSystem> {
 
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override { 
+              entityx::TimeDelta dt) override {
     entityx::ComponentHandle<GhostAnimation> ghostAnimation;
     entityx::ComponentHandle<Graphics> graphics;
-    for (entityx::Entity e1 : es.entities_with_components(
-             ghostAnimation, graphics)) {
+    for (entityx::Entity e1 :
+         es.entities_with_components(ghostAnimation, graphics)) {
       getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
     }
   }
@@ -293,9 +293,8 @@ class HealthSystem : public entityx::System<HealthSystem> {
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override {
     entityx::ComponentHandle<Health> health;
-    for (entityx::Entity entity :
-         es.entities_with_components(health)) {
-      if(health->health <= 0){
+    for (entityx::Entity entity : es.entities_with_components(health)) {
+      if (health->health <= 0) {
         events.emit<DeathMessage>(entity);
         entity.destroy();
       };
@@ -303,20 +302,21 @@ class HealthSystem : public entityx::System<HealthSystem> {
   }
 };
 
-class DeathListener : public entityx::System<DeathListener>,public entityx::Receiver<DeathMessage> {
-private:
-  //entityx::EntityManager &entityManager;
-  public:
-    //void DeathListener(entityx::EntityManager &entityManager):entityManager(entityManager){}
-    void configure(entityx::EventManager &event_manager) {
-      event_manager.subscribe<DeathMessage>(*this);
-    }
+class DeathListener : public entityx::System<DeathListener>,
+                      public entityx::Receiver<DeathMessage> {
+ private:
+  // entityx::EntityManager &entityManager;
+ public:
+  // void DeathListener(entityx::EntityManager
+  // &entityManager):entityManager(entityManager){}
+  void configure(entityx::EventManager &event_manager) {
+    event_manager.subscribe<DeathMessage>(*this);
+  }
 
-    void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt) {
-      
-    }
+  void update(entityx::EntityManager &entities, entityx::EventManager &events,
+              entityx::TimeDelta dt) {}
 
-    void receive(const DeathMessage &deathMessage) {
-      //deathMessage.entity.destroy();
-    }
+  void receive(const DeathMessage &deathMessage) {
+    // deathMessage.entity.destroy();
+  }
 };

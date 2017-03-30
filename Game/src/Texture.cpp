@@ -1,50 +1,48 @@
 #include "Texture.h"
-#include <FreeImage.h>
 #include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#include <cstdlib>
 
 Texture::Texture(std::string path) {
-  img = FreeImage_Load(FreeImage_GetFileType(path.c_str()), path.c_str());
-  int bitsPerPixel = FreeImage_GetBPP(img);
-  FIBITMAP *img32;
-  if (bitsPerPixel == 32) {
-    img32 = img;
-  } else {
-    img32 = FreeImage_ConvertTo32Bits(img);
-  }
-
-  if (bitsPerPixel != 32) {
-    FreeImage_Unload(img);
-    img = img32;
-  }
   glGenTextures(1, &id);
+  stbi_set_flip_vertically_on_load(1);
+  img = stbi_load(path.c_str(), &width, &height, &ch, STBI_rgb_alpha);
 }
 
-Texture::Texture(const Texture &tex) {
+Texture::Texture(const Texture& tex) {
   id = tex.id;
-  img = FreeImage_Clone(tex.img);
+  ch = tex.ch;
+  width = tex.width;
+  height = tex.height;
+  img = (unsigned char*)std::malloc(tex.ch * tex.width * tex.height);
+  std::copy(tex.img, tex.img + tex.ch * tex.width * tex.height, img);
 }
 
-Texture &Texture::operator=(const Texture &rhs) {
-  id = rhs.id;
-  img = FreeImage_Clone(rhs.img);
+Texture& Texture::operator=(const Texture& tex) {
+  id = tex.id;
+  ch = tex.ch;
+  width = tex.width;
+  height = tex.height;
+  img = (unsigned char*)std::malloc(tex.ch * tex.width * tex.height);
+  std::copy(tex.img, tex.img + tex.ch * tex.width * tex.height, img);
   return *this;
 }
 
 void Texture::load() {
-  glBindTexture(GL_TEXTURE_2D, 0);
   glBindTexture(GL_TEXTURE_2D, id);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_BGRA,
-               GL_UNSIGNED_BYTE, (GLvoid *)FreeImage_GetBits(img));
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA,
+               GL_UNSIGNED_BYTE, (GLvoid*)img);
 }
-int Texture::getWidth() const { return FreeImage_GetWidth(img); }
+int Texture::getWidth() const { return width; }
 
-int Texture::getHeight() const { return FreeImage_GetHeight(img); }
+int Texture::getHeight() const { return height; }
 
 Texture::~Texture() {
+  stbi_image_free(img);
   glDeleteTextures(1, &id);
-  FreeImage_Unload(img);
 }

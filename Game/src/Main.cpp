@@ -63,9 +63,8 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 100)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 100)));
-    player.assign<Graphics>(
-        Texture("assets/pp_caballero/static/ppc_front.png"),
-        glm::vec2(40, 40));
+    player.assign<Graphics>(Texture("assets/pp_caballero/static/ppc_front.png"),
+                            glm::vec2(40, 40));
   }
 
   void addEntityRoom(entityx::EntityManager &entities) {
@@ -84,12 +83,13 @@ class Scene : public entityx::EntityX {
     bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
   }
 
-  void addEntityGhost(entityx::EntityManager &entities,glm::vec3 position,glm::vec2 body) {
+  void addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
+                      glm::vec2 body) {
     // Inicializa Ghost y da valores iniciales a las variables
     entityx::Entity ghost = entities.create();
-    ghost.assign<Position>(position);              //posicion inicial
-    ghost.assign<Body>(body, glm::vec2(10, 29));   //posicion del body y tamaño
-    ghost.assign<Health>(100);                     //vida
+    ghost.assign<Position>(position);             // posicion inicial
+    ghost.assign<Body>(body, glm::vec2(10, 29));  // posicion del body y tamaño
+    ghost.assign<Health>(100);                    // vida
 
     std::vector<std::string> mov_right_str;
     mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
@@ -112,16 +112,15 @@ class Scene : public entityx::EntityX {
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_down_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_left_str, 300)),
         std::shared_ptr<AnimationClip>(new AnimationClip(mov_right_str, 300)));
-    ghost.assign<Graphics>(
-        Texture("assets/Enemigo_Fantasma/front/front1.png"),
-        glm::vec2(40, 40));   
+    ghost.assign<Graphics>(Texture("assets/Enemigo_Fantasma/front/front1.png"),
+                           glm::vec2(40, 40));
   }
 
  public:
   Scene(Window &window, Shaders &shaders) {
     addEntityRoom(entities);
-    addEntityGhost(entities,glm::vec3 (165,350,0),glm::vec2 (175,360));
-    addEntityGhost(entities,glm::vec3 (265,250,0),glm::vec2 (275,260));
+    addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
+    addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
     addEntityKnight(entities);
 
     systems.add<GraphicsSystem>(shaders);
@@ -136,7 +135,7 @@ class Scene : public entityx::EntityX {
   void update(entityx::TimeDelta dt) {
     systems.update<PlayerInputSystem>(dt);
     systems.update<KnightAnimationSystem>(dt);
-    systems.update<GhostAnimationSystem>(dt);   
+    systems.update<GhostAnimationSystem>(dt);
     systems.update<PhysicsSystem>(dt);
     systems.update<CollisionSystem>(dt);
     systems.update<GraphicsSystem>(dt);

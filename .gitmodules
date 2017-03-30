@@ -10,3 +10,6 @@
 [submodule "Game/lib/entityx"]
 	path = Game/lib/entityx
     url = https://github.com/alecthomas/entityx
+[submodule "Game/lib/stb"]
+	path = Game/lib/stb
+	url = https://github.com/nothings/stb.git

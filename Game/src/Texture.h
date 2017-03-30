@@ -1,16 +1,19 @@
 #pragma once
 #include <GL/gl3w.h>
-#include <FreeImage.h>
+#include <memory>
 #include <string>
 
 class Texture {
-  FIBITMAP* img;
+  int width;
+  int height;
+  int ch;
+  unsigned char* img;
   GLuint id;
 
  public:
   Texture(std::string path);
   Texture(const Texture& tex);
-  Texture& operator=(const Texture& rhs);
+  Texture& operator=(const Texture& tex);
   ~Texture();
   void load();
   int getWidth() const;

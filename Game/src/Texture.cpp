@@ -2,7 +2,6 @@
 #include <iostream>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-#include <cstdlib>
 
 Texture::Texture(std::string path) {
   glGenTextures(1, &id);
@@ -10,21 +9,21 @@ Texture::Texture(std::string path) {
   img = stbi_load(path.c_str(), &width, &height, &ch, STBI_rgb_alpha);
 }
 
-Texture::Texture(const Texture& tex) {
+Texture::Texture(const Texture &tex) {
   id = tex.id;
   ch = tex.ch;
   width = tex.width;
   height = tex.height;
-  img = (unsigned char*)std::malloc(tex.ch * tex.width * tex.height);
+  img = new unsigned char[tex.ch * tex.width * tex.height];
   std::copy(tex.img, tex.img + tex.ch * tex.width * tex.height, img);
 }
 
-Texture& Texture::operator=(const Texture& tex) {
+Texture &Texture::operator=(const Texture &tex) {
   id = tex.id;
   ch = tex.ch;
   width = tex.width;
   height = tex.height;
-  img = (unsigned char*)std::malloc(tex.ch * tex.width * tex.height);
+  img = new unsigned char[tex.ch * tex.width * tex.height];
   std::copy(tex.img, tex.img + tex.ch * tex.width * tex.height, img);
   return *this;
 }
@@ -36,7 +35,7 @@ void Texture::load() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA,
-               GL_UNSIGNED_BYTE, (GLvoid*)img);
+               GL_UNSIGNED_BYTE, (GLvoid *)img);
 }
 int Texture::getWidth() const { return width; }
 

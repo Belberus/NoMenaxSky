@@ -3,5 +3,5 @@
 
 struct DeathMessage {
   entityx::Entity entity;
-  DeathMessage(entityx::Entity e) : entity(e) {}
+  DeathMessage(entityx::Entity e);
 };

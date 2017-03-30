@@ -42,8 +42,7 @@ bool Window::init() {
   }
   glfwSetWindowSizeCallback(window, resize);
   glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
-  // Desactiva V-Sync
-  // glfwSwapInterval(0);
+  glfwSwapInterval(1);
   // glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

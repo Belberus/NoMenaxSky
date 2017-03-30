@@ -31,9 +31,17 @@ link_directories("${CMAKE_CURRENT_BINARY_DIR}/lib/entityx/")
 
 include_directories(lib/stb)
 
+
 file(GLOB_RECURSE SOURCE_FILES src/*)
 set_source_files_properties(${GL3W_SOURCES} PROPERTIES GENERATED TRUE)
 set(SOURCE_FILES ${SOURCE_FILES} ${GL3W_SOURCES})
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_dependencies(${PROJECT_NAME} gl3w)
 target_link_libraries(${PROJECT_NAME} ${GL3W_LIB} glfw ${GLFW_LIBRARIES} entityx)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/assets $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+)

@@ -7,13 +7,13 @@ class Texture {
   int width;
   int height;
   int ch;
-  unsigned char* img;
+  unsigned char *img;
   GLuint id;
 
- public:
+public:
   Texture(std::string path);
-  Texture(const Texture& tex);
-  Texture& operator=(const Texture& tex);
+  Texture(const Texture &tex);
+  Texture &operator=(const Texture &tex);
   ~Texture();
   void load();
   int getWidth() const;

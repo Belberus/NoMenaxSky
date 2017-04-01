@@ -244,5 +244,5 @@ ModelManifest.xml
 *.vcxproj*
 *.sln
 
-Game/build/*
-!Game/build/assets/
+Game/build/
+

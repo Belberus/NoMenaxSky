@@ -4,6 +4,8 @@
 #include "Shaders.h"
 #include "Window.h"
 
+glm::vec2 decompose(const glm::vec2 &v);
+
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
   bool getNext(entityx::ComponentHandle<KnightAnimation> knightAnimation,
                entityx::ComponentHandle<Graphics> graphics,
@@ -55,7 +57,7 @@ public:
               entityx::TimeDelta dt) override;
 
 private:
-  glm::vec2 decompose(const glm::vec2 &v);
+  
 };
 
 class PhysicsSystem : public entityx::System<PhysicsSystem> {

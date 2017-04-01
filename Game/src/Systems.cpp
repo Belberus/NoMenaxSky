@@ -131,10 +131,8 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
 
     if (position_player->position.y > position_ghost->position.y +10) {
       getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
-      ghostAnimation->last_mov = ghostAnimation->mov_top;
     } else if (position_player->position.y  < position_ghost->position.y) {
       getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
-      ghostAnimation->last_mov = ghostAnimation->mov_down;
     } 
   }
 }

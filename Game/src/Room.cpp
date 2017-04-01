@@ -84,6 +84,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
   ghost.assign<Position>(position);            // posicion inicial
   ghost.assign<Body>(body, glm::vec2(10, 29)); // posicion del body y tamaño
   ghost.assign<Health>(100);                   // vida
+  ghost.assign<Physics>(glm::vec2(0, 0));      // físicas
 
   std::vector<std::string> mov_right_str;
   mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
@@ -114,6 +115,15 @@ Room::Room(Window &window, Shaders &shaders) {
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
   addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(175, 360));
+  addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 360));
+  addEntityGhost(entities, glm::vec3(265, 100, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(180, 200, 0), glm::vec2(175, 360));
+  addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(175, 360));
+  addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 260));
+
   addEntityKnight(entities);
 
   systems.add<GraphicsSystem>(shaders);

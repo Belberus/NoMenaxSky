@@ -1,5 +1,8 @@
 #include "Room.h"
 #include "Systems.h"
+#include "../lib/irrKlang/include/irrKlang.h"
+#include <stdio.h>
+using namespace irrklang;
 
 void Room::addEntityKnight(entityx::EntityManager &entities) {
   entityx::Entity player = entities.create();
@@ -132,7 +135,7 @@ Room::Room(Window &window, Shaders &shaders) {
   systems.configure();
 }
 
-void Room::update(entityx::TimeDelta dt) {
+void Room::update(entityx::TimeDelta dt, ISoundEngine* engine) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);

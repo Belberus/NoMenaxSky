@@ -3,6 +3,9 @@
 #include "Window.h"
 #include <entityx/entityx.h>
 #include <glm/glm.hpp>
+#include "../lib/irrKlang/include/irrKlang.h"
+#include <stdio.h>
+using namespace irrklang;
 
 class Room : public entityx::EntityX {
   void addEntityKnight(entityx::EntityManager &entities);
@@ -15,5 +18,5 @@ class Room : public entityx::EntityX {
 public:
   Room(Window &window, Shaders &shaders);
 
-  void update(entityx::TimeDelta dt);
+  void update(entityx::TimeDelta dt,ISoundEngine* engine);
 };

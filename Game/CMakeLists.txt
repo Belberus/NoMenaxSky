@@ -3,6 +3,10 @@ project (Game)
 set (CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0024 OLD)
 
+# IRRKLANG
+link_directories(lib/irrKlang/bin/linux-gcc-64)
+include_directories(lib/irrKlang/include)
+
 # GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -37,7 +41,7 @@ set_source_files_properties(${GL3W_SOURCES} PROPERTIES GENERATED TRUE)
 set(SOURCE_FILES ${SOURCE_FILES} ${GL3W_SOURCES})
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_dependencies(${PROJECT_NAME} gl3w)
-target_link_libraries(${PROJECT_NAME} ${GL3W_LIB} glfw ${GLFW_LIBRARIES} entityx)
+target_link_libraries(${PROJECT_NAME} ${GL3W_LIB} glfw ${GLFW_LIBRARIES} entityx ikpFlac ikpMP3 IrrKlang)
 
 add_custom_command(
     TARGET ${PROJECT_NAME}

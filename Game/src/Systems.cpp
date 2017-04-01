@@ -56,13 +56,13 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
       attack->isAttacking = !getNext(knightAnimation, graphics, dt, which);
     } else if (physics->velocity.x > 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
     } else if (physics->velocity.x < 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
     } else if (physics->velocity.y > 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
     } else if (physics->velocity.y < 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
     }
   }
 }
@@ -106,32 +106,36 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
 
   }
 
-  // para todos los fantamsas, hacer quese muevan hacia el jugador
+  // para todos los fantasmas, hacer que se muevan hacia el jugador
   entityx::ComponentHandle<GhostAnimation> ghostAnimation;
   entityx::ComponentHandle<Graphics> graphics;
   entityx::ComponentHandle<Position> position_ghost;
   entityx::ComponentHandle<Physics> physics_ghost;
-#define SPEED_GHOST 200 // pixels por segundo
+#define SPEED_GHOST 50 // pixels por segundo
   for (entityx::Entity e1 :
        es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost)) {
     glm::vec2 v;
     if (position_player->position.y > position_ghost->position.y) {
       v.y += SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
     }
     if (position_player->position.y  < position_ghost->position.y ) {
       v.y += -SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
     }
     if (position_player->position.x > position_ghost->position.x) {
       v.x += SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_right);
     }
     if (position_player->position.x < position_ghost->position.x) {
       v.x += -SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_left);
     }
     physics_ghost->velocity = decompose(v);
+
+    if (position_player->position.y > position_ghost->position.y +10) {
+      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
+      ghostAnimation->last_mov = ghostAnimation->mov_top;
+    } else if (position_player->position.y  < position_ghost->position.y) {
+      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
+      ghostAnimation->last_mov = ghostAnimation->mov_down;
+    } 
   }
 }
 

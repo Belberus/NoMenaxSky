@@ -115,14 +115,14 @@ Room::Room(Window &window, Shaders &shaders) {
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
   addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(265, 100, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(180, 200, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(250, 360));
+  addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(290, 260));
+  addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 310));
+  addEntityGhost(entities, glm::vec3(265, 100, 0), glm::vec2(275, 110));
+  addEntityGhost(entities, glm::vec3(180, 200, 0), glm::vec2(190, 210));
+  addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(150, 130));
+  addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(260, 360));
+  addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 310));
 
   addEntityKnight(entities);
 

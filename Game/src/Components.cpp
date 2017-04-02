@@ -53,3 +53,5 @@ GhostAnimation::GhostAnimation(std::shared_ptr<AnimationClip> mov_top,
                                std::shared_ptr<AnimationClip> mov_right)
     : mov_top(mov_top), mov_down(mov_down), mov_left(mov_left),
       mov_right(mov_right), which(nullptr), index(0), time(0) {}
+
+AttachedTo::AttachedTo(std::shared_ptr<entityx::Entity> who) : who(who) {}

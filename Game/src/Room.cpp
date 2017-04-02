@@ -1,6 +1,6 @@
 #include "Room.h"
 #include "Systems.h"
-#include "../lib/irrKlang/include/irrKlang.h"
+#include <irrKlang.h>
 #include <stdio.h>
 using namespace irrklang;
 
@@ -96,7 +96,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 
   std::vector<std::string> mov_right_str;
   mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
-  mov_right_str.push_back("assets/Enemgio_Fantasma/right/right2.png");
+  mov_right_str.push_back("assets/Enemigo_Fantasma/right/right2.png");
 
   std::vector<std::string> mov_left_str;
   mov_left_str.push_back("assets/Enemigo_Fantasma/left/left1.png");

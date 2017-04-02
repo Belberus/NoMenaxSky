@@ -86,3 +86,9 @@ public:
 
   void receive(const DeathMessage &deathMessage);
 };
+
+class KnightWeaponSystem : public entityx::System<KnightWeaponSystem> {
+public:
+  void update(entityx::EntityManager &entities, entityx::EventManager &events,
+              entityx::TimeDelta dt);
+};

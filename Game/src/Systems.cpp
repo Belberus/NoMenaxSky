@@ -3,6 +3,14 @@
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../lib/irrKlang/include/irrKlang.h"
+#include <stdio.h>
+
+using namespace irrklang;
+
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
+ISoundEngine* engine = createIrrKlangDevice();
 
 bool KnightAnimationSystem::getNext(
     entityx::ComponentHandle<KnightAnimation> knightAnimation,
@@ -40,6 +48,9 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
            knightAnimation, physics, graphics, attack)) {
     if (attack->isAttacking) {
       std::shared_ptr<AnimationClip> which;
+      engine->setSoundVolume(0.25);
+      //engine->play2D("../media/fx/ahh.wav");
+      
       switch (attack->orientation) {
       case KnightAttack::Orientation::UP:
         which = knightAnimation->atk_n_top;
@@ -65,6 +76,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       !getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
     }
   }
+  //engine->drop();
 }
 
 bool GhostAnimationSystem::getNext(
@@ -259,18 +271,22 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
   }
 }
@@ -323,3 +339,15 @@ void DeathListener::update(entityx::EntityManager &entities,
                            entityx::TimeDelta dt) {}
 
 void DeathListener::receive(const DeathMessage &deathMessage) {}
+
+void AttackListener::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<AttackMessage>(*this);
+}
+
+void AttackListener::update(entityx::EntityManager &entities,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {}
+
+void AttackListener::receive(const AttackMessage &attackMessage) {
+  
+}

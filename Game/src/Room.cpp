@@ -120,6 +120,8 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 }
 
 Room::Room(Window &window, Shaders &shaders) {
+	ISoundEngine* engine = createIrrKlangDevice();
+	engine->play2D("../media/tune2.wav",true);
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
   /*addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
@@ -149,7 +151,7 @@ Room::Room(Window &window, Shaders &shaders) {
   systems.configure();
 }
 
-void Room::update(entityx::TimeDelta dt, ISoundEngine* engine) {
+void Room::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);

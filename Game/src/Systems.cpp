@@ -3,6 +3,14 @@
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../lib/irrKlang/include/irrKlang.h"
+#include <stdio.h>
+
+using namespace irrklang;
+
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
+ISoundEngine* engine = createIrrKlangDevice();
 
 bool KnightAnimationSystem::getNext(
     entityx::ComponentHandle<KnightAnimation> knightAnimation,
@@ -40,6 +48,9 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
            knightAnimation, physics, graphics, attack)) {
     if (attack->isAttacking) {
       std::shared_ptr<AnimationClip> which;
+      engine->setSoundVolume(0.25);
+      //engine->play2D("../media/fx/ahh.wav");
+      
       switch (attack->orientation) {
       case KnightAttack::Orientation::UP:
         which = knightAnimation->atk_n_top;
@@ -56,15 +67,16 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
       attack->isAttacking = !getNext(knightAnimation, graphics, dt, which);
     } else if (physics->velocity.x > 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
     } else if (physics->velocity.x < 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
     } else if (physics->velocity.y > 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
     } else if (physics->velocity.y < 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
     }
   }
+  //engine->drop();
 }
 
 bool GhostAnimationSystem::getNext(
@@ -106,32 +118,34 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
 
   }
 
-  // para todos los fantamsas, hacer quese muevan hacia el jugador
+  // para todos los fantasmas, hacer que se muevan hacia el jugador
   entityx::ComponentHandle<GhostAnimation> ghostAnimation;
   entityx::ComponentHandle<Graphics> graphics;
   entityx::ComponentHandle<Position> position_ghost;
   entityx::ComponentHandle<Physics> physics_ghost;
-#define SPEED_GHOST 200 // pixels por segundo
+#define SPEED_GHOST 50 // pixels por segundo
   for (entityx::Entity e1 :
        es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost)) {
     glm::vec2 v;
     if (position_player->position.y > position_ghost->position.y) {
       v.y += SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
     }
     if (position_player->position.y  < position_ghost->position.y ) {
       v.y += -SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
     }
     if (position_player->position.x > position_ghost->position.x) {
       v.x += SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_right);
     }
     if (position_player->position.x < position_ghost->position.x) {
       v.x += -SPEED_GHOST;
-      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_left);
     }
     physics_ghost->velocity = decompose(v);
+
+    if (position_player->position.y > position_ghost->position.y +10) {
+      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
+    } else if (position_player->position.y  < position_ghost->position.y) {
+      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
+    } 
   }
 }
 
@@ -257,18 +271,22 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
+      engine->play2D("../media/fx/ahh.wav");
     }
   }
 }
@@ -321,3 +339,15 @@ void DeathListener::update(entityx::EntityManager &entities,
                            entityx::TimeDelta dt) {}
 
 void DeathListener::receive(const DeathMessage &deathMessage) {}
+
+void AttackListener::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<AttackMessage>(*this);
+}
+
+void AttackListener::update(entityx::EntityManager &entities,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {}
+
+void AttackListener::receive(const AttackMessage &attackMessage) {
+  
+}

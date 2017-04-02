@@ -10,6 +10,8 @@ using namespace irrklang;
 class Room : public entityx::EntityX {
   void addEntityKnight(entityx::EntityManager &entities);
 
+  void addEntityDeep(entityx::EntityManager &entities, glm::vec3 position , glm::vec2 bodyPosition);
+
   void addEntityRoom(entityx::EntityManager &entities);
 
   void addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
@@ -18,5 +20,5 @@ class Room : public entityx::EntityX {
 public:
   Room(Window &window, Shaders &shaders);
 
-  void update(entityx::TimeDelta dt,ISoundEngine* engine);
+  void update(entityx::TimeDelta dt);
 };

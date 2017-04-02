@@ -61,6 +61,14 @@ void Room::addEntityKnight(entityx::EntityManager &entities) {
                           glm::vec2(40, 40));
 }
 
+void Room::addEntityDeep(entityx::EntityManager &entities, glm::vec3 position, glm::vec2 bodyPosition) {
+  entityx::Entity deep = entities.create();
+  deep.assign<Position>(position);
+  deep.assign<Body>(bodyPosition, glm::vec2(40, 40));
+  deep.assign<Graphics>(Texture("assets/elementos_mapa/agujero1_20x20.png"),
+                          glm::vec2(40, 40));
+}
+
 void Room::addEntityRoom(entityx::EntityManager &entities) {
   entityx::Entity room = entities.create();
   room.assign<Position>(glm::vec3(0, 0, 0));
@@ -112,17 +120,25 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 }
 
 Room::Room(Window &window, Shaders &shaders) {
+	ISoundEngine* engine = createIrrKlangDevice();
+	engine->play2D("../media/tune2.wav",true);
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(265, 100, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(180, 200, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 260));
+  /*addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(250, 360));
+  addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(290, 260));
+  addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 310));
+  addEntityGhost(entities, glm::vec3(265, 100, 0), glm::vec2(275, 110));
+  addEntityGhost(entities, glm::vec3(180, 200, 0), glm::vec2(190, 210));
+  addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(150, 130));
+  addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(260, 360));
+  addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 310));
+*/
+  addEntityDeep(entities,glm::vec3(150,150,0),glm::vec2(150,150));
+  addEntityDeep(entities,glm::vec3(150,200,0),glm::vec2(150,200));
+  addEntityDeep(entities,glm::vec3(150,250,0),glm::vec2(150,250));
+  addEntityDeep(entities,glm::vec3(150,300,0),glm::vec2(150,300));
+  addEntityDeep(entities,glm::vec3(150,350,0),glm::vec2(150,350));
 
   addEntityKnight(entities);
 
@@ -135,7 +151,7 @@ Room::Room(Window &window, Shaders &shaders) {
   systems.configure();
 }
 
-void Room::update(entityx::TimeDelta dt, ISoundEngine* engine) {
+void Room::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);

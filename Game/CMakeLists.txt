@@ -6,7 +6,7 @@ cmake_policy(SET CMP0024 OLD)
 # IRRKLANG
 if (UNIX)
     link_directories(lib/irrKlang/bin/linux-gcc-64)
-    set(IRRKLANG_LIBS ikpFlac.so ikpMP3.so libIrrKlang.so)
+    set(IRRKLANG_LIBS libIrrKlang.so)
 endif (UNIX)
 if (WIN32)
     link_directories(lib/irrKlang/lib/Winx64-visualStudio)

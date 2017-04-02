@@ -16,20 +16,20 @@ int main() {
   int frames = 0;
   entityx::TimeDelta dt = 0;
   //Starting sound engine
-  ISoundEngine* engine = createIrrKlangDevice();
+  /*ISoundEngine* engine = createIrrKlangDevice();
     if (!engine)
     {
         //printf("Could not startup engine\n");
         return 0; // error starting up the engine
     }
     engine->play2D("assets/media/tune2.wav", true);
-    engine->setSoundVolume(0.25);
+    engine->setSoundVolume(0.25);*/
   while (!window.isClosed()) {
     // TODO: mover calculo dt a la clase Window
     entityx::TimeDelta t1 = glfwGetTime();
     window.clear();
     window.pollEvents();
-    room.update(dt,engine);
+    room.update(dt);
     window.swapBuffers();
     entityx::TimeDelta t2 = glfwGetTime();
     dt = t2 - t1;

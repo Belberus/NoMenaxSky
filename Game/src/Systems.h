@@ -87,8 +87,17 @@ public:
   void receive(const DeathMessage &deathMessage);
 };
 
-class KnightWeaponSystem : public entityx::System<KnightWeaponSystem> {
+class AttackListener : public entityx::System<AttackListener>,
+                        public entityx::Receiver<AttackMessage> {
+private:
+  // entityx::EntityManager &entityManager;
 public:
+  // void DeathListener(entityx::EntityManager
+  // &entityManager):entityManager(entityManager){}
+  void configure(entityx::EventManager &event_manager);
+
   void update(entityx::EntityManager &entities, entityx::EventManager &events,
               entityx::TimeDelta dt);
+
+  void receive(const AttackMessage &attackMessage);
 };

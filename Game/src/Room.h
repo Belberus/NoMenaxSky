@@ -20,5 +20,5 @@ class Room : public entityx::EntityX {
 public:
   Room(Window &window, Shaders &shaders);
 
-  void update(entityx::TimeDelta dt,ISoundEngine* engine);
+  void update(entityx::TimeDelta dt);
 };

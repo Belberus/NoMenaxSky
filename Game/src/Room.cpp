@@ -176,7 +176,7 @@ void Room::addEntityMenu(entityx::EntityManager &entities) {
 
 void Room::addEntityRoom(Window &window, Shaders &shaders){
   ISoundEngine* engine = createIrrKlangDevice();
-  //engine->play2D("../media/tune2.wav",true);
+  engine->setSoundVolume(0.25);
   engine->play2D("assets/media/tune2.wav",true);
 
   addEntityRoom(entities);

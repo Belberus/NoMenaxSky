@@ -121,6 +121,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 
 Room::Room(Window &window, Shaders &shaders) {
 	ISoundEngine* engine = createIrrKlangDevice();
+	engine->setSoundVolume(0.25);
 	engine->play2D("assets/media/tune2.wav",true);
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));

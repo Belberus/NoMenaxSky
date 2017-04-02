@@ -12,6 +12,7 @@ using namespace irrklang;
 
 ISoundEngine* engine = createIrrKlangDevice();
 
+
 bool KnightAnimationSystem::getNext(
     entityx::ComponentHandle<KnightAnimation> knightAnimation,
     entityx::ComponentHandle<Graphics> graphics, entityx::TimeDelta dt,
@@ -48,7 +49,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
            knightAnimation, physics, graphics, attack)) {
     if (attack->isAttacking) {
       std::shared_ptr<AnimationClip> which;
-      engine->setSoundVolume(0.25);
+      
       //engine->play2D("assets/media/fx/ahh.wav");
       
       switch (attack->orientation) {
@@ -112,6 +113,7 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics_player;
   entityx::ComponentHandle<KnightAttack> attack;
   entityx::ComponentHandle<Position> position_player;
+  engine->setSoundVolume(0.25);
 
   for (entityx::Entity e :
               es.entities_with_components(player, physics_player, attack, position_player)){
@@ -123,21 +125,26 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Graphics> graphics;
   entityx::ComponentHandle<Position> position_ghost;
   entityx::ComponentHandle<Physics> physics_ghost;
+  engine->setSoundVolume(0.25);
 #define SPEED_GHOST 50 // pixels por segundo
   for (entityx::Entity e1 :
        es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost)) {
     glm::vec2 v;
     if (position_player->position.y > position_ghost->position.y) {
       v.y += SPEED_GHOST;
+      //engine->play2D("assets/media/fx/gags.wav");
     }
     if (position_player->position.y  < position_ghost->position.y ) {
       v.y += -SPEED_GHOST;
+      //engine->play2D("assets/media/fx/gags.wav");
     }
     if (position_player->position.x > position_ghost->position.x) {
       v.x += SPEED_GHOST;
+      //engine->play2D("assets/media/fx/gags.wav");
     }
     if (position_player->position.x < position_ghost->position.x) {
       v.x += -SPEED_GHOST;
+      //engine->play2D("assets/media/fx/gags.wav");
     }
     physics_ghost->velocity = decompose(v);
 
@@ -241,53 +248,98 @@ void GraphicsSystem::update(entityx::EntityManager &es,
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   }
 }
+/*
+void playSound(string route, int volume){
+  ISound* snd = engine->play2D("assets/media/fx/step2.wav",false,false,true);
+
+}*/
 
 PlayerInputSystem::PlayerInputSystem(Window &window) : window(window) {}
 
+int counter=15;
+int counter2=15;
 void PlayerInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
   entityx::ComponentHandle<Player> player;
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
+  engine->setSoundVolume(0.1);
 #define SPEED 300 // pixels por segundo
   for (entityx::Entity entity :
        es.entities_with_components(player, physics, attack)) {
     glm::vec2 v;
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
+    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {    
       v.y += SPEED;
+      if(counter == 15){
+        engine->play2D("assets/media/fx/step2.wav");
+        counter = 0;
+      }
+      counter++;
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
       v.y += -SPEED;
+      if(counter == 15){
+        engine->play2D("assets/media/fx/step2.wav");
+        counter = 0;
+      }
+      counter++;
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
       v.x += -SPEED;
+      if(counter == 15){
+        engine->play2D("assets/media/fx/step2.wav");
+        counter = 0;
+      }
+      counter++;
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
       v.x += SPEED;
+      if(counter == 15){
+        engine->play2D("assets/media/fx/step2.wav");
+        counter = 0;
+      }
+      counter++;
     }
     physics->velocity = decompose(v);
 
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
-      engine->play2D("assets/media/fx/ahh.wav");
+      if(counter2 == 15){
+        engine->play2D("assets/media/fx/sword_slice.wav");
+        counter2=0;
+      }
+      counter2++;      
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
-      engine->play2D("assets/media/fx/ahh.wav");
+      if(counter2 == 15){
+        engine->play2D("assets/media/fx/sword_slice.wav");
+        counter2=0;
+      } 
+      counter2++;
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
-      engine->play2D("assets/media/fx/ahh.wav");
+      if(counter2 == 15){
+        engine->play2D("assets/media/fx/sword_slice.wav");
+        counter2=0;
+      }
+      counter2++;
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
-      engine->play2D("assets/media/fx/ahh.wav");
+      if(counter2 == 15){
+        engine->play2D("assets/media/fx/sword_slice.wav");
+        counter2=0;
+      }
+      counter2++;
     }
+    
   }
 }
 

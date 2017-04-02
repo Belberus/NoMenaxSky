@@ -27,15 +27,16 @@ public:
 };
 
 class CollisionSystem : public entityx::System<CollisionSystem> {
+  
+public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
   bool areColliding(Body const &body1, Body const &body2);
 
   glm::vec2 depthOfCollision(Body const &body1, Body const &body2);
 
   void resolveCollision(Body &body, Position &pos, glm::vec2 const &depth);
-
-public:
-  void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override;
 };
 
 class GraphicsSystem : public entityx::System<GraphicsSystem> {

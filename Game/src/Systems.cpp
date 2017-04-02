@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 using namespace irrklang;
+using namespace std;
 
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
@@ -108,6 +109,11 @@ bool GhostAnimationSystem::getNext(
 void GhostAnimationSystem::update(entityx::EntityManager &es,
                                   entityx::EventManager &events,
                                   entityx::TimeDelta dt) {
+  /* initialize random seed: */
+  srand (time(NULL));
+
+  CollisionSystem colision;
+
    // Buscamos la entidad del jugador, en función de su posición moveremos al fantasma
   entityx::ComponentHandle<Player> player;
   entityx::ComponentHandle<Physics> physics_player;
@@ -125,27 +131,61 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Graphics> graphics;
   entityx::ComponentHandle<Position> position_ghost;
   entityx::ComponentHandle<Physics> physics_ghost;
-  engine->setSoundVolume(0.25);
+  entityx::ComponentHandle<Body> body_ghost;
+  entityx::ComponentHandle<Body> body;
+
 #define SPEED_GHOST 50 // pixels por segundo
   for (entityx::Entity e1 :
-       es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost)) {
+       es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost, body_ghost)) {
     glm::vec2 v;
-    if (position_player->position.y > position_ghost->position.y) {
-      v.y += SPEED_GHOST;
-      //engine->play2D("assets/media/fx/gags.wav");
-    }
-    if (position_player->position.y  < position_ghost->position.y ) {
-      v.y += -SPEED_GHOST;
-      //engine->play2D("assets/media/fx/gags.wav");
-    }
-    if (position_player->position.x > position_ghost->position.x) {
-      v.x += SPEED_GHOST;
-      //engine->play2D("assets/media/fx/gags.wav");
-    }
-    if (position_player->position.x < position_ghost->position.x) {
-      v.x += -SPEED_GHOST;
-      //engine->play2D("assets/media/fx/gags.wav");
-    }
+    for (entityx::Entity e2: 
+           es.entities_with_components(body)){
+      if (e2 != e1 && colision.areColliding(*body_ghost, *body)
+            && body->length.x == 40 && body->length.y == 40){ // si es 40x40, es obstáculo hay que redireccionarlo
+        
+        if (position_player->position.y > position_ghost->position.y) {
+          if (body_ghost->position.y + body_ghost->length.y == body->position.y){ // me choco con un objeto encima mio
+            v.x = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos a izquierda o derecha
+          } else {
+            v.y += SPEED_GHOST;
+          }
+        }
+        if (position_player->position.y  < position_ghost->position.y ) {
+          if (body_ghost->position.y == body->position.y + body->length.y){ // me choco con un objeto por debajo
+            v.x = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos a izquierda o derecha
+          } else {
+            v.y += -SPEED_GHOST;
+          }
+        }
+        if (position_player->position.x > position_ghost->position.x) {
+          if (body_ghost->position.x + body_ghost->length.x == body->position.x){ // me choco con un objeto a la derecha
+            v.y = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos arriba o abajo
+          } else {
+            v.x += SPEED_GHOST;
+          }
+        }
+        if (position_player->position.x < position_ghost->position.x) {
+          if (body_ghost->position.x == body->position.x + body->length.x){ // me choco con un objeto a la izquierda
+            v.y = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos arriba o abajo
+          } else {
+            v.x += -SPEED_GHOST;
+          }
+        } 
+      } else {
+        if (position_player->position.y > position_ghost->position.y) {
+          v.y += SPEED_GHOST;
+        }
+        if (position_player->position.y  < position_ghost->position.y ) {
+          v.y += -SPEED_GHOST;
+        }
+        if (position_player->position.x > position_ghost->position.x) {
+          v.x += SPEED_GHOST;
+        }
+        if (position_player->position.x < position_ghost->position.x) {
+          v.x += -SPEED_GHOST;
+        }
+      }/* if */
+    }/* for */
     physics_ghost->velocity = decompose(v);
 
     if (position_player->position.y > position_ghost->position.y +10) {

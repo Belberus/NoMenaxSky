@@ -58,3 +58,4 @@ MenuAnimation::MenuAnimation(std::shared_ptr<AnimationClip> menu_animation):
       menu_animation(menu_animation),which(nullptr), index(0), time(0) {}
 
 ArrowMenu::ArrowMenu(Option option): option(option) {}
+

@@ -25,4 +25,5 @@ public:
   Room(Window &window, Shaders &shaders);
 
   void update(entityx::TimeDelta dt);
+
 };

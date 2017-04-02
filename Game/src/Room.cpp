@@ -1,6 +1,6 @@
 #include "Room.h"
 #include "Systems.h"
-#include "../lib/irrKlang/include/irrKlang.h"
+#include <irrKlang.h>
 #include <stdio.h>
 using namespace irrklang;
 
@@ -90,14 +90,14 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
   // Inicializa Ghost y da valores iniciales a las variables
   entityx::Entity ghost = entities.create();
   ghost.assign<Position>(position);            // posicion inicial
-  ghost.assign<Body>(body, glm::vec2(10, 29)); // posicion del body y tamaño
+  ghost.assign<Body>(body, glm::vec2(30, 30)); // posicion del body y tamaño
   ghost.assign<Health>(100);                   // vida
   ghost.assign<Physics>(glm::vec2(0, 0));      // físicas
   ghost.assign<Ghost>();
 
   std::vector<std::string> mov_right_str;
   mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
-  mov_right_str.push_back("assets/Enemgio_Fantasma/right/right2.png");
+  mov_right_str.push_back("assets/Enemigo_Fantasma/right/right2.png");
 
   std::vector<std::string> mov_left_str;
   mov_left_str.push_back("assets/Enemigo_Fantasma/left/left1.png");
@@ -119,8 +119,6 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
   ghost.assign<Graphics>(Texture("assets/Enemigo_Fantasma/front/front1.png"),
                          glm::vec2(40, 40));
 }
-
-
 
 void Room::addEntityMenu(entityx::EntityManager &entities) {
   entityx::Entity menu = entities.create();
@@ -178,7 +176,8 @@ void Room::addEntityMenu(entityx::EntityManager &entities) {
 
 void Room::addEntityRoom(Window &window, Shaders &shaders){
   ISoundEngine* engine = createIrrKlangDevice();
-  engine->play2D("../media/tune2.wav",true);
+  //engine->play2D("../media/tune2.wav",true);
+  engine->play2D("assets/media/tune2.wav",true);
 
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
@@ -193,12 +192,13 @@ void Room::addEntityRoom(Window &window, Shaders &shaders){
   addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 310));
 
   addEntityDeep(entities,glm::vec3(150,150,0),glm::vec2(150,150));
-  addEntityDeep(entities,glm::vec3(150,200,0),glm::vec2(150,200));
-  addEntityDeep(entities,glm::vec3(150,250,0),glm::vec2(150,250));
-  addEntityDeep(entities,glm::vec3(150,300,0),glm::vec2(150,300));
-  addEntityDeep(entities,glm::vec3(150,350,0),glm::vec2(150,350));
+  addEntityDeep(entities,glm::vec3(150,191,0),glm::vec2(150,200));
+  addEntityDeep(entities,glm::vec3(150,231,0),glm::vec2(150,250));
+  addEntityDeep(entities,glm::vec3(150,271,0),glm::vec2(150,300));
+  addEntityDeep(entities,glm::vec3(150,311,0),glm::vec2(150,350));
 
   addEntityKnight(entities);
+
 }
 
 Room::Room(Window &window, Shaders &shaders) {
@@ -206,7 +206,7 @@ Room::Room(Window &window, Shaders &shaders) {
 
   systems.add<GraphicsSystem>(shaders);
   systems.add<KnightAnimationSystem>();
-  systems.add<GhostAnimationSystem>();
+  //systems.add<GhostAnimationSystem>();
   systems.add<PlayerInputSystem>(window);
   systems.add<MenuInputSystem>(window);
   systems.add<PhysicsSystem>();
@@ -219,10 +219,13 @@ void Room::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<MenuInputSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
-  systems.update<GhostAnimationSystem>(dt);
+  //systems.update<GhostAnimationSystem>(dt);
+  systems.update<GraphicsSystem>(dt);
   systems.update<PhysicsSystem>(dt);
   systems.update<CollisionSystem>(dt);
   systems.update<MenuAnimationSystem>(dt);
   systems.update<GraphicsSystem>(dt);
 
+
 }
+

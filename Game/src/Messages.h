@@ -1,6 +1,6 @@
 #pragma once
 #include <entityx/entityx.h>
-#include "../lib/irrKlang/include/irrKlang.h"
+#include <irrKlang.h>
 #include <stdio.h>
 
 using namespace irrklang;

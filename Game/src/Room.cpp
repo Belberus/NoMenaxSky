@@ -121,9 +121,9 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 
 Room::Room(Window &window, Shaders &shaders) {
 	ISoundEngine* engine = createIrrKlangDevice();
-	engine->play2D("../media/tune2.wav",true);
+	//engine->play2D("../media/tune2.wav",true);
   addEntityRoom(entities);
-  addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
+  //addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
   /*addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
   addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(250, 360));
   addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(290, 260));
@@ -135,16 +135,16 @@ Room::Room(Window &window, Shaders &shaders) {
   addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 310));
 */
   addEntityDeep(entities,glm::vec3(150,150,0),glm::vec2(150,150));
-  addEntityDeep(entities,glm::vec3(150,200,0),glm::vec2(150,200));
-  addEntityDeep(entities,glm::vec3(150,250,0),glm::vec2(150,250));
-  addEntityDeep(entities,glm::vec3(150,300,0),glm::vec2(150,300));
-  addEntityDeep(entities,glm::vec3(150,350,0),glm::vec2(150,350));
+  addEntityDeep(entities,glm::vec3(150,191,0),glm::vec2(150,200));
+  addEntityDeep(entities,glm::vec3(150,231,0),glm::vec2(150,250));
+  addEntityDeep(entities,glm::vec3(150,271,0),glm::vec2(150,300));
+  addEntityDeep(entities,glm::vec3(150,311,0),glm::vec2(150,350));
 
   addEntityKnight(entities);
 
   systems.add<GraphicsSystem>(shaders);
   systems.add<KnightAnimationSystem>();
-  systems.add<GhostAnimationSystem>();
+  //systems.add<GhostAnimationSystem>();
   systems.add<PlayerInputSystem>(window);
   systems.add<PhysicsSystem>();
   systems.add<CollisionSystem>();
@@ -154,8 +154,9 @@ Room::Room(Window &window, Shaders &shaders) {
 void Room::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
-  systems.update<GhostAnimationSystem>(dt);
+  //systems.update<GhostAnimationSystem>(dt);
+  systems.update<GraphicsSystem>(dt);
   systems.update<PhysicsSystem>(dt);
   systems.update<CollisionSystem>(dt);
-  systems.update<GraphicsSystem>(dt);
 }
+

@@ -82,7 +82,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
   // Inicializa Ghost y da valores iniciales a las variables
   entityx::Entity ghost = entities.create();
   ghost.assign<Position>(position);            // posicion inicial
-  ghost.assign<Body>(body, glm::vec2(10, 29)); // posicion del body y tamaño
+  ghost.assign<Body>(body, glm::vec2(30, 30)); // posicion del body y tamaño
   ghost.assign<Health>(100);                   // vida
   ghost.assign<Physics>(glm::vec2(0, 0));      // físicas
 

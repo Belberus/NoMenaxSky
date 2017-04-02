@@ -13,6 +13,7 @@ class Window {
   void clear();
   void swapBuffers();
   void pollEvents();
+  void update();
   bool isClosed();
   int getWidth();
   int getHeight();

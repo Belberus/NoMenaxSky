@@ -19,6 +19,11 @@ void resize(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
+void Window::update(){
+  glfwSwapBuffers(window);
+  glfwPollEvents();
+}
+
 bool Window::init() {
   if (!glfwInit()) {
     std::cout << "GLFW init error" << std::endl;

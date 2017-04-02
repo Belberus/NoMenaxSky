@@ -44,6 +44,20 @@ struct KnightAttack {
   KnightAttack(int damage, Orientation orientation);
 };
 
+struct MenuImage {};
+
+struct ArrowMenu {
+  enum Option { JUGAR, OPCIONES, SALIR };
+
+  Option option;
+
+  ArrowMenu(Option option);
+};
+
+struct MenuOption {};
+
+struct MenuTitle {};
+
 struct Player {};
 
 struct Ghost {};
@@ -103,4 +117,13 @@ struct GhostAnimation {
                  std::shared_ptr<AnimationClip> mov_down,
                  std::shared_ptr<AnimationClip> mov_left,
                  std::shared_ptr<AnimationClip> mov_right);
+};
+
+struct MenuAnimation {
+  std::shared_ptr<AnimationClip> menu_animation;
+  std::shared_ptr<AnimationClip> which;
+  std::vector<std::shared_ptr<Texture>>::size_type index;
+  entityx::TimeDelta time;
+
+  MenuAnimation(std::shared_ptr<AnimationClip> menu_animation);
 };

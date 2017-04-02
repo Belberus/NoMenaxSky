@@ -16,6 +16,16 @@ public:
               entityx::TimeDelta dt) override;
 };
 
+class MenuAnimationSystem : public entityx::System<MenuAnimationSystem> {
+  bool getNext(entityx::ComponentHandle<MenuAnimation> menuAnimation,
+               entityx::ComponentHandle<Graphics> graphics,
+               entityx::TimeDelta dt, std::shared_ptr<AnimationClip> whatClip);
+
+public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 class GhostAnimationSystem : public entityx::System<GhostAnimationSystem> {
   bool getNext(entityx::ComponentHandle<GhostAnimation> ghostAnimation,
                entityx::ComponentHandle<Graphics> graphics,
@@ -46,6 +56,20 @@ public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };
+
+class MenuInputSystem : public entityx::System<MenuInputSystem> {
+  Window &window;
+
+public:
+  MenuInputSystem(Window &window);
+
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+private:
+  
+};
+
 
 class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
   Window &window;

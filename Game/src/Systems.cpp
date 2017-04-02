@@ -242,6 +242,101 @@ void GraphicsSystem::update(entityx::EntityManager &es,
   }
 }
 
+
+bool MenuAnimationSystem::getNext(
+    entityx::ComponentHandle<MenuAnimation> menuAnimation,
+    entityx::ComponentHandle<Graphics> graphics, entityx::TimeDelta dt,
+    std::shared_ptr<AnimationClip> whatClip) {
+  if (menuAnimation->which != whatClip) {
+    menuAnimation->index = 0;
+    menuAnimation->time = 0;
+    menuAnimation->which = whatClip;
+    graphics->texture =
+        whatClip->clip[menuAnimation->index++ % whatClip->clip.size()];
+  } else {
+    menuAnimation->time += dt;
+    if (menuAnimation->time >= whatClip->timePerFrame / 1000.0) {
+      graphics->texture =
+          whatClip->clip[menuAnimation->index++ % whatClip->clip.size()];
+      menuAnimation->time = 0;
+    }
+  }
+  if (menuAnimation->index % whatClip->clip.size() == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void MenuAnimationSystem::update(entityx::EntityManager &es,
+                                   entityx::EventManager &events,
+                                   entityx::TimeDelta dt) {
+  entityx::ComponentHandle<MenuAnimation> menuAnimation;
+  entityx::ComponentHandle<Graphics> graphics;
+  for (entityx::Entity e1 : es.entities_with_components(
+           menuAnimation, graphics)) {
+    getNext(menuAnimation, graphics, dt, menuAnimation->menu_animation);
+  }
+}
+MenuInputSystem::MenuInputSystem(Window &window) : window(window) {}
+
+void MenuInputSystem::update(entityx::EntityManager &es,
+                               entityx::EventManager &events,
+                               entityx::TimeDelta dt) {
+  entityx::ComponentHandle<ArrowMenu> arrowMenu;
+  entityx::ComponentHandle<Position> position;
+  glm::vec3 pos1(325, 247, 0);
+  glm::vec3 pos2(325, 157, 0);
+  glm::vec3 pos3(325, 65, 0);
+
+  for (entityx::Entity entity :
+       es.entities_with_components(arrowMenu, position)) {
+    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+          std::cout<<"Estoy aqui UP"<<std::endl;
+          switch (arrowMenu->option){
+            case ArrowMenu::Option::JUGAR:
+                break;
+            case ArrowMenu::Option::OPCIONES:
+                position->position = pos1;
+                arrowMenu->option = ArrowMenu::Option::JUGAR;
+                break;
+            case ArrowMenu::Option::SALIR:
+                position->position = pos2;
+                arrowMenu->option = ArrowMenu::Option::OPCIONES;
+                break;
+          } 
+    }
+    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+          std::cout<<"Estoy aqui DOWN"<<std::endl;
+          switch (arrowMenu->option){
+            case ArrowMenu::Option::JUGAR:
+                position->position = pos2;
+                arrowMenu->option = ArrowMenu::Option::OPCIONES;
+                break;
+            case ArrowMenu::Option::OPCIONES:
+                position->position = pos3;
+                arrowMenu->option = ArrowMenu::Option::SALIR;
+                break;
+            case ArrowMenu::Option::SALIR:
+                break;
+          } 
+    }
+    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_ENTER) == GLFW_PRESS) {
+          switch (arrowMenu->option){
+            case ArrowMenu::Option::JUGAR:
+
+                break;
+            case ArrowMenu::Option::OPCIONES:
+                break;
+            case ArrowMenu::Option::SALIR:
+                exit(0);
+                break;
+          } 
+    }
+  
+  }
+}
+
 PlayerInputSystem::PlayerInputSystem(Window &window) : window(window) {}
 
 void PlayerInputSystem::update(entityx::EntityManager &es,

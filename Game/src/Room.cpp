@@ -93,6 +93,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
   ghost.assign<Body>(body, glm::vec2(10, 29)); // posicion del body y tamaño
   ghost.assign<Health>(100);                   // vida
   ghost.assign<Physics>(glm::vec2(0, 0));      // físicas
+  ghost.assign<Ghost>();
 
   std::vector<std::string> mov_right_str;
   mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
@@ -119,12 +120,69 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
                          glm::vec2(40, 40));
 }
 
-Room::Room(Window &window, Shaders &shaders) {
-	ISoundEngine* engine = createIrrKlangDevice();
-	engine->play2D("../media/tune2.wav",true);
+
+
+void Room::addEntityMenu(entityx::EntityManager &entities) {
+  entityx::Entity menu = entities.create();
+  menu.assign<Position>(glm::vec3(0, 0, 0));
+
+  std::vector<std::string> menu_animation;
+  menu_animation.push_back("assets/menu/gif/gif4.png");
+  menu_animation.push_back("assets/menu/gif/gif3.png");
+  menu_animation.push_back("assets/menu/gif/gif2.png");
+  menu_animation.push_back("assets/menu/gif/gif1.png");
+  menu.assign<MenuAnimation>(
+      std::shared_ptr<AnimationClip>(new AnimationClip(menu_animation, 50)));
+  menu.assign<Graphics>(
+      Texture("assets/menu/gif/gif1.png"),
+      glm::vec2(960, 540));
+
+  entityx::Entity titulo = entities.create();
+  titulo.assign<Position>(glm::vec3(130, 375, 0));
+  titulo.assign<Graphics>(
+      Texture("assets/menu/titulo.png"),
+      glm::vec2(700, 150));
+
+  entityx::Entity option1 = entities.create();
+  option1.assign<Position>(glm::vec3(220, 240, 0));
+  option1.assign<Graphics>(
+      Texture("assets/menu/jugar.png"),
+      glm::vec2(500, 50));
+
+  entityx::Entity option2 = entities.create();
+  option2.assign<Position>(glm::vec3(220, 150, 0));
+  option2.assign<Graphics>(
+      Texture("assets/menu/opciones.png"),
+      glm::vec2(500, 50));
+
+  entityx::Entity option3 = entities.create();
+  option3.assign<Position>(glm::vec3(210, 50, 0));
+  option3.assign<Graphics>(
+      Texture("assets/menu/salir.png"),
+      glm::vec2(520, 70));
+
+  entityx::Entity logo = entities.create();
+  logo.assign<Position>(glm::vec3(850, 10, 0));
+  logo.assign<Graphics>(
+      Texture("assets/menu/patan_games.png"),
+      glm::vec2(100, 100));
+
+  entityx::Entity menuArrow = entities.create();
+  menuArrow.assign<Position>(glm::vec3(325, 247, 0));
+  menuArrow.assign<Graphics>(
+      Texture("assets/menu/ppc_front.png"),
+      glm::vec2(40, 40));
+  menuArrow.assign<ArrowMenu>(ArrowMenu::Option::JUGAR);
+
+}
+
+void Room::addEntityRoom(Window &window, Shaders &shaders){
+  ISoundEngine* engine = createIrrKlangDevice();
+  engine->play2D("../media/tune2.wav",true);
+
   addEntityRoom(entities);
   addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
-  /*addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
+  addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
   addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(250, 360));
   addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(290, 260));
   addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 310));
@@ -133,7 +191,7 @@ Room::Room(Window &window, Shaders &shaders) {
   addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(150, 130));
   addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(260, 360));
   addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 310));
-*/
+
   addEntityDeep(entities,glm::vec3(150,150,0),glm::vec2(150,150));
   addEntityDeep(entities,glm::vec3(150,200,0),glm::vec2(150,200));
   addEntityDeep(entities,glm::vec3(150,250,0),glm::vec2(150,250));
@@ -141,21 +199,30 @@ Room::Room(Window &window, Shaders &shaders) {
   addEntityDeep(entities,glm::vec3(150,350,0),glm::vec2(150,350));
 
   addEntityKnight(entities);
+}
+
+Room::Room(Window &window, Shaders &shaders) {
+	addEntityMenu(entities);
 
   systems.add<GraphicsSystem>(shaders);
   systems.add<KnightAnimationSystem>();
   systems.add<GhostAnimationSystem>();
   systems.add<PlayerInputSystem>(window);
+  systems.add<MenuInputSystem>(window);
   systems.add<PhysicsSystem>();
   systems.add<CollisionSystem>();
+  systems.add<MenuAnimationSystem>();
   systems.configure();
 }
 
 void Room::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
+  systems.update<MenuInputSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);
   systems.update<PhysicsSystem>(dt);
   systems.update<CollisionSystem>(dt);
+  systems.update<MenuAnimationSystem>(dt);
   systems.update<GraphicsSystem>(dt);
+
 }

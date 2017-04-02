@@ -30,9 +30,8 @@ int main() {
     // TODO: mover calculo dt a la clase Window
     entityx::TimeDelta t1 = glfwGetTime();
     window.clear();
-    window.pollEvents();
     room.update(dt);
-    window.swapBuffers();
+    window.update();
     entityx::TimeDelta t2 = glfwGetTime();
     dt = t2 - t1;
   }

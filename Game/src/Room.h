@@ -8,14 +8,18 @@
 using namespace irrklang;
 
 class Room : public entityx::EntityX {
-  void addEntityKnight(entityx::EntityManager &entities);
+  	void addEntityKnight(entityx::EntityManager &entities);
 
-  void addEntityDeep(entityx::EntityManager &entities, glm::vec3 position , glm::vec2 bodyPosition);
+  	void addEntityDeep(entityx::EntityManager &entities, glm::vec3 position , glm::vec2 bodyPosition);
 
-  void addEntityRoom(entityx::EntityManager &entities);
+  	void addEntityRoom(entityx::EntityManager &entities);
 
-  void addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
+  	void addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
                       glm::vec2 body);
+
+  	void addEntityMenu(entityx::EntityManager &entities);
+
+  	void addEntityRoom(Window &window, Shaders &shaders);
 
 public:
   Room(Window &window, Shaders &shaders);

@@ -1,6 +1,6 @@
 #include "Room.h"
 #include "Systems.h"
-#include "../lib/irrKlang/include/irrKlang.h"
+#include <irrKlang.h>
 #include <stdio.h>
 using namespace irrklang;
 
@@ -96,7 +96,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 
   std::vector<std::string> mov_right_str;
   mov_right_str.push_back("assets/Enemigo_Fantasma/right/right1.png");
-  mov_right_str.push_back("assets/Enemgio_Fantasma/right/right2.png");
+  mov_right_str.push_back("assets/Enemigo_Fantasma/right/right2.png");
 
   std::vector<std::string> mov_left_str;
   mov_left_str.push_back("assets/Enemigo_Fantasma/left/left1.png");
@@ -122,6 +122,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
 Room::Room(Window &window, Shaders &shaders) {
 	ISoundEngine* engine = createIrrKlangDevice();
 	//engine->play2D("../media/tune2.wav",true);
+	engine->play2D("assets/media/tune2.wav",true);
   addEntityRoom(entities);
   //addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
   /*addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));

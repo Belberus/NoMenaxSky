@@ -50,7 +50,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     if (attack->isAttacking) {
       std::shared_ptr<AnimationClip> which;
       engine->setSoundVolume(0.25);
-      //engine->play2D("../media/fx/ahh.wav");
+      //engine->play2D("assets/media/fx/ahh.wav");
       
       switch (attack->orientation) {
       case KnightAttack::Orientation::UP:
@@ -317,22 +317,22 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
-      engine->play2D("../media/fx/ahh.wav");
+      engine->play2D("assets/media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
-      engine->play2D("../media/fx/ahh.wav");
+      engine->play2D("assets/media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
-      engine->play2D("../media/fx/ahh.wav");
+      engine->play2D("assets/media/fx/ahh.wav");
     }
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
-      engine->play2D("../media/fx/ahh.wav");
+      engine->play2D("assets/media/fx/ahh.wav");
     }
   }
 }

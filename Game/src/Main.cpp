@@ -1,14 +1,12 @@
 #include <GL/gl3w.h>
 #include "Room.h"
 #include <GLFW/glfw3.h>
-#include "../lib/irrKlang/include/irrKlang.h"
+#include <irrKlang.h>
 #include <stdio.h>
 
 using namespace irrklang;
 
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
-
-
 
 int main() {
   Window window("No Menax Sky", 960, 540);
@@ -24,7 +22,7 @@ int main() {
         //printf("Could not startup engine\n");
         return 0; // error starting up the engine
     }
-    engine->play2D("../media/tune2.wav", true);
+    engine->play2D("assets/media/tune2.wav", true);
     engine->setSoundVolume(0.25);*/
   while (!window.isClosed()) {
     // TODO: mover calculo dt a la clase Window

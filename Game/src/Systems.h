@@ -89,7 +89,7 @@ public:
 };
 
 class AttackListener : public entityx::System<AttackListener>,
-                      public entityx::Receiver<AttackMessage> {
+                        public entityx::Receiver<AttackMessage> {
 private:
   // entityx::EntityManager &entityManager;
 public:

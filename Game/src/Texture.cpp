@@ -7,6 +7,10 @@ Texture::Texture(std::string path) {
   glGenTextures(1, &id);
   stbi_set_flip_vertically_on_load(1);
   img = stbi_load(path.c_str(), &width, &height, &ch, STBI_rgb_alpha);
+  if (!img) {
+    std::cout << "Failed to load image: " << path.c_str() << ", because: " 
+       << stbi_failure_reason() << std::endl;
+  }
 }
 
 Texture::Texture(const Texture &tex) {

@@ -8,7 +8,6 @@ int main() {
   Shaders shaders;
   Game game(window, shaders);
   double t1_f = glfwGetTime();
-  int frames = 0;
   entityx::TimeDelta dt = 0;
   while (!window.isClosed()) {
     // TODO: mover calculo dt a la clase Window

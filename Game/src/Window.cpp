@@ -54,6 +54,10 @@ bool Window::init() {
   return true;
 }
 
+bool Window::isKeyPressed(int key) {
+  return glfwGetKey(window, key) == GLFW_PRESS;
+}
+
 bool Window::isClosed() { return glfwWindowShouldClose(window); }
 
 int Window::getWidth() { return width; }

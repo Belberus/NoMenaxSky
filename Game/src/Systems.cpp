@@ -226,19 +226,16 @@ glm::vec2 CollisionSystem::depthOfCollision(Body const &body1,
   return glm::vec2(depthX, depthY);
 }
 
+// FIXME: arreglar la resolucion de colisiones en general
 void CollisionSystem::resolveCollision(Body &body, Position &pos,
                                        glm::vec2 const &depth) {
-  if (std::abs(depth.x) < std::abs(depth.y)) {
+  if (std::abs(depth.x) <= std::abs(depth.y)) {
     body.position.x += depth.x;
     pos.position.x += depth.x;
-  } else if (std::abs(depth.x) > std::abs(depth.y)) {
+  }
+  else {
     body.position.y += depth.y;
     pos.position.y += depth.y;
-  } else {
-    body.position.x += depth.x;
-    body.position.y += depth.y;
-    pos.position.x += depth.x;
-    pos.position.x += depth.y;
   }
 }
 
@@ -254,6 +251,7 @@ void CollisionSystem::update(entityx::EntityManager &es,
     for (entityx::Entity e2 : es.entities_with_components(body2)) {
       if (e2 != e1 && areColliding(*body1, *body2)) {
         glm::vec2 depth = depthOfCollision(*body1, *body2);
+        std::cout << "X: " << depth.x << " Y: " << depth.y << std::endl;
         resolveCollision(*body1, *pos, depth);
       }
     }
@@ -345,7 +343,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
 
   for (entityx::Entity entity :
        es.entities_with_components(arrowMenu, position)) {
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_UP)) {
           std::cout<<"Estoy aqui UP"<<std::endl;
           switch (arrowMenu->option){
             case ArrowMenu::Option::JUGAR:
@@ -360,7 +358,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
                 break;
           } 
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_DOWN)) {
           std::cout<<"Estoy aqui DOWN"<<std::endl;
           switch (arrowMenu->option){
             case ArrowMenu::Option::JUGAR:
@@ -375,7 +373,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
                 break;
           } 
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_ENTER) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_ENTER)) {
           switch (arrowMenu->option){
             case ArrowMenu::Option::JUGAR:
                 events.emit<InitRoomMessage>();
@@ -406,7 +404,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   for (entityx::Entity entity :
        es.entities_with_components(player, physics, attack)) {
     glm::vec2 v;
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {    
+    if (window.isKeyPressed(GLFW_KEY_W)) {    
       v.y += SPEED;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
@@ -414,7 +412,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
       counter++;
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_S)) {
       v.y += -SPEED;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
@@ -422,7 +420,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
       counter++;
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_A)) {
       v.x += -SPEED;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
@@ -430,7 +428,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
       counter++;
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_D)) {
       v.x += SPEED;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
@@ -440,7 +438,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
     physics->velocity = decompose(v);
 
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_UP)) {
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
       if(counter2 == 15){
@@ -449,7 +447,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
       counter2++;      
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_DOWN)) {
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
       if(counter2 == 15){
@@ -458,7 +456,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       } 
       counter2++;
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_LEFT)) {
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
       if(counter2 == 15){
@@ -467,7 +465,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
       counter2++;
     }
-    if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
+    if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
       if(counter2 == 15){

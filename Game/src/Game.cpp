@@ -13,7 +13,7 @@ ISoundEngine* eng = createIrrKlangDevice();
 
 Game::Game(Window &window, Shaders &shaders) {
   eng->setSoundVolume(0.25);
-  eng->play2D("../assets/media/intro.wav",true);
+  eng->play2D("assets/media/intro.wav",true);
   events.subscribe<InitRoomMessage>(*this);
   systems.add<KnightAnimationSystem>();
   // systems.add<GhostAnimationSystem>();
@@ -42,6 +42,6 @@ void Game::update(entityx::TimeDelta dt) {
 void Game::receive(const InitRoomMessage &initRoom) {
   entities.reset();
   eng->stopAllSounds();
-  eng->play2D("../assets/media/tune2.wav",true);
+  eng->play2D("assets/media/tune2.wav",true);
   EntitiesCreator::addEntityRoom1(entities);
 }

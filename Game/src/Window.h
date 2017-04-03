@@ -17,6 +17,7 @@ class Window {
   bool isClosed();
   int getWidth();
   int getHeight();
+  bool isKeyPressed(int key);
   GLFWwindow *getGLFWwindow();
 
  private:

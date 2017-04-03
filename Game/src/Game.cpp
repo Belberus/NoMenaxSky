@@ -30,13 +30,12 @@ Game::Game(Window &window, Shaders &shaders) {
 void Game::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<MenuInputSystem>(dt);
+  systems.update<MenuAnimationSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
   // systems.update<GhostAnimationSystem>(dt);
   systems.update<GraphicsSystem>(dt);
   systems.update<PhysicsSystem>(dt);
   systems.update<CollisionSystem>(dt);
-  systems.update<MenuAnimationSystem>(dt);
-  systems.update<GraphicsSystem>(dt);
 }
 
 void Game::receive(const InitRoomMessage &initRoom) {

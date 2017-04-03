@@ -71,13 +71,13 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
       attack->isAttacking = !getNext(knightAnimation, graphics, dt, which);
     } else if (physics->velocity.x > 0) {
-      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
+      getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
     } else if (physics->velocity.x < 0) {
-      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
+      getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
     } else if (physics->velocity.y > 0) {
-      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
+      getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
     } else if (physics->velocity.y < 0) {
-      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
+      getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
     }
   }
   //engine->drop();
@@ -251,7 +251,6 @@ void CollisionSystem::update(entityx::EntityManager &es,
     for (entityx::Entity e2 : es.entities_with_components(body2)) {
       if (e2 != e1 && areColliding(*body1, *body2)) {
         glm::vec2 depth = depthOfCollision(*body1, *body2);
-        std::cout << "X: " << depth.x << " Y: " << depth.y << std::endl;
         resolveCollision(*body1, *pos, depth);
       }
     }

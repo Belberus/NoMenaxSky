@@ -7,7 +7,6 @@ int main() {
   Window window("No Menax Sky", 960, 540);
   Shaders shaders;
   Game game(window, shaders);
-  double t1_f = glfwGetTime();
   entityx::TimeDelta dt = 0;
   while (!window.isClosed()) {
     // TODO: mover calculo dt a la clase Window

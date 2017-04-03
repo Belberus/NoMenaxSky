@@ -27,6 +27,7 @@ Texture &Texture::operator=(const Texture &tex) {
   ch = tex.ch;
   width = tex.width;
   height = tex.height;
+  stbi_image_free(img);
   img = new unsigned char[tex.ch * tex.width * tex.height];
   std::copy(tex.img, tex.img + tex.ch * tex.width * tex.height, img);
   return *this;

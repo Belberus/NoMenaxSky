@@ -191,6 +191,9 @@ void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
   addEntityDeep(entities, glm::vec3(385, 100, 0));
   addEntityDeep(entities, glm::vec3(690, 250, 0));
   addEntityDeep(entities, glm::vec3(75, 250, 0));
+  addEntityGhost(entities, glm::vec3(385, 400, 0));
+  addEntityGhost(entities, glm::vec3(125, 40, 0));
+  addEntityGhost(entities, glm::vec3(560, 40, 0));
   addEntityKnight(entities, glm::vec3(475, 35, 0));
 }
 

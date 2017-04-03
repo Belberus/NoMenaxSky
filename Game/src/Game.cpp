@@ -1,8 +1,19 @@
 #include "Game.h"
 #include "EntitiesCreator.h"
 #include "Systems.h"
+#include <irrKlang.h>
+#include <stdio.h>
+
+using namespace irrklang;
+using namespace std;
+
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
+ISoundEngine* eng = createIrrKlangDevice();
 
 Game::Game(Window &window, Shaders &shaders) {
+  eng->setSoundVolume(0.25);
+  eng->play2D("../assets/media/intro.wav",true);
   events.subscribe<InitRoomMessage>(*this);
   systems.add<KnightAnimationSystem>();
   // systems.add<GhostAnimationSystem>();
@@ -30,5 +41,7 @@ void Game::update(entityx::TimeDelta dt) {
 
 void Game::receive(const InitRoomMessage &initRoom) {
   entities.reset();
+  eng->stopAllSounds();
+  eng->play2D("../assets/media/tune2.wav",true);
   EntitiesCreator::addEntityRoom1(entities);
 }

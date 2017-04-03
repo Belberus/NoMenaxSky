@@ -121,7 +121,7 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics_player;
   entityx::ComponentHandle<KnightAttack> attack;
   entityx::ComponentHandle<Position> position_player;
-  engine->setSoundVolume(0.25);
+  //engine->setSoundVolume(0.25);
 
   for (entityx::Entity e :
               es.entities_with_components(player, physics_player, attack, position_player)){

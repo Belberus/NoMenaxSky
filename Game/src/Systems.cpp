@@ -356,10 +356,8 @@ void DoorSystem::update(entityx::EntityManager &es,
 	for (entityx::Entity e1 : es.entities_with_components(body1, position, player, physics)) {
     	glm::vec2 v = centerOfTheBody(*body1);
     	for (entityx::Entity e2 : es.entities_with_components(door)) {
- 			if(v.x >= door->position.x && v.y >= door->position.y){
- 				std::cout<<"Estoy en la puerta"<< std::endl;
+ 			if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && v.y >= door->position.y){
  				if (door->numberOfRoom == 1) {
- 					std::cout<<"Es mi puerta"<< std::endl;
  					events.emit<GoToRoomMessage>(2);
  				}
  			}     
@@ -389,7 +387,6 @@ void MenuInputSystem::update(entityx::EntityManager &es,
   if(((currentSec%30)==1) || ((currentSec%30)==0)){
     onHold=false;
   }
-  std::cout << "Tiempo: " <<  currentSec%30 << "\n";
   for (entityx::Entity entity :
        es.entities_with_components(arrowMenu, position)) {
     if(!onHold){

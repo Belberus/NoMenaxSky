@@ -4,12 +4,12 @@
 #include <stdio.h>
 using namespace irrklang;
 
-void EntitiesCreator::addEntityKnight(entityx::EntityManager &entities) {
+void EntitiesCreator::addEntityKnight(entityx::EntityManager &entities, glm::vec3 position) {
   entityx::Entity player = entities.create();
   player.assign<Physics>(glm::vec2(0, 0));
-  player.assign<Position>(glm::vec3(300, 150, 0));
+  player.assign<Position>(position);
   player.assign<Player>();
-  player.assign<Body>(glm::vec2(300, 150), glm::vec2(40, 40));
+  player.assign<Body>(position, glm::vec2(40, 40));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
 
   std::vector<std::string> mov_right_str;
@@ -167,7 +167,16 @@ void EntitiesCreator::addEntityMenu(entityx::EntityManager &entities) {
   menuArrow.assign<ArrowMenu>(ArrowMenu::Option::JUGAR);
 }
 
-void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, glm::vec3 position){
+void EntitiesCreator::addEntityDoorBottom(entityx::EntityManager &entities, glm::vec3 position){
+	entityx::Entity puertaAbajo = entities.create();
+	puertaAbajo.assign<Position>(position);
+	puertaAbajo.assign<Door>(position, glm::vec2(100, 18), 2);
+	puertaAbajo.assign<Graphics>(
+      Texture("assets/escenario/habitacion/puerta_abajo.png"),
+      glm::vec2(100, 18));
+}
+
+void EntitiesCreator::addEntityDoorTop(entityx::EntityManager &entities, glm::vec3 position){
 	entityx::Entity door = entities.create();
 	door.assign<Position>(position);
 	door.assign<Door>(position, glm::vec2(40, 40), 1);
@@ -178,13 +187,11 @@ void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, glm::vec3 
 
 void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
   addEntityWalls(entities);
-  addEntityDeep(entities, glm::vec3(400, 100, 0));
-  //addEntityDoor(entities, glm::vec3(250, 482, 0));
-  //addEntityDoor(entities, glm::vec3(650, 482, 0));
-  addEntityKnight(entities);
-  //addEntityDeep(entities, glm::vec3(400, 160, 0));
-  //addEntityDeep(entities, glm::vec3(400, 220, 0));
-  //addEntityDeep(entities, glm::vec3(400, 280, 0));
+  addEntityDoorBottom(entities,glm::vec3(425, 0, 0));
+  addEntityDeep(entities, glm::vec3(385, 100, 0));
+  addEntityDeep(entities, glm::vec3(690, 250, 0));
+  addEntityDeep(entities, glm::vec3(75, 250, 0));
+  addEntityKnight(entities, glm::vec3(475, 35, 0));
 }
 
 void EntitiesCreator::addEntityWallsStarter(entityx::EntityManager &entities) {
@@ -201,11 +208,36 @@ void EntitiesCreator::addEntityWallsStarter(entityx::EntityManager &entities) {
   rightWall.assign<Body>(glm::vec2(710, 100), glm::vec2(40, 250));
   topWall.assign<Body>(glm::vec2(250, 300), glm::vec2(500, 40));
   bottomWall.assign<Body>(glm::vec2(250, 100), glm::vec2(500, 35));
+
+  entityx::Entity prision1 = entities.create();
+  entityx::Entity prision2 = entities.create();
+  entityx::Entity prision3 = entities.create();
+  entityx::Entity prision4 = entities.create();
+  prision1.assign<Position>(glm::vec3(290, 150, 0));
+  prision1.assign<Body>(glm::vec2(290,220),glm::vec2(70,60));
+  prision1.assign<Graphics>(
+      Texture("assets/escenario/habitacion/prision.png"),
+      glm::vec2(75, 200));
+  prision2.assign<Position>(glm::vec3(360, 150, 0));
+  prision2.assign<Body>(glm::vec2(360,220),glm::vec2(70,60));
+  prision2.assign<Graphics>(
+      Texture("assets/escenario/habitacion/prision.png"),
+      glm::vec2(75, 200));
+  prision3.assign<Position>(glm::vec3(570, 150, 0));
+  prision3.assign<Body>(glm::vec2(570,220),glm::vec2(70,60));
+  prision3.assign<Graphics>(
+      Texture("assets/escenario/habitacion/prision.png"),
+      glm::vec2(75, 200));
+  prision4.assign<Position>(glm::vec3(640, 150, 0));
+  prision4.assign<Body>(glm::vec2(640,220),glm::vec2(70,60));
+  prision4.assign<Graphics>(
+      Texture("assets/escenario/habitacion/prision.png"),
+      glm::vec2(75, 200));
 }
 
 void EntitiesCreator::addEntityStarterRoom1(entityx::EntityManager &entities) {
   addEntityWallsStarter(entities);
-  addEntityDoor(entities,glm::vec3(460,267,0));
-  addEntityKnight(entities);
+  addEntityDoorTop(entities,glm::vec3(480,267,0));
+  addEntityKnight(entities, glm::vec3(300, 150, 0));
 }
 

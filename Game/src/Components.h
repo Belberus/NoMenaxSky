@@ -62,10 +62,6 @@ struct Door {
   	Door(glm::vec2 position,glm::vec2 length, int numberOfRoom);
 };
 
-struct MenuOption {};
-
-struct MenuTitle {};
-
 struct Player {};
 
 struct Ghost {};

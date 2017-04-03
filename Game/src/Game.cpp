@@ -51,10 +51,7 @@ void Game::receive(const InitRoomMessage &initRoom) {
 }
 
 void Game::receive(const GoToRoomMessage &goToRoom) {
-	std::cout<<"Estoy en la receive"<< std::endl;
   entities.reset();
-  eng->stopAllSounds();
-  eng->play2D("assets/media/tune2.wav",true);
   if (goToRoom.room == 2) {
 	EntitiesCreator::addEntityRoom1(entities);
   }

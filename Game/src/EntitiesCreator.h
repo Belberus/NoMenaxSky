@@ -6,7 +6,7 @@
 
 class EntitiesCreator {
 public:
-  static void addEntityKnight(entityx::EntityManager &entities);
+  static void addEntityKnight(entityx::EntityManager &entities, glm::vec3 position);
 
   static void addEntityDeep(entityx::EntityManager &entities,
                             glm::vec3 position);
@@ -24,6 +24,8 @@ public:
 
   static void addEntityWallsStarter(entityx::EntityManager &entities);
 
-  static void addEntityDoor(entityx::EntityManager &entities,
+  static void addEntityDoorTop(entityx::EntityManager &entities,
+                             glm::vec3 position);
+  static void addEntityDoorBottom(entityx::EntityManager &entities,
                              glm::vec3 position);
 };

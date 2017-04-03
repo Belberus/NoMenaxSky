@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <time.h>
 
+
 using namespace irrklang;
 using namespace std;
 
@@ -329,6 +330,35 @@ void MenuAnimationSystem::update(entityx::EntityManager &es,
     getNext(menuAnimation, graphics, dt, menuAnimation->menu_animation);
   }
 }
+
+DoorSystem::DoorSystem(Window &window) : window(window) {}
+void DoorSystem::update(entityx::EntityManager &es,
+                               entityx::EventManager &events,
+                               entityx::TimeDelta dt) {
+	entityx::ComponentHandle<Body> body1;
+  	entityx::ComponentHandle<Door> door;
+  	entityx::ComponentHandle<Player> player;
+  	entityx::ComponentHandle<Position> position;
+  	entityx::ComponentHandle<Physics> physics;
+
+	for (entityx::Entity e1 : es.entities_with_components(body1, position, player, physics)) {
+    	glm::vec2 v = centerOfTheBody(*body1);
+    	for (entityx::Entity e2 : es.entities_with_components(door)) {
+ 			if(v.x >= door->position.x && v.y >= door->position.y){
+ 				std::cout<<"Estoy en la puerta"<< std::endl;
+ 				if (door->numberOfRoom == 1) {
+ 					std::cout<<"Es mi puerta"<< std::endl;
+ 					events.emit<GoToRoomMessage>(2);
+ 				}
+ 			}     
+    	}
+  	}
+}
+
+glm::vec2 DoorSystem::centerOfTheBody(Body &body){
+	return glm::vec2(body.position.x + (body.length.x / 2), body.position.y + (body.length.y /2));
+}
+
 MenuInputSystem::MenuInputSystem(Window &window) : window(window) {}
 
 
@@ -346,7 +376,6 @@ void MenuInputSystem::update(entityx::EntityManager &es,
        es.entities_with_components(arrowMenu, position)) {
     if(conteo==25){
       if (window.isKeyPressed(GLFW_KEY_UP)) {
-            std::cout<<"Estoy aqui UP"<<std::endl;
             switch (arrowMenu->option){
               case ArrowMenu::Option::JUGAR:
                   break;
@@ -361,7 +390,6 @@ void MenuInputSystem::update(entityx::EntityManager &es,
             }
       }
       if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            std::cout<<"Estoy aqui DOWN"<<std::endl;
             switch (arrowMenu->option){
               case ArrowMenu::Option::JUGAR:
                   position->position = pos2;

@@ -9,4 +9,5 @@ public:
   Game(Window &window, Shaders &shaders);
   void update(entityx::TimeDelta dt);
   void receive(const InitRoomMessage &quitGame);
+  void receive(const GoToRoomMessage &goToRoom);
 };

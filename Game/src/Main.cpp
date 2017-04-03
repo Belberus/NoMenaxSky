@@ -1,8 +1,6 @@
 #include "Game.h"
 #include <GLFW/glfw3.h>
 
-#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
-
 int main() {
   Window window("No Menax Sky", 960, 540);
   Shaders shaders;

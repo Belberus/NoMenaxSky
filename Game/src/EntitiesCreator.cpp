@@ -7,9 +7,9 @@ using namespace irrklang;
 void EntitiesCreator::addEntityKnight(entityx::EntityManager &entities) {
   entityx::Entity player = entities.create();
   player.assign<Physics>(glm::vec2(0, 0));
-  player.assign<Position>(glm::vec3(100, 100, 0));
+  player.assign<Position>(glm::vec3(300, 150, 0));
   player.assign<Player>();
-  player.assign<Body>(glm::vec2(100, 100), glm::vec2(40, 40));
+  player.assign<Body>(glm::vec2(300, 150), glm::vec2(40, 40));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
 
   std::vector<std::string> mov_right_str;
@@ -65,9 +65,9 @@ void EntitiesCreator::addEntityDeep(entityx::EntityManager &entities,
                                     glm::vec3 position) {
   entityx::Entity deep = entities.create();
   deep.assign<Position>(position);
-  deep.assign<Body>(position, glm::vec2(40, 40));
+  deep.assign<Body>(position, glm::vec2(200, 200));
   deep.assign<Graphics>(Texture("assets/elementos_mapa/agujero1_20x20.png"),
-                        glm::vec2(40, 40));
+                        glm::vec2(200, 200));
 }
 
 void EntitiesCreator::addEntityWalls(entityx::EntityManager &entities) {
@@ -167,11 +167,45 @@ void EntitiesCreator::addEntityMenu(entityx::EntityManager &entities) {
   menuArrow.assign<ArrowMenu>(ArrowMenu::Option::JUGAR);
 }
 
+void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, glm::vec3 position){
+	entityx::Entity door = entities.create();
+	door.assign<Position>(position);
+	door.assign<Door>(position, glm::vec2(40, 40), 1);
+	door.assign<Graphics>(
+      Texture("assets/escenario/habitacion/puerta2_1_16x14.png"),
+      glm::vec2(40, 40));
+}
+
 void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
   addEntityWalls(entities);
-  addEntityKnight(entities);
   addEntityDeep(entities, glm::vec3(400, 100, 0));
-  addEntityDeep(entities, glm::vec3(400, 160, 0));
-  addEntityDeep(entities, glm::vec3(400, 220, 0));
-  addEntityDeep(entities, glm::vec3(400, 280, 0));
+  //addEntityDoor(entities, glm::vec3(250, 482, 0));
+  //addEntityDoor(entities, glm::vec3(650, 482, 0));
+  addEntityKnight(entities);
+  //addEntityDeep(entities, glm::vec3(400, 160, 0));
+  //addEntityDeep(entities, glm::vec3(400, 220, 0));
+  //addEntityDeep(entities, glm::vec3(400, 280, 0));
 }
+
+void EntitiesCreator::addEntityWallsStarter(entityx::EntityManager &entities) {
+  entityx::Entity starterRoom = entities.create();
+  starterRoom.assign<Position>(glm::vec3(250, 100, 0));
+  starterRoom.assign<Graphics>(
+      Texture("assets/escenario/habitacion/starterRoom.png"),
+      glm::vec2(500, 250));
+  entityx::Entity leftWall = entities.create();
+  entityx::Entity rightWall = entities.create();
+  entityx::Entity topWall = entities.create();
+  entityx::Entity bottomWall = entities.create();
+  leftWall.assign<Body>(glm::vec2(250, 100), glm::vec2(40, 250));
+  rightWall.assign<Body>(glm::vec2(710, 100), glm::vec2(40, 250));
+  topWall.assign<Body>(glm::vec2(250, 300), glm::vec2(500, 40));
+  bottomWall.assign<Body>(glm::vec2(250, 100), glm::vec2(500, 35));
+}
+
+void EntitiesCreator::addEntityStarterRoom1(entityx::EntityManager &entities) {
+  addEntityWallsStarter(entities);
+  addEntityDoor(entities,glm::vec3(460,267,0));
+  addEntityKnight(entities);
+}
+

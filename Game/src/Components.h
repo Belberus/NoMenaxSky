@@ -54,6 +54,14 @@ struct ArrowMenu {
   ArrowMenu(Option option);
 };
 
+struct Door {
+	glm::vec2 position;
+  	glm::vec2 length;
+  	int numberOfRoom;
+
+  	Door(glm::vec2 position,glm::vec2 length, int numberOfRoom);
+};
+
 struct MenuOption {};
 
 struct MenuTitle {};

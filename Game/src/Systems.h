@@ -26,6 +26,16 @@ public:
               entityx::TimeDelta dt) override;
 };
 
+class DoorSystem : public entityx::System<DoorSystem> {
+	Window &window;
+	
+public:
+	DoorSystem(Window &window);
+	glm::vec2 centerOfTheBody(Body &body);
+  	void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 class GhostAnimationSystem : public entityx::System<GhostAnimationSystem> {
   bool getNext(entityx::ComponentHandle<GhostAnimation> ghostAnimation,
                entityx::ComponentHandle<Graphics> graphics,

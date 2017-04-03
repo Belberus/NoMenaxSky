@@ -19,4 +19,11 @@ public:
                              glm::vec3 position);
 
   static void addEntityMenu(entityx::EntityManager &entities);
+
+  static void addEntityStarterRoom1(entityx::EntityManager &entities);
+
+  static void addEntityWallsStarter(entityx::EntityManager &entities);
+
+  static void addEntityDoor(entityx::EntityManager &entities,
+                             glm::vec3 position);
 };

@@ -7,6 +7,7 @@
 #include <irrKlang.h>
 #include <stdio.h>
 #include <time.h>
+#include <GLFW/glfw3.h>
 
 #define SPEED_GHOST 150 // pixels por segundo
 #define SPEED 300
@@ -342,6 +343,8 @@ void MenuAnimationSystem::update(entityx::EntityManager &es,
 }
 MenuInputSystem::MenuInputSystem(Window &window) : window(window) {}
 
+int lastSec = 0;
+bool onHold = false;
 void MenuInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
@@ -350,50 +353,59 @@ void MenuInputSystem::update(entityx::EntityManager &es,
   glm::vec3 pos1(325, 247, 0);
   glm::vec3 pos2(325, 157, 0);
   glm::vec3 pos3(325, 65, 0);
-
+  int currentSec = (int)(glfwGetTime()*100.0);
+  //double currentS = glfwGetTime()*100.0;
+  //int test =  ((int)currentS*100) - currentSec*100;
+  if(((currentSec%30)==1) || ((currentSec%30)==0)){
+    onHold=false;
+  }
+  std::cout << "Tiempo: " <<  currentSec%30 << "\n";
   for (entityx::Entity entity :
        es.entities_with_components(arrowMenu, position)) {
-    if (window.isKeyPressed(GLFW_KEY_UP)) {
-          std::cout<<"Estoy aqui UP"<<std::endl;
-          switch (arrowMenu->option){
-            case ArrowMenu::Option::JUGAR:
-                break;
-            case ArrowMenu::Option::OPCIONES:
-                position->position = pos1;
-                arrowMenu->option = ArrowMenu::Option::JUGAR;
-                break;
-            case ArrowMenu::Option::SALIR:
-                position->position = pos2;
-                arrowMenu->option = ArrowMenu::Option::OPCIONES;
-                break;
-          } 
-    }
-    if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-          std::cout<<"Estoy aqui DOWN"<<std::endl;
-          switch (arrowMenu->option){
-            case ArrowMenu::Option::JUGAR:
-                position->position = pos2;
-                arrowMenu->option = ArrowMenu::Option::OPCIONES;
-                break;
-            case ArrowMenu::Option::OPCIONES:
-                position->position = pos3;
-                arrowMenu->option = ArrowMenu::Option::SALIR;
-                break;
-            case ArrowMenu::Option::SALIR:
-                break;
-          } 
-    }
-    if (window.isKeyPressed(GLFW_KEY_ENTER)) {
-          switch (arrowMenu->option){
-            case ArrowMenu::Option::JUGAR:
-                events.emit<InitRoomMessage>();
-                break;
-            case ArrowMenu::Option::OPCIONES:
-                break;
-            case ArrowMenu::Option::SALIR:
-                exit(0);
-                break;
-          } 
+    if(!onHold){
+      onHold=true;
+      if (window.isKeyPressed(GLFW_KEY_UP)) {
+            std::cout<<"Estoy aqui UP"<<std::endl;
+            switch (arrowMenu->option){
+              case ArrowMenu::Option::JUGAR:
+                  break;
+              case ArrowMenu::Option::OPCIONES:
+                    position->position = pos1;
+                    arrowMenu->option = ArrowMenu::Option::JUGAR;
+                    break;                  
+              case ArrowMenu::Option::SALIR:
+                  position->position = pos2;
+                  arrowMenu->option = ArrowMenu::Option::OPCIONES;
+                  break;
+            } 
+      }
+      if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+            std::cout<<"Estoy aqui DOWN"<<std::endl;
+            switch (arrowMenu->option){
+              case ArrowMenu::Option::JUGAR:
+                  position->position = pos2;
+                  arrowMenu->option = ArrowMenu::Option::OPCIONES;
+                  break;
+              case ArrowMenu::Option::OPCIONES:
+                  position->position = pos3;
+                  arrowMenu->option = ArrowMenu::Option::SALIR;
+                  break;
+              case ArrowMenu::Option::SALIR:
+                  break;
+            } 
+      }
+      if (window.isKeyPressed(GLFW_KEY_ENTER)) {
+            switch (arrowMenu->option){
+              case ArrowMenu::Option::JUGAR:
+                  events.emit<InitRoomMessage>();
+                  break;
+              case ArrowMenu::Option::OPCIONES:
+                  break;
+              case ArrowMenu::Option::SALIR:
+                  exit(0);
+                  break;
+            } 
+      }
     }
   
   }
@@ -451,7 +463,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       }
       counter2++;      
@@ -460,7 +472,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       } 
       counter2++;
@@ -469,7 +481,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       }
       counter2++;
@@ -478,7 +490,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       }
       counter2++;

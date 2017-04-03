@@ -174,4 +174,5 @@ void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
   addEntityDeep(entities, glm::vec3(400, 160, 0));
   addEntityDeep(entities, glm::vec3(400, 220, 0));
   addEntityDeep(entities, glm::vec3(400, 280, 0));
+  addEntityGhost(entities, glm::vec3(700, 250, 0));
 }

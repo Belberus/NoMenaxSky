@@ -1,10 +1,10 @@
-#include "Room.h"
+#include "EntitiesCreator.h"
 #include "Systems.h"
 #include <irrKlang.h>
 #include <stdio.h>
 using namespace irrklang;
 
-void Room::addEntityKnight(entityx::EntityManager &entities) {
+void EntitiesCreator::addEntityKnight(entityx::EntityManager &entities) {
   entityx::Entity player = entities.create();
   player.assign<Physics>(glm::vec2(0, 0));
   player.assign<Position>(glm::vec3(100, 100, 0));
@@ -61,15 +61,16 @@ void Room::addEntityKnight(entityx::EntityManager &entities) {
                           glm::vec2(40, 40));
 }
 
-void Room::addEntityDeep(entityx::EntityManager &entities, glm::vec3 position, glm::vec2 bodyPosition) {
+void EntitiesCreator::addEntityDeep(entityx::EntityManager &entities,
+                                    glm::vec3 position) {
   entityx::Entity deep = entities.create();
   deep.assign<Position>(position);
-  deep.assign<Body>(bodyPosition, glm::vec2(40, 40));
+  deep.assign<Body>(position, glm::vec2(40, 40));
   deep.assign<Graphics>(Texture("assets/elementos_mapa/agujero1_20x20.png"),
-                          glm::vec2(40, 40));
+                        glm::vec2(40, 40));
 }
 
-void Room::addEntityRoom(entityx::EntityManager &entities) {
+void EntitiesCreator::addEntityWalls(entityx::EntityManager &entities) {
   entityx::Entity room = entities.create();
   room.assign<Position>(glm::vec3(0, 0, 0));
   room.assign<Graphics>(
@@ -85,14 +86,14 @@ void Room::addEntityRoom(entityx::EntityManager &entities) {
   bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
 }
 
-void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
-                          glm::vec2 body) {
+void EntitiesCreator::addEntityGhost(entityx::EntityManager &entities,
+                                     glm::vec3 position) {
   // Inicializa Ghost y da valores iniciales a las variables
   entityx::Entity ghost = entities.create();
-  ghost.assign<Position>(position);            // posicion inicial
-  ghost.assign<Body>(body, glm::vec2(30, 30)); // posicion del body y tamaño
-  ghost.assign<Health>(100);                   // vida
-  ghost.assign<Physics>(glm::vec2(0, 0));      // físicas
+  ghost.assign<Position>(position);                // posicion inicial
+  ghost.assign<Body>(position, glm::vec2(40, 40)); // posicion del body y tamaño
+  ghost.assign<Health>(100);                       // vida
+  ghost.assign<Physics>(glm::vec2(0, 0));          // físicas
   ghost.assign<Ghost>();
 
   std::vector<std::string> mov_right_str;
@@ -120,7 +121,7 @@ void Room::addEntityGhost(entityx::EntityManager &entities, glm::vec3 position,
                          glm::vec2(40, 40));
 }
 
-void Room::addEntityMenu(entityx::EntityManager &entities) {
+void EntitiesCreator::addEntityMenu(entityx::EntityManager &entities) {
   entityx::Entity menu = entities.create();
   menu.assign<Position>(glm::vec3(0, 0, 0));
 
@@ -131,101 +132,46 @@ void Room::addEntityMenu(entityx::EntityManager &entities) {
   menu_animation.push_back("assets/menu/gif/gif1.png");
   menu.assign<MenuAnimation>(
       std::shared_ptr<AnimationClip>(new AnimationClip(menu_animation, 50)));
-  menu.assign<Graphics>(
-      Texture("assets/menu/gif/gif1.png"),
-      glm::vec2(960, 540));
+  menu.assign<Graphics>(Texture("assets/menu/gif/gif1.png"),
+                        glm::vec2(960, 540));
 
   entityx::Entity titulo = entities.create();
   titulo.assign<Position>(glm::vec3(130, 375, 0));
-  titulo.assign<Graphics>(
-      Texture("assets/menu/titulo.png"),
-      glm::vec2(700, 150));
+  titulo.assign<Graphics>(Texture("assets/menu/titulo.png"),
+                          glm::vec2(700, 150));
 
   entityx::Entity option1 = entities.create();
   option1.assign<Position>(glm::vec3(220, 240, 0));
-  option1.assign<Graphics>(
-      Texture("assets/menu/jugar.png"),
-      glm::vec2(500, 50));
+  option1.assign<Graphics>(Texture("assets/menu/jugar.png"),
+                           glm::vec2(500, 50));
 
   entityx::Entity option2 = entities.create();
   option2.assign<Position>(glm::vec3(220, 150, 0));
-  option2.assign<Graphics>(
-      Texture("assets/menu/opciones.png"),
-      glm::vec2(500, 50));
+  option2.assign<Graphics>(Texture("assets/menu/opciones.png"),
+                           glm::vec2(500, 50));
 
   entityx::Entity option3 = entities.create();
   option3.assign<Position>(glm::vec3(210, 50, 0));
-  option3.assign<Graphics>(
-      Texture("assets/menu/salir.png"),
-      glm::vec2(520, 70));
+  option3.assign<Graphics>(Texture("assets/menu/salir.png"),
+                           glm::vec2(520, 70));
 
   entityx::Entity logo = entities.create();
   logo.assign<Position>(glm::vec3(850, 10, 0));
-  logo.assign<Graphics>(
-      Texture("assets/menu/patan_games.png"),
-      glm::vec2(100, 100));
+  logo.assign<Graphics>(Texture("assets/menu/patan_games.png"),
+                        glm::vec2(100, 100));
 
   entityx::Entity menuArrow = entities.create();
   menuArrow.assign<Position>(glm::vec3(325, 247, 0));
-  menuArrow.assign<Graphics>(
-      Texture("assets/menu/ppc_front.png"),
-      glm::vec2(40, 40));
+  menuArrow.assign<Graphics>(Texture("assets/menu/ppc_front.png"),
+                             glm::vec2(40, 40));
   menuArrow.assign<ArrowMenu>(ArrowMenu::Option::JUGAR);
-
 }
 
-void Room::addEntityRoom(Window &window, Shaders &shaders){
-  ISoundEngine* engine = createIrrKlangDevice();
-  engine->setSoundVolume(0.25);
-  engine->play2D("assets/media/tune2.wav",true);
-
-  addEntityRoom(entities);
-  addEntityGhost(entities, glm::vec3(165, 350, 0), glm::vec2(175, 360));
-  addEntityGhost(entities, glm::vec3(265, 250, 0), glm::vec2(275, 260));
-  addEntityGhost(entities, glm::vec3(240, 350, 0), glm::vec2(250, 360));
-  addEntityGhost(entities, glm::vec3(280, 250, 0), glm::vec2(290, 260));
-  addEntityGhost(entities, glm::vec3(165, 300, 0), glm::vec2(175, 310));
-  addEntityGhost(entities, glm::vec3(265, 100, 0), glm::vec2(275, 110));
-  addEntityGhost(entities, glm::vec3(180, 200, 0), glm::vec2(190, 210));
-  addEntityGhost(entities, glm::vec3(140, 120, 0), glm::vec2(150, 130));
-  addEntityGhost(entities, glm::vec3(250, 350, 0), glm::vec2(260, 360));
-  addEntityGhost(entities, glm::vec3(265, 300, 0), glm::vec2(275, 310));
-
-  addEntityDeep(entities,glm::vec3(150,150,0),glm::vec2(150,150));
-  addEntityDeep(entities,glm::vec3(150,191,0),glm::vec2(150,200));
-  addEntityDeep(entities,glm::vec3(150,231,0),glm::vec2(150,250));
-  addEntityDeep(entities,glm::vec3(150,271,0),glm::vec2(150,300));
-  addEntityDeep(entities,glm::vec3(150,311,0),glm::vec2(150,350));
-
+void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
+  addEntityWalls(entities);
   addEntityKnight(entities);
-
+  addEntityDeep(entities, glm::vec3(400, 100, 0));
+  addEntityDeep(entities, glm::vec3(400, 160, 0));
+  addEntityDeep(entities, glm::vec3(400, 220, 0));
+  addEntityDeep(entities, glm::vec3(400, 280, 0));
 }
-
-Room::Room(Window &window, Shaders &shaders) {
-	addEntityMenu(entities);
-
-  systems.add<GraphicsSystem>(shaders);
-  systems.add<KnightAnimationSystem>();
-  //systems.add<GhostAnimationSystem>();
-  systems.add<PlayerInputSystem>(window);
-  systems.add<MenuInputSystem>(window);
-  systems.add<PhysicsSystem>();
-  systems.add<CollisionSystem>();
-  systems.add<MenuAnimationSystem>();
-  systems.configure();
-}
-
-void Room::update(entityx::TimeDelta dt) {
-  systems.update<PlayerInputSystem>(dt);
-  systems.update<MenuInputSystem>(dt);
-  systems.update<KnightAnimationSystem>(dt);
-  //systems.update<GhostAnimationSystem>(dt);
-  systems.update<GraphicsSystem>(dt);
-  systems.update<PhysicsSystem>(dt);
-  systems.update<CollisionSystem>(dt);
-  systems.update<MenuAnimationSystem>(dt);
-  systems.update<GraphicsSystem>(dt);
-
-
-}
-

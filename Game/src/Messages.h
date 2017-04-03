@@ -14,5 +14,8 @@ struct DeathMessage {
 
 struct AttackMessage {
   entityx::Entity entity;
-  AttackMessage(entityx::Entity e, ISoundEngine* engine);
+  AttackMessage(entityx::Entity e, ISoundEngine *engine);
 };
+
+// TODO: de momento vacio, añadir luego los miembros necesarios
+struct InitRoomMessage {};

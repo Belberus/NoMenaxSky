@@ -1,10 +1,12 @@
 #define _USE_MATH_DEFINES
+#include <GL/gl3w.h>
 #include "Systems.h"
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "../lib/irrKlang/include/irrKlang.h"
+#include <irrKlang.h>
 #include <stdio.h>
+#include <time.h>
 
 using namespace irrklang;
 using namespace std;
@@ -376,7 +378,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
     if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_ENTER) == GLFW_PRESS) {
           switch (arrowMenu->option){
             case ArrowMenu::Option::JUGAR:
-
+                events.emit<InitRoomMessage>();
                 break;
             case ArrowMenu::Option::OPCIONES:
                 break;

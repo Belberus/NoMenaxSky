@@ -331,6 +331,8 @@ void MenuAnimationSystem::update(entityx::EntityManager &es,
 }
 MenuInputSystem::MenuInputSystem(Window &window) : window(window) {}
 
+
+int conteo = 25;
 void MenuInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
@@ -342,49 +344,52 @@ void MenuInputSystem::update(entityx::EntityManager &es,
 
   for (entityx::Entity entity :
        es.entities_with_components(arrowMenu, position)) {
-    if (window.isKeyPressed(GLFW_KEY_UP)) {
-          std::cout<<"Estoy aqui UP"<<std::endl;
-          switch (arrowMenu->option){
-            case ArrowMenu::Option::JUGAR:
-                break;
-            case ArrowMenu::Option::OPCIONES:
-                position->position = pos1;
-                arrowMenu->option = ArrowMenu::Option::JUGAR;
-                break;
-            case ArrowMenu::Option::SALIR:
-                position->position = pos2;
-                arrowMenu->option = ArrowMenu::Option::OPCIONES;
-                break;
-          } 
+    if(conteo==25){
+      if (window.isKeyPressed(GLFW_KEY_UP)) {
+            std::cout<<"Estoy aqui UP"<<std::endl;
+            switch (arrowMenu->option){
+              case ArrowMenu::Option::JUGAR:
+                  break;
+              case ArrowMenu::Option::OPCIONES:
+                  position->position = pos1;
+                  arrowMenu->option = ArrowMenu::Option::JUGAR;
+                  break;
+              case ArrowMenu::Option::SALIR:
+                  position->position = pos2;
+                  arrowMenu->option = ArrowMenu::Option::OPCIONES;
+                  break;
+            }
+      }
+      if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+            std::cout<<"Estoy aqui DOWN"<<std::endl;
+            switch (arrowMenu->option){
+              case ArrowMenu::Option::JUGAR:
+                  position->position = pos2;
+                  arrowMenu->option = ArrowMenu::Option::OPCIONES;
+                  break;
+              case ArrowMenu::Option::OPCIONES:
+                  position->position = pos3;
+                  arrowMenu->option = ArrowMenu::Option::SALIR;
+                  break;
+              case ArrowMenu::Option::SALIR:
+                  break;
+            } 
+      }
+      if (window.isKeyPressed(GLFW_KEY_ENTER)) {
+            switch (arrowMenu->option){
+              case ArrowMenu::Option::JUGAR:
+                  events.emit<InitRoomMessage>();
+                  break;
+              case ArrowMenu::Option::OPCIONES:
+                  break;
+              case ArrowMenu::Option::SALIR:
+                  exit(0);
+                  break;
+            } 
+      }
+      conteo=0;
     }
-    if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-          std::cout<<"Estoy aqui DOWN"<<std::endl;
-          switch (arrowMenu->option){
-            case ArrowMenu::Option::JUGAR:
-                position->position = pos2;
-                arrowMenu->option = ArrowMenu::Option::OPCIONES;
-                break;
-            case ArrowMenu::Option::OPCIONES:
-                position->position = pos3;
-                arrowMenu->option = ArrowMenu::Option::SALIR;
-                break;
-            case ArrowMenu::Option::SALIR:
-                break;
-          } 
-    }
-    if (window.isKeyPressed(GLFW_KEY_ENTER)) {
-          switch (arrowMenu->option){
-            case ArrowMenu::Option::JUGAR:
-                events.emit<InitRoomMessage>();
-                break;
-            case ArrowMenu::Option::OPCIONES:
-                break;
-            case ArrowMenu::Option::SALIR:
-                exit(0);
-                break;
-          } 
-    }
-  
+  conteo++;
   }
 }
 

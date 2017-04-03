@@ -446,7 +446,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::UP;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       }
       counter2++;      
@@ -455,7 +455,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::DOWN;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       } 
       counter2++;
@@ -464,7 +464,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::LEFT;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       }
       counter2++;
@@ -473,7 +473,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       attack->orientation = KnightAttack::Orientation::RIGHT;
       attack->isAttacking = true;
       if(counter2 == 15){
-        engine->play2D("assets/media/fx/sword_slice.wav");
+        engine->play2D("assets/media/fx/attack.wav");
         counter2=0;
       }
       counter2++;

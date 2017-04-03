@@ -7,6 +7,10 @@
 #include <irrKlang.h>
 #include <stdio.h>
 #include <time.h>
+#include <GLFW/glfw3.h>
+
+#define SPEED_GHOST 150 // pixels por segundo
+#define SPEED 300
 
 
 using namespace irrklang;
@@ -15,6 +19,8 @@ using namespace std;
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 ISoundEngine* engine = createIrrKlangDevice();
+
+
 
 
 bool KnightAnimationSystem::getNext(
@@ -72,13 +78,13 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
       attack->isAttacking = !getNext(knightAnimation, graphics, dt, which);
     } else if (physics->velocity.x > 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_right);
     } else if (physics->velocity.x < 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_left);
     } else if (physics->velocity.y > 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_top);
     } else if (physics->velocity.y < 0) {
-      getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
+      !getNext(knightAnimation, graphics, dt, knightAnimation->mov_down);
     }
   }
   //engine->drop();
@@ -115,8 +121,6 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   /* initialize random seed: */
   srand (time(NULL));
 
-  CollisionSystem colision;
-
    // Buscamos la entidad del jugador, en función de su posición moveremos al fantasma
   entityx::ComponentHandle<Player> player;
   entityx::ComponentHandle<Physics> physics_player;
@@ -137,57 +141,23 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Body> body_ghost;
   entityx::ComponentHandle<Body> body;
 
-#define SPEED_GHOST 50 // pixels por segundo
   for (entityx::Entity e1 :
        es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost, body_ghost)) {
     glm::vec2 v;
     for (entityx::Entity e2: 
            es.entities_with_components(body)){
-      if (e2 != e1 && colision.areColliding(*body_ghost, *body)
-            && body->length.x == 40 && body->length.y == 40){ // si es 40x40, es obstáculo hay que redireccionarlo
-        
         if (position_player->position.y > position_ghost->position.y) {
-          if (body_ghost->position.y + body_ghost->length.y == body->position.y){ // me choco con un objeto encima mio
-            v.x = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos a izquierda o derecha
-          } else {
-            v.y += SPEED_GHOST;
-          }
+          v.y = SPEED_GHOST;
         }
         if (position_player->position.y  < position_ghost->position.y ) {
-          if (body_ghost->position.y == body->position.y + body->length.y){ // me choco con un objeto por debajo
-            v.x = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos a izquierda o derecha
-          } else {
-            v.y += -SPEED_GHOST;
-          }
+          v.y = -SPEED_GHOST;
         }
         if (position_player->position.x > position_ghost->position.x) {
-          if (body_ghost->position.x + body_ghost->length.x == body->position.x){ // me choco con un objeto a la derecha
-            v.y = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos arriba o abajo
-          } else {
-            v.x += SPEED_GHOST;
-          }
+          v.x = SPEED_GHOST;
         }
         if (position_player->position.x < position_ghost->position.x) {
-          if (body_ghost->position.x == body->position.x + body->length.x){ // me choco con un objeto a la izquierda
-            v.y = pow(-1,rand()%2 + 1) * SPEED_GHOST; // aleatoriamente resolvemos irnos arriba o abajo
-          } else {
-            v.x += -SPEED_GHOST;
-          }
-        } 
-      } else {
-        if (position_player->position.y > position_ghost->position.y) {
-          v.y += SPEED_GHOST;
+          v.x = -SPEED_GHOST;
         }
-        if (position_player->position.y  < position_ghost->position.y ) {
-          v.y += -SPEED_GHOST;
-        }
-        if (position_player->position.x > position_ghost->position.x) {
-          v.x += SPEED_GHOST;
-        }
-        if (position_player->position.x < position_ghost->position.x) {
-          v.x += -SPEED_GHOST;
-        }
-      }/* if */
     }/* for */
     physics_ghost->velocity = decompose(v);
 
@@ -199,7 +169,7 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   }
 }
 
-bool CollisionSystem::areColliding(Body const &body1, Body const &body2) {
+bool areColliding(Body const &body1, Body const &body2) {
   if (body1.position.x < body2.position.x + body2.length.x &&
       body1.position.x + body1.length.x > body2.position.x &&
       body1.position.y < body2.position.y + body2.length.y &&
@@ -210,7 +180,7 @@ bool CollisionSystem::areColliding(Body const &body1, Body const &body2) {
   }
 }
 
-glm::vec2 CollisionSystem::depthOfCollision(Body const &body1,
+glm::vec2 depthOfCollision(Body const &body1,
                                             Body const &body2) {
   double depthX = 0;
   double depthY = 0;
@@ -228,35 +198,77 @@ glm::vec2 CollisionSystem::depthOfCollision(Body const &body1,
 }
 
 // FIXME: arreglar la resolucion de colisiones en general
-void CollisionSystem::resolveCollision(Body &body, Position &pos,
+void resolveCollision(Body &body, Position &pos,
                                        glm::vec2 const &depth) {
-  if (std::abs(depth.x) <= std::abs(depth.y)) {
-    body.position.x += depth.x;
-    pos.position.x += depth.x;
-  }
-  else {
-    body.position.y += depth.y;
-    pos.position.y += depth.y;
-  }
+  
+    if (std::abs(depth.x) <= std::abs(depth.y)) {
+        body.position.x += depth.x;
+        pos.position.x += depth.x;
+    }
+    else {
+        body.position.y += depth.y;
+        pos.position.y += depth.y;
+    }
 }
 
+void resolveCollisionGhostKnight(Body &body1, Body &body2, 
+              Position &pos1, Position &pos2, glm::vec2 const &depth){
+  if (std::abs(depth.x) <= std::abs(depth.y)) { // se chocan en el eje x, al empujarte los fantasmas, el fantasma nunca llegara a estar entre el caballero y la pared de la izquierda
+    if (20 + body2.length.x < body2.position.x + body2.length.x < 940 - body2.length.x){ // el caballero cabe entre la pared y el fantasma
+        body1.position.x += depth.x;
+        pos1.position.x += depth.x;
+    } 
+  } else {
+    if (20 + body2.length.y < body2.position.y + body2.length.y < 520 - body2.length.y){
+      body1.position.y += depth.y;
+      pos1.position.y += depth.y;
+    }
+  }
+
+
+}
+
+// Resolver colisiones del guerrero con otras cosas
 void CollisionSystem::update(entityx::EntityManager &es,
                              entityx::EventManager &events,
                              entityx::TimeDelta dt) {
   entityx::ComponentHandle<Body> body1;
   entityx::ComponentHandle<Body> body2;
   entityx::ComponentHandle<Position> pos;
+  entityx::ComponentHandle<KnightAnimation> kanim;
   entityx::ComponentHandle<Physics> phy;
 
-  for (entityx::Entity e1 : es.entities_with_components(body1, pos, phy)) {
-    for (entityx::Entity e2 : es.entities_with_components(body2)) {
-      if (e2 != e1 && areColliding(*body1, *body2)) {
+  for (entityx::Entity e1 : es.entities_with_components(body1, pos, phy, kanim)) {
+    for (entityx::Entity e2 : es.entities_with_components(body2)) { // resolvemos con paredes, agujeros...
+      if (e2 != e1 && areColliding(*body1, *body2) && !e2.has_component<GhostAnimation>()) {
         glm::vec2 depth = depthOfCollision(*body1, *body2);
         resolveCollision(*body1, *pos, depth);
       }
     }
   }
 }
+
+// Resolver colisiones del fantasma con otras cosas
+void CollisionGhostSystem::update(entityx::EntityManager &es,
+                             entityx::EventManager &events,
+                             entityx::TimeDelta dt) {
+  entityx::ComponentHandle<Body> body1;
+  entityx::ComponentHandle<Body> body2;
+  entityx::ComponentHandle<Position> pos1;
+  entityx::ComponentHandle<Position> pos2;
+  entityx::ComponentHandle<GhostAnimation> ghost;
+  entityx::ComponentHandle<KnightAnimation> kanim;
+  entityx::ComponentHandle<Physics> phy;
+
+  for (entityx::Entity e1 : es.entities_with_components(body1, pos1, phy, ghost)) {
+    for (entityx::Entity e3 : es.entities_with_components(body2, pos2, kanim)){ // resolvemos colision con caballero
+      glm::vec2 depth = depthOfCollision(*body1, *body2);
+      resolveCollisionGhostKnight(*body1, *body2, *pos1, *pos2, depth);
+    }
+  }
+}
+
+
 GraphicsSystem::GraphicsSystem(Shaders &shaders) : shaders(shaders) {}
 void GraphicsSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
@@ -361,8 +373,8 @@ glm::vec2 DoorSystem::centerOfTheBody(Body &body){
 
 MenuInputSystem::MenuInputSystem(Window &window) : window(window) {}
 
-
-int conteo = 25;
+int lastSec = 0;
+bool onHold = false;
 void MenuInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
@@ -371,23 +383,30 @@ void MenuInputSystem::update(entityx::EntityManager &es,
   glm::vec3 pos1(325, 247, 0);
   glm::vec3 pos2(325, 157, 0);
   glm::vec3 pos3(325, 65, 0);
-
+  int currentSec = (int)(glfwGetTime()*100.0);
+  //double currentS = glfwGetTime()*100.0;
+  //int test =  ((int)currentS*100) - currentSec*100;
+  if(((currentSec%30)==1) || ((currentSec%30)==0)){
+    onHold=false;
+  }
+  std::cout << "Tiempo: " <<  currentSec%30 << "\n";
   for (entityx::Entity entity :
        es.entities_with_components(arrowMenu, position)) {
-    if(conteo==25){
+    if(!onHold){
+      onHold=true;
       if (window.isKeyPressed(GLFW_KEY_UP)) {
             switch (arrowMenu->option){
               case ArrowMenu::Option::JUGAR:
                   break;
               case ArrowMenu::Option::OPCIONES:
-                  position->position = pos1;
-                  arrowMenu->option = ArrowMenu::Option::JUGAR;
-                  break;
+                    position->position = pos1;
+                    arrowMenu->option = ArrowMenu::Option::JUGAR;
+                    break;                  
               case ArrowMenu::Option::SALIR:
                   position->position = pos2;
                   arrowMenu->option = ArrowMenu::Option::OPCIONES;
                   break;
-            }
+            } 
       }
       if (window.isKeyPressed(GLFW_KEY_DOWN)) {
             switch (arrowMenu->option){
@@ -415,9 +434,8 @@ void MenuInputSystem::update(entityx::EntityManager &es,
                   break;
             } 
       }
-      conteo=0;
     }
-  conteo++;
+  
   }
 }
 
@@ -432,7 +450,6 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
   engine->setSoundVolume(0.1);
-#define SPEED 300 // pixels por segundo
   for (entityx::Entity entity :
        es.entities_with_components(player, physics, attack)) {
     glm::vec2 v;

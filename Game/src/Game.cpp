@@ -17,12 +17,13 @@ Game::Game(Window &window, Shaders &shaders) {
   events.subscribe<InitRoomMessage>(*this);
   events.subscribe<GoToRoomMessage>(*this);
   systems.add<KnightAnimationSystem>();
-  // systems.add<GhostAnimationSystem>();
   systems.add<DoorSystem>(window);
+  systems.add<GhostAnimationSystem>();
   systems.add<PlayerInputSystem>(window);
   systems.add<MenuInputSystem>(window);
   systems.add<PhysicsSystem>();
   systems.add<CollisionSystem>();
+  systems.add<CollisionGhostSystem>();
   systems.add<MenuAnimationSystem>();
   systems.add<GraphicsSystem>(shaders);
   systems.configure();
@@ -34,11 +35,12 @@ void Game::update(entityx::TimeDelta dt) {
   systems.update<MenuInputSystem>(dt);
   systems.update<MenuAnimationSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
-  // systems.update<GhostAnimationSystem>(dt);
+  systems.update<GhostAnimationSystem>(dt);
   systems.update<DoorSystem>(dt);
   systems.update<GraphicsSystem>(dt);
   systems.update<PhysicsSystem>(dt);
   systems.update<CollisionSystem>(dt);
+  systems.update<CollisionGhostSystem>(dt);
 }
 
 void Game::receive(const InitRoomMessage &initRoom) {

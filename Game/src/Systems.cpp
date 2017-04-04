@@ -126,7 +126,7 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics_player;
   entityx::ComponentHandle<KnightAttack> attack;
   entityx::ComponentHandle<Position> position_player;
-  //engine->setSoundVolume(0.25);
+  engine->setSoundVolume(0.1);
 
   for (entityx::Entity e :
               es.entities_with_components(player, physics_player, attack, position_player)){
@@ -140,6 +140,8 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics_ghost;
   entityx::ComponentHandle<Body> body_ghost;
   entityx::ComponentHandle<Body> body;
+  
+  int currentSec = (int)(glfwGetTime()*100.0);
 
   for (entityx::Entity e1 :
        es.entities_with_components(ghostAnimation, physics_ghost, graphics, position_ghost, body_ghost)) {
@@ -147,15 +149,27 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
     for (entityx::Entity e2: 
            es.entities_with_components(body)){
         if (position_player->position.y > position_ghost->position.y) {
+          if((currentSec%200==99 || (currentSec%200==198)) ){
+            //engine->play2D("assets/media/fx/talk.wav");
+          }
           v.y = SPEED_GHOST;
         }
         if (position_player->position.y  < position_ghost->position.y ) {
+          if((currentSec%200==99 || (currentSec%200==198))){
+            //engine->play2D("assets/media/fx/talk.wav");
+          }
           v.y = -SPEED_GHOST;
         }
         if (position_player->position.x > position_ghost->position.x) {
+          if((currentSec%200==99 || (currentSec%200==198))){
+            //engine->play2D("assets/media/fx/talk.wav");
+          }
           v.x = SPEED_GHOST;
         }
         if (position_player->position.x < position_ghost->position.x) {
+          if((currentSec%200==99 || (currentSec%200==198))){
+            //engine->play2D("assets/media/fx/talk.wav");
+          }
           v.x = -SPEED_GHOST;
         }
     }/* for */

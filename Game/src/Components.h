@@ -55,11 +55,13 @@ struct ArrowMenu {
 };
 
 struct Door {
+	enum Place { TOP, BOTTOM, LEFT, RIGHT};
 	glm::vec2 position;
   	glm::vec2 length;
   	int numberOfRoom;
+  	Place place;
 
-  	Door(glm::vec2 position,glm::vec2 length, int numberOfRoom);
+  	Door(glm::vec2 position,glm::vec2 length, int numberOfRoom, Place place);
 };
 
 struct Player {};

@@ -11,8 +11,8 @@ Energy::Energy(int e) : energy(e){};
 Body::Body(glm::vec2 position, glm::vec2 length)
     : position(position), length(length) {}
 
-Door::Door(glm::vec2 position, glm::vec2 length , int numberOfRoom)
-    : position(position), length(length), numberOfRoom(numberOfRoom) {}
+Door::Door(glm::vec2 position, glm::vec2 length , int numberOfRoom, Place place)
+    : position(position), length(length), numberOfRoom(numberOfRoom), place(place){}
 
 KnightAttack::KnightAttack(int damage, Orientation orientation)
     : isAttacking(false), damage(damage), orientation(orientation) {}

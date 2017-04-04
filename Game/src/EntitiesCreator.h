@@ -24,8 +24,7 @@ public:
 
   static void addEntityWallsStarter(entityx::EntityManager &entities);
 
-  static void addEntityDoorTop(entityx::EntityManager &entities,
+  static void addEntityDoorStarter(entityx::EntityManager &entities,
                              glm::vec3 position);
-  static void addEntityDoorBottom(entityx::EntityManager &entities,
-                             glm::vec3 position);
+  static void addEntityDoor(entityx::EntityManager &entities, int room, int place);
 };

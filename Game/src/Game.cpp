@@ -52,8 +52,13 @@ void Game::receive(const InitRoomMessage &initRoom) {
 
 void Game::receive(const GoToRoomMessage &goToRoom) {
   entities.reset();
-  if (goToRoom.room == 2) {
-	EntitiesCreator::addEntityRoom1(entities);
+  switch (goToRoom.room) {
+  	case 10:
+  		EntitiesCreator::addEntityRoom1(entities);
+  		break;
+  	case 0:
+  		EntitiesCreator::addEntityStarterRoom1(entities);
+  		break;
   }
 }
 

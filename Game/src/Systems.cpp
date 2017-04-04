@@ -356,11 +356,33 @@ void DoorSystem::update(entityx::EntityManager &es,
 	for (entityx::Entity e1 : es.entities_with_components(body1, position, player, physics)) {
     	glm::vec2 v = centerOfTheBody(*body1);
     	for (entityx::Entity e2 : es.entities_with_components(door)) {
- 			if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && v.y >= door->position.y){
- 				if (door->numberOfRoom == 1) {
- 					events.emit<GoToRoomMessage>(2);
- 				}
- 			}     
+    		switch (door->place) {
+    			case Door::Place::TOP:
+    					if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && v.y >= door->position.y){
+			 				if (door->numberOfRoom == 0) {
+			 					events.emit<GoToRoomMessage>(10);
+			 				}
+ 						} 
+    				break;
+    			case Door::Place::BOTTOM:
+    					if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && (body1->position.y <= (door->position.y + door->length.y + 5))){
+			 				if (door->numberOfRoom == 10) {
+			 					events.emit<GoToRoomMessage>(0);
+			 				}
+ 						}
+    				break;
+    			case Door::Place::LEFT:
+
+    				break;
+    			case Door::Place::RIGHT:
+
+    				break;
+    		}
+
+    		
+    			   
+    		
+ 			 
     	}
   	}
 }

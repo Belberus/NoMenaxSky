@@ -218,8 +218,8 @@ void EntitiesCreator::addEntityWallsBossEntrance1(entityx::EntityManager &entiti
   entityx::Entity rightWall = entities.create();
   entityx::Entity topWall = entities.create();
   entityx::Entity bottomWall = entities.create();
-  leftWall.assign<Body>(glm::vec2(0, 0), glm::vec2(20, 540));
-  rightWall.assign<Body>(glm::vec2(940, 0), glm::vec2(20, 540));
+  leftWall.assign<Body>(glm::vec2(0, 0), glm::vec2(375, 540));
+  rightWall.assign<Body>(glm::vec2(575, 0), glm::vec2(365, 540));
   topWall.assign<Body>(glm::vec2(0, 520), glm::vec2(960, 20));
   bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
   leftWall.assign<RoomLimit>();

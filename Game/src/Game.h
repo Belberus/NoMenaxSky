@@ -10,4 +10,6 @@ public:
   void update(entityx::TimeDelta dt);
   void receive(const InitRoomMessage &quitGame);
   void receive(const GoToRoomMessage &goToRoom);
+  void receive(const OptionsMessage &optionsMessage);
+  void receive(const GoBackMessage &goBack);
 };

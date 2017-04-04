@@ -54,6 +54,15 @@ struct ArrowMenu {
   ArrowMenu(Option option);
 };
 
+struct ArrowOptions {
+  enum Option { MUSIC_VOL, FX_VOL, SALIR };
+
+  Option option;
+
+  ArrowOptions(Option option);
+};
+
+
 struct Door {
 	enum Place { TOP, BOTTOM, LEFT, RIGHT};
 	glm::vec2 position;

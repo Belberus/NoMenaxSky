@@ -233,6 +233,52 @@ void EntitiesCreator::addEntityBossEntrance1(entityx::EntityManager &entities){
 	addEntityDoor(entities, 11 ,2);
 	addEntityKnight(entities, glm::vec3(475, 35, 0));
 }
+void EntitiesCreator::addEntityOptions(entityx::EntityManager &entities) {
+  entityx::Entity menu = entities.create();
+  menu.assign<Position>(glm::vec3(0, 0, 0));
+
+  std::vector<std::string> menu_animation;
+  menu_animation.push_back("assets/menu/gif/gif4.png");
+  menu_animation.push_back("assets/menu/gif/gif3.png");
+  menu_animation.push_back("assets/menu/gif/gif2.png");
+  menu_animation.push_back("assets/menu/gif/gif1.png");
+  menu.assign<MenuAnimation>(
+      std::shared_ptr<AnimationClip>(new AnimationClip(menu_animation, 50)));
+  menu.assign<Graphics>(Texture("assets/menu/gif/gif1.png"),
+                        glm::vec2(960, 540));
+
+  entityx::Entity titulo = entities.create();
+  titulo.assign<Position>(glm::vec3(130, 375, 0));
+  titulo.assign<Graphics>(Texture("assets/menu/titulo.png"),
+                          glm::vec2(700, 150));
+
+  entityx::Entity option1 = entities.create();
+  option1.assign<Position>(glm::vec3(220, 240, 0));
+  option1.assign<Graphics>(Texture("assets/menu/opciones.png"),
+                           glm::vec2(500, 50));
+
+  entityx::Entity option2 = entities.create();
+  option2.assign<Position>(glm::vec3(220, 150, 0));
+  option2.assign<Graphics>(Texture("assets/menu/opciones.png"),
+                           glm::vec2(500, 50));
+
+  entityx::Entity option3 = entities.create();
+  option3.assign<Position>(glm::vec3(210, 50, 0));
+  option3.assign<Graphics>(Texture("assets/menu/salir.png"),
+                           glm::vec2(520, 70));
+
+  entityx::Entity logo = entities.create();
+  logo.assign<Position>(glm::vec3(850, 10, 0));
+  logo.assign<Graphics>(Texture("assets/menu/patan_games.png"),
+                        glm::vec2(100, 100));
+
+  entityx::Entity optionsArrow = entities.create();
+  optionsArrow.assign<Position>(glm::vec3(325, 247, 0));
+  optionsArrow.assign<Graphics>(Texture("assets/menu/ppc_front.png"),
+                             glm::vec2(40, 40));
+  optionsArrow.assign<ArrowOptions>(ArrowOptions::Option::MUSIC_VOL);
+}
+
 
 void EntitiesCreator::addEntityDoorStarter(entityx::EntityManager &entities){
 	entityx::Entity door = entities.create();

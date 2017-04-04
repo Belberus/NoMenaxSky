@@ -90,6 +90,19 @@ private:
   
 };
 
+class OptionsInputSystem : public entityx::System<OptionsInputSystem> {
+  Window &window;
+
+public:
+  OptionsInputSystem(Window &window);
+
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+private:
+  
+};
+
 
 class PlayerInputSystem : public entityx::System<PlayerInputSystem> {
   Window &window;

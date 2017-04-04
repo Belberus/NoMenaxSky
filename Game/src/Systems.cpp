@@ -259,6 +259,7 @@ void CollisionGhostSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<GhostAnimation> ghost;
   entityx::ComponentHandle<KnightAnimation> kanim;
   entityx::ComponentHandle<Physics> phy;
+  entityx::ComponentHandle<RoomLimit> isLimit;
 
   for (entityx::Entity e1 : es.entities_with_components(body1, pos1, phy, ghost)) {
     for (entityx::Entity e3 : es.entities_with_components(body2, pos2, kanim)){ // resolvemos colision con caballero
@@ -269,6 +270,13 @@ void CollisionGhostSystem::update(entityx::EntityManager &es,
     }
 
     for (entityx::Entity e2 : es.entities_with_components(body2, ghost)){
+      if (e1!=e2 && areColliding(*body1,*body2)){
+        glm::vec2 depth = depthOfCollision(*body1, *body2);
+        resolveCollision(*body1, *pos1, depth);
+      }
+    }
+
+    for (entityx::Entity e2 : es.entities_with_components(body2, isLimit)){
       if (e1!=e2 && areColliding(*body1,*body2)){
         glm::vec2 depth = depthOfCollision(*body1, *body2);
         resolveCollision(*body1, *pos1, depth);

@@ -68,6 +68,10 @@ struct Player {};
 
 struct Ghost {};
 
+struct RoomLimit {
+  bool isLimitWall;
+};
+
 struct Graphics {
   Texture texture;
   GLuint vao;

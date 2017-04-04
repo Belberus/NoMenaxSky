@@ -262,8 +262,17 @@ void CollisionGhostSystem::update(entityx::EntityManager &es,
 
   for (entityx::Entity e1 : es.entities_with_components(body1, pos1, phy, ghost)) {
     for (entityx::Entity e3 : es.entities_with_components(body2, pos2, kanim)){ // resolvemos colision con caballero
-      glm::vec2 depth = depthOfCollision(*body1, *body2);
-      resolveCollisionGhostKnight(*body1, *body2, *pos1, *pos2, depth);
+      if (e1 != e3 && areColliding(*body1, *body2)){
+        glm::vec2 depth = depthOfCollision(*body1, *body2);
+        resolveCollisionGhostKnight(*body1, *body2, *pos1, *pos2, depth);
+      }
+    }
+
+    for (entityx::Entity e2 : es.entities_with_components(body2, ghost)){
+      if (e1!=e2 && areColliding(*body1,*body2)){
+        glm::vec2 depth = depthOfCollision(*body1, *body2);
+        resolveCollision(*body1, *pos1, depth);
+      }
     }
   }
 }

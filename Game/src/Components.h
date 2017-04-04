@@ -66,9 +66,7 @@ struct Player {};
 
 struct Ghost {};
 
-struct RoomLimit {
-  bool isLimitWall;
-};
+struct RoomLimit {};
 
 struct Graphics {
   Texture texture;

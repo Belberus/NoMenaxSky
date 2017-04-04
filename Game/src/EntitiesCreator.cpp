@@ -84,6 +84,10 @@ void EntitiesCreator::addEntityWalls(entityx::EntityManager &entities) {
   rightWall.assign<Body>(glm::vec2(940, 0), glm::vec2(20, 540));
   topWall.assign<Body>(glm::vec2(0, 520), glm::vec2(960, 20));
   bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
+  leftWall.assign<RoomLimit>();
+  rightWall.assign<RoomLimit>();
+  topWall.assign<RoomLimit>();
+  bottomWall.assign<RoomLimit>();
 }
 
 void EntitiesCreator::addEntityGhost(entityx::EntityManager &entities,

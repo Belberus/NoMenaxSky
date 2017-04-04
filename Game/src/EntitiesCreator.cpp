@@ -4,6 +4,8 @@
 #include <stdio.h>
 using namespace irrklang;
 
+bool primeraVez = true;
+
 void EntitiesCreator::addEntityKnight(entityx::EntityManager &entities, glm::vec3 position) {
   entityx::Entity player = entities.create();
   player.assign<Physics>(glm::vec2(0, 0));
@@ -171,10 +173,15 @@ void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, int room,i
 	entityx::Entity door = entities.create();
 	switch (place) {
 		case 1:
+				door.assign<Position>(glm::vec3(450, 485, 0));
+				door.assign<Door>(glm::vec3(450, 485, 0), glm::vec2(100, 18), room, Door::Place::TOP);
+				door.assign<Graphics>(
+			      Texture("assets/escenario/habitacion/puerta2_1_16x14.png"),
+			      glm::vec2(40, 40));
 			break;
 		case 2:
-				door.assign<Position>(glm::vec3(425, 0, 0));
-				door.assign<Door>(glm::vec3(425, 0, 0), glm::vec2(100, 18), room, Door::Place::BOTTOM);
+				door.assign<Position>(glm::vec3(440, 0, 0));
+				door.assign<Door>(glm::vec3(440, 0, 0), glm::vec2(100, 18), room, Door::Place::BOTTOM);
 				door.assign<Graphics>(
 			      Texture("assets/escenario/habitacion/puerta_abajo.png"),
 			      glm::vec2(100, 18));
@@ -189,10 +196,10 @@ void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, int room,i
 	
 }
 
-void EntitiesCreator::addEntityDoorStarter(entityx::EntityManager &entities, glm::vec3 position){
+void EntitiesCreator::addEntityDoorStarter(entityx::EntityManager &entities){
 	entityx::Entity door = entities.create();
-	door.assign<Position>(position);
-	door.assign<Door>(position, glm::vec2(40, 40), 0, Door::Place::TOP);
+	door.assign<Position>(glm::vec3(480,267,0));
+	door.assign<Door>(glm::vec3(480,267,0), glm::vec2(40, 40), 0, Door::Place::TOP);
 	door.assign<Graphics>(
       Texture("assets/escenario/habitacion/puerta2_1_16x14.png"),
       glm::vec2(40, 40));
@@ -201,6 +208,7 @@ void EntitiesCreator::addEntityDoorStarter(entityx::EntityManager &entities, glm
 void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
   addEntityWalls(entities);
   addEntityDoor(entities, 10 ,2);
+  addEntityDoor(entities, 10 ,1);
   addEntityDeep(entities, glm::vec3(385, 100, 0));
   addEntityDeep(entities, glm::vec3(690, 250, 0));
   addEntityDeep(entities, glm::vec3(75, 250, 0));
@@ -251,9 +259,17 @@ void EntitiesCreator::addEntityWallsStarter(entityx::EntityManager &entities) {
       glm::vec2(75, 200));
 }
 
-void EntitiesCreator::addEntityStarterRoom1(entityx::EntityManager &entities) {
+void EntitiesCreator::addEntityStarterRoom1(entityx::EntityManager &entities) { 
   addEntityWallsStarter(entities);
-  addEntityDoorStarter(entities,glm::vec3(480,267,0));
-  addEntityKnight(entities, glm::vec3(300, 150, 0));
+  addEntityDoorStarter(entities);
+  if (primeraVez){
+  	primeraVez = false;
+  	addEntityKnight(entities, glm::vec3(300, 150, 0));
+  } else {
+   	addEntityKnight(entities, glm::vec3(487, 230, 0));
+ 	
+  }
+  
+  
 }
 

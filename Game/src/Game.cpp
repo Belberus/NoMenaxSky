@@ -54,7 +54,14 @@ void Game::receive(const GoToRoomMessage &goToRoom) {
   entities.reset();
   switch (goToRoom.room) {
   	case 10:
-  		EntitiesCreator::addEntityRoom1(entities);
+  		if (goToRoom.fromWhere == 11) {
+			EntitiesCreator::addEntityRoom1(entities, 11);
+  		} else if (goToRoom.fromWhere == 0) {
+  			EntitiesCreator::addEntityRoom1(entities, 0);
+  		}		
+  		break;
+  	case 11:
+  		EntitiesCreator::addEntityBossEntrance1(entities);
   		break;
   	case 0:
   		EntitiesCreator::addEntityStarterRoom1(entities);

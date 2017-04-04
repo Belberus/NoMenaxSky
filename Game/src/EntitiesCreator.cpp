@@ -177,8 +177,8 @@ void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, int room,i
 	entityx::Entity door = entities.create();
 	switch (place) {
 		case 1:
-				door.assign<Position>(glm::vec3(450, 485, 0));
-				door.assign<Door>(glm::vec3(450, 485, 0), glm::vec2(100, 18), room, Door::Place::TOP);
+				door.assign<Position>(glm::vec3(460, 485, 0));
+				door.assign<Door>(glm::vec3(460, 485, 0), glm::vec2(100, 18), room, Door::Place::TOP);
 				door.assign<Graphics>(
 			      Texture("assets/escenario/habitacion/puerta2_1_16x14.png"),
 			      glm::vec2(40, 40));
@@ -191,13 +191,47 @@ void EntitiesCreator::addEntityDoor(entityx::EntityManager &entities, int room,i
 			      glm::vec2(100, 18));
 			break;
 		case 3:
+				door.assign<Position>(glm::vec3(0, 235, 0));
+				door.assign<Door>(glm::vec3(0, 235, 0), glm::vec2(18, 100), room, Door::Place::LEFT);
+				door.assign<Graphics>(
+			      Texture("assets/escenario/habitacion/puerta_izquierda.png"),
+			      glm::vec2(18, 100));
 			break;
 		case 4:
+				door.assign<Position>(glm::vec3(940, 235, 0));
+				door.assign<Door>(glm::vec3(940, 235, 0), glm::vec2(18, 100), room, Door::Place::RIGHT);
+				door.assign<Graphics>(
+			      Texture("assets/escenario/habitacion/puerta_derecha.png"),
+			      glm::vec2(18, 100));
 			break;
-	}
+	}	
+}
 
-	
-	
+void EntitiesCreator::addEntityWallsBossEntrance1(entityx::EntityManager &entities) {
+  entityx::Entity room = entities.create();
+  room.assign<Position>(glm::vec3(0, 0, 0));
+  room.assign<Graphics>(
+      Texture("assets/escenario/habitacion/habitacion_boss_entrance_1.png"),
+      glm::vec2(960, 540));
+
+  entityx::Entity leftWall = entities.create();
+  entityx::Entity rightWall = entities.create();
+  entityx::Entity topWall = entities.create();
+  entityx::Entity bottomWall = entities.create();
+  leftWall.assign<Body>(glm::vec2(0, 0), glm::vec2(20, 540));
+  rightWall.assign<Body>(glm::vec2(940, 0), glm::vec2(20, 540));
+  topWall.assign<Body>(glm::vec2(0, 520), glm::vec2(960, 20));
+  bottomWall.assign<Body>(glm::vec2(0, 0), glm::vec2(960, 20));
+  leftWall.assign<RoomLimit>();
+  rightWall.assign<RoomLimit>();
+  topWall.assign<RoomLimit>();
+  bottomWall.assign<RoomLimit>();
+}
+
+void EntitiesCreator::addEntityBossEntrance1(entityx::EntityManager &entities){
+	addEntityWallsBossEntrance1(entities);
+	addEntityDoor(entities, 11 ,2);
+	addEntityKnight(entities, glm::vec3(475, 35, 0));
 }
 
 void EntitiesCreator::addEntityDoorStarter(entityx::EntityManager &entities){
@@ -209,17 +243,22 @@ void EntitiesCreator::addEntityDoorStarter(entityx::EntityManager &entities){
       glm::vec2(40, 40));
 }
 
-void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities) {
+void EntitiesCreator::addEntityRoom1(entityx::EntityManager &entities, int fromWhere) {
   addEntityWalls(entities);
   addEntityDoor(entities, 10 ,2);
   addEntityDoor(entities, 10 ,1);
+  addEntityDoor(entities, 10 ,3);
+  addEntityDoor(entities, 10 ,4);
   addEntityDeep(entities, glm::vec3(385, 100, 0));
   addEntityDeep(entities, glm::vec3(690, 250, 0));
   addEntityDeep(entities, glm::vec3(75, 250, 0));
   addEntityGhost(entities, glm::vec3(385, 400, 0));
   addEntityGhost(entities, glm::vec3(125, 40, 0));
   addEntityGhost(entities, glm::vec3(560, 40, 0));
-  addEntityKnight(entities, glm::vec3(475, 35, 0));
+  switch (fromWhere) {
+  	case 11: addEntityKnight(entities, glm::vec3(475, 450, 0)); break;
+  	case 0: addEntityKnight(entities, glm::vec3(475, 35, 0)); break;
+  } 
 }
 
 void EntitiesCreator::addEntityWallsStarter(entityx::EntityManager &entities) {

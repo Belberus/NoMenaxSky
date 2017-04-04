@@ -22,5 +22,6 @@ struct InitRoomMessage {};
 
 struct GoToRoomMessage {
 	int room;
-	GoToRoomMessage(int room);
+	int fromWhere;
+	GoToRoomMessage(int room, int fromWhere);
 };

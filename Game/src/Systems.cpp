@@ -376,15 +376,17 @@ void DoorSystem::update(entityx::EntityManager &es,
     		switch (door->place) {
     			case Door::Place::TOP:
     					if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && v.y >= door->position.y){
-			 				if (door->numberOfRoom == 0) {
-			 					events.emit<GoToRoomMessage>(10);
+			 				switch (door->numberOfRoom) {
+			 					case 10: events.emit<GoToRoomMessage>(11,10); break;
+			 					case 0: events.emit<GoToRoomMessage>(10,0); break;
 			 				}
- 						} 
+			 			} 
     				break;
     			case Door::Place::BOTTOM:
     					if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && (body1->position.y <= (door->position.y + door->length.y + 5))){
-			 				if (door->numberOfRoom == 10) {
-			 					events.emit<GoToRoomMessage>(0);
+			 				switch (door->numberOfRoom) {
+			 					case 10: events.emit<GoToRoomMessage>(0,10); break;
+			 					case 11: events.emit<GoToRoomMessage>(10,11); break;
 			 				}
  						}
     				break;

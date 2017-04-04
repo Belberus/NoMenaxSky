@@ -16,11 +16,14 @@ Game::Game(Window &window, Shaders &shaders) {
   eng->play2D("assets/media/intro.wav",true);
   events.subscribe<InitRoomMessage>(*this);
   events.subscribe<GoToRoomMessage>(*this);
+  events.subscribe<OptionsMessage>(*this);
+  events.subscribe<GoBackMessage>(*this);
   systems.add<KnightAnimationSystem>();
   systems.add<DoorSystem>(window);
   systems.add<GhostAnimationSystem>();
   systems.add<PlayerInputSystem>(window);
   systems.add<MenuInputSystem>(window);
+  systems.add<OptionsInputSystem>(window);
   systems.add<PhysicsSystem>();
   systems.add<CollisionSystem>();
   systems.add<CollisionGhostSystem>();
@@ -33,6 +36,7 @@ Game::Game(Window &window, Shaders &shaders) {
 void Game::update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<MenuInputSystem>(dt);
+  systems.update<OptionsInputSystem>(dt);
   systems.update<MenuAnimationSystem>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);
@@ -57,3 +61,12 @@ void Game::receive(const GoToRoomMessage &goToRoom) {
   }
 }
 
+void Game::receive(const OptionsMessage &optionsMessage){
+    entities.reset();
+    EntitiesCreator::addEntityOptions(entities);
+  }
+
+void Game::receive(const GoBackMessage &goBack){
+    entities.reset();
+    EntitiesCreator::addEntityMenu(entities);
+  }

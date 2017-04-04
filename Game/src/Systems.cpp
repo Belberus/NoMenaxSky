@@ -442,9 +442,77 @@ void MenuInputSystem::update(entityx::EntityManager &es,
                   events.emit<InitRoomMessage>();
                   break;
               case ArrowMenu::Option::OPCIONES:
+                  events.emit<OptionsMessage>();
                   break;
               case ArrowMenu::Option::SALIR:
                   exit(0);
+                  break;
+            } 
+      }
+    }
+  
+  }
+}
+
+OptionsInputSystem::OptionsInputSystem(Window &window) : window(window) {}
+
+bool onHold2 = false;
+void OptionsInputSystem::update(entityx::EntityManager &es,
+                               entityx::EventManager &events,
+                               entityx::TimeDelta dt) {
+  entityx::ComponentHandle<ArrowOptions> arrowOptions;
+  entityx::ComponentHandle<Position> position;
+  glm::vec3 pos1(325, 247, 0);
+  glm::vec3 pos2(325, 157, 0);
+  glm::vec3 pos3(325, 65, 0);
+  int currentSec = (int)(glfwGetTime()*100.0);
+  //double currentS = glfwGetTime()*100.0;
+  //int test =  ((int)currentS*100) - currentSec*100;
+  if(((currentSec%30)==1) || ((currentSec%30)==0)){
+    onHold2=false;
+  }
+  for (entityx::Entity entity :
+       es.entities_with_components(arrowOptions, position)) {
+    if(!onHold){
+      onHold=true;
+      if (window.isKeyPressed(GLFW_KEY_UP)) {
+            switch (arrowOptions->option){
+              case ArrowOptions::Option::MUSIC_VOL:
+                  break;
+              case ArrowOptions::Option::FX_VOL:
+                    position->position = pos1;
+                    arrowOptions->option = ArrowOptions::Option::MUSIC_VOL;
+                    break;                  
+              case ArrowOptions::Option::SALIR:
+                  position->position = pos2;
+                  arrowOptions->option = ArrowOptions::Option::FX_VOL;
+                  break;
+            } 
+      }
+      if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+            switch (arrowOptions->option){
+              case ArrowOptions::Option::MUSIC_VOL:
+                  position->position = pos2;
+                  arrowOptions->option = ArrowOptions::Option::FX_VOL;
+                  break;
+              case ArrowOptions::Option::FX_VOL:
+                  position->position = pos3;
+                  arrowOptions->option = ArrowOptions::Option::SALIR;
+                  break;
+              case ArrowOptions::Option::SALIR:
+                  break;
+            } 
+      }
+      if (window.isKeyPressed(GLFW_KEY_ENTER)) {
+            switch (arrowOptions->option){
+              case ArrowOptions::Option::MUSIC_VOL:
+                  //VolumeManager::toggleMusic;
+                  break;
+              case ArrowOptions::Option::FX_VOL:
+                  //VolumeManager::toggleFX;
+                  break;
+              case ArrowOptions::Option::SALIR:
+                  events.emit<GoBackMessage>();
                   break;
             } 
       }

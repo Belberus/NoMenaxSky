@@ -20,6 +20,10 @@ struct AttackMessage {
 // TODO: de momento vacio, a?dir luego los miembros necesarios
 struct InitRoomMessage {};
 
+struct GoBackMessage {};
+
+struct OptionsMessage {};
+
 struct GoToRoomMessage {
 	int room;
 	GoToRoomMessage(int room);

@@ -62,3 +62,4 @@ MenuAnimation::MenuAnimation(std::shared_ptr<AnimationClip> menu_animation):
 
 ArrowMenu::ArrowMenu(Option option): option(option) {}
 
+ArrowOptions::ArrowOptions(Option option): option(option) {}

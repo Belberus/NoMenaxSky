@@ -20,6 +20,8 @@ public:
 
   static void addEntityMenu(entityx::EntityManager &entities);
 
+  static void addEntityOptions(entityx::EntityManager &entities);
+
   static void addEntityStarterRoom1(entityx::EntityManager &entities);
 
   static void addEntityWallsStarter(entityx::EntityManager &entities);

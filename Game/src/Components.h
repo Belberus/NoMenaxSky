@@ -73,7 +73,12 @@ struct Door {
   	Door(glm::vec2 position,glm::vec2 length, int numberOfRoom, Place place);
 };
 
-struct Player {};
+struct Player {
+	enum Orientation { UP, DOWN, RIGHT, LEFT };
+	Orientation orientation;
+
+	Player(Orientation orientation);
+};
 
 struct Ghost {};
 

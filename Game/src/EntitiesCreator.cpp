@@ -10,7 +10,7 @@ void EntitiesCreator::addEntityKnight(entityx::EntityManager &entities, glm::vec
   entityx::Entity player = entities.create();
   player.assign<Physics>(glm::vec2(0, 0));
   player.assign<Position>(position);
-  player.assign<Player>();
+  player.assign<Player>(Player::Orientation::DOWN);
   player.assign<Body>(position, glm::vec2(40, 40));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
 

@@ -24,6 +24,8 @@ Graphics::Graphics(Texture texture, glm::vec2 size)
   glGenBuffers(1, &buf);
 }
 
+Player::Player(Orientation orientation) : orientation(orientation) {}
+
 GLfloat const Graphics::quad[16] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
                                     1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
                                     0.0f, 1.0f, 0.0f, 1.0f};

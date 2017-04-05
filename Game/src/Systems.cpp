@@ -389,7 +389,7 @@ void DoorSystem::update(entityx::EntityManager &es,
     	for (entityx::Entity e2 : es.entities_with_components(door)) {
     		switch (door->place) {
     			case Door::Place::TOP:
-    					if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && v.y >= door->position.y){
+    					if(((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && v.y >= door->position.y)  && player->orientation == Player::Orientation::UP){
 			 				switch (door->numberOfRoom) {
 			 					case 10: events.emit<GoToRoomMessage>(11,10); break;
 			 					case 0: events.emit<GoToRoomMessage>(10,0); break;
@@ -397,7 +397,7 @@ void DoorSystem::update(entityx::EntityManager &es,
 			 			} 
     				break;
     			case Door::Place::BOTTOM:
-    					if((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && (body1->position.y <= (door->position.y + door->length.y + 5))){
+    					if(((v.x >= door->position.x && v.x <= (door->position.x + door->length.x)) && (body1->position.y <= (door->position.y + door->length.y + 5))) && player->orientation == Player::Orientation::DOWN){
 			 				switch (door->numberOfRoom) {
 			 					case 10: events.emit<GoToRoomMessage>(0,10); break;
 			 					case 11: events.emit<GoToRoomMessage>(10,11); break;
@@ -410,12 +410,7 @@ void DoorSystem::update(entityx::EntityManager &es,
     			case Door::Place::RIGHT:
 
     				break;
-    		}
-
-    		
-    			   
-    		
- 			 
+    		}	 
     	}
   	}
 }
@@ -575,6 +570,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     glm::vec2 v;
     if (window.isKeyPressed(GLFW_KEY_W)) {    
       v.y += SPEED;
+      player->orientation = Player::Orientation::UP;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
         counter = 0;
@@ -583,6 +579,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
     if (window.isKeyPressed(GLFW_KEY_S)) {
       v.y += -SPEED;
+      player->orientation = Player::Orientation::DOWN;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
         counter = 0;
@@ -591,6 +588,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
     if (window.isKeyPressed(GLFW_KEY_A)) {
       v.x += -SPEED;
+      player->orientation = Player::Orientation::LEFT;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
         counter = 0;
@@ -599,6 +597,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
     if (window.isKeyPressed(GLFW_KEY_D)) {
       v.x += SPEED;
+      player->orientation = Player::Orientation::RIGHT;
       if(counter == 15){
         engine->play2D("assets/media/fx/step2.wav");
         counter = 0;

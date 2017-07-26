@@ -1,15 +1,18 @@
-[submodule "Game/lib/gl3w"]
-	path = Game/lib/gl3w
-	url = https://github.com/skaslev/gl3w
-[submodule "Game/lib/glfw"]
-	path = Game/lib/glfw
-	url = https://github.com/glfw/glfw
-[submodule "Game/lib/glm"]
-	path = Game/lib/glm
-	url = https://github.com/g-truc/glm
-[submodule "Game/lib/entityx"]
-	path = Game/lib/entityx
-    url = https://github.com/alecthomas/entityx
-[submodule "Game/lib/stb"]
-	path = Game/lib/stb
+[submodule "engine/lib/entityx"]
+	path = Game/lib/engine/lib/entityx
+	url = https://github.com/alecthomas/entityx.git
+[submodule "engine/lib/glm"]
+	path = Game/lib/engine/lib/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "engine/lib/glfw"]
+	path = Game/lib/engine/lib/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "engine/lib/gl3w"]
+	path = Game/lib/engine/lib/gl3w
+	url = https://github.com/skaslev/gl3w.git
+[submodule "engine/lib/stb"]
+	path = Game/lib/engine/lib/stb
 	url = https://github.com/nothings/stb.git
+[submodule "Game/lib/tmxlite"]
+	path = Game/lib/tmxlite
+	url = https://github.com/fallahn/tmxlite.git

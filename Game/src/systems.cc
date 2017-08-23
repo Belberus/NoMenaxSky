@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 #include <engine/core/engine.h>
 #include <engine/core/event_manager.h>
+#include <engine/core/audio_manager.h>
 
 #include "systems.h"
 
@@ -14,7 +15,7 @@
 #include "events.h"
 
 #include <GLFW/glfw3.h>
-
+ 
 using namespace engine::core;
 using namespace engine::components::two_d;
 using namespace engine::components::common;
@@ -27,6 +28,9 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
   std::string animToPlay;
+  //auto soundEngine = 
+  //    Engine::GetInstance().Get<AudioManager>();
+
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack)) {
     if (attack->is_attacking) {

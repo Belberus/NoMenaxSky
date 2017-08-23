@@ -4,6 +4,7 @@
 
 engine::core::AudioManager::AudioManager() {
   sound_engine_ = irrklang::createIrrKlangDevice();
+  std::cout << "to bien";
   if (!sound_engine_) {
     std::cerr << "Error starting up the sound engine.\n";
   }

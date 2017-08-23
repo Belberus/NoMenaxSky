@@ -23,3 +23,9 @@ void engine::core::AudioManager::StopAllSounds() {
 void engine::core::AudioManager::SetVolume(float volume) {
   sound_engine_->setSoundVolume(volume);
 }
+
+void engine::core::AudioManager::PlaySound3D(const std::string& sound_filename,
+                                           bool looped, glm::vec3 pos) {
+	irrklang::vec3df position(pos.x,pos.y,pos.z);
+  sound_engine_->play3D(sound_filename.c_str(), position);
+}

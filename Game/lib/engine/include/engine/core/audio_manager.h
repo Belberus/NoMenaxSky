@@ -2,6 +2,8 @@
 #define ENGINE_CORE_AUDIO_MANAGER_H_
 
 #include <string>
+#include <vector>
+#include <glm/glm.hpp>
 
 #include <irrKlang.h>
 
@@ -14,6 +16,8 @@ class AudioManager {
   void PlaySound(const std::string &sound_filename, bool looped);
   void StopAllSounds();
   void SetVolume(float volume);
+  void PlaySound3D(const std::string &sound_filename, bool looped,
+  						glm::vec3 pos);
 
  private:
   irrklang::ISoundEngine *sound_engine_;

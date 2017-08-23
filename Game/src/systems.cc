@@ -342,19 +342,19 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       // use actual player width, height and transform to position the weapon
       if (keys_[GLFW_KEY_UP]) {
         attack.orientation = KnightAttack::Orientation::UP;
-        weapon_collider->half_size = glm::vec2(6.0f, 1.0f);
+        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
         weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
       } else if (keys_[GLFW_KEY_DOWN]) {
         attack.orientation = KnightAttack::Orientation::DOWN;
-        weapon_collider->half_size = glm::vec2(6.0f, 1.0f);
+        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
         weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
       } else if (keys_[GLFW_KEY_LEFT]) {
         attack.orientation = KnightAttack::Orientation::LEFT;
-        weapon_collider->half_size = glm::vec2(1.0f, 6.0f);
+        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
         weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
       } else if (keys_[GLFW_KEY_RIGHT]) {
         attack.orientation = KnightAttack::Orientation::RIGHT;
-        weapon_collider->half_size = glm::vec2(1.0f, 6.0f);
+        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
         weapon_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
       } else {
         attack.is_attacking = false;
@@ -379,11 +379,54 @@ void GhostIaSystem::update(entityx::EntityManager &es,
         player_position = transform.GetWorldPosition();
       });
 
+  glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
   es.each<Ghost, Transform, Physics>([&](entityx::Entity entity, Ghost &ghost,
                                          Transform &transform,
                                          Physics &physics) {
-    physics.velocity =
+    ghost.time_passed += dt*1000.0f;
+
+  	switch(ghost.comportamiento) {
+  		case Ghost::Comportamiento::DAMAGE_TOP:
+  			if (ghost.time_passed >= ghost.kHitDuration) {
+  				ghost.time_passed = 0.0;
+  				ghost.comportamiento = Ghost::Comportamiento::FOLLOW;
+  			} else {
+  				new_velocity.y = -1.0f; 
+  				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+  			}
+  		break;
+  		case Ghost::Comportamiento::DAMAGE_BOTTOM:
+  			if (ghost.time_passed >= ghost.kHitDuration) {
+  				ghost.time_passed = 0.0;
+  				ghost.comportamiento = Ghost::Comportamiento::FOLLOW;
+  			} else {
+  				new_velocity.y = 1.0f; 
+  				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+  			}
+  		break;
+  		case Ghost::Comportamiento::DAMAGE_LEFT:
+  			if (ghost.time_passed >= ghost.kHitDuration) {
+  				ghost.time_passed = 0.0;
+  				ghost.comportamiento = Ghost::Comportamiento::FOLLOW;
+  			} else {
+  				new_velocity.x = 1.0f; 
+  				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+  			}
+  		break;
+  		case Ghost::Comportamiento::DAMAGE_RIGHT:
+  			if (ghost.time_passed >= ghost.kHitDuration) {
+  				ghost.time_passed = 0.0;
+  				ghost.comportamiento = Ghost::Comportamiento::FOLLOW;
+  			} else { 
+  				new_velocity.x = -1.0f;
+  				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+  			}
+  		break;
+  		case Ghost::Comportamiento::FOLLOW:
+  			physics.velocity =
         glm::normalize(player_position - transform.GetWorldPosition()) * kSpeed;
+  		break;
+  	} 
   });
 }
 
@@ -398,10 +441,32 @@ void KnightAttackSystem::receive(const Collision &collision) {
   }
   auto e0_weapon = collision_copy.e0.component<MeleeWeapon>();
   auto e1_weapon = collision_copy.e1.component<MeleeWeapon>();
+ 
   if (e0_weapon && e0_weapon->drawn && e0_weapon->owner.component<Player>() &&
       collision_copy.e1.component<Ghost>()) {
+
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
+
+    auto e0_orientation = e0_weapon->owner.component<KnightAttack>()->orientation;
+	//e1 se desplaza hacia atras
+	auto ghost = collision_copy.e1.component<Ghost>();
+
+    switch (e0_orientation) {
+    	case KnightAttack::Orientation::UP:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_BOTTOM;
+    	break;
+    	case KnightAttack::Orientation::DOWN:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_TOP;
+    	break;
+    	case KnightAttack::Orientation::LEFT:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_RIGHT;
+    	break;
+    	case KnightAttack::Orientation::RIGHT:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_LEFT;
+    	break;
+    }
+
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -409,6 +474,27 @@ void KnightAttackSystem::receive(const Collision &collision) {
              collision_copy.e0.component<Ghost>()) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
+
+    auto e1_orientation = e1_weapon->owner.component<KnightAttack>()->orientation;
+	//e0 se desplaza hacia atras
+	auto ghost = collision_copy.e0.component<Ghost>();
+
+	switch (e1_orientation) {
+    	case KnightAttack::Orientation::UP:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_BOTTOM;
+    	break;
+    	case KnightAttack::Orientation::DOWN:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_TOP;
+    	break;
+    	case KnightAttack::Orientation::LEFT:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_RIGHT;
+    	break;
+    	case KnightAttack::Orientation::RIGHT:
+    		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_LEFT;
+    	break;
+    }
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
   }
 }
 
@@ -422,6 +508,6 @@ void HealthSystem::update(entityx::EntityManager &es,
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (health.hp <= 0.0f) {
       entity.destroy();
-    }
+    } // Si no lo mata, que recule un poco si es posible
   });
 }

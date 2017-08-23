@@ -69,10 +69,20 @@ struct Player {
   Player(Orientation orientation) : orientation(orientation) {}
 };
 
-struct Ghost {};
+struct Ghost {
+	Ghost(): comportamiento(Comportamiento::FOLLOW), time_passed(0.0) {}
+	enum Comportamiento { FOLLOW, DAMAGE_TOP, DAMAGE_BOTTOM, DAMAGE_LEFT, DAMAGE_RIGHT };
+	Comportamiento comportamiento;
+	static const float kHitDuration;
+	float time_passed;
+};
+
+struct Turret{};
 
 struct RoomLimit {};
 
 struct Sword {};
+
+struct Legs{};
 
 #endif  // COMPONENTS_H_

@@ -15,7 +15,7 @@ Game::Game()
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().
-        PlaySound("../assets/media/music/gauntleto_theme.wav",true);
+        PlaySound("../assets/media/music/gauntleto_theme_v2.wav",true);
 }
 
 void Game::Update(entityx::TimeDelta dt) {
@@ -29,7 +29,7 @@ void Game::Update(entityx::TimeDelta dt) {
       Engine::GetInstance().Get<AudioManager>().
         StopAllSounds();
       Engine::GetInstance().Get<AudioManager>().
-        PlaySound("../assets/media/music/level_one.wav",true);
+        PlaySound("../assets/media/music/level_one_v2.wav",true);
         scenes_.clear();
         scenes_.push_back(FloorFactory::MakeFloor1("assets/castle/floor1.tmx"));
         scenes_.push_back(std::make_unique<GameUi>(this));

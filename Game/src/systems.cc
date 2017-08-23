@@ -21,6 +21,8 @@ using namespace engine::components::two_d;
 using namespace engine::components::common;
 using namespace engine::events;
 
+std::string lastAnim;
+
 void KnightAnimationSystem::update(entityx::EntityManager &es,
                                    entityx::EventManager &events,
                                    entityx::TimeDelta dt) {
@@ -57,9 +59,15 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
     } else {
-      animToPlay = "moving_top";
+      if(!lastAnim.empty()){
+        animToPlay = lastAnim;
+      }
+      else animToPlay = "moving_top";
     }
     animation->Play(animToPlay);
+    if(animToPlay.find("moving") != std::string::npos){
+      lastAnim = animToPlay;
+    }
   }
 }
 

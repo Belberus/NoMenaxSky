@@ -52,6 +52,9 @@ void Floor::Update(entityx::TimeDelta dt) {
 
 void Floor::receive(const Collision& collision) {
   auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
   auto player = collision_copy.e0.component<Player>();
   auto door = collision_copy.e1.component<Door>();
   if (door && player) {

@@ -7,7 +7,7 @@
 #include <engine/events/key_pressed.h>
 #include <engine/events/key_released.h>
 
-#include "Components.h"
+#include "components.h"
 
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
  public:

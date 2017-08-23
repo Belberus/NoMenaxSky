@@ -8,7 +8,7 @@
 #include <engine/core/resource_manager.h>
 #include <engine/systems/two_d/sprite_renderer.h>
 
-#include "Systems.h"
+#include "systems.h"
 #include "entity_factory.h"
 
 using namespace engine::components::common;

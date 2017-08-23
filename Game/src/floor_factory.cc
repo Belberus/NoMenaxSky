@@ -17,8 +17,8 @@
 #include <entityx/Entity.h>
 #include <tmxlite/TileLayer.hpp>
 
-#include "Components.h"
-#include "Systems.h"
+#include "components.h"
+#include "systems.h"
 #include "entity_factory.h"
 
 namespace cmp = engine::components;

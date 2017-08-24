@@ -22,6 +22,8 @@ using namespace engine::components::common;
 using namespace engine::events;
 
 std::string lastAnim;
+float timer;
+float timer2;
 
 void KnightAnimationSystem::update(entityx::EntityManager &es,
                                    entityx::EventManager &events,
@@ -30,8 +32,9 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
   std::string animToPlay;
-  //auto soundEngine = 
-  //    Engine::GetInstance().Get<AudioManager>();
+
+  //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
+
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack)) {
     if (attack->is_attacking) {
@@ -51,23 +54,62 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
     } else if (physics->velocity.x > 0) {
       animToPlay = "moving_right";
+      if(timer2 == 0.0){
+        Engine::GetInstance().Get<AudioManager>().
+          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+      }
     } else if (physics->velocity.x < 0) {
       animToPlay = "moving_left";
+      if(timer2 == 0.0){
+        Engine::GetInstance().Get<AudioManager>().
+          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+      }
     } else if (physics->velocity.y > 0) {
       animToPlay = "moving_top";
+      if(timer2 == 0.0){
+        Engine::GetInstance().Get<AudioManager>().
+          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+      }
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
+      if(timer2 == 0.0){
+        Engine::GetInstance().Get<AudioManager>().
+          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+      }
     } else {
-      if(!lastAnim.empty()){
+      if(!lastAnim.empty() && (lastAnim.find("moving") != std::string::npos)){
         animToPlay = lastAnim;
       }
-      else animToPlay = "moving_top";
+      else animToPlay = "moving_bottom";
     }
     animation->Play(animToPlay);
-    if(animToPlay.find("moving") != std::string::npos){
-      lastAnim = animToPlay;
+    lastAnim = animToPlay;
+  }
+  if(lastAnim.find("attack") != std::string::npos){
+    if(timer == 0.0){
+      Engine::GetInstance().Get<AudioManager>().PlaySound("../assets/media/fx/gaunt/warrior/attack.wav",false);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("../assets/media/fx/gaunt/default/attack_2.wav",false);
+    }
+    timer += dt;
+    if(timer >= 0.5){
+        timer = 0.0;
+      }
+      // Sonido de pasos en caso de que este atacando y moviendo
+    if(physics->velocity.x !=0 || physics->velocity.y != 0){
+      if(timer2 == 0.0){
+        Engine::GetInstance().Get<AudioManager>().
+          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+      }
     }
   }
+  else timer = 0.0;
+  /** WELCOME TOOOO THE TIMERZOOOOOONE **/
+    std::cout << "timer 2:" << timer2 << std::endl;
+    timer2 += dt;
+    if(timer2 >= 0.2){
+        timer2 = 0.0;
+    }
+    std::cout << "timer 1:" << timer << std::endl;    
 }
 
 void KnightWalkingSystem::update(entityx::EntityManager &es, entityx::EventManager &events,

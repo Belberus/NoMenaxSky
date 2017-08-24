@@ -24,6 +24,12 @@ class KnightAttackSystem : public entityx::System<KnightAttackSystem>,
               entityx::TimeDelta dt) override;
 };
 
+class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
+ public:
+ 	void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+}; 
+
 class HealthSystem : public entityx::System<HealthSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,

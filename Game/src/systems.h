@@ -13,6 +13,10 @@ class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+ private:
+  std::string lastAnim;
+  float timer;
+  float timer2;
 };
 
 class KnightAttackSystem : public entityx::System<KnightAttackSystem>,

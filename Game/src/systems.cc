@@ -21,10 +21,6 @@ using namespace engine::components::two_d;
 using namespace engine::components::common;
 using namespace engine::events;
 
-std::string lastAnim;
-float timer;
-float timer2;
-
 void KnightAnimationSystem::update(entityx::EntityManager &es,
                                    entityx::EventManager &events,
                                    entityx::TimeDelta dt) {

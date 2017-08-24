@@ -85,4 +85,8 @@ struct Sword {};
 
 struct Legs{};
 
+struct ParentLink {
+	entityx::Entity owner;
+};
+
 #endif  // COMPONENTS_H_

@@ -103,34 +103,29 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     }
   }
   else timer = 0.0;
-  /** WELCOME TOOOO THE TIMERZOOOOOONE **/
-    std::cout << "timer 2:" << timer2 << std::endl;
+    
     timer2 += dt;
     if(timer2 >= 0.2){
         timer2 = 0.0;
     }
-    std::cout << "timer 1:" << timer << std::endl;    
 }
 
 void KnightWalkingSystem::update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) {
 	entityx::ComponentHandle<SpriteAnimation> animation;
 	entityx::ComponentHandle<Physics> physics;
-  	entityx::ComponentHandle<Player> player;
+  	entityx::ComponentHandle<ParentLink> parent;
   	entityx::ComponentHandle<Legs> legs;
   	std::string animToPlay;
 
   	for (entityx::Entity e1 :
-       es.entities_with_components(animation, physics, player, legs)) {
-  		if ((physics->velocity.x > 0) || (physics->velocity.x < 0) || (physics->velocity.y > 0) || (physics->velocity.y < 0)) {
+       es.entities_with_components(animation, parent, legs)) {
+  		if ((parent->owner.component<Physics>()->velocity.x < 0) || (parent->owner.component<Physics>()->velocity.x > 0) || (parent->owner.component<Physics>()->velocity.y >0) || (parent->owner.component<Physics>()->velocity.y<0)) {
   			animToPlay = "moving";
-  			std::cerr << "Moviendonos" << std::endl;
-  			animation->Play(animToPlay);
   		} else {
-  			std::cerr << "Estamos en error" << std::endl;
-  			animToPlay = "stand_still";
-  			animation->Play(animToPlay);
+  			animToPlay = "stand";
   		}
+  		animation->Play(animToPlay);
   	}
 }
 

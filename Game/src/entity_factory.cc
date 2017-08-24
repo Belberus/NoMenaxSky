@@ -73,7 +73,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   moving.emplace_back(glm::vec2(41, 23), glm::vec2(15, 14));
 
   std::vector<engine::utils::Rectangle> stand;
-  moving.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
+  stand.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
 
   std::vector<engine::utils::Rectangle> death;
   death.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
@@ -132,6 +132,9 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   legs.assign<SpriteAnimation>(legs_anim);
   legs.assign<Legs>();
   legs.assign<Sprite>(texture_atlas);
+  ParentLink parentLink;
+  parentLink.owner = player;
+  legs.assign<ParentLink>(parentLink);
   entities_created.push_back(legs);
 
 

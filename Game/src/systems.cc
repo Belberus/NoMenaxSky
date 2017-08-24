@@ -32,6 +32,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
   std::string animToPlay;
+
   //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
 
   for (entityx::Entity e1 :
@@ -102,41 +103,58 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     }
   }
   else timer = 0.0;
-  /** WELCOME TOOOO THE TIMERZOOOOOONE **/
-    std::cout << "timer 2:" << timer2 << std::endl;
+    
     timer2 += dt;
     if(timer2 >= 0.2){
         timer2 = 0.0;
     }
-    std::cout << "timer 1:" << timer << std::endl;    
+}
+
+void KnightWalkingSystem::update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) {
+	entityx::ComponentHandle<SpriteAnimation> animation;
+	entityx::ComponentHandle<Physics> physics;
+  	entityx::ComponentHandle<ParentLink> parent;
+  	entityx::ComponentHandle<Legs> legs;
+  	std::string animToPlay;
+
+  	for (entityx::Entity e1 :
+       es.entities_with_components(animation, parent, legs)) {
+  		if ((parent->owner.component<Physics>()->velocity.x < 0) || (parent->owner.component<Physics>()->velocity.x > 0) || (parent->owner.component<Physics>()->velocity.y >0) || (parent->owner.component<Physics>()->velocity.y<0)) {
+  			animToPlay = "moving";
+  		} else {
+  			animToPlay = "stand";
+  		}
+  		animation->Play(animToPlay);
+  	}
 }
 
 void GhostAnimationSystem::update(entityx::EntityManager &es,
                                   entityx::EventManager &events,
                                   entityx::TimeDelta dt) {
-  //  /* initialize random seed: */
-  //  srand(time(NULL));
-  //
-  //  // Buscamos la entidad del jugador, en función de su posición moveremos al
-  //  // fantasma
-  //  entityx::ComponentHandle<Player> player;
-  //  entityx::ComponentHandle<engine::physics::common::Physics> physics_player;
-  //  entityx::ComponentHandle<KnightAttack> attack;
-  //  entityx::ComponentHandle<Position> position_player;
-  //  soundEngine->setSoundVolume(0.1);
-  //
-  //  for (entityx::Entity e : es.entities_with_components(
-  //           player, physics_player, attack, position_player)) {
-  //  }
-  //
-  //  // para todos los fantasmas, hacer que se muevan hacia el jugador
-  //  entityx::ComponentHandle<GhostAnimation> ghostAnimation;
-  //  entityx::ComponentHandle<Graphics> graphics;
-  //  entityx::ComponentHandle<Position> position_ghost;
-  //  entityx::ComponentHandle<engine::physics::common::Physics> physics_ghost;
-  //  entityx::ComponentHandle<Body> body_ghost;
-  //  entityx::ComponentHandle<Body> body;
-  //
+    /* initialize random seed: */
+    srand(time(NULL));
+  
+    // Buscamos la entidad del jugador, en función de su posición moveremos al
+    // fantasma
+    entityx::ComponentHandle<Player> player;
+    entityx::ComponentHandle<Physics> physics_player;
+    entityx::ComponentHandle<KnightAttack> attack;
+    entityx::ComponentHandle<Transform> position_player;
+  	//  soundEngine->setSoundVolume(0.1);
+  
+    // para todos los fantasmas, hacer que se muevan hacia el jugador
+    entityx::ComponentHandle<Ghost> ghost;
+    entityx::ComponentHandle<Transform> position_ghost;
+    entityx::ComponentHandle<Physics> physics_ghost;
+  
+ //   for (entityx::Entity e : es.entities_with_components(
+ //            ghost, position_ghost, physics_ghost)) {
+
+
+
+ //   }
+
   //  int currentSec = (int)(glfwGetTime() * 100.0);
   //
   //  for (entityx::Entity e1 :

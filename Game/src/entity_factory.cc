@@ -29,10 +29,6 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Health>(100.0f);
 
-  auto legs = entities.create();
-  legs.assign<Physics>(glm::vec3(0, 0, 0));
-  legs.assign<Transform>(position);
-
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 137), glm::vec2(15, 14));
   std::vector<engine::utils::Rectangle> moving_top;
@@ -76,6 +72,9 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   moving.emplace_back(glm::vec2(22, 23), glm::vec2(15, 14));
   moving.emplace_back(glm::vec2(41, 23), glm::vec2(15, 14));
 
+  std::vector<engine::utils::Rectangle> stand;
+  stand.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
+
   std::vector<engine::utils::Rectangle> death;
   death.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
 
@@ -109,6 +108,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
                                                   attack_left, 100.0f);
   SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
                                              100.0f);
+  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand, 100.0f);
   SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death,
                                             100.0f);
 
@@ -117,16 +117,26 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
                         defend_right_anim, defend_left_anim, attack_bottom_anim,
                         attack_top_anim, attack_right_anim, attack_left_anim, death_anim});
 
-  SpriteAnimation legs_anim({moving_anim});
-
+  
   player.assign<SpriteAnimation>(anim);
   player.assign<Sprite>(texture_atlas);
+  entities_created.push_back(player);
 
+  // adding legs
+  auto legs = entities.create();
+  legs.assign<Physics>(glm::vec3(0, 0, 0));
+  legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                                 player.component<Transform>().get());
+
+  SpriteAnimation legs_anim({moving_anim, stand_still});
   legs.assign<SpriteAnimation>(legs_anim);
   legs.assign<Legs>();
-
-  entities_created.push_back(player);
+  legs.assign<Sprite>(texture_atlas);
+  ParentLink parentLink;
+  parentLink.owner = player;
+  legs.assign<ParentLink>(parentLink);
   entities_created.push_back(legs);
+
 
   // adding sword entity
   auto sword_hitbox = entities.create();

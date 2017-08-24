@@ -24,6 +24,7 @@ Floor::Floor() {
   systems.add<GhostIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<KnightAnimationSystem>();
+  systems.add<KnightWalkingSystem>();
   systems.add<SpriteAnimator>();
   systems.add<TilemapRenderer>();
   systems.add<SpriteRenderer>();
@@ -41,6 +42,7 @@ void Floor::Update(entityx::TimeDelta dt) {
   systems.update<GhostIaSystem>(dt);
   systems.update<engine::systems::two_d::Physics>(dt);
   systems.update<KnightAnimationSystem>(dt);
+  systems.update<KnightWalkingSystem>(dt);
   systems.update<SpriteAnimator>(dt);
   systems.update<KnightAttackSystem>(dt);
   systems.update<HealthSystem>(dt);

@@ -474,7 +474,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
           if(timerGhost == 0.0){
             Engine::GetInstance().Get<AudioManager>().
-              PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
           }
   			}
   		break;
@@ -487,7 +487,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
     			if(timerGhost == 0.0){
               Engine::GetInstance().Get<AudioManager>().
-                PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+                PlaySound("assets/media/fx/ghost/default/back.wav",false);
             }
         }
   		break;
@@ -500,7 +500,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
           if(timerGhost == 0.0){
             Engine::GetInstance().Get<AudioManager>().
-              PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
           }
   			}
   		break;
@@ -513,7 +513,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
             if(timerGhost == 0.0){
             Engine::GetInstance().Get<AudioManager>().
-              PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
           }
   			}
   		break;
@@ -522,7 +522,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
         glm::normalize(player_position - transform.GetWorldPosition()) * kSpeed;
     		if(timerGhost == 0.0){
           Engine::GetInstance().Get<AudioManager>().
-            PlaySound("../assets/media/fx/ghost/default/mov.wav",false);
+            PlaySound("assets/media/fx/ghost/default/mov.wav",false);
         }
       break;
   	} 

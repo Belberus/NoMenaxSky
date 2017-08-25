@@ -27,7 +27,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 8));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
-  player.assign<Health>(100.0f, "../assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(100.0f, "assets/media/fx/gaunt/default/death.wav");
 
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 137), glm::vec2(15, 14));
@@ -160,7 +160,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   entityx::Entity ghost = entities.create();
   ghost.assign<Transform>(position);
   ghost.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 8));
-  ghost.assign<Health>(100.0f,"../assets/media/fx/ghost/default/death.wav");
+  ghost.assign<Health>(100.0f,"assets/media/fx/ghost/default/death.wav");
   ghost.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -226,7 +226,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 
   turret.assign<Transform>(position);
   turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 20));
-  turret.assign<Health>(50.0f,"../assets/media/fx/turret/default/death.wav");
+  turret.assign<Health>(50.0f,"assets/media/fx/turret/default/death.wav");
   turret.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);

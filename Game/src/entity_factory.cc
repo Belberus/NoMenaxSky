@@ -226,7 +226,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 
   turret.assign<Transform>(position);
   turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 20));
-  turret.assign<Health>(50.0f);
+  turret.assign<Health>(50.0f,"../assets/media/fx/turret/default/death.wav");
   turret.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);

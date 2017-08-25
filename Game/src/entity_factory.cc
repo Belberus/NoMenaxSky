@@ -173,16 +173,16 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   moving_bottom.emplace_back(glm::vec2(15, 88), glm::vec2(8, 13));
 
   std::vector<engine::utils::Rectangle> moving_top;
-  moving_bottom.emplace_back(glm::vec2(3, 71), glm::vec2(8, 13));
-  moving_bottom.emplace_back(glm::vec2(15, 71), glm::vec2(8, 13));
+  moving_top.emplace_back(glm::vec2(3, 71), glm::vec2(8, 13));
+  moving_top.emplace_back(glm::vec2(15, 71), glm::vec2(8, 13));
 
   std::vector<engine::utils::Rectangle> moving_right;
-  moving_bottom.emplace_back(glm::vec2(3, 54), glm::vec2(8, 13));
-  moving_bottom.emplace_back(glm::vec2(15, 54), glm::vec2(8, 13));
+  moving_right.emplace_back(glm::vec2(3, 54), glm::vec2(8, 13));
+  moving_right.emplace_back(glm::vec2(15, 54), glm::vec2(8, 13));
 
   std::vector<engine::utils::Rectangle> moving_left;
-  moving_bottom.emplace_back(glm::vec2(3, 37), glm::vec2(8, 13));
-  moving_bottom.emplace_back(glm::vec2(15, 37), glm::vec2(8, 13));
+  moving_left.emplace_back(glm::vec2(3, 37), glm::vec2(8, 13));
+  moving_left.emplace_back(glm::vec2(15, 37), glm::vec2(8, 13));
 
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -204,8 +204,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   ghost.assign<Sprite>(texture_atlas);
 
 
-  //ghost.assign<Sprite>(texture_atlas,
-    //                   Rectangle(glm::vec2(200, 200), glm::vec2(16, 16)));
+  //ghost.assign<Sprite>(texture_atlas);
   
   entities_created.push_back(ghost);
 

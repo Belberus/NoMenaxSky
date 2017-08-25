@@ -128,69 +128,33 @@ void KnightWalkingSystem::update(entityx::EntityManager &es, entityx::EventManag
 void GhostAnimationSystem::update(entityx::EntityManager &es,
                                   entityx::EventManager &events,
                                   entityx::TimeDelta dt) {
-    /* initialize random seed: */
-    srand(time(NULL));
   
-    // Buscamos la entidad del jugador, en función de su posición moveremos al
-    // fantasma
-    entityx::ComponentHandle<Player> player;
-    entityx::ComponentHandle<Physics> physics_player;
-    entityx::ComponentHandle<KnightAttack> attack;
-    entityx::ComponentHandle<Transform> position_player;
-  	//  soundEngine->setSoundVolume(0.1);
-  
-    // para todos los fantasmas, hacer que se muevan hacia el jugador
     entityx::ComponentHandle<Ghost> ghost;
     entityx::ComponentHandle<Transform> position_ghost;
     entityx::ComponentHandle<Physics> physics_ghost;
+    entityx::ComponentHandle<SpriteAnimation> animation;
+    std::string animToPlay;
   
- //   for (entityx::Entity e : es.entities_with_components(
- //            ghost, position_ghost, physics_ghost)) {
+    for (entityx::Entity e0 : es.entities_with_components(
+             ghost, position_ghost, physics_ghost, animation)) {
 
-
-
- //   }
-
-  //  int currentSec = (int)(glfwGetTime() * 100.0);
-  //
-  //  for (entityx::Entity e1 :
-  //       es.entities_with_components(ghostAnimation, physics_ghost, graphics,
-  //                                   position_ghost, body_ghost)) {
-  //    glm::vec2 v;
-  //    for (entityx::Entity e2 : es.entities_with_components(body)) {
-  //      if (position_player->position.y > position_ghost->position.y) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.y = SPEED_GHOST;
-  //      }
-  //      if (position_player->position.y < position_ghost->position.y) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.y = -SPEED_GHOST;
-  //      }
-  //      if (position_player->position.x > position_ghost->position.x) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.x = SPEED_GHOST;
-  //      }
-  //      if (position_player->position.x < position_ghost->position.x) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.x = -SPEED_GHOST;
-  //      }
-  //    } /* for */
-  //    physics_ghost->velocity = decompose(v);
-  //
-  //    if (position_player->position.y > position_ghost->position.y + 10) {
-  //      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
-  //    } else if (position_player->position.y < position_ghost->position.y) {
-  //      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
-  //    }
-  //  }
+		/*if (physics_ghost->velocity.x < 0) {
+			animToPlay = "moving_left";
+			animation->Play(animToPlay);
+		}
+		if (physics_ghost->velocity.x > 0) {
+			animToPlay = "moving_right";
+			animation->Play(animToPlay);
+		}*/
+		if (physics_ghost->velocity.y < 0) {
+			animToPlay = "moving_bottom";
+			animation->Play(animToPlay);
+		}
+		if (physics_ghost->velocity.y > 0) {
+			animToPlay = "moving_top";
+			animation->Play(animToPlay);
+		}
+    }
 }
 
 MenuInputSystem::MenuInputSystem()

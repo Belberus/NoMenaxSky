@@ -22,6 +22,7 @@ Floor::Floor() {
   events.subscribe<Collision>(*this);
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
+  systems.add<GhostAnimationSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<KnightAnimationSystem>();
   systems.add<KnightWalkingSystem>();
@@ -40,6 +41,7 @@ Floor::~Floor() {}
 void Floor::Update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<GhostIaSystem>(dt);
+  systems.update<GhostAnimationSystem>(dt);
   systems.update<engine::systems::two_d::Physics>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<KnightWalkingSystem>(dt);

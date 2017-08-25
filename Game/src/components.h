@@ -10,7 +10,8 @@
 
 struct Health {
   float hp;
-  Health(float hp) : hp(hp) {}
+  std::string death_fx;
+  Health(float hp, std::string death_fx) : hp(hp), death_fx(death_fx) {}
 };
 
 struct MeleeWeapon {

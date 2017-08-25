@@ -431,6 +431,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 }
 
 const float GhostIaSystem::kSpeed = 50.0f;
+float timerGhost;
 
 void GhostIaSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
@@ -455,6 +456,10 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.y = -1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::DAMAGE_BOTTOM:
@@ -464,7 +469,11 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.y = 1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
-  			}
+    			if(timerGhost == 0.0){
+              Engine::GetInstance().Get<AudioManager>().
+                PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+            }
+        }
   		break;
   		case Ghost::Comportamiento::DAMAGE_LEFT:
   			if (ghost.time_passed >= ghost.kHitDuration) {
@@ -473,6 +482,10 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.x = 1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::DAMAGE_RIGHT:
@@ -482,14 +495,26 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else { 
   				new_velocity.x = -1.0f;
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+            if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("../assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::FOLLOW:
   			physics.velocity =
         glm::normalize(player_position - transform.GetWorldPosition()) * kSpeed;
-  		break;
+    		if(timerGhost == 0.0){
+          Engine::GetInstance().Get<AudioManager>().
+            PlaySound("../assets/media/fx/ghost/default/mov.wav",false);
+        }
+      break;
   	} 
   });
+  timerGhost += dt;
+    if(timerGhost >= 1){
+        timerGhost = 0.0;
+    }
 }
 
 void KnightAttackSystem::configure(entityx::EventManager &event_manager) {
@@ -569,7 +594,10 @@ void HealthSystem::update(entityx::EntityManager &es,
                           entityx::TimeDelta dt) {
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (health.hp <= 0.0f) {
+      Engine::GetInstance().Get<AudioManager>().
+              PlaySound(health.death_fx,false);
       entity.destroy();
+
     } // Si no lo mata, que recule un poco si es posible
   });
 }

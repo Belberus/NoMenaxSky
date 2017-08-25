@@ -100,6 +100,16 @@ set(SYSTEMS_TWO_D_SRC
 )
 source_group(systems\\two_d\\sources FILES ${SYSTEMS_TWO_D_SRC})
 
+set(SYSTEMS_THREE_D_HDR
+  include/engine/systems/three_d/model_renderer.h
+)
+source_group(systems\\three_d\\headers FILES ${SYSTEMS_THREE_D_HDR})
+
+set(SYSTEMS_THREE_D_SRC
+  src/systems/three_d/model_renderer.cc
+)
+source_group(systems\\three_d\\sources FILES ${SYSTEMS_THREE_D_SRC})
+
 set(EVENTS_HDR
   include/engine/events/collision.h
   include/engine/events/key_pressed.h
@@ -147,6 +157,8 @@ add_library(${PROJECT_NAME}
   ${COMPONENTS_THREE_D_SRC}
   ${SYSTEMS_TWO_D_HDR}
   ${SYSTEMS_TWO_D_SRC}
+  ${SYSTEMS_THREE_D_HDR}
+  ${SYSTEMS_THREE_D_SRC}
   ${EVENTS_HDR}
   ${UTILS_HDR}
   ${UTILS_SRC}
@@ -174,5 +186,13 @@ target_include_directories(${PROJECT_NAME}
 	src
 )
 if(CMAKE_COMPILER_IS_GNUCC)
-  target_compile_options(${PROJECT_NAME} PRIVATE "-Wall")
+  target_compile_options(${PROJECT_NAME} 
+	PRIVATE 
+	  "-Wall"
+  )
+elseif(MSVC)
+  target_compile_options(${PROJECT_NAME}
+	PRIVATE
+	  "/W4"
+  )
 endif(CMAKE_COMPILER_IS_GNUCC)

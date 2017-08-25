@@ -13,9 +13,9 @@
 [submodule "engine/lib/stb"]
 	path = Game/lib/engine/lib/stb
 	url = https://github.com/nothings/stb.git
+[submodule "engine/lib/assimp"]
+	path = Game/lib/engine/lib/assimp
+	url = https://github.com/assimp/assimp.git
 [submodule "Game/lib/tmxlite"]
 	path = Game/lib/tmxlite
 	url = https://github.com/fallahn/tmxlite.git
-[submodule "Game/lib/engine/lib/assimp"]
-	path = Game/lib/engine/lib/assimp
-	url = https://github.com/assimp/assimp.git

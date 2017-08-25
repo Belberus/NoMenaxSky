@@ -36,7 +36,9 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_COLLADA_IMPORTER ON CACHE BOOL "" FORCE)
 add_subdirectory(lib/assimp)
+get_target_property(ASSIMP_INC assimp INCLUDE_DIRECTORIES)
 
 # ENGINE
 set(COMPONENTS_COMMON_HDR
@@ -67,6 +69,16 @@ set(COMPONENTS_TWO_D_SRC
   src/components/two_d/texture.cc
 )
 source_group(components\\two_d\\sources FILES ${COMPONENTS_TWO_D_SRC})
+
+set(COMPONENTS_THREE_D_HDR
+  include/engine/components/three_d/model.h
+)
+source_group(components\\three_d\\headers FILES ${COMPONENTS_THREE_D_HDR})
+
+set(COMPONENTS_THREE_D_SRC
+  src/components/three_d/model.cc
+)
+source_group(components\\three_d\\sources FILES ${COMPONENTS_THREE_D_SRC})
 
 set(SYSTEMS_TWO_D_HDR
   include/engine/systems/two_d/collider_renderer.h
@@ -131,6 +143,8 @@ add_library(${PROJECT_NAME}
   ${COMPONENTS_COMMON_SRC}
   ${COMPONENTS_TWO_D_HDR}
   ${COMPONENTS_TWO_D_SRC}
+  ${COMPONENTS_THREE_D_HDR}
+  ${COMPONENTS_THREE_D_SRC}
   ${SYSTEMS_TWO_D_HDR}
   ${SYSTEMS_TWO_D_SRC}
   ${EVENTS_HDR}
@@ -139,12 +153,14 @@ add_library(${PROJECT_NAME}
   ${CORE_HDR}
   ${CORE_SRC}
 )
+
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
     glm
     entityx
     glfw
   PRIVATE
+	assimp
     gl3w
 	${IRRKLANG_LIBS}
 )
@@ -154,10 +170,9 @@ target_include_directories(${PROJECT_NAME}
     lib/stb
     lib/irrKlang/include
   PRIVATE
+    ${ASSIMP_INC}
 	src
 )
 if(CMAKE_COMPILER_IS_GNUCC)
   target_compile_options(${PROJECT_NAME} PRIVATE "-Wall")
 endif(CMAKE_COMPILER_IS_GNUCC)
-
-

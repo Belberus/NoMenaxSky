@@ -52,25 +52,25 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       animToPlay = "moving_right";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else if (physics->velocity.x < 0) {
       animToPlay = "moving_left";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else if (physics->velocity.y > 0) {
       animToPlay = "moving_top";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else {
       if(!lastAnim.empty() && (lastAnim.find("moving") != std::string::npos)){
@@ -83,8 +83,8 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   }
   if(lastAnim.find("attack") != std::string::npos){
     if(timer == 0.0){
-      Engine::GetInstance().Get<AudioManager>().PlaySound("../assets/media/fx/gaunt/warrior/attack.wav",false);
-      Engine::GetInstance().Get<AudioManager>().PlaySound("../assets/media/fx/gaunt/default/attack_2.wav",false);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/warrior/attack.wav",false);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/default/attack_2.wav",false);
     }
     timer += dt;
     if(timer >= 0.5){
@@ -94,7 +94,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     if(physics->velocity.x !=0 || physics->velocity.y != 0){
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     }
   }

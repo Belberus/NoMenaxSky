@@ -1,9 +1,9 @@
 #include "game.h"
+#include <engine/core/audio_manager.h>
+#include <engine/core/engine.h>
 #include "game_ui.h"
 #include "main_menu.h"
 #include "main_menu_background.h"
-#include <engine/core/engine.h>
-#include <engine/core/audio_manager.h>
 
 #include "floor_factory.h"
 
@@ -14,8 +14,8 @@ Game::Game()
   events.subscribe<StartGame>(*this);
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
-  Engine::GetInstance().Get<AudioManager>().
-        PlaySound("../assets/media/music/gauntleto_theme_v2.wav",true);
+  Engine::GetInstance().Get<AudioManager>().PlaySound(
+      "assets/media/music/gauntleto_theme_v2.wav", true);
 }
 
 void Game::Update(entityx::TimeDelta dt) {
@@ -26,10 +26,9 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kOptionsMenu:
         break;
       case State::kFloor1:
-      Engine::GetInstance().Get<AudioManager>().
-        StopAllSounds();
-      Engine::GetInstance().Get<AudioManager>().
-        PlaySound("../assets/media/music/level_one_v2.wav",true);
+        Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/music/level_one_v2.wav", true);
         scenes_.clear();
         scenes_.push_back(FloorFactory::MakeFloor1("assets/castle/floor1.tmx"));
         scenes_.push_back(std::make_unique<GameUi>(this));

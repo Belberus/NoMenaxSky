@@ -173,16 +173,16 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   moving_bottom.emplace_back(glm::vec2(15, 88), glm::vec2(8, 13));
 
   std::vector<engine::utils::Rectangle> moving_top;
-  moving_bottom.emplace_back(glm::vec2(3, 71), glm::vec2(8, 13));
-  moving_bottom.emplace_back(glm::vec2(15, 71), glm::vec2(8, 13));
+  moving_top.emplace_back(glm::vec2(3, 71), glm::vec2(8, 13));
+  moving_top.emplace_back(glm::vec2(15, 71), glm::vec2(8, 13));
 
   std::vector<engine::utils::Rectangle> moving_right;
-  moving_bottom.emplace_back(glm::vec2(3, 54), glm::vec2(8, 13));
-  moving_bottom.emplace_back(glm::vec2(15, 54), glm::vec2(8, 13));
+  moving_right.emplace_back(glm::vec2(3, 54), glm::vec2(8, 13));
+  moving_right.emplace_back(glm::vec2(15, 54), glm::vec2(8, 13));
 
   std::vector<engine::utils::Rectangle> moving_left;
-  moving_bottom.emplace_back(glm::vec2(3, 37), glm::vec2(8, 13));
-  moving_bottom.emplace_back(glm::vec2(15, 37), glm::vec2(8, 13));
+  moving_left.emplace_back(glm::vec2(3, 37), glm::vec2(8, 13));
+  moving_left.emplace_back(glm::vec2(15, 37), glm::vec2(8, 13));
 
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -204,8 +204,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   ghost.assign<Sprite>(texture_atlas);
 
 
-  //ghost.assign<Sprite>(texture_atlas,
-    //                   Rectangle(glm::vec2(200, 200), glm::vec2(16, 16)));
+  //ghost.assign<Sprite>(texture_atlas);
   
   entities_created.push_back(ghost);
 
@@ -220,20 +219,13 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   return entities_created;
 }
 
-// COSAS QUE PREGUNTAR A MARIUS:
-//			- ACLARAR TEMA DE LAS PIERNAS
-//			- LO QUE ESTA ESCRITO DEBAJO
-//			- TEMA DE LOS TICKS DE DAÑO
-//			- TEMA DE EMPUJAR HACIA ATRAS AL COMERTE DAÑO
-
-/*
 std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &entities, const glm::vec3 &position) {
 	
   std::vector<entityx::Entity> entities_created;
   entityx::Entity turret = entities.create();
 
   turret.assign<Transform>(position);
-  turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 8));
+  turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 20));
   turret.assign<Health>(50.0f);
   turret.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
@@ -243,15 +235,43 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   turret.assign<Turret>();
 
   // Si no tiene animacion y es solo una cabeza que se mueve como se hace
+  engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
+    
   std::vector<engine::utils::Rectangle> moving;
-  moving.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));
-  
+  moving.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
+  moving.emplace_back(glm::vec2(22, 38), glm::vec2(15, 20));
+  moving.emplace_back(glm::vec2(41, 38), glm::vec2(15, 20));
 
-  
-
+  std::vector<engine::utils::Rectangle> stand;
+  stand.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
 
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
           "assets/spritesheets/torreta.png");
   	
-}*/
+  SpriteAnimation::AnimationClip moving_anim(
+      "moving", texture_atlas, moving, 100.0f);
+  SpriteAnimation::AnimationClip stand_anim(
+      "stand", texture_atlas, stand, 100.0f);
+
+  // La cabeza no tiene animacion porque no se mueve
+  turret.assign<Sprite>(texture_atlas, head);
+  entities_created.push_back(turret);
+  
+  entityx::Entity legs = entities.create();
+
+  legs.assign<Physics>(glm::vec3(0, 0, 0));
+  legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                                 turret.component<Transform>().get());
+
+  SpriteAnimation legs_anim({moving_anim, stand_anim});
+  legs.assign<SpriteAnimation>(legs_anim);
+  legs.assign<Legs>();
+  legs.assign<Sprite>(texture_atlas);
+  ParentLink parentLink;
+  parentLink.owner = turret;
+  legs.assign<ParentLink>(parentLink);
+
+  entities_created.push_back(legs);
+  return entities_created;
+}

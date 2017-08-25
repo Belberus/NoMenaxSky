@@ -52,25 +52,25 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       animToPlay = "moving_right";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else if (physics->velocity.x < 0) {
       animToPlay = "moving_left";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else if (physics->velocity.y > 0) {
       animToPlay = "moving_top";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     } else {
       if(!lastAnim.empty() && (lastAnim.find("moving") != std::string::npos)){
@@ -83,8 +83,8 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   }
   if(lastAnim.find("attack") != std::string::npos){
     if(timer == 0.0){
-      Engine::GetInstance().Get<AudioManager>().PlaySound("../assets/media/fx/gaunt/warrior/attack.wav",false);
-      Engine::GetInstance().Get<AudioManager>().PlaySound("../assets/media/fx/gaunt/default/attack_2.wav",false);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/warrior/attack.wav",false);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/default/attack_2.wav",false);
     }
     timer += dt;
     if(timer >= 0.5){
@@ -94,7 +94,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     if(physics->velocity.x !=0 || physics->velocity.y != 0){
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("../assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
       }
     }
   }
@@ -128,69 +128,33 @@ void KnightWalkingSystem::update(entityx::EntityManager &es, entityx::EventManag
 void GhostAnimationSystem::update(entityx::EntityManager &es,
                                   entityx::EventManager &events,
                                   entityx::TimeDelta dt) {
-    /* initialize random seed: */
-    srand(time(NULL));
   
-    // Buscamos la entidad del jugador, en función de su posición moveremos al
-    // fantasma
-    entityx::ComponentHandle<Player> player;
-    entityx::ComponentHandle<Physics> physics_player;
-    entityx::ComponentHandle<KnightAttack> attack;
-    entityx::ComponentHandle<Transform> position_player;
-  	//  soundEngine->setSoundVolume(0.1);
-  
-    // para todos los fantasmas, hacer que se muevan hacia el jugador
     entityx::ComponentHandle<Ghost> ghost;
     entityx::ComponentHandle<Transform> position_ghost;
     entityx::ComponentHandle<Physics> physics_ghost;
+    entityx::ComponentHandle<SpriteAnimation> animation;
+    std::string animToPlay;
   
- //   for (entityx::Entity e : es.entities_with_components(
- //            ghost, position_ghost, physics_ghost)) {
-
-
-
- //   }
-
-  //  int currentSec = (int)(glfwGetTime() * 100.0);
-  //
-  //  for (entityx::Entity e1 :
-  //       es.entities_with_components(ghostAnimation, physics_ghost, graphics,
-  //                                   position_ghost, body_ghost)) {
-  //    glm::vec2 v;
-  //    for (entityx::Entity e2 : es.entities_with_components(body)) {
-  //      if (position_player->position.y > position_ghost->position.y) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.y = SPEED_GHOST;
-  //      }
-  //      if (position_player->position.y < position_ghost->position.y) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.y = -SPEED_GHOST;
-  //      }
-  //      if (position_player->position.x > position_ghost->position.x) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.x = SPEED_GHOST;
-  //      }
-  //      if (position_player->position.x < position_ghost->position.x) {
-  //        if ((currentSec % 200 == 99 || (currentSec % 200 == 198))) {
-  //          // soundEngine->play2D("assets/media/fx/talk.wav");
-  //        }
-  //        v.x = -SPEED_GHOST;
-  //      }
-  //    } /* for */
-  //    physics_ghost->velocity = decompose(v);
-  //
-  //    if (position_player->position.y > position_ghost->position.y + 10) {
-  //      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_top);
-  //    } else if (position_player->position.y < position_ghost->position.y) {
-  //      getNext(ghostAnimation, graphics, dt, ghostAnimation->mov_down);
-  //    }
-  //  }
+    for (entityx::Entity e0 : es.entities_with_components(
+             ghost, position_ghost, physics_ghost, animation)) {
+    	// Estos dos solo provocan que el fantasma se colapse cambiando de animacion cuando el caballero se encuentra en una diagonal
+		/*if (physics_ghost->velocity.x < 0) {
+			animToPlay = "moving_left";
+			animation->Play(animToPlay);
+		}
+		if (physics_ghost->velocity.x > 0) {
+			animToPlay = "moving_right";
+			animation->Play(animToPlay);
+		}*/
+		if (physics_ghost->velocity.y < 0) {
+			animToPlay = "moving_bottom";
+			animation->Play(animToPlay);
+		}
+		if (physics_ghost->velocity.y > 0) {
+			animToPlay = "moving_top";
+			animation->Play(animToPlay);
+		}
+    }
 }
 
 MenuInputSystem::MenuInputSystem()
@@ -428,6 +392,58 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
     }
   });
+}
+
+
+void TurretWalkingSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+	entityx::ComponentHandle<SpriteAnimation> animation;
+	entityx::ComponentHandle<Physics> physics;
+  	entityx::ComponentHandle<ParentLink> parent;
+  	entityx::ComponentHandle<Legs> legs;
+  	entityx::ComponentHandle<Turret> turret;
+  	std::string animToPlay;
+
+  	for (entityx::Entity e1 :
+       es.entities_with_components(animation, parent, legs, turret)) {
+  		if ((parent->owner.component<Physics>()->velocity.x < 0) || (parent->owner.component<Physics>()->velocity.x > 0) || (parent->owner.component<Physics>()->velocity.y >0) || (parent->owner.component<Physics>()->velocity.y<0)) {
+  			animToPlay = "moving";
+  		} else {
+  			animToPlay = "stand";
+  		}
+  		animation->Play(animToPlay);
+  	}
+}
+
+const float TurretIaSystem::turretSpeed = 10.0f;
+
+void TurretIaSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+	glm::vec3 player_position;
+  		es.each<Player, Transform>(
+      		[&](entityx::Entity entity, Player &player, Transform &player_transform) {
+        	player_position = player_transform.GetWorldPosition();
+      	});
+
+	// Comprobamos la distancia a la que esta, si esta a menos de X distancia se movera y disparara (disminuyendo asi la precision)
+  	glm::vec3 turret_position;
+  	es.each<Turret, Transform, Physics>([&](entityx::Entity entity, Turret &turret,
+                                         Transform &turret_transform,
+                                         Physics &turret_physics) {
+  		turret_position = turret_transform.GetWorldPosition();
+  		const float distancia = std::sqrt(std::pow(std::abs(player_position.x - turret_position.x) , 2) + std::pow(std::abs(player_position.y - turret_position.y) , 2)) ;
+
+  		if (distancia < 25.0f) {
+  			// + DISPARAR SI TOCA
+  			turret_physics.velocity =
+        -1.0f * glm::normalize(player_position - turret_transform.GetWorldPosition()) * turretSpeed;
+  		} else {
+  			// DISPARAR SI TOCA
+  		}
+  	});
+
 }
 
 const float GhostIaSystem::kSpeed = 50.0f;

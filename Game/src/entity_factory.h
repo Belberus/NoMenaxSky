@@ -12,5 +12,8 @@ class EntityFactory {
 
   static std::vector<entityx::Entity> MakeGhost(
       entityx::EntityManager &entities, const glm::vec3 &position);
+
+  static std::vector<entityx::Entity> MakeTurret(
+      entityx::EntityManager &entities, const glm::vec3 &position);
 };
 #endif  // ENTITY_FACTORY_H_

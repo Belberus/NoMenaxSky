@@ -34,6 +34,20 @@ class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
               entityx::TimeDelta dt) override;
 }; 
 
+class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
+ public:
+ 	void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class TurretIaSystem : public entityx::System<TurretIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+ private:
+ 	static const float turretSpeed;
+};
+
 class HealthSystem : public entityx::System<HealthSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,

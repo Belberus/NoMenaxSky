@@ -404,6 +404,7 @@ void TurretWalkingSystem::update(entityx::EntityManager &es,
 	entityx::ComponentHandle<Physics> physics;
   	entityx::ComponentHandle<ParentLink> parent;
   	entityx::ComponentHandle<TurretLegs> legs;
+
   	std::string animToPlay;
 
   	for (entityx::Entity e1 :
@@ -450,6 +451,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
   			turret_physics.velocity =
         -1.0f * glm::normalize(player_position - turret_transform.GetWorldPosition()) * turretSpeed;
   		} else {
+  			turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);;
   			// DISPARAR SI TOCA
   		}
   	});
@@ -635,11 +637,22 @@ void KnightAttackSystem::update(entityx::EntityManager &es,
 void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
                           entityx::TimeDelta dt) {
+
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (health.hp <= 0.0f) {
       Engine::GetInstance().Get<AudioManager>().
         PlaySound(health.death_fx,false);
+      es.each<Legs, ParentLink>([&](entityx::Entity entity_legs, Legs &legs, ParentLink &parent) {
+      	if(parent.owner == entity) {
+      		entity_legs.destroy();
+      	}
+      });
+      es.each<TurretLegs, ParentLink>([&](entityx::Entity entity_legs, TurretLegs &legs, ParentLink &parent) {
+      	if(parent.owner == entity) {
+      		entity_legs.destroy();
+      	}
+      });
       entity.destroy();
-    } // Si no lo mata, que recule un poco si es posible
+    } 
   });
 }

@@ -395,6 +395,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   });
 }
 
+float timerTurret;
 
 void TurretWalkingSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
@@ -409,11 +410,20 @@ void TurretWalkingSystem::update(entityx::EntityManager &es,
        es.entities_with_components(animation, parent, legs)) {
   		if ((parent->owner.component<Physics>()->velocity.x < 0) || (parent->owner.component<Physics>()->velocity.x > 0) || (parent->owner.component<Physics>()->velocity.y >0) || (parent->owner.component<Physics>()->velocity.y<0)) {
   			animToPlay = "moving";
+        //TODO: Cuando este el sonido listo descomentar
+        if(timerTurret == 0.0){
+          /*Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/turret/default/mov.wav",false);*/
+        }
   		} else {
   			animToPlay = "stand";
   		}
   		animation->Play(animToPlay);
   	}
+    timerTurret += dt;
+    if(timerTurret >= 0.2){
+      timerTurret = 0.0;
+    }
 }
 
 const float TurretIaSystem::turretSpeed = 10.0f;
@@ -447,6 +457,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
 }
 
 const float GhostIaSystem::kSpeed = 50.0f;
+float timerGhost;
 
 void GhostIaSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
@@ -471,6 +482,10 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.y = -1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::DAMAGE_BOTTOM:
@@ -480,6 +495,10 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.y = 1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::DAMAGE_LEFT:
@@ -489,6 +508,10 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.x = 1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::DAMAGE_RIGHT:
@@ -498,14 +521,26 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else { 
   				new_velocity.x = -1.0f;
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+          }
   			}
   		break;
   		case Ghost::Comportamiento::FOLLOW:
   			physics.velocity =
         	glm::normalize(player_position - transform.GetWorldPosition()) * kSpeed;
-  		break;
+      		if(timerGhost == 0.0){
+                Engine::GetInstance().Get<AudioManager>().
+                  PlaySound("assets/media/fx/ghost/default/mov.wav",false);
+              }
+      break;
   	} 
   });
+  timerGhost += dt;
+  if(timerGhost >= 2){
+    timerGhost = 0.0;
+  }
 }
 
 void KnightAttackSystem::configure(entityx::EventManager &event_manager) {
@@ -544,7 +579,8 @@ void KnightAttackSystem::receive(const Collision &collision) {
     		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_LEFT;
     	break;
     }
-
+    Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/hit.wav",false);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -577,7 +613,8 @@ void KnightAttackSystem::receive(const Collision &collision) {
       collision_copy.e1.component<Turret>()) {
   	auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
-
+    Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/hit.wav",false);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -600,6 +637,8 @@ void HealthSystem::update(entityx::EntityManager &es,
                           entityx::TimeDelta dt) {
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (health.hp <= 0.0f) {
+      Engine::GetInstance().Get<AudioManager>().
+        PlaySound(health.death_fx,false);
       entity.destroy();
     } // Si no lo mata, que recule un poco si es posible
   });

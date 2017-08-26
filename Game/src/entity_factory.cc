@@ -159,15 +159,15 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   std::vector<entityx::Entity> entities_created;
   entityx::Entity ghost = entities.create();
   ghost.assign<Transform>(position);
-  ghost.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 8));
-  ghost.assign<Health>(100.0f,"assets/media/fx/ghost/default/death.wav");
+  ghost.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(4, 4));
   ghost.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   ghost.assign<ColorAnimation>(std::move(color_frames));
   ghost.assign<Ghost>();
-
+  ghost.assign<Health>(20.0f, "assets/media/fx/ghost/default/death.wav");
+  
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));
   moving_bottom.emplace_back(glm::vec2(15, 88), glm::vec2(8, 13));
@@ -225,14 +225,14 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   entityx::Entity turret = entities.create();
 
   turret.assign<Transform>(position);
-  turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 20));
-  turret.assign<Health>(50.0f,"assets/media/fx/turret/default/death.wav");
+  turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10));
   turret.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   turret.assign<ColorAnimation>(std::move(color_frames));
   turret.assign<Turret>();
+  turret.assign<Health>(50.0f, "assets/media/fx/turret/default/death.wav");
 
   // Si no tiene animacion y es solo una cabeza que se mueve como se hace
   engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
@@ -243,7 +243,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   moving.emplace_back(glm::vec2(41, 38), glm::vec2(15, 20));
 
   std::vector<engine::utils::Rectangle> stand;
-  stand.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
+  stand.emplace_back(glm::vec2(22, 62), glm::vec2(15, 20));
 
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -266,7 +266,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 
   SpriteAnimation legs_anim({moving_anim, stand_anim});
   legs.assign<SpriteAnimation>(legs_anim);
-  legs.assign<Legs>();
+  legs.assign<TurretLegs>();
   legs.assign<Sprite>(texture_atlas);
   ParentLink parentLink;
   parentLink.owner = turret;

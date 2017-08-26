@@ -78,17 +78,15 @@ struct Ghost {
 	float time_passed;
 };
 
-struct Turret{
-	/*Turret(): comportamiento(Comportamiento::STILL) {}
-	enum Comportamiento {STILL, RUN_AWAY};
-	Comportamiento comportamiento;*/
-};
+struct Turret{};
 
 struct RoomLimit {};
 
 struct Sword {};
 
 struct Legs{};
+
+struct TurretLegs{};
 
 struct ParentLink {
 	entityx::Entity owner;

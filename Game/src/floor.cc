@@ -23,6 +23,8 @@ Floor::Floor() {
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
   systems.add<GhostAnimationSystem>();
+  systems.add<TurretIaSystem>();
+  systems.add<TurretWalkingSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<KnightAnimationSystem>();
   systems.add<KnightWalkingSystem>();
@@ -42,6 +44,8 @@ void Floor::Update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<GhostIaSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);
+  systems.update<TurretIaSystem>(dt);
+  systems.update<TurretWalkingSystem>(dt);
   systems.update<engine::systems::two_d::Physics>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<KnightWalkingSystem>(dt);

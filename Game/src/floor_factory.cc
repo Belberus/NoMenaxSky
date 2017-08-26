@@ -184,6 +184,11 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
         return EntityFactory::MakeGhost(em, position);
       };
       room.entity_creators_.push_back(fn_ghost);
+    } else if (object.getType() == "torreta") {
+      auto fn_turret = [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        return EntityFactory::MakeTurret(em, position);
+      };
+      room.entity_creators_.push_back(fn_turret);
     }
   }
 }

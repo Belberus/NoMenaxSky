@@ -25,6 +25,7 @@ Floor::Floor() {
   systems.add<GhostAnimationSystem>();
   systems.add<TurretIaSystem>();
   systems.add<TurretWalkingSystem>();
+  systems.add<TurretProjectileAnimationSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<KnightAnimationSystem>();
   systems.add<KnightWalkingSystem>();
@@ -33,6 +34,7 @@ Floor::Floor() {
   systems.add<SpriteRenderer>();
   systems.add<ColliderRenderer>();
   systems.add<KnightAttackSystem>();
+  systems.add<TurretAttackSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
   systems.configure();
@@ -46,11 +48,13 @@ void Floor::Update(entityx::TimeDelta dt) {
   systems.update<GhostAnimationSystem>(dt);
   systems.update<TurretIaSystem>(dt);
   systems.update<TurretWalkingSystem>(dt);
+  systems.update<TurretProjectileAnimationSystem>(dt);
   systems.update<engine::systems::two_d::Physics>(dt);
   systems.update<KnightAnimationSystem>(dt);
   systems.update<KnightWalkingSystem>(dt);
   systems.update<SpriteAnimator>(dt);
   systems.update<KnightAttackSystem>(dt);
+  systems.update<TurretAttackSystem>(dt);
   systems.update<HealthSystem>(dt);
   systems.update<ColorAnimator>(dt);
   systems.update<TilemapRenderer>(dt);
@@ -126,19 +130,23 @@ void Floor::receive(const Collision& collision) {
 
 bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
                                       entityx::Entity door) {
-  auto crossing_entity_velocity =
+  /*auto crossing_entity_velocity =
       crossing_entity.component<engine::components::common::Physics>()
-          ->velocity;
+          ->velocity; */
+  Player::Orientation crossing_entity_orientation = crossing_entity.component<Player>()->orientation;
+
+  std::cerr << crossing_entity_orientation << std::endl;
+
   auto door_component = *door.component<Door>();
 
   auto trying_cross_left_door =
-      door_component.pos == "left" && crossing_entity_velocity.x < 0.0f;
+      door_component.pos == "left" && (crossing_entity_orientation == Player::Orientation::LEFT);
   auto trying_cross_right_door =
-      door_component.pos == "right" && crossing_entity_velocity.x > 0.0f;
+      door_component.pos == "right" && (crossing_entity_orientation == Player::Orientation::RIGHT);
   auto trying_cross_top_door =
-      door_component.pos == "top" && crossing_entity_velocity.y > 0.0f;
+      door_component.pos == "top" && (crossing_entity_orientation == Player::Orientation::UP);
   auto trying_cross_bottom_door =
-      door_component.pos == "bottom" && crossing_entity_velocity.y < 0.0f;
+      door_component.pos == "bottom" && (crossing_entity_orientation == Player::Orientation::DOWN);
 
   return trying_cross_left_door || trying_cross_right_door ||
          trying_cross_top_door || trying_cross_bottom_door;

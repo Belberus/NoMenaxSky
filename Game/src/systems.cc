@@ -687,7 +687,7 @@ void TurretAttackSystem::receive(const Collision &collision) {
   	proyectil.destroy();
 
     Engine::GetInstance().Get<AudioManager>().
-              PlaySound("assets/media/fx/talk.wav",false);
+              PlaySound("assets/media/fx/talk.wav",false,1);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
 
@@ -700,7 +700,7 @@ void TurretAttackSystem::receive(const Collision &collision) {
   	proyectil.destroy();
 
     Engine::GetInstance().Get<AudioManager>().
-              PlaySound("assets/media/fx/talk.wav",false);
+              PlaySound("assets/media/fx/talk.wav",false,1);
     auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
     e0_color_animation->Play();      
   } else {

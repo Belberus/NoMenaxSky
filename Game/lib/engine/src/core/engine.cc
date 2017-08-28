@@ -38,8 +38,7 @@ engine::core::Engine::Engine() {
     exit(-1);
   }
   glfwSwapInterval(properties_.vsync);
-  // glClearDepth(1.0f);
-  // glDepthFunc(GL_LEQUAL);
+  glDepthFunc(GL_LESS);
   // glEnable(GL_DEPTH_TEST);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);

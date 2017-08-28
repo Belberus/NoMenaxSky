@@ -12,7 +12,7 @@ void engine::core::SceneManager::Play(Scene& scene) {
   entityx::TimeDelta dt = 0.0f;
   while (!glfwWindowShouldClose(window_)) {
     entityx::TimeDelta t1 = glfwGetTime();
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     scene.Update(dt);
     glfwSwapBuffers(window_);
     glfwPollEvents();

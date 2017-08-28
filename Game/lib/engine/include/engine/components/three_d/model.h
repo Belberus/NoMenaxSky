@@ -17,6 +17,16 @@ class ModelRenderer;
 namespace engine {
 namespace components {
 namespace three_d {
+namespace impl {
+class ModelImpl;
+}  // namespace impl
+}  // namespace three_d
+}  // namespace components
+}  // namespace engine
+
+namespace engine {
+namespace components {
+namespace three_d {
 /// This class represents a 3D model.
 class Model {
  public:
@@ -24,19 +34,16 @@ class Model {
   /// @param filename the name of the file containing the 3D model. This must
   /// be in COLLADA format.
   Model(const std::string &filename);
+  Model(const Model &model);
+  Model &operator=(const Model &model);
+  Model(Model &&model);
+  Model &operator=(Model &&model);
+  ~Model();
 
  private:
-  struct Vertex {
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 tex_coordinates;
-  };
-  struct Mesh {};
+  std::unique_ptr<engine::components::three_d::impl::ModelImpl> pimpl_;
 
-  struct Impl;
-  std::unique_ptr<Impl> pimpl_;
-
-  // The system responsible of consuming this class information an rendering the
+  // The system responsible of consuming this class data an rendering the
   // 3D model correctly.
   friend class engine::systems::three_d::ModelRenderer;
 };

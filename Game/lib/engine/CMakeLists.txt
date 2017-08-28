@@ -72,11 +72,13 @@ source_group(components\\two_d\\sources FILES ${COMPONENTS_TWO_D_SRC})
 
 set(COMPONENTS_THREE_D_HDR
   include/engine/components/three_d/model.h
+  src/components/three_d/model_impl.h
 )
 source_group(components\\three_d\\headers FILES ${COMPONENTS_THREE_D_HDR})
 
 set(COMPONENTS_THREE_D_SRC
   src/components/three_d/model.cc
+  src/components/three_d/model_impl.cc
 )
 source_group(components\\three_d\\sources FILES ${COMPONENTS_THREE_D_SRC})
 
@@ -112,6 +114,7 @@ source_group(systems\\three_d\\sources FILES ${SYSTEMS_THREE_D_SRC})
 
 set(EVENTS_HDR
   include/engine/events/collision.h
+  include/engine/events/ignore_collision.h
   include/engine/events/key_pressed.h
   include/engine/events/key_released.h
 )

@@ -6,10 +6,16 @@
 
 namespace engine {
 namespace systems {
+
 namespace two_d {
 class SpriteRenderer;
 class TilemapRenderer;
 }  // namespace two_d
+
+namespace three_d {
+class ModelRenderer;
+}  // namespace three_d
+
 }  // namespace systems
 }  // namespace engine
 
@@ -35,6 +41,7 @@ class Texture {
   static int next_texture_unit_;
   friend class engine::systems::two_d::SpriteRenderer;
   friend class engine::systems::two_d::TilemapRenderer;
+  friend class engine::systems::three_d::ModelRenderer;
 };
 }  // namespace two_d
 }  // namespace components

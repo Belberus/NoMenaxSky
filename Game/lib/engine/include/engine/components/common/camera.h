@@ -2,7 +2,6 @@
 #define ENGINE_COMPONENTS_COMMON_CAMERA_H_
 
 #include <memory>
-#include <limits>
 
 #include <glm/glm.hpp>
 
@@ -14,22 +13,36 @@ namespace common {
 class Camera {
  public:
   enum class CameraType { kOrtho, kPerspective };
-  // Orthographic camera constructor
-  Camera(float width, float height,
-         float nearPlane = (std::numeric_limits<float>::max)(),
-         float farPlane = (std::numeric_limits<float>::min)());
+  /// Constructs an orthographic camera.
+  /// @param widht
+  /// @param height
+  /// @param near_plane
+  /// @param far_plane
+  Camera(float width, float height, float near_plane, float far_plane);
+
+  /// Construct a perspective camera.
+  /// @fov field of view of the camera
+  Camera(float fov, float width, float height, float near_plane,
+         float far_plane);
+
+  /// Returns the view matrix of this camera.
+  /// @param transform transform of the camera.
+  /// @return view matrix that transforms from world space to view space.
   glm::mat4 GetViewMatrix(
       const engine::components::common::Transform &transform);
+
+  /// Returns the projections matrix of this camera.
+  /// @return projection matrix that transfroms from view space to clip space.
   glm::mat4 GetProjectionMatrix();
 
  private:
   CameraType camera_type_;
 
-  // ortho
   float width_;
   float height_;
   float near_plane_;
   float far_plane_;
+  float fov_;
 };
 }  // namespace common
 }  // namespace components

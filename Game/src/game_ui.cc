@@ -22,7 +22,7 @@ GameUi::GameUi(Game* parent_scene) {
 
   auto camera = entities.create();
   camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1.0f));
-  camera.assign<Camera>(960.0f, 540.0f);
+  camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
   auto health_bar = entities.create();
   health_bar.assign<Transform>(glm::vec3(100.0f, 520.0f, 0.0f), nullptr,
                                glm::vec3(17.0f, 17.0f, 1.0f));

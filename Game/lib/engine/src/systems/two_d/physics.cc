@@ -11,7 +11,11 @@
 #include "engine/components/common/transform.h"
 #include "engine/events/collision.h"
 
-#include <iomanip>
+void engine::systems::two_d::Physics::configure(
+    entityx::EventManager &event_manager) {
+  event_manager.subscribe<engine::events::IgnoreCollision>(*this);
+  event_manager.subscribe<entityx::EntityDestroyedEvent>(*this);
+}
 
 void engine::systems::two_d::Physics::update(entityx::EntityManager &es,
                                              entityx::EventManager &events,
@@ -29,7 +33,6 @@ void engine::systems::two_d::Physics::update(entityx::EntityManager &es,
                });
 
   auto info = GetFirstCollision(collisions);
-  static int iter = 0;
   if (info.tmin <= 1.0f) {
     if (info.touching) {
       auto normal = -1.0f * info.normal;
@@ -72,9 +75,31 @@ void engine::systems::two_d::Physics::update(entityx::EntityManager &es,
       transform0->SetLocalPosition(transform0->GetLocalPosition() +
                                    physics0->velocity * dt);
     }
-    iter = 0;
     SendCollisionEvent(events, collisions_);
     collisions_.clear();
+  }
+}
+
+void engine::systems::two_d::Physics::receive(
+    const engine::events::IgnoreCollision &ignore_collision) {
+  UnorderdPair entities_pair(ignore_collision.e0, ignore_collision.e1);
+  if (ignore_collision.ignore) {
+    ignored_entities_.insert(entities_pair);
+  } else {
+    if (ignored_entities_.count(entities_pair) > 0) {
+      ignored_entities_.erase(entities_pair);
+    }
+  }
+}
+
+void engine::systems::two_d::Physics::receive(
+    const entityx::EntityDestroyedEvent &entity_destroyed) {
+  for (auto it = ignored_entities_.begin(); it != ignored_entities_.end();) {
+    if ((*it).Contains(entity_destroyed.entity)) {
+      it = ignored_entities_.erase(it);
+    } else {
+      ++it;
+    }
   }
 }
 
@@ -89,8 +114,6 @@ bool engine::systems::two_d::Physics::TestAABBAABB(
       md.center + md.half_size,                                // top right
       md.center + glm::vec2(md.half_size.x, -md.half_size.y)   // bottom right
   };
-  auto testo = md.center - md.half_size;
-
   glm::vec2 origin(0.0f, 0.0f);
   // check if the aabb's touch and what edge do they share
   touching = true;
@@ -146,7 +169,9 @@ engine::systems::two_d::Physics::GetFirstCollision(
     std::vector<ContactInfo> &collisions) {
   ContactInfo min_time_collision;
   for (auto &collision : collisions) {
-    if (!HasTriggerCollider(collision.e0) &&
+    UnorderdPair pair(collision.e0, collision.e1);
+    if (ignored_entities_.count(pair) == 0 &&
+        !HasTriggerCollider(collision.e0) &&
         !HasTriggerCollider(collision.e1) && collision < min_time_collision &&
         (IsCollidingContact(collision.e0, collision.e1,
                             glm::vec3(-1.0f * collision.normal, 0.0f)) ||
@@ -339,11 +364,11 @@ engine::systems::two_d::Physics::ContactInfo::ContactInfo(
     : e0(e0), e1(e1), tmin(tmin), normal(normal), touching(false) {}
 
 bool engine::systems::two_d::Physics::ContactInfo::operator<(
-    const ContactInfo &info) {
+    const ContactInfo &info) const {
   return tmin < info.tmin;
 }
 
 bool engine::systems::two_d::Physics::ContactInfo::operator==(
-    const ContactInfo &info) {
+    const ContactInfo &info) const {
   return (e0 == info.e0 && e1 == info.e1) || (e1 == info.e0 && e0 == info.e1);
 }

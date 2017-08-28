@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include <engine/components/common/camera.h>
 #include <engine/components/common/physics.h>
 #include <engine/components/common/transform.h>
 #include <engine/components/two_d/aabb_collider.h>
@@ -108,16 +107,17 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
                                                   attack_left, 100.0f);
   SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
                                              100.0f);
-  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand, 100.0f);
+  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand,
+                                             100.0f);
   SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death,
                                             100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
                         moving_left_anim, defend_bottom_anim, defend_top_anim,
                         defend_right_anim, defend_left_anim, attack_bottom_anim,
-                        attack_top_anim, attack_right_anim, attack_left_anim, death_anim});
+                        attack_top_anim, attack_right_anim, attack_left_anim,
+                        death_anim});
 
-  
   player.assign<SpriteAnimation>(anim);
   player.assign<Sprite>(texture_atlas);
   entities_created.push_back(player);
@@ -126,7 +126,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   auto legs = entities.create();
   legs.assign<Physics>(glm::vec3(0, 0, 0));
   legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                                 player.component<Transform>().get());
+                         player.component<Transform>().get());
 
   SpriteAnimation legs_anim({moving_anim, stand_still});
   legs.assign<SpriteAnimation>(legs_anim);
@@ -136,7 +136,6 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   parentLink.owner = player;
   legs.assign<ParentLink>(parentLink);
   entities_created.push_back(legs);
-
 
   // adding sword entity
   auto sword_hitbox = entities.create();
@@ -160,7 +159,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   entityx::Entity ghost = entities.create();
   ghost.assign<Transform>(position);
   ghost.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 8));
-  ghost.assign<Health>(100.0f,"assets/media/fx/ghost/default/death.wav");
+  ghost.assign<Health>(100.0f, "assets/media/fx/ghost/default/death.wav");
   ghost.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -198,14 +197,13 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
                                                   moving_left, 100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
-                        moving_left_anim});  
+                        moving_left_anim});
 
   ghost.assign<SpriteAnimation>(anim);
   ghost.assign<Sprite>(texture_atlas);
 
+  // ghost.assign<Sprite>(texture_atlas);
 
-  //ghost.assign<Sprite>(texture_atlas);
-  
   entities_created.push_back(ghost);
 
   // adding hitbox as a second entity
@@ -219,14 +217,14 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &entities, const glm::vec3 &position) {
-	
+std::vector<entityx::Entity> EntityFactory::MakeTurret(
+    entityx::EntityManager &entities, const glm::vec3 &position) {
   std::vector<entityx::Entity> entities_created;
   entityx::Entity turret = entities.create();
 
   turret.assign<Transform>(position);
   turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 20));
-  turret.assign<Health>(50.0f,"assets/media/fx/turret/default/death.wav");
+  turret.assign<Health>(50.0f, "assets/media/fx/turret/default/death.wav");
   turret.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -235,8 +233,8 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   turret.assign<Turret>();
 
   // Si no tiene animacion y es solo una cabeza que se mueve como se hace
-  engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
-    
+  engine::utils::Rectangle head(glm::vec2(3, 62), glm::vec2(15, 20));
+
   std::vector<engine::utils::Rectangle> moving;
   moving.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
   moving.emplace_back(glm::vec2(22, 38), glm::vec2(15, 20));
@@ -248,21 +246,21 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
           "assets/spritesheets/torreta.png");
-  	
-  SpriteAnimation::AnimationClip moving_anim(
-      "moving", texture_atlas, moving, 100.0f);
-  SpriteAnimation::AnimationClip stand_anim(
-      "stand", texture_atlas, stand, 100.0f);
+
+  SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
+                                             100.0f);
+  SpriteAnimation::AnimationClip stand_anim("stand", texture_atlas, stand,
+                                            100.0f);
 
   // La cabeza no tiene animacion porque no se mueve
   turret.assign<Sprite>(texture_atlas, head);
   entities_created.push_back(turret);
-  
+
   entityx::Entity legs = entities.create();
 
   legs.assign<Physics>(glm::vec3(0, 0, 0));
   legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                                 turret.component<Transform>().get());
+                         turret.component<Transform>().get());
 
   SpriteAnimation legs_anim({moving_anim, stand_anim});
   legs.assign<SpriteAnimation>(legs_anim);

@@ -1,20 +1,25 @@
 #ifndef ENGINE_SYSTEMS_TWO_D_PHYSICS_H_
 #define ENGINE_SYSTEMS_TWO_D_PHYSICS_H_
-#include <set>
+#include <unordered_set>
 #include <vector>
 
 #include <entityx/entityx.h>
 
 #include "engine/components/common/transform.h"
 #include "engine/components/two_d/aabb_collider.h"
+#include "engine/events/ignore_collision.h"
 
 namespace engine {
 namespace systems {
 namespace two_d {
-class Physics : public entityx::System<Physics> {
+class Physics : public entityx::System<Physics>,
+                public entityx::Receiver<Physics> {
  public:
+  void configure(entityx::EventManager &event_manager) override;
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+  void receive(const engine::events::IgnoreCollision &ignore_collision);
+  void receive(const entityx::EntityDestroyedEvent &entity_destroyed);
 
  private:
   /// A helper classed that holds information regarding a collision.
@@ -22,13 +27,32 @@ class Physics : public entityx::System<Physics> {
     entityx::Entity e0;
     entityx::Entity e1;
     float tmin;
-    glm::vec2 normal;
+    glm::vec2 normal;  // the direction is from e0 to e1
     bool touching;
     ContactInfo();
     ContactInfo(const entityx::Entity &e0, const entityx::Entity &e1,
                 float tmin, const glm::vec2 &normal);
-    bool operator<(const ContactInfo &info);
-    bool operator==(const ContactInfo &inf);
+    bool operator<(const ContactInfo &info) const;
+    bool operator==(const ContactInfo &inf) const;
+  };
+
+  /// Pair of entites where the order is not important so (e1, e0) == (e0, e1)
+  struct UnorderdPair {
+    entityx::Entity e0;
+    entityx::Entity e1;
+    UnorderdPair(entityx::Entity e0, entityx::Entity e1) : e0(e0), e1(e1) {}
+    bool Contains(const entityx::Entity &e) const { return e0 == e || e1 == e; }
+    bool operator==(const UnorderdPair &rhs) const {
+      return (e0 == rhs.e0 && e1 == rhs.e1) || (e0 == rhs.e1 && e1 == rhs.e0);
+    }
+    bool operator!=(const UnorderdPair &rhs) const { return !(*this == rhs); }
+  };
+
+  struct UnorderdPairHasher {
+    // HACK: probably not a good hash function
+    std::size_t operator()(const UnorderdPair &unorderd_pair) const {
+      return unorderd_pair.e0.id().id() * unorderd_pair.e0.id().id() + 0x42;
+    }
   };
 
   /// Checks if the entity has a trigger type collider.
@@ -39,7 +63,7 @@ class Physics : public entityx::System<Physics> {
   /// Get the first collision that is going to occur.
   /// @param collisions all the collisions that are going to occur
   /// @return ContactInfo that happens first, that is, his tmin is the minimum
-  static ContactInfo GetFirstCollision(std::vector<ContactInfo> &collisions);
+  ContactInfo GetFirstCollision(std::vector<ContactInfo> &collisions);
 
   /// Sends collision events.
   /// @param events EventManager that will send the events
@@ -130,6 +154,7 @@ class Physics : public entityx::System<Physics> {
                                  const glm::vec3 &collision_normal);
 
   std::vector<ContactInfo> collisions_;
+  std::unordered_set<UnorderdPair, UnorderdPairHasher> ignored_entities_;
 };
 }  // namespace two_d
 }  // namespace systems

@@ -23,7 +23,7 @@ MainMenuBackground::MainMenuBackground() {
 
   auto camera = entities.create();
   camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1));
-  camera.assign<Camera>(960.0f, 540.0f);
+  camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
 
   std::vector<engine::utils::Rectangle> rect;
   rect.emplace_back(glm::vec2(0, 0), glm::vec2(500, 477));

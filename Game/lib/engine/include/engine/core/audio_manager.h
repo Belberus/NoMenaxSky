@@ -23,7 +23,6 @@ class AudioManager {
 
  private:
   irrklang::ISoundEngine *sound_engine_;
-  //std::vector<irrklang::ISoundSource*> sounds_;
 };
 }  // namespace core
 }  // namespace engine

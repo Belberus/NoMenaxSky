@@ -540,7 +540,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   	} 
   });
   timerGhost += dt;
-  if(timerGhost >= 2){
+  if(timerGhost >= 1.4){
     timerGhost = 0.0;
   }
 }

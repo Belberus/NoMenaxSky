@@ -15,7 +15,7 @@ Game::Game()
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(
-      "assets/media/music/gauntleto_theme_v2.wav", true);
+      "assets/media/music/gauntleto_theme_v2.wav", true, 1);
 }
 
 void Game::Update(entityx::TimeDelta dt) {

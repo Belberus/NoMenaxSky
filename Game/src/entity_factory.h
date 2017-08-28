@@ -15,5 +15,8 @@ class EntityFactory {
 
   static std::vector<entityx::Entity> MakeTurret(
       entityx::EntityManager &entities, const glm::vec3 &position);
+
+  static std::vector<entityx::Entity> MakeTurretProjectile(
+      entityx::EntityManager &entities, const glm::vec3 &position);
 };
 #endif  // ENTITY_FACTORY_H_

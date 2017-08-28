@@ -46,6 +46,21 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
               entityx::TimeDelta dt) override;
  private:
  	static const float turretSpeed;
+ 	float time_passed;
+};
+
+class TurretAttackSystem : public entityx::System<TurretAttackSystem>, public entityx::Receiver<TurretAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class TurretProjectileAnimationSystem : public entityx::System<TurretProjectile> {
+ public:
+	void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
 };
 
 class HealthSystem : public entityx::System<HealthSystem> {

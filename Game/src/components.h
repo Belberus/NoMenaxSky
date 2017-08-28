@@ -78,17 +78,26 @@ struct Ghost {
 	float time_passed;
 };
 
-struct Turret{
-	/*Turret(): comportamiento(Comportamiento::STILL) {}
-	enum Comportamiento {STILL, RUN_AWAY};
-	Comportamiento comportamiento;*/
+struct GhostHitBox{
+	GhostHitBox(float damage, entityx::Entity owner) : damage(damage), owner(owner) {}
+	entityx::Entity owner;
+	float damage;
 };
+
+struct Turret{};
 
 struct RoomLimit {};
 
 struct Sword {};
 
 struct Legs{};
+
+struct TurretLegs{};
+
+struct TurretProjectile{
+	TurretProjectile(float damage) : damage(damage){}
+	float damage;
+};
 
 struct ParentLink {
 	entityx::Entity owner;

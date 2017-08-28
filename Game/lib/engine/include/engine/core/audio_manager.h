@@ -13,11 +13,13 @@ class AudioManager {
  public:
   AudioManager();
   ~AudioManager();
-  void PlaySound(const std::string &sound_filename, bool looped);
+  void PlaySound(const std::string &sound_filename, bool looped, float volume);
   void StopAllSounds();
   void SetVolume(float volume);
   void PlaySound3D(const std::string &sound_filename, bool looped,
   						glm::vec3 pos);
+  void LoadSound(const std::string &sound_filename);
+  void ResetSounds();
 
  private:
   irrklang::ISoundEngine *sound_engine_;

@@ -13,6 +13,7 @@
 #include <time.h>
 #include <cmath>
 #include "events.h"
+#include "entity_factory.h"
 
 #include <GLFW/glfw3.h>
  
@@ -27,12 +28,13 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<SpriteAnimation> animation;
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
+  entityx::ComponentHandle<Player> player;
   std::string animToPlay;
 
   //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
 
   for (entityx::Entity e1 :
-       es.entities_with_components(animation, physics, attack)) {
+       es.entities_with_components(animation, physics, attack, player)) {
     if (attack->is_attacking) {
       switch (attack->orientation) {
         case KnightAttack::Orientation::UP:
@@ -50,27 +52,31 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
     } else if (physics->velocity.x > 0) {
       animToPlay = "moving_right";
+      player->orientation = Player::Orientation::RIGHT;
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false, 0.6f);
       }
     } else if (physics->velocity.x < 0) {
       animToPlay = "moving_left";
+      player->orientation = Player::Orientation::LEFT;
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false, 0.6f);
       }
     } else if (physics->velocity.y > 0) {
       animToPlay = "moving_top";
+      player->orientation = Player::Orientation::UP;
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false, 0.6f);
       }
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
+      player->orientation = Player::Orientation::DOWN;
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false, 0.6f);
       }
     } else {
       if(!lastAnim.empty() && (lastAnim.find("moving") != std::string::npos)){
@@ -83,8 +89,8 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   }
   if(lastAnim.find("attack") != std::string::npos){
     if(timer == 0.0){
-      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/warrior/attack.wav",false);
-      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/default/attack_2.wav",false);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/warrior/attack.wav",false, 0.8f);
+      Engine::GetInstance().Get<AudioManager>().PlaySound("assets/media/fx/gaunt/default/attack_2.wav",false, 0.6f);
     }
     timer += dt;
     if(timer >= 0.5){
@@ -94,7 +100,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     if(physics->velocity.x !=0 || physics->velocity.y != 0){
       if(timer2 == 0.0){
         Engine::GetInstance().Get<AudioManager>().
-          PlaySound("assets/media/fx/gaunt/default/mov.wav",false);
+          PlaySound("assets/media/fx/gaunt/default/mov.wav",false, 0.6f);
       }
     }
   }
@@ -108,6 +114,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
 
 void KnightWalkingSystem::update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) {
+	entityx::ComponentHandle<Player> player;
 	entityx::ComponentHandle<SpriteAnimation> animation;
 	entityx::ComponentHandle<Physics> physics;
   	entityx::ComponentHandle<ParentLink> parent;
@@ -290,7 +297,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
 
 const float PlayerInputSystem::kSpeed = 150.0f;
 
-const float PlayerInputSystem::kAttackDuration = 500.0f;
+const float PlayerInputSystem::kAttackDuration = 250.0f;
 
 PlayerInputSystem::PlayerInputSystem()
     : time_passed_since_last_attack_(kAttackDuration) {
@@ -394,6 +401,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   });
 }
 
+float timerTurret;
 
 void TurretWalkingSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
@@ -401,19 +409,28 @@ void TurretWalkingSystem::update(entityx::EntityManager &es,
 	entityx::ComponentHandle<SpriteAnimation> animation;
 	entityx::ComponentHandle<Physics> physics;
   	entityx::ComponentHandle<ParentLink> parent;
-  	entityx::ComponentHandle<Legs> legs;
-  	entityx::ComponentHandle<Turret> turret;
+  	entityx::ComponentHandle<TurretLegs> legs;
+
   	std::string animToPlay;
 
   	for (entityx::Entity e1 :
-       es.entities_with_components(animation, parent, legs, turret)) {
+       es.entities_with_components(animation, parent, legs)) {
   		if ((parent->owner.component<Physics>()->velocity.x < 0) || (parent->owner.component<Physics>()->velocity.x > 0) || (parent->owner.component<Physics>()->velocity.y >0) || (parent->owner.component<Physics>()->velocity.y<0)) {
   			animToPlay = "moving";
+        //TODO: Cuando este el sonido listo descomentar
+        if(timerTurret == 0.0){
+          Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/turret/default/mov.wav",false, 0.8f);
+        }
   		} else {
   			animToPlay = "stand";
   		}
   		animation->Play(animToPlay);
   	}
+    timerTurret += dt;
+    if(timerTurret >= 0.22){
+      timerTurret = 0.0;
+    }
 }
 
 const float TurretIaSystem::turretSpeed = 10.0f;
@@ -421,6 +438,8 @@ const float TurretIaSystem::turretSpeed = 10.0f;
 void TurretIaSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
                            entityx::TimeDelta dt) {
+
+
 	glm::vec3 player_position;
   		es.each<Player, Transform>(
       		[&](entityx::Entity entity, Player &player, Transform &player_transform) {
@@ -434,16 +453,42 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                          Physics &turret_physics) {
   		turret_position = turret_transform.GetWorldPosition();
   		const float distancia = std::sqrt(std::pow(std::abs(player_position.x - turret_position.x) , 2) + std::pow(std::abs(player_position.y - turret_position.y) , 2)) ;
+  		time_passed += (dt * 1000.0f);
+  		
+  		if (distancia < 50.0f) {
 
-  		if (distancia < 25.0f) {
   			// + DISPARAR SI TOCA
   			turret_physics.velocity =
-        -1.0f * glm::normalize(player_position - turret_transform.GetWorldPosition()) * turretSpeed;
+        -1.0f * glm::normalize(player_position - turret_transform.GetWorldPosition()) * turretSpeed;	
+      		if (time_passed >= 1500.0f) {
+      			time_passed = 0.0f;
+  				EntityFactory::MakeTurretProjectile(es,glm::vec3(turret_position.x + 20.0f, turret_position.y, turret_position.z));
+          }
   		} else {
-  			// DISPARAR SI TOCA
+  			turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);;
+  			if (time_passed >= 1000.0f) {
+          Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/turret/default/attack.wav",false, 1);
+      			time_passed = 0.0f;
+  				EntityFactory::MakeTurretProjectile(es,glm::vec3(turret_position.x + 20.0f, turret_position.y, turret_position.z));
+      		}
   		}
   	});
+}
 
+void TurretProjectileAnimationSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+	entityx::ComponentHandle<SpriteAnimation> animation;
+	entityx::ComponentHandle<Physics> physics;
+  	entityx::ComponentHandle<TurretProjectile> turretProjectile;
+	std::string animToPlay;
+
+	for (entityx::Entity e1 :
+       es.entities_with_components(animation, physics, turretProjectile)) {
+  		animToPlay = "shooting";
+  		animation->Play(animToPlay);
+  	}
 }
 
 const float GhostIaSystem::kSpeed = 50.0f;
@@ -474,7 +519,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
           if(timerGhost == 0.0){
             Engine::GetInstance().Get<AudioManager>().
-              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+              PlaySound("assets/media/fx/ghost/default/back.wav",false, 0.8f);
           }
   			}
   		break;
@@ -485,11 +530,11 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else {
   				new_velocity.y = 1.0f; 
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
-    			if(timerGhost == 0.0){
-              Engine::GetInstance().Get<AudioManager>().
-                PlaySound("assets/media/fx/ghost/default/back.wav",false);
-            }
-        }
+          if(timerGhost == 0.0){
+            Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/back.wav",false, 0.8f);
+          }
+  			}
   		break;
   		case Ghost::Comportamiento::DAMAGE_LEFT:
   			if (ghost.time_passed >= ghost.kHitDuration) {
@@ -500,7 +545,7 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
           if(timerGhost == 0.0){
             Engine::GetInstance().Get<AudioManager>().
-              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+              PlaySound("assets/media/fx/ghost/default/back.wav",false, 0.8f);
           }
   			}
   		break;
@@ -511,26 +556,26 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   			} else { 
   				new_velocity.x = -1.0f;
   				physics.velocity = glm::normalize(new_velocity) * kSpeed;
-            if(timerGhost == 0.0){
+          if(timerGhost == 0.0){
             Engine::GetInstance().Get<AudioManager>().
-              PlaySound("assets/media/fx/ghost/default/back.wav",false);
+              PlaySound("assets/media/fx/ghost/default/back.wav",false, 0.8f);
           }
   			}
   		break;
   		case Ghost::Comportamiento::FOLLOW:
   			physics.velocity =
-        glm::normalize(player_position - transform.GetWorldPosition()) * kSpeed;
-    		if(timerGhost == 0.0){
-          Engine::GetInstance().Get<AudioManager>().
-            PlaySound("assets/media/fx/ghost/default/mov.wav",false);
-        }
+        	glm::normalize(player_position - transform.GetWorldPosition()) * kSpeed;
+      		if(timerGhost == 0.0){
+                Engine::GetInstance().Get<AudioManager>().
+                  PlaySound("assets/media/fx/ghost/default/mov.wav",false, 0.8f);
+              }
       break;
   	} 
   });
   timerGhost += dt;
-    if(timerGhost >= 1){
-        timerGhost = 0.0;
-    }
+  if(timerGhost >= 1.4){
+    timerGhost = 0.0;
+  }
 }
 
 void KnightAttackSystem::configure(entityx::EventManager &event_manager) {
@@ -569,7 +614,8 @@ void KnightAttackSystem::receive(const Collision &collision) {
     		ghost->comportamiento = Ghost::Comportamiento::DAMAGE_LEFT;
     	break;
     }
-
+    Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/hit.wav",false, 0.7f);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -598,6 +644,22 @@ void KnightAttackSystem::receive(const Collision &collision) {
     }
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
+  } else if (e0_weapon && e0_weapon->drawn && e0_weapon->owner.component<Player>() &&
+      collision_copy.e1.component<Turret>()) {
+  	auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+    Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/ghost/default/hit.wav",false, 0.7f);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+  } else if (e1_weapon && e1_weapon->drawn &&
+             e1_weapon->owner.component<Player>() &&
+             collision_copy.e0.component<Turret>()) {
+  	auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
   }
 }
 
@@ -605,15 +667,86 @@ void KnightAttackSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}
 
+
+void TurretAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void TurretAttackSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<TurretProjectile>();
+  auto e1_projectile = collision_copy.e1.component<TurretProjectile>();
+ 
+  if (e0_projectile &&
+      collision_copy.e1.component<Player>()) {
+
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_projectile->damage;
+
+    entityx::Entity proyectil = collision.e0;
+  	proyectil.destroy();
+
+    Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/talk.wav",false,1);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+
+  } else if (e1_projectile  &&
+             collision_copy.e0.component<Player>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_projectile->damage;
+
+    entityx::Entity proyectil = collision.e1;
+  	proyectil.destroy();
+
+    Engine::GetInstance().Get<AudioManager>().
+              PlaySound("assets/media/fx/talk.wav",false,1);
+    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+    e0_color_animation->Play();      
+  } else {
+  	if (e1_projectile) {
+  		entityx::Entity proyectil = collision.e1;
+  		proyectil.destroy();
+  	} else if (e0_projectile) {
+  		entityx::Entity proyectil = collision.e0;
+  		proyectil.destroy();
+  	}
+  }
+}
+
+
+void TurretAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}
+
 void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
                           entityx::TimeDelta dt) {
+
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (health.hp <= 0.0f) {
       Engine::GetInstance().Get<AudioManager>().
-              PlaySound(health.death_fx,false);
+        PlaySound(health.death_fx,false, 1);
+      es.each<Legs, ParentLink>([&](entityx::Entity entity_legs, Legs &legs, ParentLink &parent) {
+      	if(parent.owner == entity) {
+      		entity_legs.destroy();
+      	}
+      });
+      es.each<TurretLegs, ParentLink>([&](entityx::Entity entity_legs, TurretLegs &legs, ParentLink &parent) {
+      	if(parent.owner == entity) {
+      		entity_legs.destroy();
+      	}
+      });
+      
+      es.each<GhostHitBox>([&](entityx::Entity entity_hitbox, GhostHitBox &ghost_hitbox) {
+      	if (ghost_hitbox.owner == entity){
+      		entity_hitbox.destroy();
+      	}	
+      });
       entity.destroy();
-
-    } // Si no lo mata, que recule un poco si es posible
+    } 
   });
 }

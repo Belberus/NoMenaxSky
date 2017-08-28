@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <engine/components/common/camera.h>
 #include <engine/components/common/physics.h>
 #include <engine/components/common/transform.h>
 #include <engine/components/two_d/aabb_collider.h>
@@ -27,6 +28,11 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 8));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Health>(100.0f, "assets/media/fx/gaunt/default/death.wav");
+
+  std::vector<ColorAnimation::KeyFrame> color_frames;
+  color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+  player.assign<ColorAnimation>(std::move(color_frames));
 
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 137), glm::vec2(15, 14));
@@ -107,17 +113,16 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
                                                   attack_left, 100.0f);
   SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
                                              100.0f);
-  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand,
-                                             100.0f);
+  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand, 100.0f);
   SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death,
                                             100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
                         moving_left_anim, defend_bottom_anim, defend_top_anim,
                         defend_right_anim, defend_left_anim, attack_bottom_anim,
-                        attack_top_anim, attack_right_anim, attack_left_anim,
-                        death_anim});
+                        attack_top_anim, attack_right_anim, attack_left_anim, death_anim});
 
+  
   player.assign<SpriteAnimation>(anim);
   player.assign<Sprite>(texture_atlas);
   entities_created.push_back(player);
@@ -126,7 +131,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   auto legs = entities.create();
   legs.assign<Physics>(glm::vec3(0, 0, 0));
   legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                         player.component<Transform>().get());
+                                 player.component<Transform>().get());
 
   SpriteAnimation legs_anim({moving_anim, stand_still});
   legs.assign<SpriteAnimation>(legs_anim);
@@ -136,6 +141,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   parentLink.owner = player;
   legs.assign<ParentLink>(parentLink);
   entities_created.push_back(legs);
+
 
   // adding sword entity
   auto sword_hitbox = entities.create();
@@ -155,18 +161,19 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
 
 std::vector<entityx::Entity> EntityFactory::MakeGhost(
     entityx::EntityManager &entities, const glm::vec3 &position) {
+  
   std::vector<entityx::Entity> entities_created;
   entityx::Entity ghost = entities.create();
   ghost.assign<Transform>(position);
-  ghost.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 8));
-  ghost.assign<Health>(100.0f, "assets/media/fx/ghost/default/death.wav");
+  ghost.assign<AABBCollider>(glm::vec2(0, 2), glm::vec2(3, 4));
   ghost.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   ghost.assign<ColorAnimation>(std::move(color_frames));
   ghost.assign<Ghost>();
-
+  ghost.assign<Health>(20.0f, "assets/media/fx/ghost/default/death.wav");
+  
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));
   moving_bottom.emplace_back(glm::vec2(15, 88), glm::vec2(8, 13));
@@ -197,74 +204,72 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
                                                   moving_left, 100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
-                        moving_left_anim});
+                        moving_left_anim});  
 
   ghost.assign<SpriteAnimation>(anim);
   ghost.assign<Sprite>(texture_atlas);
-
-  // ghost.assign<Sprite>(texture_atlas);
-
+  
   entities_created.push_back(ghost);
 
   // adding hitbox as a second entity
   auto attack_hitbox = entities.create();
+  attack_hitbox.assign<GhostHitBox>(5.0f, ghost);
   attack_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                   ghost.component<Transform>().get());
-  attack_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                     glm::vec2(9.0f, 9.0f), true);
+  attack_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 2.0f),
+                                     glm::vec2(5.0f, 5.0f), true);
   attack_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
   entities_created.push_back(attack_hitbox);
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeTurret(
-    entityx::EntityManager &entities, const glm::vec3 &position) {
+std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &entities, const glm::vec3 &position) {
+	
   std::vector<entityx::Entity> entities_created;
   entityx::Entity turret = entities.create();
 
   turret.assign<Transform>(position);
-  turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 20));
-  turret.assign<Health>(50.0f, "assets/media/fx/turret/default/death.wav");
+  turret.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10));
   turret.assign<Physics>(glm::vec3(0, 0, 0));
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   turret.assign<ColorAnimation>(std::move(color_frames));
   turret.assign<Turret>();
+  turret.assign<Health>(50.0f, "assets/media/fx/turret/default/death.wav");
 
-  // Si no tiene animacion y es solo una cabeza que se mueve como se hace
-  engine::utils::Rectangle head(glm::vec2(3, 62), glm::vec2(15, 20));
-
+  engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
+    
   std::vector<engine::utils::Rectangle> moving;
   moving.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
   moving.emplace_back(glm::vec2(22, 38), glm::vec2(15, 20));
   moving.emplace_back(glm::vec2(41, 38), glm::vec2(15, 20));
 
   std::vector<engine::utils::Rectangle> stand;
-  stand.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
+  stand.emplace_back(glm::vec2(22, 62), glm::vec2(15, 20));
 
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
           "assets/spritesheets/torreta.png");
-
-  SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
-                                             100.0f);
-  SpriteAnimation::AnimationClip stand_anim("stand", texture_atlas, stand,
-                                            100.0f);
+  	
+  SpriteAnimation::AnimationClip moving_anim(
+      "moving", texture_atlas, moving, 100.0f);
+  SpriteAnimation::AnimationClip stand_anim(
+      "stand", texture_atlas, stand, 100.0f);
 
   // La cabeza no tiene animacion porque no se mueve
   turret.assign<Sprite>(texture_atlas, head);
   entities_created.push_back(turret);
-
+  
   entityx::Entity legs = entities.create();
 
   legs.assign<Physics>(glm::vec3(0, 0, 0));
   legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                         turret.component<Transform>().get());
+                                 turret.component<Transform>().get());
 
   SpriteAnimation legs_anim({moving_anim, stand_anim});
   legs.assign<SpriteAnimation>(legs_anim);
-  legs.assign<Legs>();
+  legs.assign<TurretLegs>();
   legs.assign<Sprite>(texture_atlas);
   ParentLink parentLink;
   parentLink.owner = turret;
@@ -272,4 +277,33 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(
 
   entities_created.push_back(legs);
   return entities_created;
+}
+
+std::vector<entityx::Entity> EntityFactory::MakeTurretProjectile(entityx::EntityManager &entities, const glm::vec3 &position) {
+
+	std::vector<entityx::Entity> entities_created;
+    entityx::Entity turretProjectile = entities.create();
+
+    turretProjectile.assign<Transform>(position);
+  	turretProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(3, 3));
+  	turretProjectile.assign<Physics>(glm::vec3(30.0f, 0, 0));
+  	turretProjectile.assign<TurretProjectile>(15.0f);
+
+  	std::vector<engine::utils::Rectangle> shoot;
+  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
+  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
+
+  	auto texture_atlas =
+      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+          "assets/spritesheets/torreta.png");
+
+    SpriteAnimation::AnimationClip shooting_anim(
+      "shooting", texture_atlas, shoot, 100.0f);
+
+	SpriteAnimation shoot_anim({shooting_anim});
+	turretProjectile.assign<SpriteAnimation>(shoot_anim);
+	turretProjectile.assign<Sprite>(texture_atlas);
+
+	entities_created.push_back(turretProjectile);
+	return entities_created;
 }

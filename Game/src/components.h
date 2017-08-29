@@ -94,6 +94,8 @@ struct Legs{};
 
 struct TurretLegs{};
 
+struct LowCollision {};
+
 struct TurretProjectile{
 	TurretProjectile(float damage) : damage(damage){}
 	float damage;

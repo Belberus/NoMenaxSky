@@ -132,6 +132,9 @@ void FloorFactory::ParseStaticColliders(const tmx::Map &map,
           new_entity.assign<cmp::two_d::AABBCollider>(
               glm::vec2(0.0f, 0.0f),
               glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f));
+          if (object.getType() == "low") {
+            new_entity.assign<LowCollision>();
+          }
         }
       }
     }

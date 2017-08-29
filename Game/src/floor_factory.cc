@@ -143,6 +143,7 @@ void FloorFactory::ParseStaticColliders(const tmx::Map &map,
 
 std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
 FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name) {
+  ;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms;
   for (auto &layer : map.getLayers()) {
     if (layer->getType() == tmx::Layer::Type::Object &&
@@ -188,7 +189,8 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
       };
       room.entity_creators_.push_back(fn_ghost);
     } else if (object.getType() == "torreta") {
-      auto fn_turret = [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+      auto fn_turret =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
         return EntityFactory::MakeTurret(em, position);
       };
       room.entity_creators_.push_back(fn_turret);

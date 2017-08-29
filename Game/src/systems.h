@@ -15,6 +15,7 @@ class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
               entityx::TimeDelta dt) override;
  private:
   std::string lastAnim;
+  std::string lastOrientation;
   float timer;
   float timer2;
 };

@@ -31,8 +31,6 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Player> player;
   std::string animToPlay;
 
-  //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
-
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack, player)) {
     if (attack->is_attacking) {
@@ -78,13 +76,18 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
         Engine::GetInstance().Get<AudioManager>().
           PlaySound("assets/media/fx/gaunt/default/mov.wav",false, 0.6f);
       }
-    } else {
-      if(!lastAnim.empty() && (lastAnim.find("moving") != std::string::npos)){
-        animToPlay = lastAnim;
-      }
-      else animToPlay = "moving_bottom";
+    } else {      
+      if(lastAnim.empty()){
+        animToPlay = "moving_bottom";
+      } 
+      else animToPlay = lastOrientation;
     }
     animation->Play(animToPlay);
+    // If last anim was walking, save orientation
+    if(animToPlay.find("moving") != std::string::npos){
+        lastOrientation = animToPlay;
+    }
+    // Save last anim anyway for sound purposes
     lastAnim = animToPlay;
   }
   if(lastAnim.find("attack") != std::string::npos){

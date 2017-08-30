@@ -56,6 +56,20 @@ struct ArrowOptions {
   ArrowOptions(Option option) : option(option) {}
 };
 
+struct GameOptions {
+  enum Modo { TWO_D, THREE_D };
+  enum Musica { MUSIC_ON, MUSIC_OFF };
+  enum Efectos { FX_ON, FX_OFF };
+
+  Modo modo;
+  Musica musica;
+  Efectos efectos;
+
+  GameOptions(Modo modo, Musica musica, Efectos efectos) 
+      : modo(modo), musica(musica), efectos(efectos) {}
+
+};
+
 struct Door {
   Door(const std::string &next_door, const std::string &pos)
       : next_door(next_door), pos(pos) {}

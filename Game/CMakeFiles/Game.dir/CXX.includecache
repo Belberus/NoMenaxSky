@@ -289,14 +289,36 @@ engine/components/common/camera.h
 -
 engine/components/common/transform.h
 -
+engine/components/two_d/sprite_animation.h
+-
+engine/components/two_d/sprite.h
+-
+engine/components/two_d/texture.h
+-
+engine/core/engine.h
+-
+engine/core/resource_manager.h
+-
+engine/systems/two_d/sprite_animator.h
+-
+engine/systems/two_d/sprite_renderer.h
+-
+entity_factory.h
+/home/alvaro/CodenamePatanius/Game/src/entity_factory.h
 systems.h
 /home/alvaro/CodenamePatanius/Game/src/systems.h
+components.h
+/home/alvaro/CodenamePatanius/Game/src/components.h
 
 /home/alvaro/CodenamePatanius/Game/src/options_menu.h
 engine/core/scene.h
 -
+entityx/entityx.h
+-
 game.h
 /home/alvaro/CodenamePatanius/Game/src/game.h
+events.h
+/home/alvaro/CodenamePatanius/Game/src/events.h
 
 /home/alvaro/CodenamePatanius/Game/src/pause_menu.cc
 pause_menu.h
@@ -309,11 +331,11 @@ game.h
 /home/alvaro/CodenamePatanius/Game/src/game.h
 
 /home/alvaro/CodenamePatanius/Game/src/systems.cc
+engine/core/audio_manager.h
+-
 engine/core/engine.h
 -
 engine/core/event_manager.h
--
-engine/core/audio_manager.h
 -
 systems.h
 /home/alvaro/CodenamePatanius/Game/src/systems.h
@@ -327,14 +349,16 @@ engine/components/two_d/color_animation.h
 -
 engine/components/two_d/sprite_animation.h
 -
+engine/events/ignore_collision.h
+-
 time.h
 -
 cmath
 -
-events.h
-/home/alvaro/CodenamePatanius/Game/src/events.h
 entity_factory.h
 /home/alvaro/CodenamePatanius/Game/src/entity_factory.h
+events.h
+/home/alvaro/CodenamePatanius/Game/src/events.h
 GLFW/glfw3.h
 -
 
@@ -342,6 +366,8 @@ GLFW/glfw3.h
 unordered_map
 -
 engine/events/collision.h
+-
+engine/events/ignore_collision.h
 -
 engine/events/key_pressed.h
 -

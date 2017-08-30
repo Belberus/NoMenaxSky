@@ -14,7 +14,214 @@
 # EXTERNAL cache entries
 ########################
 
-//Build shared libraries
+//Android JNI IOSystem support is active
+ASSIMP_ANDROID_JNIIOSYSTEM:BOOL=OFF
+
+//Path the tool executables are installed to.
+ASSIMP_BIN_INSTALL_DIR:STRING=bin
+
+//build the 3DS importer
+ASSIMP_BUILD_3DS_IMPORTER:BOOL=OFF
+
+//build the 3D importer
+ASSIMP_BUILD_3D_IMPORTER:BOOL=OFF
+
+//build the 3MF importer
+ASSIMP_BUILD_3MF_IMPORTER:BOOL=OFF
+
+//build the AC importer
+ASSIMP_BUILD_AC_IMPORTER:BOOL=OFF
+
+//default value of all ASSIMP_BUILD_XXX_IMPORTER value
+ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT:BOOL=OFF
+
+//build the AMF importer
+ASSIMP_BUILD_AMF_IMPORTER:BOOL=OFF
+
+//describe the current architecture.
+ASSIMP_BUILD_ARCHITECTURE:STRING=
+
+//build the ASE importer
+ASSIMP_BUILD_ASE_IMPORTER:BOOL=OFF
+
+//build the ASSBIN importer
+ASSIMP_BUILD_ASSBIN_IMPORTER:BOOL=OFF
+
+//If the supplementary tools for Assimp are built in addition to
+// the library.
+ASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
+
+//build the ASSXML importer
+ASSIMP_BUILD_ASSXML_IMPORTER:BOOL=OFF
+
+//build the B3D importer
+ASSIMP_BUILD_B3D_IMPORTER:BOOL=OFF
+
+//build the BLEND importer
+ASSIMP_BUILD_BLEND_IMPORTER:BOOL=OFF
+
+//build the BVH importer
+ASSIMP_BUILD_BVH_IMPORTER:BOOL=OFF
+
+//build the COB importer
+ASSIMP_BUILD_COB_IMPORTER:BOOL=OFF
+
+//build the COLLADA importer
+ASSIMP_BUILD_COLLADA_IMPORTER:BOOL=ON
+
+//describe the current compiler.
+ASSIMP_BUILD_COMPILER:STRING=
+
+//build the CSM importer
+ASSIMP_BUILD_CSM_IMPORTER:BOOL=OFF
+
+//build the DXF importer
+ASSIMP_BUILD_DXF_IMPORTER:BOOL=OFF
+
+//build the FBX importer
+ASSIMP_BUILD_FBX_IMPORTER:BOOL=OFF
+
+//build the GLTF importer
+ASSIMP_BUILD_GLTF_IMPORTER:BOOL=OFF
+
+//build the HMP importer
+ASSIMP_BUILD_HMP_IMPORTER:BOOL=OFF
+
+//build the IFC importer
+ASSIMP_BUILD_IFC_IMPORTER:BOOL=OFF
+
+//build the IRRMESH importer
+ASSIMP_BUILD_IRRMESH_IMPORTER:BOOL=OFF
+
+//build the IRR importer
+ASSIMP_BUILD_IRR_IMPORTER:BOOL=OFF
+
+//build the LWO importer
+ASSIMP_BUILD_LWO_IMPORTER:BOOL=OFF
+
+//build the LWS importer
+ASSIMP_BUILD_LWS_IMPORTER:BOOL=OFF
+
+//build the MD2 importer
+ASSIMP_BUILD_MD2_IMPORTER:BOOL=OFF
+
+//build the MD3 importer
+ASSIMP_BUILD_MD3_IMPORTER:BOOL=OFF
+
+//build the MD5 importer
+ASSIMP_BUILD_MD5_IMPORTER:BOOL=OFF
+
+//build the MDC importer
+ASSIMP_BUILD_MDC_IMPORTER:BOOL=OFF
+
+//build the MDL importer
+ASSIMP_BUILD_MDL_IMPORTER:BOOL=OFF
+
+//build the MMD importer
+ASSIMP_BUILD_MMD_IMPORTER:BOOL=OFF
+
+//build the MS3D importer
+ASSIMP_BUILD_MS3D_IMPORTER:BOOL=OFF
+
+//build the NDO importer
+ASSIMP_BUILD_NDO_IMPORTER:BOOL=OFF
+
+//build the NFF importer
+ASSIMP_BUILD_NFF_IMPORTER:BOOL=OFF
+
+//Build the C4D importer, which relies on the non-free Melange
+// SDK.
+ASSIMP_BUILD_NONFREE_C4D_IMPORTER:BOOL=OFF
+
+//build the OBJ importer
+ASSIMP_BUILD_OBJ_IMPORTER:BOOL=ON
+
+//build the OFF importer
+ASSIMP_BUILD_OFF_IMPORTER:BOOL=OFF
+
+//build the OGRE importer
+ASSIMP_BUILD_OGRE_IMPORTER:BOOL=OFF
+
+//build the OPENGEX importer
+ASSIMP_BUILD_OPENGEX_IMPORTER:BOOL=OFF
+
+//build the PLY importer
+ASSIMP_BUILD_PLY_IMPORTER:BOOL=OFF
+
+//build the Q3BSP importer
+ASSIMP_BUILD_Q3BSP_IMPORTER:BOOL=OFF
+
+//build the Q3D importer
+ASSIMP_BUILD_Q3D_IMPORTER:BOOL=OFF
+
+//build the RAW importer
+ASSIMP_BUILD_RAW_IMPORTER:BOOL=OFF
+
+//If the official samples are built as well (needs Glut).
+ASSIMP_BUILD_SAMPLES:BOOL=OFF
+
+//build the SIB importer
+ASSIMP_BUILD_SIB_IMPORTER:BOOL=OFF
+
+//build the SMD importer
+ASSIMP_BUILD_SMD_IMPORTER:BOOL=OFF
+
+//build the STL importer
+ASSIMP_BUILD_STL_IMPORTER:BOOL=OFF
+
+//build the TERRAGEN importer
+ASSIMP_BUILD_TERRAGEN_IMPORTER:BOOL=OFF
+
+//If the test suite for Assimp is built in addition to the library.
+ASSIMP_BUILD_TESTS:BOOL=OFF
+
+//build the X3D importer
+ASSIMP_BUILD_X3D_IMPORTER:BOOL=OFF
+
+//build the XGL importer
+ASSIMP_BUILD_XGL_IMPORTER:BOOL=OFF
+
+//build the X importer
+ASSIMP_BUILD_X_IMPORTER:BOOL=OFF
+
+//Build your own zlib
+ASSIMP_BUILD_ZLIB:BOOL=OFF
+
+//Enable this to measure test coverage.
+ASSIMP_COVERALLS:BOOL=OFF
+
+//Set to ON to enable double precision processing
+ASSIMP_DOUBLE_PRECISION:BOOL=OFF
+
+//Path the header files are installed to.
+ASSIMP_INCLUDE_INSTALL_DIR:STRING=include
+
+//Suffix to append to library names
+ASSIMP_LIBRARY_SUFFIX:STRING=
+
+//Path the built library files are installed to.
+ASSIMP_LIB_INSTALL_DIR:STRING=lib
+
+//Disable Assimp's export functionality.
+ASSIMP_NO_EXPORT:BOOL=ON
+
+//Set to ON to generate CPack configuration files and packaging
+// targets
+ASSIMP_OPT_BUILD_PACKAGES:BOOL=OFF
+
+//the package-specific version used for uploading the sources
+ASSIMP_PACKAGE_VERSION:STRING=0
+
+//Value Computed by CMake
+Assimp_BINARY_DIR:STATIC=/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp
+
+//Value Computed by CMake
+Assimp_SOURCE_DIR:STATIC=/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp
+
+//Build documentation using Doxygen.
+BUILD_DOCS:BOOL=OFF
+
+//Build package with shared libraries.
 BUILD_SHARED_LIBS:BOOL=OFF
 
 //Path to a program.
@@ -64,6 +271,9 @@ CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
 //Flags used by the compiler during release builds with debug info.
 CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
+
+//Debug Postfix for lib, samples and tools
+CMAKE_DEBUG_POSTFIX:STRING=
 
 //Flags used by the linker.
 CMAKE_EXE_LINKER_FLAGS:STRING=
@@ -315,6 +525,9 @@ GLM_TEST_ENABLE_SIMD_SSE3:BOOL=OFF
 //Force 'pure' instructions
 GLM_TEST_FORCE_PURE:BOOL=OFF
 
+//Dependencies for target
+IrrXML_LIB_DEPENDS:STATIC=
+
 //Takes an empty string or 64. Directory where lib will be installed:
 // lib or lib64
 LIB_SUFFIX:STRING=
@@ -334,8 +547,20 @@ OPENGL_glu_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libGLU.so
 //Path to a file.
 OPENGL_xmesa_INCLUDE_DIR:PATH=OPENGL_xmesa_INCLUDE_DIR-NOTFOUND
 
+//C++ compiler flags for OpenMP parallization
+OpenMP_CXX_FLAGS:STRING=-fopenmp
+
+//C compiler flags for OpenMP parallization
+OpenMP_C_FLAGS:STRING=-fopenmp
+
+//pkg-config executable
+PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
+
 //Path to a library.
 RT_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/librt.so
+
+//Use system installed Irrlicht/IrrXML library.
+SYSTEM_IRRXML:BOOL=OFF
 
 //Path to a file.
 VULKAN_INCLUDE_DIR:PATH=VULKAN_INCLUDE_DIR-NOTFOUND
@@ -526,11 +751,23 @@ X11_xf86misc_INCLUDE_PATH:PATH=X11_xf86misc_INCLUDE_PATH-NOTFOUND
 //Path to a file.
 X11_xf86vmode_INCLUDE_PATH:PATH=/usr/include
 
+//Path to a file.
+ZLIB_INCLUDE_DIR:PATH=/usr/include
+
+//Path to a library.
+ZLIB_LIBRARY_DBG:FILEPATH=/usr/lib/x86_64-linux-gnu/libz.so
+
+//Path to a library.
+ZLIB_LIBRARY_REL:FILEPATH=/usr/lib/x86_64-linux-gnu/libz.so
+
+//Dependencies for the target
+assimp_LIB_DEPENDS:STATIC=optimized;/usr/lib/x86_64-linux-gnu/libz.so;debug;/usr/lib/x86_64-linux-gnu/libz.so;general;IrrXML;general;/usr/lib/x86_64-linux-gnu/librt.so;
+
 //Value Computed by CMake
 engine_BINARY_DIR:STATIC=/home/alvaro/CodenamePatanius/Game/lib/engine
 
 //Dependencies for the target
-engine_LIB_DEPENDS:STATIC=general;entityx;general;glfw;general;/home/alvaro/CodenamePatanius/Game/lib/engine/lib/irrKlang/bin/linux-gcc-64/libIrrKlang.so;
+engine_LIB_DEPENDS:STATIC=general;entityx;general;glfw;general;assimp;general;/home/alvaro/CodenamePatanius/Game/lib/engine/lib/irrKlang/bin/linux-gcc-64/libIrrKlang.so;
 
 //Value Computed by CMake
 engine_SOURCE_DIR:STATIC=/home/alvaro/CodenamePatanius/Game/lib/engine
@@ -558,6 +795,10 @@ glm_SOURCE_DIR:STATIC=/home/alvaro/CodenamePatanius/Game/lib/engine/lib/glm
 # INTERNAL cache entries
 ########################
 
+//ADVANCED property for variable: ASSIMP_BUILD_ARCHITECTURE
+ASSIMP_BUILD_ARCHITECTURE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ASSIMP_BUILD_COMPILER
+ASSIMP_BUILD_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
 //This is the directory where this CMakeCache.txt was created
@@ -692,7 +933,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=12
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=16
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -735,12 +976,22 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 ENTITYX_HAVE_CXX11_STDLIB:INTERNAL=
 //Details about finding OpenGL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/usr/lib/x86_64-linux-gnu/libGL.so][/usr/include][v()]
+//Details about finding OpenMP
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[-fopenmp][-fopenmp][v()]
+//Details about finding PkgConfig
+FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/bin/pkg-config][v0.29.1()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding X11
 FIND_PACKAGE_MESSAGE_DETAILS_X11:INTERNAL=[/usr/lib/x86_64-linux-gnu/libX11.so][/usr/include]
+//Details about finding rt
+FIND_PACKAGE_MESSAGE_DETAILS_rt:INTERNAL=[/usr/lib/x86_64-linux-gnu/librt.so][v()]
 //Have include stdint.h
 HAVE_STDINT_H:INTERNAL=1
+//IrrXML_Include
+IRRXML_INCLUDE_DIR:INTERNAL=/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/contrib/irrXML
+//IrrXML
+IRRXML_LIBRARY:INTERNAL=IrrXML
 //ADVANCED property for variable: MATH_LIBRARY
 MATH_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_INCLUDE_DIR
@@ -751,8 +1002,40 @@ OPENGL_gl_LIBRARY-ADVANCED:INTERNAL=1
 OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_xmesa_INCLUDE_DIR
 OPENGL_xmesa_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenMP_CXX_FLAGS
+OpenMP_CXX_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenMP_C_FLAGS
+OpenMP_C_FLAGS-ADVANCED:INTERNAL=1
+//Test OpenMP_FLAG_DETECTED
+OpenMP_FLAG_DETECTED:INTERNAL=1
+//ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
+PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: RT_LIBRARY
 RT_LIBRARY-ADVANCED:INTERNAL=1
+UNZIP_CFLAGS:INTERNAL=
+UNZIP_CFLAGS_I:INTERNAL=
+UNZIP_CFLAGS_OTHER:INTERNAL=
+UNZIP_FOUND:INTERNAL=
+UNZIP_INCLUDEDIR:INTERNAL=
+UNZIP_LIBDIR:INTERNAL=
+UNZIP_LIBS:INTERNAL=
+UNZIP_LIBS_L:INTERNAL=
+UNZIP_LIBS_OTHER:INTERNAL=
+UNZIP_LIBS_PATHS:INTERNAL=
+UNZIP_PREFIX:INTERNAL=
+UNZIP_STATIC_CFLAGS:INTERNAL=
+UNZIP_STATIC_CFLAGS_I:INTERNAL=
+UNZIP_STATIC_CFLAGS_OTHER:INTERNAL=
+UNZIP_STATIC_LIBDIR:INTERNAL=
+UNZIP_STATIC_LIBS:INTERNAL=
+UNZIP_STATIC_LIBS_L:INTERNAL=
+UNZIP_STATIC_LIBS_OTHER:INTERNAL=
+UNZIP_STATIC_LIBS_PATHS:INTERNAL=
+UNZIP_VERSION:INTERNAL=
+UNZIP_minizip_INCLUDEDIR:INTERNAL=
+UNZIP_minizip_LIBDIR:INTERNAL=
+UNZIP_minizip_PREFIX:INTERNAL=
+UNZIP_minizip_VERSION:INTERNAL=
 //ADVANCED property for variable: VULKAN_INCLUDE_DIR
 VULKAN_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: VULKAN_LIBRARY
@@ -881,4 +1164,40 @@ X11_dpms_INCLUDE_PATH-ADVANCED:INTERNAL=1
 X11_xf86misc_INCLUDE_PATH-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: X11_xf86vmode_INCLUDE_PATH
 X11_xf86vmode_INCLUDE_PATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_INCLUDE_DIR
+ZLIB_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_LIBRARY_DBG
+ZLIB_LIBRARY_DBG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_LIBRARY_REL
+ZLIB_LIBRARY_REL-ADVANCED:INTERNAL=1
+ZLIB_PKGC_CFLAGS:INTERNAL=
+ZLIB_PKGC_CFLAGS_I:INTERNAL=
+ZLIB_PKGC_CFLAGS_OTHER:INTERNAL=
+ZLIB_PKGC_FOUND:INTERNAL=
+ZLIB_PKGC_INCLUDEDIR:INTERNAL=
+ZLIB_PKGC_LIBDIR:INTERNAL=
+ZLIB_PKGC_LIBS:INTERNAL=
+ZLIB_PKGC_LIBS_L:INTERNAL=
+ZLIB_PKGC_LIBS_OTHER:INTERNAL=
+ZLIB_PKGC_LIBS_PATHS:INTERNAL=
+ZLIB_PKGC_PREFIX:INTERNAL=
+ZLIB_PKGC_STATIC_CFLAGS:INTERNAL=
+ZLIB_PKGC_STATIC_CFLAGS_I:INTERNAL=
+ZLIB_PKGC_STATIC_CFLAGS_OTHER:INTERNAL=
+ZLIB_PKGC_STATIC_LIBDIR:INTERNAL=
+ZLIB_PKGC_STATIC_LIBS:INTERNAL=
+ZLIB_PKGC_STATIC_LIBS_L:INTERNAL=
+ZLIB_PKGC_STATIC_LIBS_OTHER:INTERNAL=
+ZLIB_PKGC_STATIC_LIBS_PATHS:INTERNAL=
+ZLIB_PKGC_VERSION:INTERNAL=
+ZLIB_PKGC_zzip-zlib-config_INCLUDEDIR:INTERNAL=
+ZLIB_PKGC_zzip-zlib-config_LIBDIR:INTERNAL=
+ZLIB_PKGC_zzip-zlib-config_PREFIX:INTERNAL=
+ZLIB_PKGC_zzip-zlib-config_VERSION:INTERNAL=
+//x
+ZLIB_PREFIX_PATH_INT_CHECK:INTERNAL=
+//CMAKE_INSTALL_PREFIX during last run
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
+__pkg_config_checked_UNZIP:INTERNAL=1
+__pkg_config_checked_ZLIB_PKGC:INTERNAL=1
 

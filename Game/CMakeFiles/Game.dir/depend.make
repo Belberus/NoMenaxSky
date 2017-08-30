@@ -910,6 +910,7 @@ CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/core/engine.h
 CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/core/resource_manager.h
 CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/core/scene.h
 CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/events/collision.h
+CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/events/ignore_collision.h
 CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/events/key_pressed.h
 CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/events/key_released.h
 CMakeFiles/Game.dir/src/main_menu.cc.o: lib/engine/include/engine/systems/two_d/sprite_renderer.h
@@ -1143,6 +1144,7 @@ CMakeFiles/Game.dir/src/main_menu_background.cc.o: lib/engine/lib/glm/glm/vec4.h
 CMakeFiles/Game.dir/src/main_menu_background.cc.o: lib/engine/lib/glm/glm/vector_relational.hpp
 
 CMakeFiles/Game.dir/src/options_menu.cc.o: src/components.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: src/entity_factory.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: src/events.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: src/game.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: src/options_menu.cc
@@ -1150,10 +1152,19 @@ CMakeFiles/Game.dir/src/options_menu.cc.o: src/options_menu.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: src/systems.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/components/common/camera.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/components/common/transform.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/components/two_d/sprite.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/components/two_d/sprite_animation.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/components/two_d/texture.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/core/engine.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/core/resource_manager.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/core/scene.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/events/collision.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/events/ignore_collision.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/events/key_pressed.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/events/key_released.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/systems/two_d/sprite_animator.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/systems/two_d/sprite_renderer.h
+CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/include/engine/utils/rectangle.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/lib/entityx/entityx/3rdparty/simplesignal.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/lib/entityx/entityx/Entity.h
 CMakeFiles/Game.dir/src/options_menu.cc.o: lib/engine/lib/entityx/entityx/Event.h
@@ -1292,6 +1303,7 @@ CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/core/audio_manag
 CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/core/engine.h
 CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/core/event_manager.h
 CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/events/collision.h
+CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/events/ignore_collision.h
 CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/events/key_pressed.h
 CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/events/key_released.h
 CMakeFiles/Game.dir/src/systems.cc.o: lib/engine/include/engine/utils/rectangle.h

@@ -225,6 +225,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
           break;
         case ArrowMenu::Option::OPCIONES:
           events.emit<OptionMenu>();
+          std::cout << "option menu" << std::endl;
           break;
         case ArrowMenu::Option::SALIR:
           exit(0);
@@ -255,60 +256,262 @@ void MenuInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+OptionsInputSystem::OptionsInputSystem()
+    : options_up_pressed_(false), options_down_pressed_(false), options_enter_pressed_(false) {
+  Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+  Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
 void OptionsInputSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {
-  entityx::ComponentHandle<ArrowOptions> arrowOptions;
+
+  entityx::ComponentHandle<ArrowOptions> arrow_options;
   entityx::ComponentHandle<Transform> position;
-  glm::vec3 pos1(325, 247, 0);
-  glm::vec3 pos2(325, 157, 0);
-  glm::vec3 pos3(325, 65, 0);
+  entityx::ComponentHandle<GameOptions> opciones;
+  
   for (entityx::Entity entity :
-       es.entities_with_components(arrowOptions, position)) {
-    if (true) {
-      switch (arrowOptions->option) {
+       es.entities_with_components(arrow_options, position, opciones)) {
+    auto new_position = position->GetLocalPosition();
+
+    if (options_up_pressed_) {
+      options_up_pressed_ = false;
+      switch (arrow_options->option) {
         case ArrowOptions::Option::MODE:
           break;
         case ArrowOptions::Option::MUSIC_VOL:
+          new_position.y += 70;
+
+          if (opciones->modo == GameOptions::Modo::TWO_D &&
+              opciones->musica == GameOptions::Musica::MUSIC_OFF){
+            new_position.x -= 250;
+          }
+
+          if (opciones->modo == GameOptions::Modo::THREE_D &&
+              opciones->musica == GameOptions::Musica::MUSIC_ON){
+            new_position.x += 250;
+          }
+
+          arrow_options->option = ArrowOptions::Option::MODE;
           break;
         case ArrowOptions::Option::FX_VOL:
-          position->SetLocalPosition(pos1);
-          arrowOptions->option = ArrowOptions::Option::MUSIC_VOL;
+          new_position.y += 70;
+
+          if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
+              opciones->efectos == GameOptions::Efectos::FX_OFF){
+            new_position.x -= 250;
+          }
+
+          if (opciones->musica == GameOptions::Musica::MUSIC_OFF &&
+              opciones->efectos == GameOptions::Efectos::FX_ON){
+            new_position.x += 250;
+          }
+
+          arrow_options->option = ArrowOptions::Option::MUSIC_VOL;
           break;
         case ArrowOptions::Option::SALIR:
-          position->SetLocalPosition(pos2);
-          arrowOptions->option = ArrowOptions::Option::FX_VOL;
+          new_position.y += 70;
+
+          if (opciones->efectos == GameOptions::Efectos::FX_OFF){
+            new_position.x += 250;
+          }
+
+          arrow_options->option = ArrowOptions::Option::FX_VOL;
           break;
       }
     }
-    if (true) {
-      switch (arrowOptions->option) {
+    if (options_down_pressed_) {
+      options_down_pressed_ = false;
+      switch (arrow_options->option) {
         case ArrowOptions::Option::MODE:
+          new_position.y -= 70;
+          
+          if (opciones->modo == GameOptions::Modo::TWO_D &&
+              opciones->musica == GameOptions::Musica::MUSIC_OFF){
+            new_position.x += 250;
+          }
+
+          if (opciones->modo == GameOptions::Modo::THREE_D &&
+              opciones->musica == GameOptions::Musica::MUSIC_ON){
+            new_position.x -= 250;
+          }
+
+          arrow_options->option = ArrowOptions::Option::MUSIC_VOL;
           break;
         case ArrowOptions::Option::MUSIC_VOL:
-          position->SetLocalPosition(pos2);
-          arrowOptions->option = ArrowOptions::Option::FX_VOL;
+          new_position.y -= 70;
+          
+          if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
+              opciones->efectos == GameOptions::Efectos::FX_OFF){
+            new_position.x += 250;
+          }
+
+          if (opciones->musica == GameOptions::Musica::MUSIC_OFF &&
+              opciones->efectos == GameOptions::Efectos::FX_ON){
+            new_position.x -= 250;
+          }
+
+          arrow_options->option = ArrowOptions::Option::FX_VOL;
           break;
         case ArrowOptions::Option::FX_VOL:
-          position->SetLocalPosition(pos3);
-          arrowOptions->option = ArrowOptions::Option::SALIR;
+          new_position.y -= 70;
+
+          if (opciones->efectos == GameOptions::Efectos::FX_OFF){
+            new_position.x -= 250;
+          }
+
+          arrow_options->option = ArrowOptions::Option::SALIR;
           break;
         case ArrowOptions::Option::SALIR:
           break;
       }
     }
-    if (true) {
-      switch (arrowOptions->option) {
+    if (options_right_pressed_) {
+      options_right_pressed_ = false;
+      switch (arrow_options->option) {
         case ArrowOptions::Option::MODE:
+          switch (opciones->modo) {
+            case GameOptions::Modo::TWO_D:
+              new_position.x += 250;
+              opciones->modo = GameOptions::Modo::THREE_D;
+              break;
+            case GameOptions::Modo::THREE_D:
+              break; 
+          }
           break;
         case ArrowOptions::Option::MUSIC_VOL:
+          switch (opciones->musica) {
+            case GameOptions::Musica::MUSIC_ON:
+              new_position.x += 250;
+              opciones->musica = GameOptions::Musica::MUSIC_OFF;
+              break;
+            case GameOptions::Musica::MUSIC_OFF:
+              break;
+          }
           break;
         case ArrowOptions::Option::FX_VOL:
+          switch (opciones->efectos) {
+            case GameOptions::Efectos::FX_ON:
+              new_position.x += 250;
+              opciones->efectos = GameOptions::Efectos::FX_OFF;
+              break;
+            case GameOptions::Efectos::FX_OFF:
+              break;
+          }
           break;
         case ArrowOptions::Option::SALIR:
           break;
       }
     }
+    if (options_left_pressed_) {
+      options_left_pressed_ = false;
+      switch (arrow_options->option) {
+        case ArrowOptions::Option::MODE:
+          switch (opciones->modo) {
+            case GameOptions::Modo::TWO_D:
+              break;
+            case GameOptions::Modo::THREE_D:
+              new_position.x -= 250;
+              opciones->modo = GameOptions::Modo::TWO_D;
+              break; 
+          }
+          break;
+        case ArrowOptions::Option::MUSIC_VOL:
+          switch (opciones->musica) {
+            case GameOptions::Musica::MUSIC_ON:             
+              break;
+            case GameOptions::Musica::MUSIC_OFF:
+              new_position.x -= 250;
+              opciones->musica = GameOptions::Musica::MUSIC_ON;
+              break;
+          }
+          break;
+        case ArrowOptions::Option::FX_VOL:
+          switch (opciones->efectos) {
+            case GameOptions::Efectos::FX_ON:             
+              break;
+            case GameOptions::Efectos::FX_OFF:
+              new_position.x -= 250;
+              opciones->efectos = GameOptions::Efectos::FX_ON;
+              break;
+          }
+          break;
+        case ArrowOptions::Option::SALIR:
+          break;
+      }
+    }
+    // if (options_enter_pressed_) {
+    //   options_enter_pressed_ = false;
+    //   switch (arrow_options->option) {
+    //     case ArrowOptions::Option::MODE:
+    //       switch (opciones->modo) {
+    //         case GameOptions::Modo::TWO_D:
+    //           new_position.x += 250;
+    //           opciones->modo = GameOptions::Modo::THREE_D;
+    //           break;
+    //         case GameOptions::Modo::THREE_D:
+    //           new_position.x -= 250;
+    //           opciones->modo = GameOptions::Modo::TWO_D;
+    //           break; 
+    //       }
+    //       break;
+    //     case ArrowOptions::Option::MUSIC_VOL:
+    //       switch (opciones->musica) {
+    //         case GameOptions::Musica::MUSIC_ON:
+    //           new_position.x += 250;
+    //           opciones->musica = GameOptions::Musica::MUSIC_OFF;
+    //           break;
+    //         case GameOptions::Musica::MUSIC_OFF:
+    //           new_position.x -= 250;
+    //           opciones->musica = GameOptions::Musica::MUSIC_ON;
+    //           break;
+    //       }
+    //       break;
+    //     case ArrowOptions::Option::FX_VOL:
+    //       switch (opciones->efectos) {
+    //         case GameOptions::Efectos::FX_ON:
+    //           new_position.x += 250;
+    //           opciones->efectos = GameOptions::Efectos::FX_OFF;
+    //           break;
+    //         case GameOptions::Efectos::FX_OFF:
+    //           new_position.x -= 250;
+    //           opciones->efectos = GameOptions::Efectos::FX_ON;
+    //           break;
+    //       }
+    //       break;
+    //     case ArrowOptions::Option::SALIR:
+    //       break;
+    //   }
+    // }
+    position->SetLocalPosition(new_position);
+  }
+}
+
+void OptionsInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_UP) {
+    options_up_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_DOWN) {
+    options_down_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_ENTER) {
+    options_enter_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_RIGHT) {
+    options_right_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_LEFT) {
+    options_left_pressed_ = true;
+  }
+}
+
+void OptionsInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_UP) {
+    options_up_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_DOWN) {
+    options_down_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_ENTER) {
+    options_enter_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_RIGHT) {
+    options_right_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_LEFT) {
+    options_left_pressed_ = false;
   }
 }
 

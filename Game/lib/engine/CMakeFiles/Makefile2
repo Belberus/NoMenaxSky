@@ -66,9 +66,11 @@ CMAKE_BINARY_DIR = /home/alvaro/CodenamePatanius/Game/lib/engine
 CMakeFiles/engine.dir/all: lib/glfw/src/CMakeFiles/glfw.dir/all
 CMakeFiles/engine.dir/all: lib/gl3w/CMakeFiles/gl3w_gen.dir/all
 CMakeFiles/engine.dir/all: lib/entityx/CMakeFiles/entityx.dir/all
+CMakeFiles/engine.dir/all: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all
+CMakeFiles/engine.dir/all: lib/assimp/code/CMakeFiles/assimp.dir/all
 	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/depend
 	$(MAKE) -f CMakeFiles/engine.dir/build.make CMakeFiles/engine.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target engine"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79 "Built target engine"
 .PHONY : CMakeFiles/engine.dir/all
 
 # Include target in all.
@@ -78,7 +80,7 @@ all: CMakeFiles/engine.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/engine.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 40
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 97
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/engine.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 0
 .PHONY : CMakeFiles/engine.dir/rule
@@ -174,7 +176,7 @@ lib/glfw/src/preinstall:
 lib/glfw/src/CMakeFiles/glfw.dir/all:
 	$(MAKE) -f lib/glfw/src/CMakeFiles/glfw.dir/build.make lib/glfw/src/CMakeFiles/glfw.dir/depend
 	$(MAKE) -f lib/glfw/src/CMakeFiles/glfw.dir/build.make lib/glfw/src/CMakeFiles/glfw.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40 "Built target glfw"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=85,86,87,88,89,90,91,92,93,94,95,96,97 "Built target glfw"
 .PHONY : lib/glfw/src/CMakeFiles/glfw.dir/all
 
 # Include target in all.
@@ -184,7 +186,7 @@ all: lib/glfw/src/CMakeFiles/glfw.dir/all
 
 # Build rule for subdir invocation for target.
 lib/glfw/src/CMakeFiles/glfw.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 17
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 13
 	$(MAKE) -f CMakeFiles/Makefile2 lib/glfw/src/CMakeFiles/glfw.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 0
 .PHONY : lib/glfw/src/CMakeFiles/glfw.dir/rule
@@ -250,7 +252,7 @@ lib/glm/glm/preinstall:
 lib/glm/glm/CMakeFiles/glm_dummy.dir/all:
 	$(MAKE) -f lib/glm/glm/CMakeFiles/glm_dummy.dir/build.make lib/glm/glm/CMakeFiles/glm_dummy.dir/depend
 	$(MAKE) -f lib/glm/glm/CMakeFiles/glm_dummy.dir/build.make lib/glm/glm/CMakeFiles/glm_dummy.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=41,42,43 "Built target glm_dummy"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=98,99,100 "Built target glm_dummy"
 .PHONY : lib/glm/glm/CMakeFiles/glm_dummy.dir/all
 
 # Include target in all.
@@ -404,7 +406,7 @@ lib/gl3w/preinstall:
 lib/gl3w/CMakeFiles/gl3w_gen.dir/all:
 	$(MAKE) -f lib/gl3w/CMakeFiles/gl3w_gen.dir/build.make lib/gl3w/CMakeFiles/gl3w_gen.dir/depend
 	$(MAKE) -f lib/gl3w/CMakeFiles/gl3w_gen.dir/build.make lib/gl3w/CMakeFiles/gl3w_gen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=23 "Built target gl3w_gen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=84 "Built target gl3w_gen"
 .PHONY : lib/gl3w/CMakeFiles/gl3w_gen.dir/all
 
 # Include target in all.
@@ -459,7 +461,7 @@ lib/entityx/preinstall:
 lib/entityx/CMakeFiles/entityx.dir/all:
 	$(MAKE) -f lib/entityx/CMakeFiles/entityx.dir/build.make lib/entityx/CMakeFiles/entityx.dir/depend
 	$(MAKE) -f lib/entityx/CMakeFiles/entityx.dir/build.make lib/entityx/CMakeFiles/entityx.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=17,18,19,20,21,22 "Built target entityx"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=80,81,82,83 "Built target entityx"
 .PHONY : lib/entityx/CMakeFiles/entityx.dir/all
 
 # Include target in all.
@@ -469,7 +471,7 @@ all: lib/entityx/CMakeFiles/entityx.dir/all
 
 # Build rule for subdir invocation for target.
 lib/entityx/CMakeFiles/entityx.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 lib/entityx/CMakeFiles/entityx.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 0
 .PHONY : lib/entityx/CMakeFiles/entityx.dir/rule
@@ -486,6 +488,155 @@ lib/entityx/CMakeFiles/entityx.dir/clean:
 
 # clean rule for target.
 clean: lib/entityx/CMakeFiles/entityx.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory lib/assimp
+
+# Convenience name for "all" pass in the directory.
+lib/assimp/all: lib/assimp/contrib/all
+lib/assimp/all: lib/assimp/code/all
+
+.PHONY : lib/assimp/all
+
+# Convenience name for "clean" pass in the directory.
+lib/assimp/clean: lib/assimp/contrib/clean
+lib/assimp/clean: lib/assimp/code/clean
+
+.PHONY : lib/assimp/clean
+
+# Convenience name for "preinstall" pass in the directory.
+lib/assimp/preinstall: lib/assimp/contrib/preinstall
+lib/assimp/preinstall: lib/assimp/code/preinstall
+
+.PHONY : lib/assimp/preinstall
+
+#=============================================================================
+# Directory level rules for directory lib/assimp/contrib
+
+# Convenience name for "all" pass in the directory.
+lib/assimp/contrib/all: lib/assimp/contrib/irrXML/all
+
+.PHONY : lib/assimp/contrib/all
+
+# Convenience name for "clean" pass in the directory.
+lib/assimp/contrib/clean: lib/assimp/contrib/irrXML/clean
+
+.PHONY : lib/assimp/contrib/clean
+
+# Convenience name for "preinstall" pass in the directory.
+lib/assimp/contrib/preinstall: lib/assimp/contrib/irrXML/preinstall
+
+.PHONY : lib/assimp/contrib/preinstall
+
+#=============================================================================
+# Directory level rules for directory lib/assimp/contrib/irrXML
+
+# Convenience name for "all" pass in the directory.
+lib/assimp/contrib/irrXML/all: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all
+
+.PHONY : lib/assimp/contrib/irrXML/all
+
+# Convenience name for "clean" pass in the directory.
+lib/assimp/contrib/irrXML/clean: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/clean
+
+.PHONY : lib/assimp/contrib/irrXML/clean
+
+# Convenience name for "preinstall" pass in the directory.
+lib/assimp/contrib/irrXML/preinstall:
+
+.PHONY : lib/assimp/contrib/irrXML/preinstall
+
+#=============================================================================
+# Target rules for target lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir
+
+# All Build rule for target.
+lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all:
+	$(MAKE) -f lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/build.make lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/depend
+	$(MAKE) -f lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/build.make lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=1 "Built target IrrXML"
+.PHONY : lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all
+
+# Include target in all.
+all: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 1
+	$(MAKE) -f CMakeFiles/Makefile2 lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 0
+.PHONY : lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/rule
+
+# Convenience name for target.
+IrrXML: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/rule
+
+.PHONY : IrrXML
+
+# clean rule for target.
+lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/clean:
+	$(MAKE) -f lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/build.make lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/clean
+.PHONY : lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/clean
+
+# clean rule for target.
+clean: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory lib/assimp/code
+
+# Convenience name for "all" pass in the directory.
+lib/assimp/code/all: lib/assimp/code/CMakeFiles/assimp.dir/all
+
+.PHONY : lib/assimp/code/all
+
+# Convenience name for "clean" pass in the directory.
+lib/assimp/code/clean: lib/assimp/code/CMakeFiles/assimp.dir/clean
+
+.PHONY : lib/assimp/code/clean
+
+# Convenience name for "preinstall" pass in the directory.
+lib/assimp/code/preinstall:
+
+.PHONY : lib/assimp/code/preinstall
+
+#=============================================================================
+# Target rules for target lib/assimp/code/CMakeFiles/assimp.dir
+
+# All Build rule for target.
+lib/assimp/code/CMakeFiles/assimp.dir/all: lib/assimp/contrib/irrXML/CMakeFiles/IrrXML.dir/all
+	$(MAKE) -f lib/assimp/code/CMakeFiles/assimp.dir/build.make lib/assimp/code/CMakeFiles/assimp.dir/depend
+	$(MAKE) -f lib/assimp/code/CMakeFiles/assimp.dir/build.make lib/assimp/code/CMakeFiles/assimp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles --progress-num=2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63 "Built target assimp"
+.PHONY : lib/assimp/code/CMakeFiles/assimp.dir/all
+
+# Include target in all.
+all: lib/assimp/code/CMakeFiles/assimp.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+lib/assimp/code/CMakeFiles/assimp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 63
+	$(MAKE) -f CMakeFiles/Makefile2 lib/assimp/code/CMakeFiles/assimp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alvaro/CodenamePatanius/Game/lib/engine/CMakeFiles 0
+.PHONY : lib/assimp/code/CMakeFiles/assimp.dir/rule
+
+# Convenience name for target.
+assimp: lib/assimp/code/CMakeFiles/assimp.dir/rule
+
+.PHONY : assimp
+
+# clean rule for target.
+lib/assimp/code/CMakeFiles/assimp.dir/clean:
+	$(MAKE) -f lib/assimp/code/CMakeFiles/assimp.dir/build.make lib/assimp/code/CMakeFiles/assimp.dir/clean
+.PHONY : lib/assimp/code/CMakeFiles/assimp.dir/clean
+
+# clean rule for target.
+clean: lib/assimp/code/CMakeFiles/assimp.dir/clean
 
 .PHONY : clean
 

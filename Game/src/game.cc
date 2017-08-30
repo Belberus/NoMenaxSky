@@ -13,6 +13,7 @@ using namespace engine::core;
 Game::Game()
     : current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
   events.subscribe<StartGame>(*this);
+  events.subscribe<OptionMenu>(*this);
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(

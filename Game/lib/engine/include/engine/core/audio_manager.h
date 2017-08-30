@@ -15,14 +15,16 @@ class AudioManager {
   ~AudioManager();
   void PlaySound(const std::string &sound_filename, bool looped, float volume);
   void StopAllSounds();
-  void SetVolume(float volume);
+  void SetVolumeFX(float volume);
+  void SetVolumeMusic(float volume);
   void PlaySound3D(const std::string &sound_filename, bool looped,
-  						glm::vec3 pos);
+  						glm::vec3 pos, float volume);
   void LoadSound(const std::string &sound_filename);
   void ResetSounds();
 
  private:
-  irrklang::ISoundEngine *sound_engine_;
+  irrklang::ISoundEngine *sound_engine_fx_;
+  irrklang::ISoundEngine *sound_engine_music_;
 };
 }  // namespace core
 }  // namespace engine

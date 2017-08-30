@@ -37,6 +37,7 @@ Floor::Floor() {
   systems.add<TurretAttackSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
+  systems.add<IgnoreCollisionSystem>(&entities, &events);
   systems.configure();
 }
 
@@ -133,20 +134,25 @@ bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
   /*auto crossing_entity_velocity =
       crossing_entity.component<engine::components::common::Physics>()
           ->velocity; */
-  Player::Orientation crossing_entity_orientation = crossing_entity.component<Player>()->orientation;
+  Player::Orientation crossing_entity_orientation =
+      crossing_entity.component<Player>()->orientation;
 
   std::cerr << crossing_entity_orientation << std::endl;
 
   auto door_component = *door.component<Door>();
 
   auto trying_cross_left_door =
-      door_component.pos == "left" && (crossing_entity_orientation == Player::Orientation::LEFT);
+      door_component.pos == "left" &&
+      (crossing_entity_orientation == Player::Orientation::LEFT);
   auto trying_cross_right_door =
-      door_component.pos == "right" && (crossing_entity_orientation == Player::Orientation::RIGHT);
+      door_component.pos == "right" &&
+      (crossing_entity_orientation == Player::Orientation::RIGHT);
   auto trying_cross_top_door =
-      door_component.pos == "top" && (crossing_entity_orientation == Player::Orientation::UP);
+      door_component.pos == "top" &&
+      (crossing_entity_orientation == Player::Orientation::UP);
   auto trying_cross_bottom_door =
-      door_component.pos == "bottom" && (crossing_entity_orientation == Player::Orientation::DOWN);
+      door_component.pos == "bottom" &&
+      (crossing_entity_orientation == Player::Orientation::DOWN);
 
   return trying_cross_left_door || trying_cross_right_door ||
          trying_cross_top_door || trying_cross_bottom_door;

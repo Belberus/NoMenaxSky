@@ -4,15 +4,39 @@
 #include <unordered_map>
 
 #include <engine/events/collision.h>
+#include <engine/events/ignore_collision.h>
 #include <engine/events/key_pressed.h>
 #include <engine/events/key_released.h>
 
 #include "components.h"
 
+/// This systems is responbile of making sure that certain entities dont
+/// collide.
+class IgnoreCollisionSystem : public entityx::System<IgnoreCollisionSystem>,
+                              public entityx::Receiver<IgnoreCollisionSystem> {
+ public:
+  IgnoreCollisionSystem(entityx::EntityManager *entity_manager,
+                        entityx::EventManager *event_manager);
+  void configure(entityx::EventManager &event_manager) override;
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  /// When a component ghost is added, that means that a new ghost entity is
+  /// being added, so we make sure that this entity doesnt collide with already
+  /// existing low profile buildings.
+  /// @param new_entity info about the event.
+  void receive(const entityx::ComponentAddedEvent<Ghost> &new_entity);
+
+ private:
+  entityx::EntityManager *entity_manager_;
+  entityx::EventManager *event_manager_;
+  std::vector<entityx::Entity> ghosts_;
+};
+
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+
  private:
   std::string lastAnim;
   std::string lastOrientation;
@@ -31,13 +55,13 @@ class KnightAttackSystem : public entityx::System<KnightAttackSystem>,
 
 class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
  public:
- 	void update(entityx::EntityManager &es, entityx::EventManager &events,
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
-}; 
+};
 
 class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
  public:
- 	void update(entityx::EntityManager &es, entityx::EventManager &events,
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };
 
@@ -45,12 +69,14 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+
  private:
- 	static const float turretSpeed;
- 	float time_passed;
+  static const float turretSpeed;
+  float time_passed;
 };
 
-class TurretAttackSystem : public entityx::System<TurretAttackSystem>, public entityx::Receiver<TurretAttackSystem> {
+class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
+                           public entityx::Receiver<TurretAttackSystem> {
  public:
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
@@ -58,9 +84,10 @@ class TurretAttackSystem : public entityx::System<TurretAttackSystem>, public en
               entityx::TimeDelta dt) override;
 };
 
-class TurretProjectileAnimationSystem : public entityx::System<TurretProjectile> {
+class TurretProjectileAnimationSystem
+    : public entityx::System<TurretProjectile> {
  public:
-	void update(entityx::EntityManager &es, entityx::EventManager &events,
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };
 

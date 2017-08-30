@@ -49,7 +49,7 @@ struct ArrowMenu {
 };
 
 struct ArrowOptions {
-  enum Option { MUSIC_VOL, FX_VOL, SALIR };
+  enum Option { MODE, MUSIC_VOL, FX_VOL, SALIR };
 
   Option option;
 

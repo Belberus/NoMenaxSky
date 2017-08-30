@@ -4,6 +4,7 @@
 #include "game_ui.h"
 #include "main_menu.h"
 #include "main_menu_background.h"
+#include "options_menu.h"
 
 #include "floor_factory.h"
 
@@ -24,6 +25,8 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kMainMenu:
         break;
       case State::kOptionsMenu:
+        scenes_.clear();
+        scenes_.push_back(std::make_unique<OptionsMenu>(this));
         break;
       case State::kFloor1:
       Engine::GetInstance().Get<AudioManager>().
@@ -49,3 +52,5 @@ void Game::Update(entityx::TimeDelta dt) {
 }
 
 void Game::receive(const StartGame& event) { next_state_ = State::kFloor1; }
+
+void Game::receive(const OptionMenu& event) { next_state_ = State::kOptionsMenu; }

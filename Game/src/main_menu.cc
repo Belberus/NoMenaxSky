@@ -81,4 +81,8 @@ void MainMenu::receive(const StartGame& start_game) {
   parent_scene_->events.emit<StartGame>(start_game);
 }
 
+void MainMenu::receive(const OptionMenu& option_menu) {
+  parent_scene_->events.emit<OptionMenu>(option_menu);
+}
+
 void MainMenu::AddEntities() {}

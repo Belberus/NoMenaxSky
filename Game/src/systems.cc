@@ -217,6 +217,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
           events.emit<StartGame>();
           break;
         case ArrowMenu::Option::OPCIONES:
+          events.emit<OptionMenu>();
           break;
         case ArrowMenu::Option::SALIR:
           exit(0);
@@ -259,6 +260,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
        es.entities_with_components(arrowOptions, position)) {
     if (true) {
       switch (arrowOptions->option) {
+        case ArrowOptions::Option::MODE:
+          break;
         case ArrowOptions::Option::MUSIC_VOL:
           break;
         case ArrowOptions::Option::FX_VOL:
@@ -273,6 +276,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     }
     if (true) {
       switch (arrowOptions->option) {
+        case ArrowOptions::Option::MODE:
+          break;
         case ArrowOptions::Option::MUSIC_VOL:
           position->SetLocalPosition(pos2);
           arrowOptions->option = ArrowOptions::Option::FX_VOL;
@@ -287,6 +292,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     }
     if (true) {
       switch (arrowOptions->option) {
+        case ArrowOptions::Option::MODE:
+          break;
         case ArrowOptions::Option::MUSIC_VOL:
           break;
         case ArrowOptions::Option::FX_VOL:

@@ -21,10 +21,7 @@ engine::components::common::Camera::Camera(float fov, float width, float height,
 
 glm::mat4 engine::components::common::Camera::GetViewMatrix(
     const engine::components::common::Transform &transform) {
-  glm::mat4 view_matrix = glm::mat4_cast(transform.GetWorldOrientation());
-  view_matrix =
-      glm::translate(view_matrix, -1.0f * transform.GetWorldPosition());
-  return view_matrix;
+  return glm::inverse(transform.GetWorldMatrix());
 }
 
 glm::mat4 engine::components::common::Camera::GetProjectionMatrix() {

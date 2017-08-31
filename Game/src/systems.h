@@ -134,10 +134,22 @@ class MenuInputSystem : public entityx::System<MenuInputSystem>,
   bool enter_pressed_;
 };
 
-class OptionsInputSystem : public entityx::System<OptionsInputSystem> {
+class OptionsInputSystem : public entityx::System<OptionsInputSystem>, 
+                           public entityx::Receiver<OptionsInputSystem>{
  public:
+  OptionsInputSystem();
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+
+  void receive(const engine::events::KeyPressed &key_pressed);
+  void receive(const engine::events::KeyReleased &key_released);
+
+ private:
+  bool options_up_pressed_;
+  bool options_down_pressed_;
+  bool options_enter_pressed_;
+  bool options_right_pressed_;
+  bool options_left_pressed_;
 };
 
 class PlayerInputSystem : public entityx::System<PlayerInputSystem>,

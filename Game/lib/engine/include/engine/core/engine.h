@@ -19,6 +19,8 @@ class Engine {
     bool vsync;
   };
 
+  enum class DepthTest { kLess, kAlways };
+
   static void Init(const Properties& properties);
   static Engine& GetInstance();
   template <typename T>
@@ -27,6 +29,7 @@ class Engine {
                 services_[std::type_index(typeid(T))].get())
                 ->provider;
   }
+  void EnableDepthTest(DepthTest depth_test);
   ~Engine();
 
  private:

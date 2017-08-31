@@ -12,6 +12,8 @@ class OptionsMenu : public engine::core::Scene {
   OptionsMenu(engine::core::Scene *parent_scene);
   void Update(entityx::TimeDelta dt) override;
 
+  int modo, musica, efectos;
+
  private:
   engine::core::Scene *parent_scene_;
 };

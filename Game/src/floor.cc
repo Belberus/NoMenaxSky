@@ -23,7 +23,9 @@ Floor::Floor() {
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
   systems.add<GhostAnimationSystem>();
+  systems.add<ManuelethAnimationSystem>();
   systems.add<TurretIaSystem>();
+  systems.add<ManuelethIaSystem>();
   systems.add<TrapIaSystem>();
   systems.add<TurretWalkingSystem>();
   systems.add<EnemyProjectileAnimationSystem>();
@@ -48,7 +50,9 @@ void Floor::Update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<GhostIaSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);
+  systems.update<ManuelethAnimationSystem>(dt);
   systems.update<TurretIaSystem>(dt);
+  systems.update<ManuelethIaSystem>(dt);
   systems.update<TrapIaSystem>(dt);
   systems.update<TurretWalkingSystem>(dt);
   systems.update<EnemyProjectileAnimationSystem>(dt);

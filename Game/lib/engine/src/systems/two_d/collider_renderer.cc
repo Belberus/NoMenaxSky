@@ -67,8 +67,10 @@ void engine::systems::two_d::ColliderRenderer::update(
       glBindBuffer(GL_ARRAY_BUFFER, pimpl_->buffer_);
       glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
       glUseProgram(pimpl_->program_);
+      glm::mat4 model;
+      model = glm::translate(model, transform->GetWorldPosition());
       glUniformMatrix4fv(glGetUniformLocation(pimpl_->program_, "model"), 1,
-                         GL_FALSE, glm::value_ptr(transform->GetWorldMatrix()));
+                         GL_FALSE, glm::value_ptr(model));
       glUniformMatrix4fv(
           glGetUniformLocation(pimpl_->program_, "view"), 1, GL_FALSE,
           glm::value_ptr(camera_description->GetViewMatrix(*camera_transform)));

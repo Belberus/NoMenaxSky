@@ -393,8 +393,8 @@ std::vector<entityx::Entity> EntityFactory::MakeEnemyProjectile(entityx::EntityM
 
 		loadTexture = "assets/spritesheets/manueleth.png";
 
-	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
-	  	shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
+	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
 	  }
 
     auto texture_atlas =

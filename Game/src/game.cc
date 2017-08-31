@@ -26,14 +26,13 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kMainMenu:
         break;
       case State::kOptionsMenu:
-        scenes_.clear();
+        scenes_.pop_back();
         scenes_.push_back(std::make_unique<OptionsMenu>(this));
         break;
       case State::kFloor1:
-      Engine::GetInstance().Get<AudioManager>().
-        StopAllSounds();
-      //Engine::GetInstance().Get<AudioManager>().
-      //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
+        Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+        // Engine::GetInstance().Get<AudioManager>().
+        //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
         scenes_.clear();
         scenes_.push_back(FloorFactory::MakeFloor1("assets/castle/floor1.tmx"));
         scenes_.push_back(std::make_unique<GameUi>(this));
@@ -54,4 +53,6 @@ void Game::Update(entityx::TimeDelta dt) {
 
 void Game::receive(const StartGame& event) { next_state_ = State::kFloor1; }
 
-void Game::receive(const OptionMenu& event) { next_state_ = State::kOptionsMenu; }
+void Game::receive(const OptionMenu& event) {
+  next_state_ = State::kOptionsMenu;
+}

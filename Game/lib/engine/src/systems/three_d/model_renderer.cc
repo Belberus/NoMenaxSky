@@ -80,14 +80,11 @@ void engine::systems::three_d::ModelRenderer::update(
         auto model = model_transform->GetWorldMatrix();
         glUniformMatrix4fv(glGetUniformLocation(pimpl_->program, "model"), 1,
                            GL_FALSE, glm::value_ptr(model));
-        auto testo = model_info->pimpl_->meshes_[i].vao;
         glBindVertexArray(model_info->pimpl_->meshes_[i].vao);
-        auto material_idx = model_info->pimpl_->meshes_[i].material_index;
         glActiveTexture(
-            model_info->pimpl_->materials_[material_idx]->texture_unit_id_);
-        glBindTexture(
-            GL_TEXTURE_2D,
-            model_info->pimpl_->materials_[material_idx]->texture_id_);
+            model_info->pimpl_->meshes_[i].texture->texture_unit_id_);
+        glBindTexture(GL_TEXTURE_2D,
+                      model_info->pimpl_->meshes_[i].texture->texture_id_);
         glDrawElements(GL_TRIANGLES, model_info->pimpl_->meshes_[i].num_indices,
                        GL_UNSIGNED_INT, 0);
       }

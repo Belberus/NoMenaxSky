@@ -9,7 +9,7 @@
 #include <engine/events/key_released.h>
 
 #include "components.h"
-
+/*
 /// This systems is responbile of making sure that certain entities dont
 /// collide.
 class IgnoreCollisionSystem : public entityx::System<IgnoreCollisionSystem>,
@@ -26,12 +26,14 @@ class IgnoreCollisionSystem : public entityx::System<IgnoreCollisionSystem>,
   /// @param new_entity info about the event.
   void receive(const entityx::ComponentAddedEvent<Ghost> &new_entity);
 
+  void receive(const entityx::ComponentAddedEvent<TurretProjectile> &new_entity);
+
  private:
   entityx::EntityManager *entity_manager_;
   entityx::EventManager *event_manager_;
   std::vector<entityx::Entity> ghosts_;
 };
-
+*/
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -65,6 +67,12 @@ class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class TrapIaSystem : public entityx::System<TrapIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 class TurretIaSystem : public entityx::System<TurretIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -72,7 +80,6 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
 
  private:
   static const float turretSpeed;
-  float time_passed;
 };
 
 class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
@@ -84,8 +91,8 @@ class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
               entityx::TimeDelta dt) override;
 };
 
-class TurretProjectileAnimationSystem
-    : public entityx::System<TurretProjectile> {
+class EnemyProjectileAnimationSystem
+    : public entityx::System<EnemyProjectile> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;

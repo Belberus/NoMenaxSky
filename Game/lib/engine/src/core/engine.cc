@@ -38,8 +38,7 @@ engine::core::Engine::Engine() {
     exit(-1);
   }
   glfwSwapInterval(properties_.vsync);
-  glDepthFunc(GL_LESS);
-  // glEnable(GL_DEPTH_TEST);
+  glClearColor(47.0f / 255.0f, 40.0f / 255.0f, 58.0f / 255.0f, 255.0f / 255.0f);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   AddServiceProvider<AudioManager>();
@@ -57,6 +56,18 @@ void engine::core::Engine::Init(const Properties& properties) {
 }
 
 engine::core::Engine& engine::core::Engine::GetInstance() { return *engine_; }
+
+void engine::core::Engine::EnableDepthTest(DepthTest depth_test) {
+  switch (depth_test) {
+    case DepthTest::kLess:
+      glDepthFunc(GL_LESS);
+      break;
+    case DepthTest::kAlways:
+      glDepthFunc(GL_ALWAYS);
+      break;
+  }
+  glEnable(GL_DEPTH_TEST);
+}
 
 engine::core::Engine::~Engine() {
   glfwDestroyWindow(glfw_window_);

@@ -36,6 +36,8 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Player> player;
   std::string animToPlay;
 
+  //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
+
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack, player)) {
     if (attack->is_attacking) {
@@ -63,6 +65,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     } else if (physics->velocity.x < 0) {
       animToPlay = "moving_left";
       player->orientation = Player::Orientation::LEFT;
+
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
@@ -70,6 +73,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     } else if (physics->velocity.y > 0) {
       animToPlay = "moving_top";
       player->orientation = Player::Orientation::UP;
+
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
@@ -77,6 +81,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
       player->orientation = Player::Orientation::DOWN;
+
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
@@ -682,7 +687,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
         const float distancia = std::sqrt(
             std::pow(std::abs(player_position.x - turret_position.x), 2) +
             std::pow(std::abs(player_position.y - turret_position.y), 2));
-        time_passed += (dt * 1000.0f);
+        turret.time_passed += (dt * 1000.0f);
 
         if (distancia < 50.0f) {
           // + DISPARAR SI TOCA
@@ -690,38 +695,81 @@ void TurretIaSystem::update(entityx::EntityManager &es,
               -1.0f *
               glm::normalize(player_position -
                              turret_transform.GetWorldPosition()) *
-              turretSpeed;
-          if (time_passed >= 1500.0f) {
-            time_passed = 0.0f;
-            EntityFactory::MakeTurretProjectile(
-                es, glm::vec3(turret_position.x + 20.0f, turret_position.y,
-                              turret_position.z));
-          }
+              turretSpeed;              
         } else {
-          turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-          ;
-          if (time_passed >= 1000.0f) {
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
-                "assets/media/fx/turret/default/attack.wav", false, 1);
-            time_passed = 0.0f;
-            EntityFactory::MakeTurretProjectile(
-                es, glm::vec3(turret_position.x + 20.0f, turret_position.y,
-                              turret_position.z));
-          }
-        }
+	          turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	          
+	        if (turret.time_passed >= 1500.0f) {
+	            Engine::GetInstance().Get<AudioManager>().PlaySound(
+	                "assets/media/fx/turret/default/attack.wav", false, 1);
+
+	        	glm::vec3 vector_player_turret(player_position.x - turret_position.x, player_position.y - turret_position.y, 0.0f);
+	            glm::vec3 vector_turret_v(0.0f, 1.0f, 0.0f);
+	           
+	            float angle_rad = std::atan2(vector_player_turret.y - vector_turret_v.y, vector_player_turret.x - vector_turret_v.x);
+
+	            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+	            new_velocity = glm::normalize(player_position -
+	                             turret_transform.GetWorldPosition()) *
+	              100.0f;
+	            
+	            EntityFactory::MakeEnemyProjectile(
+	                es, turret_position, angle_rad, new_velocity, "torreta");
+	            turret.time_passed = 0.0;
+	          }              
+	        }    
       });
 }
 
-void TurretProjectileAnimationSystem::update(entityx::EntityManager &es,
+void TrapIaSystem::update(entityx::EntityManager &es,
+                                             entityx::EventManager &events,
+                                             entityx::TimeDelta dt) {
+	glm::vec3 trap_position;
+	es.each<Trap, Transform>(
+      [&](entityx::Entity entity, Trap &trap, Transform &trap_transform) {
+        trap_position = trap_transform.GetWorldPosition();
+      
+
+		trap.time_passed += (dt * 1000.0f);
+
+		if (trap.time_passed >= 2500.0f) {
+			Engine::GetInstance().Get<AudioManager>().PlaySound(
+	                "assets/media/fx/turret/default/attack.wav", false, 1);
+			glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+			switch(trap.orientation) {
+				case Trap::Orientation::UP :
+					EntityFactory::MakeEnemyProjectile(
+	                es, trap_position, 1.57, glm::vec3(0.0f, 100.0f, 0.0f), "trampa");
+				break;
+				case Trap::Orientation::DOWN :
+					EntityFactory::MakeEnemyProjectile(
+	                es, trap_position, -1.57, glm::vec3(0.0f, -100.0f, 0.0f), "trampa");
+				break;
+				case Trap::Orientation::LEFT :
+					EntityFactory::MakeEnemyProjectile(
+	                es, trap_position, -3.14, glm::vec3(-100.0f, 0.0f, 0.0f), "trampa");
+				break;
+				case Trap::Orientation::RIGHT :
+					EntityFactory::MakeEnemyProjectile(
+	                es, trap_position, 0.0, glm::vec3(100.0f, 0.0f, 0.0f), "trampa");
+				break;
+			}
+			trap.time_passed = 0.0;
+		}
+	});
+
+}
+
+void EnemyProjectileAnimationSystem::update(entityx::EntityManager &es,
                                              entityx::EventManager &events,
                                              entityx::TimeDelta dt) {
   entityx::ComponentHandle<SpriteAnimation> animation;
   entityx::ComponentHandle<Physics> physics;
-  entityx::ComponentHandle<TurretProjectile> turretProjectile;
+  entityx::ComponentHandle<EnemyProjectile> enemyProjectile;
   std::string animToPlay;
 
   for (entityx::Entity e1 :
-       es.entities_with_components(animation, physics, turretProjectile)) {
+       es.entities_with_components(animation, physics, enemyProjectile)) {
     animToPlay = "shooting";
     animation->Play(animToPlay);
   }
@@ -915,8 +963,8 @@ void TurretAttackSystem::receive(const Collision &collision) {
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
     return;
   }
-  auto e0_projectile = collision_copy.e0.component<TurretProjectile>();
-  auto e1_projectile = collision_copy.e1.component<TurretProjectile>();
+  auto e0_projectile = collision_copy.e0.component<EnemyProjectile>();
+  auto e1_projectile = collision_copy.e1.component<EnemyProjectile>();
 
   if (e0_projectile && collision_copy.e1.component<Player>()) {
     auto e1_health = collision_copy.e1.component<Health>();
@@ -988,6 +1036,7 @@ void HealthSystem::update(entityx::EntityManager &es,
   });
 }
 
+/*
 IgnoreCollisionSystem::IgnoreCollisionSystem(
     entityx::EntityManager *entity_manager,
     entityx::EventManager *event_manager)
@@ -995,6 +1044,7 @@ IgnoreCollisionSystem::IgnoreCollisionSystem(
 
 void IgnoreCollisionSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<entityx::ComponentAddedEvent<Ghost>>(*this);
+  event_manager.subscribe<entityx::ComponentAddedEvent<TurretProjectile>>(*this);
 }
 
 void IgnoreCollisionSystem::update(entityx::EntityManager &es,
@@ -1009,3 +1059,27 @@ void IgnoreCollisionSystem::receive(
                                           low_profile_collider, true);
   }
 }
+
+void IgnoreCollisionSystem::receive(const entityx::ComponentAddedEvent<TurretProjectile> &new_entity) {
+	for (auto low_profile_collider :
+       entity_manager_->entities_with_components<LowCollision>()) {
+       	std::cerr << "Estamos en el receive, lowcollision" << std::endl;
+    event_manager_->emit<IgnoreCollision>(new_entity.entity,
+                                          low_profile_collider, true);
+ 	}
+ 	for (auto ghost :
+       entity_manager_->entities_with_components<Ghost>()) {
+       	std::cerr << "Estamos en el receive, ghost" << std::endl;
+    event_manager_->emit<IgnoreCollision>(new_entity.entity,
+                                          ghost, true);
+ 	}
+	for (auto turret : entity_manager_->entities_with_components<Turret>()) {
+		std::cerr << "Estamos en el receive, turret" << std::endl;
+  		event_manager_->emit<IgnoreCollision>(new_entity.entity, turret, true);
+  	}
+  	for (auto projectile : entity_manager_->entities_with_components<TurretProjectile>()) {
+  		std::cerr << "Estamos en el receive, projectile" << std::endl;
+  		event_manager_->emit<IgnoreCollision>(new_entity.entity, projectile, true);
+  	}
+}
+*/

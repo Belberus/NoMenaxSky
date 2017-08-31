@@ -1,21 +1,10 @@
 #include "engine/components/three_d/model.h"
 
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-
 #include "components/three_d/model_impl.h"
 
 engine::components::three_d::Model::Model(const std::string& filename)
     : pimpl_(new engine::components::three_d::impl::ModelImpl()) {
-  Assimp::Importer importer;
-  auto scene = importer.ReadFile(
-      filename.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals);
-  if (!scene) {
-    throw std::runtime_error(
-        "Error while processing the file containing the model: " + filename);
-  }
-  pimpl_->InitModel(*scene, filename);
+  pimpl_->LoadModel(filename);
 }
 
 engine::components::three_d::Model::Model(const Model& model)

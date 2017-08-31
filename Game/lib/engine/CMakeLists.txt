@@ -121,8 +121,8 @@ set(EVENTS_HDR
 source_group(events\\headers FILES ${EVENTS_HDR})
 
 set(UTILS_HDR
-  src/utils/shaders.h
   include/engine/utils/rectangle.h
+  src/utils/shaders.h
 )
 source_group(utils\\headers FILES ${UTILS_HDR})
 

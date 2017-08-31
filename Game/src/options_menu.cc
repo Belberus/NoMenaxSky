@@ -24,33 +24,9 @@ using namespace engine::core;
 OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene) 
 	: parent_scene_(parent_scene) {
 
-  auto menu = entities.create();
-  menu.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 0), nullptr,
-                         glm::vec3(960.0f / 500.0f, 540.0f / 477.0f, 1.0f));
-
   auto camera = entities.create();
   camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1));
   camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
-
-  std::vector<engine::utils::Rectangle> rect;
-  rect.emplace_back(glm::vec2(0, 0), glm::vec2(500, 477));
-  rect.emplace_back(glm::vec2(500, 0), glm::vec2(500, 477));
-  rect.emplace_back(glm::vec2(1000, 0), glm::vec2(500, 477));
-  rect.emplace_back(glm::vec2(1500, 0), glm::vec2(500, 477));
-  auto texture = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-      "assets/menu/background_menu.png");
-  SpriteAnimation::AnimationClip background_anim("background_menu", texture,
-                                                 rect, 100.0f);
-  SpriteAnimation anim({background_anim});
-  menu.assign<SpriteAnimation>(std::move(anim));
-  menu.assign<Sprite>(texture);
-
-  auto logo = entities.create();
-  logo.assign<Transform>(glm::vec3(910, 50, 0), nullptr,
-                         glm::vec3(0.1, 0.1, 1));
-  auto logo_tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-      "assets/menu/patan_games.png");
-  logo.assign<Sprite>(logo_tex);
 
   auto menu_canvas = entities.create();
   menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
@@ -87,11 +63,7 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
   // TO DO: Si estan a 1 es ON y 2D, 0 son OFF y 3D
   //    y en systems cuando sale guardarlo en un fichero, y cuando cierra
   // 	el juego borrar dicho fichero
-#ifdef _WIN32
-  std::string filename = "..\\files\\prueba.txt";
-#else
-  std::string filename = "../files/prueba.txt";
-#endif
+  std::string filename = "assets/config/prueba.txt";
 
   GameOptions opciones_iniciales = {
   		GameOptions::Modo::TWO_D, 

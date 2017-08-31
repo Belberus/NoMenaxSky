@@ -16,12 +16,16 @@
 #include "entity_factory.h"
 #include "events.h"
 
+#include <iostream>
+#include <string.h>
+
 #include <GLFW/glfw3.h>
 
 using namespace engine::core;
 using namespace engine::components::two_d;
 using namespace engine::components::common;
 using namespace engine::events;
+
 
 void KnightAnimationSystem::update(entityx::EntityManager &es,
                                    entityx::EventManager &events,
@@ -225,7 +229,6 @@ void MenuInputSystem::update(entityx::EntityManager &es,
           break;
         case ArrowMenu::Option::OPCIONES:
           events.emit<OptionMenu>();
-          std::cout << "option menu" << std::endl;
           break;
         case ArrowMenu::Option::SALIR:
           exit(0);
@@ -284,12 +287,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
 
           if (opciones->modo == GameOptions::Modo::TWO_D &&
               opciones->musica == GameOptions::Musica::MUSIC_OFF){
-            new_position.x -= 250;
+            new_position.x -= 150;
           }
 
           if (opciones->modo == GameOptions::Modo::THREE_D &&
               opciones->musica == GameOptions::Musica::MUSIC_ON){
-            new_position.x += 250;
+            new_position.x += 150;
           }
 
           arrow_options->option = ArrowOptions::Option::MODE;
@@ -299,12 +302,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
 
           if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
               opciones->efectos == GameOptions::Efectos::FX_OFF){
-            new_position.x -= 250;
+            new_position.x -= 150;
           }
 
           if (opciones->musica == GameOptions::Musica::MUSIC_OFF &&
               opciones->efectos == GameOptions::Efectos::FX_ON){
-            new_position.x += 250;
+            new_position.x += 150;
           }
 
           arrow_options->option = ArrowOptions::Option::MUSIC_VOL;
@@ -313,7 +316,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           new_position.y += 70;
 
           if (opciones->efectos == GameOptions::Efectos::FX_OFF){
-            new_position.x += 250;
+            new_position.x += 150;
           }
 
           arrow_options->option = ArrowOptions::Option::FX_VOL;
@@ -328,12 +331,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           
           if (opciones->modo == GameOptions::Modo::TWO_D &&
               opciones->musica == GameOptions::Musica::MUSIC_OFF){
-            new_position.x += 250;
+            new_position.x += 150;
           }
 
           if (opciones->modo == GameOptions::Modo::THREE_D &&
               opciones->musica == GameOptions::Musica::MUSIC_ON){
-            new_position.x -= 250;
+            new_position.x -= 150;
           }
 
           arrow_options->option = ArrowOptions::Option::MUSIC_VOL;
@@ -343,12 +346,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           
           if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
               opciones->efectos == GameOptions::Efectos::FX_OFF){
-            new_position.x += 250;
+            new_position.x += 150;
           }
 
           if (opciones->musica == GameOptions::Musica::MUSIC_OFF &&
               opciones->efectos == GameOptions::Efectos::FX_ON){
-            new_position.x -= 250;
+            new_position.x -= 150;
           }
 
           arrow_options->option = ArrowOptions::Option::FX_VOL;
@@ -357,7 +360,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           new_position.y -= 70;
 
           if (opciones->efectos == GameOptions::Efectos::FX_OFF){
-            new_position.x -= 250;
+            new_position.x -= 150;
           }
 
           arrow_options->option = ArrowOptions::Option::SALIR;
@@ -372,8 +375,9 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::MODE:
           switch (opciones->modo) {
             case GameOptions::Modo::TWO_D:
-              new_position.x += 250;
+              new_position.x += 150;
               opciones->modo = GameOptions::Modo::THREE_D;
+
               break;
             case GameOptions::Modo::THREE_D:
               break; 
@@ -382,7 +386,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::MUSIC_VOL:
           switch (opciones->musica) {
             case GameOptions::Musica::MUSIC_ON:
-              new_position.x += 250;
+              new_position.x += 150;
               opciones->musica = GameOptions::Musica::MUSIC_OFF;
               break;
             case GameOptions::Musica::MUSIC_OFF:
@@ -392,7 +396,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::FX_VOL:
           switch (opciones->efectos) {
             case GameOptions::Efectos::FX_ON:
-              new_position.x += 250;
+              new_position.x += 150;
               opciones->efectos = GameOptions::Efectos::FX_OFF;
               break;
             case GameOptions::Efectos::FX_OFF:
@@ -411,7 +415,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Modo::TWO_D:
               break;
             case GameOptions::Modo::THREE_D:
-              new_position.x -= 250;
+              new_position.x -= 150;
               opciones->modo = GameOptions::Modo::TWO_D;
               break; 
           }
@@ -421,7 +425,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Musica::MUSIC_ON:             
               break;
             case GameOptions::Musica::MUSIC_OFF:
-              new_position.x -= 250;
+              new_position.x -= 150;
               opciones->musica = GameOptions::Musica::MUSIC_ON;
               break;
           }
@@ -431,7 +435,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Efectos::FX_ON:             
               break;
             case GameOptions::Efectos::FX_OFF:
-              new_position.x -= 250;
+              new_position.x -= 150;
               opciones->efectos = GameOptions::Efectos::FX_ON;
               break;
           }
@@ -440,10 +444,10 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           break;
       }
     }
-    // if (options_enter_pressed_) {
-    //   options_enter_pressed_ = false;
-    //   switch (arrow_options->option) {
-    //     case ArrowOptions::Option::MODE:
+     if (options_enter_pressed_) {
+       options_enter_pressed_ = false;
+       switch (arrow_options->option) {
+         case ArrowOptions::Option::MODE:
     //       switch (opciones->modo) {
     //         case GameOptions::Modo::TWO_D:
     //           new_position.x += 250;
@@ -454,8 +458,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //           opciones->modo = GameOptions::Modo::TWO_D;
     //           break; 
     //       }
-    //       break;
-    //     case ArrowOptions::Option::MUSIC_VOL:
+           break;
+         case ArrowOptions::Option::MUSIC_VOL:
     //       switch (opciones->musica) {
     //         case GameOptions::Musica::MUSIC_ON:
     //           new_position.x += 250;
@@ -466,8 +470,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //           opciones->musica = GameOptions::Musica::MUSIC_ON;
     //           break;
     //       }
-    //       break;
-    //     case ArrowOptions::Option::FX_VOL:
+           break;
+         case ArrowOptions::Option::FX_VOL:
     //       switch (opciones->efectos) {
     //         case GameOptions::Efectos::FX_ON:
     //           new_position.x += 250;
@@ -478,11 +482,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //           opciones->efectos = GameOptions::Efectos::FX_ON;
     //           break;
     //       }
-    //       break;
-    //     case ArrowOptions::Option::SALIR:
-    //       break;
-    //   }
-    // }
+           break;
+         case ArrowOptions::Option::SALIR:
+         // TO DO: volver al menu pricnipal
+           break;
+       }
+     }
     position->SetLocalPosition(new_position);
   }
 }

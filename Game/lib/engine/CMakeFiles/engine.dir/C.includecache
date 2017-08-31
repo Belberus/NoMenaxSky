@@ -20,11 +20,11 @@ dlfcn.h
 GL/glx.h
 -
 
-lib/engine/lib/gl3w/include/GL/gl3w.h
+lib/gl3w/include/GL/gl3w.h
 GL/glcorearb.h
 -
 
-lib/engine/lib/gl3w/include/GL/glcorearb.h
+lib/gl3w/include/GL/glcorearb.h
 windows.h
 -
 stddef.h

@@ -3,13 +3,13 @@
 
 # compile C with /usr/bin/cc
 # compile CXX with /usr/bin/c++
-C_FLAGS = -O3 -DNDEBUG   -Wall
+C_FLAGS =   -Wall
 
 C_DEFINES = 
 
 C_INCLUDES = -I/home/alvaro/CodenamePatanius/Game/lib/engine/include -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/stb -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/irrKlang/include -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/. -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/include -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/code/../contrib/rapidjson/include -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/code/../contrib -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/code/../contrib/unzip -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/contrib/irrXML -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/code/../contrib/openddlparser/include -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/assimp/code/.. -I/home/alvaro/CodenamePatanius/Game/lib/engine/src -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/glm -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/entityx -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/glfw/include -I/home/alvaro/CodenamePatanius/Game/lib/engine/lib/gl3w/include 
 
-CXX_FLAGS = -O3 -DNDEBUG   -Wall -std=gnu++14
+CXX_FLAGS =   -Wall -std=gnu++14
 
 CXX_DEFINES = 
 

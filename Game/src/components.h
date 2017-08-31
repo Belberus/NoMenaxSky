@@ -70,6 +70,12 @@ struct GameOptions {
 
 };
 
+struct WhatOption {
+  int what;
+
+  WhatOption(int what) : what(what) {}
+};
+
 struct Door {
   Door(const std::string &next_door, const std::string &pos)
       : next_door(next_door), pos(pos) {}

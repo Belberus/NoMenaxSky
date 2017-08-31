@@ -17,5 +17,5 @@
 	path = Game/lib/tmxlite
 	url = https://github.com/fallahn/tmxlite.git
 [submodule "engine/lib/assimp"]
-	path = Game/lib/engine/engine/lib/assimp
+	path = Game/lib/engine/lib/assimp
 	url = https://github.com/assimp/assimp.git

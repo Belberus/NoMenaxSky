@@ -3,37 +3,70 @@
 #include <iostream>
 
 engine::core::AudioManager::AudioManager() {
-  sound_engine_ = irrklang::createIrrKlangDevice();
-  if (!sound_engine_) {
-    std::cerr << "Error starting up the sound engine.\n";
+  sound_engine_fx_ = irrklang::createIrrKlangDevice();
+  sound_engine_music_ = irrklang::createIrrKlangDevice();
+  if (!sound_engine_fx_) {
+    std::cerr << "Error starting up the fx sound engine.\n";
+  }
+  if (!sound_engine_music_) {
+    std::cerr << "Error starting up the music sound engine.\n";
   }
 }
 
-engine::core::AudioManager::~AudioManager() { sound_engine_->drop(); }
+engine::core::AudioManager::~AudioManager() { 
+  sound_engine_fx_->drop(); 
+  sound_engine_music_->drop();
+}
 
 void engine::core::AudioManager::PlaySound(const std::string& sound_filename,
                                            bool looped, float volume) {
-  irrklang::ISoundSource* sound = 
-    sound_engine_->getSoundSource(sound_filename.c_str());
-  sound->setDefaultVolume(volume);
-  if(!sound_engine_->isCurrentlyPlaying(sound)){
-    sound_engine_->play2D(sound, looped);
+  
+  if(sound_filename.find("fx") != std::string::npos){
+    irrklang::ISoundSource* sound = 
+    sound_engine_fx_->getSoundSource(sound_filename.c_str());
+      sound->setDefaultVolume(volume);
+      if(!sound_engine_fx_->isCurrentlyPlaying(sound)){
+        sound_engine_fx_->play2D(sound, looped);
+      }
+      //Else is already playing and will overlap
   }
-  //else is already playing and will overlap
+  else if(sound_filename.find("music") != std::string::npos){
+    irrklang::ISoundSource* sound = 
+    sound_engine_music_->getSoundSource(sound_filename.c_str());
+      sound->setDefaultVolume(volume);
+      if(!sound_engine_music_->isCurrentlyPlaying(sound)){
+        sound_engine_music_->play2D(sound, looped);
+      }
+      //Else is already playing and will overlap
+  }
+  //Else can't reach here unless you tried to play something
+  //outside assets, in that case, fuck off
 }
 
 void engine::core::AudioManager::StopAllSounds() {
-  sound_engine_->stopAllSounds();
+  sound_engine_fx_->stopAllSounds();
+  sound_engine_music_->stopAllSounds();
 }
 
-void engine::core::AudioManager::SetVolume(float volume) {
-  sound_engine_->setSoundVolume(volume);
+void engine::core::AudioManager::SetVolumeFX(float volume) {
+  sound_engine_fx_->setSoundVolume(volume);
 }
 
+void engine::core::AudioManager::SetVolumeMusic(float volume) {
+  sound_engine_music_->setSoundVolume(volume);
+}
+
+// ONLY FX PLAY IN 3D, NO NEED TO PLAY MUSIC IN 3D FFS
 void engine::core::AudioManager::PlaySound3D(const std::string& sound_filename,
-                                           bool looped, glm::vec3 pos) {
+                                           bool looped, glm::vec3 pos, float volume) {
 	irrklang::vec3df position(pos.x,pos.y,pos.z);
-  sound_engine_->play3D(sound_filename.c_str(), position, looped);
+  irrklang::ISoundSource* sound = 
+    sound_engine_fx_->getSoundSource(sound_filename.c_str());
+  sound->setDefaultVolume(volume);
+  if(!sound_engine_fx_->isCurrentlyPlaying(sound)){
+    sound_engine_fx_->play3D(sound_filename.c_str(), position, looped);
+  }
+  //Else is already playing and will overlap
 }
 
 //This is useless but may come in handy
@@ -42,5 +75,6 @@ void engine::core::AudioManager::PlaySound3D(const std::string& sound_filename,
 }*/
 
 void engine::core::AudioManager::ResetSounds(){
-  sound_engine_->removeAllSoundSources();
+  sound_engine_fx_->removeAllSoundSources();
+  sound_engine_music_->removeAllSoundSources();
 }

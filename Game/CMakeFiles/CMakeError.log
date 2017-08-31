@@ -1,0 +1,84 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_8afd2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_8afd2.dir/build.make CMakeFiles/cmTC_8afd2.dir/build
+make[1]: se entra en el directorio '/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8afd2.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_8afd2.dir/CheckSymbolExists.c.o   -c /home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_8afd2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8afd2.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_8afd2.dir/CheckSymbolExists.c.o  -o cmTC_8afd2 -rdynamic 
+CMakeFiles/cmTC_8afd2.dir/CheckSymbolExists.c.o: En la función `main':
+CheckSymbolExists.c:(.text+0x16): referencia a `pthread_create' sin definir
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_8afd2.dir/build.make:97: fallo en las instrucciones para el objetivo 'cmTC_8afd2'
+make[1]: *** [cmTC_8afd2] Error 1
+make[1]: se sale del directorio '/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp'
+Makefile:126: fallo en las instrucciones para el objetivo 'cmTC_8afd2/fast'
+make: *** [cmTC_8afd2/fast] Error 2
+
+File /home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_dec29/fast"
+/usr/bin/make -f CMakeFiles/cmTC_dec29.dir/build.make CMakeFiles/cmTC_dec29.dir/build
+make[1]: se entra en el directorio '/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_dec29.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_dec29.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
+Linking C executable cmTC_dec29
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dec29.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_dec29.dir/CheckFunctionExists.c.o  -o cmTC_dec29 -rdynamic -lpthreads 
+/usr/bin/ld: no se puede encontrar -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_dec29.dir/build.make:97: fallo en las instrucciones para el objetivo 'cmTC_dec29'
+make[1]: *** [cmTC_dec29] Error 1
+make[1]: se sale del directorio '/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp'
+Makefile:126: fallo en las instrucciones para el objetivo 'cmTC_dec29/fast'
+make: *** [cmTC_dec29/fast] Error 2
+
+
+Performing C++ SOURCE FILE Test ENTITYX_HAVE_CXX11_STDLIB failed with the following output:
+Change Dir: /home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d8ea4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d8ea4.dir/build.make CMakeFiles/cmTC_d8ea4.dir/build
+make[1]: se entra en el directorio '/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_d8ea4.dir/src.cxx.o
+/usr/bin/c++     -pedantic -Werror -Wall -Wextra -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=sign-compare -DENTITYX_HAVE_CXX11_STDLIB   -o CMakeFiles/cmTC_d8ea4.dir/src.cxx.o -c /home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp/src.cxx
+/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp/src.cxx: In function ‘int main()’:
+/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp/src.cxx:5:5: error: ‘shared_ptr’ is not a member of ‘std’
+     std::shared_ptr<int>();
+     ^
+/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp/src.cxx:5:21: error: expected primary-expression before ‘int’
+     std::shared_ptr<int>();
+                     ^
+CMakeFiles/cmTC_d8ea4.dir/build.make:65: fallo en las instrucciones para el objetivo 'CMakeFiles/cmTC_d8ea4.dir/src.cxx.o'
+make[1]: *** [CMakeFiles/cmTC_d8ea4.dir/src.cxx.o] Error 1
+make[1]: se sale del directorio '/home/alvaro/CodenamePatanius/Game/CMakeFiles/CMakeTmp'
+Makefile:126: fallo en las instrucciones para el objetivo 'cmTC_d8ea4/fast'
+make: *** [cmTC_d8ea4/fast] Error 2
+
+Source file was:
+
+#include <memory>
+
+int main() {
+    std::shared_ptr<int>();
+}
+

@@ -18,6 +18,7 @@ using namespace engine::core;
 MainMenu::MainMenu(engine::core::Scene* parent_scene)
     : parent_scene_(parent_scene) {
   events.subscribe<StartGame>(*this);
+  events.subscribe<OptionMenu>(*this);
 
   // adding entities
   auto camera = entities.create();
@@ -79,6 +80,10 @@ void MainMenu::Update(entityx::TimeDelta dt) {
 
 void MainMenu::receive(const StartGame& start_game) {
   parent_scene_->events.emit<StartGame>(start_game);
+}
+
+void MainMenu::receive(const OptionMenu& option_menu) {
+  parent_scene_->events.emit<OptionMenu>(option_menu);
 }
 
 void MainMenu::AddEntities() {}

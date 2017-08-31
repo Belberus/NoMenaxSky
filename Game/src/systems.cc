@@ -661,6 +661,84 @@ void TurretWalkingSystem::update(entityx::EntityManager &es,
   }
 }
 
+void ManuelethAnimationSystem::update(entityx::EntityManager &es,
+                            entityx::EventManager &events,
+                            entityx::TimeDelta dt) {
+  entityx::ComponentHandle<Manueleth> manueleth;
+  entityx::ComponentHandle<SpriteAnimation> animation;
+  std::string animToPlay;
+
+  for (entityx::Entity e0 : es.entities_with_components(
+           manueleth, animation)) {
+  	switch (manueleth.comportamiento) {
+  		case (Manueleth::Comportamiento::NORMAL):
+  			animToPlay = "attacking";
+  		break;
+  		case (Manueleth::Comportamiento::PUSH):
+  			animToPlay = "pushing";
+  		break;
+  		case (Manueleth::Comportamiento::SPECIAL):
+  			animToPlay = "talking";
+  		break;
+  	}
+  	animation->Play(animToPlay); 
+  }
+}
+
+
+void ManuelethIaSystem::update(entityx::EntityManager &es,
+                            entityx::EventManager &events,
+                            entityx::TimeDelta dt) {
+  glm::vec3 player_position;
+  es.each<Player, Transform>(
+      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
+        player_position = player_transform.GetWorldPosition();
+   });
+  glm::vec3 manueleth_position;
+  es.each<Manueleth, Transform>(
+      [&](entityx::Entity entity, Manueleth &manueleth, Transform &transform) {
+
+      	manueleth.time_for_shooting += (dt * 1000.0f);
+
+      	manueleth_position = transform.GetWorldPosition();
+      	const float distancia = std::sqrt(
+            std::pow(std::abs(player_position.x - turret_position.x), 2) +
+            std::pow(std::abs(player_position.y - turret_position.y), 2));
+
+      	if (distancia <= 20.0f) {
+      		if (manueleth.hits >= 3) {
+      			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
+      			// PUSH BACK ENFRENTE DE LA PUERTA DEL BOSS
+
+      			manueleth.hits = 0;
+      		}
+      	} else {
+      		if (manueleth.time_for_shooting >= 2000.0f) {
+      		manueleth.comportamiento = Manueleth::Comportamiento::NORMAL;
+
+      		manueleth_position = transform.GetWorldPosition();
+
+            glm::vec3 vector_player_manueleth(player_position.x - manueleth_position.x, player_position.y - manueleth_position.y, 0.0f);
+	            glm::vec3 vector_manueleth_v(0.0f, 1.0f, 0.0f);
+	           
+	            float angle_rad = std::atan2(vector_player_manueleth.y - vector_manueleth_v.y, vector_player_manueleth.x - vector_manueleth_v.x);
+
+	            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+	            new_velocity = glm::normalize(player_position -
+	                             transform.GetWorldPosition()) *
+	              100.0f;
+	            
+	            EntityFactory::MakeEnemyProjectile(
+	                es, turret_position, angle_rad, new_velocity, "manueleth");
+	            manueleth.time_for_shooting = 0.0;
+	      	}
+      	}
+   });
+  
+
+
+}
+
 const float TurretIaSystem::turretSpeed = 10.0f;
 
 void TurretIaSystem::update(entityx::EntityManager &es,

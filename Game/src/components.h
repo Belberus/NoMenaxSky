@@ -49,25 +49,11 @@ struct ArrowMenu {
 };
 
 struct ArrowOptions {
-  enum Option { MODE, MUSIC_VOL, FX_VOL, SALIR };
+  enum Option { MUSIC_VOL, FX_VOL, SALIR };
 
   Option option;
 
   ArrowOptions(Option option) : option(option) {}
-};
-
-struct GameOptions {
-  enum Modo { TWO_D, THREE_D };
-  enum Musica { MUSIC_ON, MUSIC_OFF };
-  enum Efectos { FX_ON, FX_OFF };
-
-  Modo modo;
-  Musica musica;
-  Efectos efectos;
-
-  GameOptions(Modo modo, Musica musica, Efectos efectos) 
-      : modo(modo), musica(musica), efectos(efectos) {}
-
 };
 
 struct Door {
@@ -114,7 +100,13 @@ struct TurretLegs{};
 
 struct LowCollision {};
 
-struct Manueleth {};
+struct Manueleth {
+	Manueleth() : comportamiento(Comportamiento::NORMAL), time_for_shooting(0.0), hits(0) {}
+	enum Comportamiento {NORMAL, PUSH, SPECIAL};
+	Comportamiento comportamiento;
+	float time_for_shooting;
+  	int hits;
+};
 
 struct Trap {
 	enum Orientation { UP, DOWN, RIGHT, LEFT};

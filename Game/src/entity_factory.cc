@@ -279,31 +279,125 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeTurretProjectile(entityx::EntityManager &entities, const glm::vec3 &position) {
+ std::vector<entityx::Entity> EntityFactory::MakeTrap(
+      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient){
+
+ 	std::vector<entityx::Entity> entities_created;
+    entityx::Entity trap = entities.create();
+
+    if (orient == "abajo") {
+    	trap.assign<Trap>(Trap::Orientation::DOWN);
+    } else if (orient == "arriba") {
+    	trap.assign<Trap>(Trap::Orientation::UP);
+    } else if (orient == "izquierda") {
+    	trap.assign<Trap>(Trap::Orientation::LEFT);
+    } else if (orient == "derecha") {
+    	trap.assign<Trap>(Trap::Orientation::RIGHT);
+    }
+
+    trap.assign<Transform>(position);
+    
+    entities_created.push_back(trap);
+    return entities_created;
+ }
+
+ std::vector<entityx::Entity> EntityFactory::MakeManueleth(
+      entityx::EntityManager &entities, const glm::vec3 &position){
+
+ 	  std::vector<entityx::Entity> entities_created;
+	  entityx::Entity manueleth = entities.create();
+
+	  manueleth.assign<Transform>(position);
+	  manueleth.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10));
+	  manueleth.assign<Physics>(glm::vec3(0, 0, 0));
+	  std::vector<ColorAnimation::KeyFrame> color_frames;
+	  color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+	  manueleth.assign<ColorAnimation>(std::move(color_frames));
+	  manueleth.assign<Manueleth>();
+	  manueleth.assign<Health>(500.0f, "assets/media/fx/turret/default/death.wav");
+	    
+	  std::vector<engine::utils::Rectangle> talking;
+	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
+	  talking.emplace_back(glm::vec2(26, 83), glm::vec2(19, 19));
+
+	  std::vector<engine::utils::Rectangle> attacking;
+	  attacking.emplace_back(glm::vec2(3, 37), glm::vec2(19, 19));
+	  attacking.emplace_back(glm::vec2(26, 37), glm::vec2(19, 19));
+
+	  std::vector<engine::utils::Rectangle> pushing;
+	  pushing.emplace_back(glm::vec2(3, 60), glm::vec2(19, 19));
+
+	  std::vector<engine::utils::Rectangle> death;
+	  death.emplace_back(glm::vec2(3, 14), glm::vec2(19, 19));
+	  death.emplace_back(glm::vec2(26, 14), glm::vec2(19, 19));
+
+	  auto texture_atlas =
+	      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	          "assets/spritesheets/manueleth.png");
+	  	
+	  SpriteAnimation::AnimationClip talking_anim(
+	      "talking", texture_atlas, talking, 100.0f);
+	  SpriteAnimation::AnimationClip attacking_anim(
+	      "attacking", texture_atlas, attacking, 100.0f);
+	   SpriteAnimation::AnimationClip pushing_anim(
+	      "pushing", texture_atlas, pushing, 100.0f);
+	    SpriteAnimation::AnimationClip death_anim(
+	      "death", texture_atlas, death, 100.0f);
+
+	  SpriteAnimation manueleth_anim({talking_anim, attacking_anim, pushing_anim, death_anim});
+	  manueleth.assign<SpriteAnimation>(manueleth_anim); 
+	  manueleth.assign<Sprite>(texture_atlas);
+	  entities_created.push_back(manueleth);
+	  return entities_created;
+ }
+
+std::vector<entityx::Entity> EntityFactory::MakeEnemyProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
 
 	std::vector<entityx::Entity> entities_created;
-    entityx::Entity turretProjectile = entities.create();
+    entityx::Entity enemyProjectile = entities.create();
+    std::vector<engine::utils::Rectangle> shoot;
+    std::string loadTexture;
 
-    turretProjectile.assign<Transform>(position);
-  	turretProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(3, 3));
-  	turretProjectile.assign<Physics>(glm::vec3(30.0f, 0, 0));
-  	turretProjectile.assign<TurretProjectile>(15.0f);
+    Transform t(position);
+    //enemyProjectile.assign<Transform>(position);
+    glm::quat model_rotation;
+    model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    t.SetLocalOrientation(model_rotation);
+    enemyProjectile.assign<Transform>(t);
 
-  	std::vector<engine::utils::Rectangle> shoot;
-  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
-  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
+    if (type == "torreta") {
+	  	enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+	  	enemyProjectile.assign<Physics>(velocity);
+	  	enemyProjectile.assign<EnemyProjectile>(15.0f);
 
-  	auto texture_atlas =
-      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-          "assets/spritesheets/torreta.png");
+	  	loadTexture = "assets/spritesheets/torreta.png";
+
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
+	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
+
+	  	
+	  } else if (type == "trampa") {
+		enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+		enemyProjectile.assign<Physics>(velocity);
+		enemyProjectile.assign<EnemyProjectile>(20.0f);
+
+		loadTexture = "assets/spritesheets/proyectil_trampa.png";
+
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
+	  	shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+	  }
+
+    auto texture_atlas =
+      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(loadTexture);
 
     SpriteAnimation::AnimationClip shooting_anim(
       "shooting", texture_atlas, shoot, 100.0f);
 
 	SpriteAnimation shoot_anim({shooting_anim});
-	turretProjectile.assign<SpriteAnimation>(shoot_anim);
-	turretProjectile.assign<Sprite>(texture_atlas);
+	enemyProjectile.assign<SpriteAnimation>(shoot_anim);
+	enemyProjectile.assign<Sprite>(texture_atlas);
 
-	entities_created.push_back(turretProjectile);
+	entities_created.push_back(enemyProjectile);
 	return entities_created;
 }

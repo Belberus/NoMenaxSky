@@ -8,6 +8,7 @@
 #include "engine/components/common/transform.h"
 #include "engine/components/two_d/aabb_collider.h"
 #include "engine/events/ignore_collision.h"
+#include "../../../src/components.h"
 
 namespace engine {
 namespace systems {
@@ -80,6 +81,9 @@ class Physics : public entityx::System<Physics>,
   /// occure during dt
   static std::vector<ContactInfo> DoCollisionDetection(
       entityx::EntityManager &es, entityx::TimeDelta dt);
+
+  static bool ShouldIgnoreStaticCollision(entityx::Entity e1, entityx::Entity e2);
+  static bool ShouldIgnoreMovingCollision(entityx::Entity e1, entityx::Entity e2);
 
   static void DoCollisionResponse(entityx::EntityManager &es,
                                   const ContactInfo &info);

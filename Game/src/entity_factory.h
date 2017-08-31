@@ -16,7 +16,13 @@ class EntityFactory {
   static std::vector<entityx::Entity> MakeTurret(
       entityx::EntityManager &entities, const glm::vec3 &position);
 
-  static std::vector<entityx::Entity> MakeTurretProjectile(
+  static std::vector<entityx::Entity> MakeTrap(
+      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient);
+
+  static std::vector<entityx::Entity> MakeManueleth(
       entityx::EntityManager &entities, const glm::vec3 &position);
+
+  static std::vector<entityx::Entity> MakeEnemyProjectile(
+      entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type);
 };
 #endif  // ENTITY_FACTORY_H_

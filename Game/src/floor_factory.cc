@@ -194,6 +194,20 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
         return EntityFactory::MakeTurret(em, position);
       };
       room.entity_creators_.push_back(fn_turret);
+    } else if (object.getType() == "trampa") {
+      auto properties = object.getProperties();
+      std::string direccion = properties[0].getStringValue();
+      auto fn_trap =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        return EntityFactory::MakeTrap(em, position, direccion);
+      };
+      room.entity_creators_.push_back(fn_trap);
+    } else if (object.getType() == "manueleth") {
+      auto fn_manueleth =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        return EntityFactory::MakeManueleth(em, position);
+      };
+      room.entity_creators_.push_back(fn_manueleth);
     }
   }
 }

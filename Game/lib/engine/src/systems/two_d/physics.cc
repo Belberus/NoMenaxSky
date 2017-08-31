@@ -10,10 +10,11 @@
 #include "engine/components/common/physics.h"
 #include "engine/components/common/transform.h"
 #include "engine/events/collision.h"
+#include "../../../src/components.h"
 
 void engine::systems::two_d::Physics::configure(
     entityx::EventManager &event_manager) {
-  event_manager.subscribe<engine::events::IgnoreCollision>(*this);
+  //event_manager.subscribe<engine::events::IgnoreCollision>(*this);
   event_manager.subscribe<entityx::EntityDestroyedEvent>(*this);
 }
 
@@ -80,7 +81,7 @@ void engine::systems::two_d::Physics::update(entityx::EntityManager &es,
   }
 }
 
-void engine::systems::two_d::Physics::receive(
+/*void engine::systems::two_d::Physics::receive(
     const engine::events::IgnoreCollision &ignore_collision) {
   UnorderdPair entities_pair(ignore_collision.e0, ignore_collision.e1);
   if (ignore_collision.ignore) {
@@ -91,7 +92,7 @@ void engine::systems::two_d::Physics::receive(
     }
   }
 }
-
+*/
 void engine::systems::two_d::Physics::receive(
     const entityx::EntityDestroyedEvent &entity_destroyed) {
   for (auto it = ignored_entities_.begin(); it != ignored_entities_.end();) {
@@ -222,17 +223,25 @@ engine::systems::two_d::Physics::DoCollisionDetection(
       glm::vec2 normal;
       bool touching;
       if (TestAABBAABB(world_collider0, world_collider1, touching, normal)) {
-        ContactInfo info;
-        info.e0 = *e0It;
-        info.e1 = *e1It;
-        info.tmin = 0.0f;
-        info.normal = normal;
-        info.touching = touching;
-        collisions.push_back(info);
+        if(ShouldIgnoreMovingCollision(*e0It, *e1It)) { 
+          // Ignoramos la colision
+        } else {
+          ContactInfo info;
+          info.e0 = *e0It;
+          info.e1 = *e1It;
+          info.tmin = 0.0f;
+          info.normal = normal;
+          info.touching = touching;
+          collisions.push_back(info);
+        }    
       } else if (TestMovingAABBAABB(world_collider0, world_collider1,
                                     physics0->velocity, physics1->velocity, dt,
                                     tfirst, normal)) {
-        collisions.emplace_back((*e0It), (*e1It), tfirst, normal);
+        if (ShouldIgnoreMovingCollision(*e0It, *e1It)){ 
+          // Ignoramos la colision
+        } else {
+          collisions.emplace_back((*e0It), (*e1It), tfirst, normal);
+        }
       }
     }
     for (auto e1It = static_colliders.begin(); e1It != static_colliders.end();
@@ -246,22 +255,50 @@ engine::systems::two_d::Physics::DoCollisionDetection(
         glm::vec2 normal;
         bool touching;
         if (TestAABBAABB(world_collider0, world_collider1, touching, normal)) {
-          ContactInfo info;
-          info.e0 = *e0It;
-          info.e1 = *e1It;
-          info.tmin = 0.0f;
-          info.normal = normal;
-          info.touching = touching;
-          collisions.push_back(info);
+          if (ShouldIgnoreStaticCollision(*e0It, *e1It)) {
+            // Ignoramos la colision
+          } else {
+            ContactInfo info;
+            info.e0 = *e0It;
+            info.e1 = *e1It;
+            info.tmin = 0.0f;
+            info.normal = normal;
+            info.touching = touching;
+            collisions.push_back(info);
+          }
         } else if (TestMovingAABBAABB(world_collider0, world_collider1,
                                       physics0->velocity, glm::vec2(0, 0), dt,
                                       tfirst, normal)) {
-          collisions.emplace_back((*e0It), (*e1It), tfirst, normal);
+          if (ShouldIgnoreStaticCollision(*e0It, *e1It)) {
+            // Ignoramos la colision
+          } else {
+            collisions.emplace_back((*e0It), (*e1It), tfirst, normal);
+          }
         }
       }
     }
   }
   return collisions;
+}
+
+bool engine::systems::two_d::Physics::ShouldIgnoreStaticCollision(entityx::Entity e1, entityx::Entity e2) {
+  if ((e1.has_component<Ghost>() && e2.has_component<LowCollision>()) || (e2.has_component<Ghost>() && e1.has_component<LowCollision>())) {
+    return true;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<LowCollision>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<LowCollision>())) {
+    return true;
+  } else return false;
+}
+
+bool engine::systems::two_d::Physics::ShouldIgnoreMovingCollision(entityx::Entity e1, entityx::Entity e2) {
+  if (e1.has_component<EnemyProjectile>() && e2.has_component<EnemyProjectile>()) {
+    return true;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<Turret>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<Turret>())) {
+    return true;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<Ghost>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<Ghost>())) {
+    return true;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<MeleeWeapon>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<MeleeWeapon>())) {
+    return true;
+  }else return false;
 }
 
 void engine::systems::two_d::Physics::DoCollisionResponse(

@@ -84,7 +84,11 @@ struct GhostHitBox{
 	float damage;
 };
 
-struct Turret{};
+struct Turret{
+	Turret() : time_passed(0.0), random_shoot(0.5) {}
+	float time_passed;
+	float random_shoot;
+};
 
 struct RoomLimit {};
 
@@ -96,8 +100,18 @@ struct TurretLegs{};
 
 struct LowCollision {};
 
-struct TurretProjectile{
-	TurretProjectile(float damage) : damage(damage){}
+struct Manueleth {};
+
+struct Trap {
+	enum Orientation { UP, DOWN, RIGHT, LEFT};
+	Orientation orientation;
+	float time_passed;
+	float random_shoot;
+	Trap(Orientation orientation) : orientation(orientation), time_passed(0.0), random_shoot(0.6) {}
+};
+
+struct EnemyProjectile{
+	EnemyProjectile(float damage) : damage(damage){}
 	float damage;
 };
 

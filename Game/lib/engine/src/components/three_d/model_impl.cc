@@ -1,9 +1,5 @@
 #include "components/three_d/model_impl.h"
 
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-
 #include "engine/core/engine.h"
 #include "engine/core/resource_manager.h"
 
@@ -36,8 +32,9 @@ engine::components::three_d::impl::ModelImpl::Mesh::Mesh(
 void engine::components::three_d::impl::ModelImpl::LoadModel(
     const std::string &path) {
   path_ = path;
-  scene_ = importer_.ReadFile(
-      path.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals);
+  scene_ = importer_.ReadFile(path.c_str(), aiProcess_Triangulate |
+                                                aiProcess_GenSmoothNormals |
+                                                aiProcess_LimitBoneWeights);
   if (!scene_) {
     throw std::runtime_error(
         "Error while processing the file containing the model: " + path);

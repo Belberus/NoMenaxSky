@@ -39,8 +39,6 @@ engine::core::Engine::Engine() {
   }
   glfwSwapInterval(properties_.vsync);
   glClearColor(47.0f / 255.0f, 40.0f / 255.0f, 58.0f / 255.0f, 255.0f / 255.0f);
-  glDepthFunc(GL_LESS);
-  glEnable(GL_DEPTH_TEST);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   AddServiceProvider<AudioManager>();

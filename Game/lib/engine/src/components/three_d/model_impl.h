@@ -6,7 +6,9 @@
 #include <memory>
 #include <vector>
 
+#include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <assimp/Importer.hpp>
 #include <glm/glm.hpp>
 
 #include "engine/components/two_d/texture.h"

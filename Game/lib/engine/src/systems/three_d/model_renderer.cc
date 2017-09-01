@@ -54,6 +54,19 @@ engine::systems::three_d::ModelRenderer::ModelRenderer() : pimpl_(new Impl()) {
   glDeleteShader(frag);
 }
 
+engine::systems::three_d::ModelRenderer::ModelRenderer(
+    const ModelRenderer &renderer)
+    : pimpl_(std::make_unique<Impl>(*renderer.pimpl_)) {}
+
+engine::systems::three_d::ModelRenderer &
+engine::systems::three_d::ModelRenderer::operator=(
+    const ModelRenderer &renderer) {
+  *pimpl_ = *renderer.pimpl_;
+  return *this;
+}
+
+engine::systems::three_d::ModelRenderer::~ModelRenderer() {}
+
 void engine::systems::three_d::ModelRenderer::update(
     entityx::EntityManager &es, entityx::EventManager &events,
     entityx::TimeDelta dt) {

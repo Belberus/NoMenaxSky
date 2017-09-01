@@ -12,6 +12,9 @@ namespace three_d {
 class ModelRenderer : public entityx::System<ModelRenderer> {
  public:
   ModelRenderer();
+  ModelRenderer(const ModelRenderer &renderer);
+  ModelRenderer &operator=(const ModelRenderer &renderer);
+  ~ModelRenderer();
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 

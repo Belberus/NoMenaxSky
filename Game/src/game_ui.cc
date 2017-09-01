@@ -51,9 +51,7 @@ void GameUi::Update(entityx::TimeDelta dt) {
   systems.update<SpriteRenderer>(dt);
 }
 
-int i = 0;
 void GameUi::receive(const Health& health) {
-  std::cout << (health.hp / health.init_hp) << std::endl;
   entities.each<Transform, WhatOption>(
     [&](entityx::Entity health_bar, Transform &transform,
       WhatOption &wo){
@@ -62,8 +60,7 @@ void GameUi::receive(const Health& health) {
       if(init_x == 0){
         init_x = scale.x;
       }
-      if(i == 0){
-        i++;
+      if(init_pos == 0){
         init_pos = position.x;
       }
       float result = init_x * (health.hp / health.init_hp);
@@ -72,16 +69,7 @@ void GameUi::receive(const Health& health) {
       }
       else scale.x = 0;
       transform.SetLocalScale(scale);
-
-      std::cout << "init pos: " << init_pos << std::endl;
-
-      float newpos = init_pos - (170 - (170*(health.hp / health.init_hp))/2.0f);
-      std::cout << "new pos: " << newpos << std::endl;
+      float newpos = init_pos - (170 - ((170*(health.hp / health.init_hp))))/2.0f;
       transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
     });
 }
-
-  /*Engine::GetInstance().Get<EntityManager>().each<health_bar, Player>(
-    [&](entityx::Entity health_bar, entityx::Entity Player){
-      std::cout << "pss" << std::endl;
-    });*/

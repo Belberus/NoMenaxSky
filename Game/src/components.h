@@ -115,9 +115,9 @@ struct GhostHitBox{
 };
 
 struct Turret{
-	Turret() : time_passed(0.0), random_shoot(0.5) {}
+	Turret(float frecuencia) : time_passed(0.0), frecuencia(frecuencia) {}
 	float time_passed;
-	float random_shoot;
+	float frecuencia;
 };
 
 struct RoomLimit {};

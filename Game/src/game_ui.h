@@ -9,5 +9,9 @@ class GameUi : public engine::core::Scene,public entityx::Receiver<GameUi> {
   GameUi(Game *parent_scene);
   void Update(entityx::TimeDelta dt) override;
   void receive(const Health &health);
+  private:
+ 	float init_x;
+	float init_pos;
 };
+ 
 #endif  // GAME_UI_H_

@@ -223,7 +223,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &entities, const glm::vec3 &position) {
+std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &entities, const glm::vec3 &position, const float frecuencia) {
 	
   std::vector<entityx::Entity> entities_created;
   entityx::Entity turret = entities.create();
@@ -235,7 +235,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   turret.assign<ColorAnimation>(std::move(color_frames));
-  turret.assign<Turret>();
+  turret.assign<Turret>(frecuencia);
   turret.assign<Health>(40.0f, "assets/media/fx/turret/default/death.wav");
 
   engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));

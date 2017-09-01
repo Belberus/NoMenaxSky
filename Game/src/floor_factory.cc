@@ -161,7 +161,7 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
                                      const tmx::ObjectGroup &object_layer,
                                      Floor::Room &room) {
   srand(time(NULL));
-  float frecuencias [10] = {250.0f, 500.0f, 7500.0f, 1000.0f, 1250.0f, 1500.0f, 1750.0f, 2000.0f, 2250.0f, 2500.0f};
+  float frecuencias [10] = {250.0f, 500.0f, 750.0f, 1000.0f, 1250.0f, 1500.0f, 1750.0f, 2000.0f, 2250.0f, 2500.0f};
 
   for (const auto &object : object_layer.getObjects()) {
     auto object_aabb = object.getAABB();
@@ -207,9 +207,10 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
       };
       room.entity_creators_.push_back(fn_ghost);
     } else if (object.getType() == "torreta") {
+      float frecuencia = frecuencias[(rand() % 3)];
       auto fn_turret =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
-        return EntityFactory::MakeTurret(em, position);
+        return EntityFactory::MakeTurret(em, position, frecuencia);
       };
       room.entity_creators_.push_back(fn_turret);
     } else if (object.getType() == "trampa") {

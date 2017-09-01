@@ -767,7 +767,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
         const float distancia = std::sqrt(
             std::pow(std::abs(player_position.x - turret_position.x), 2) +
             std::pow(std::abs(player_position.y - turret_position.y), 2));
-        turret.time_passed += (dt * 1000.0f);
+        turret.time_passed += (dt * 250.0f);
 
         if (distancia < 50.0f) {
           turret_physics.velocity =
@@ -778,7 +778,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
         } else {
 	          turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	          
-	        if (turret.time_passed >= 1500.0f) {
+	        if (turret.time_passed >= turret.frecuencia) {
 	            Engine::GetInstance().Get<AudioManager>().PlaySound(
 	                "assets/media/fx/turret/default/attack.wav", false, 1);
 

@@ -14,10 +14,10 @@ class EntityFactory {
       entityx::EntityManager &entities, const glm::vec3 &position);
 
   static std::vector<entityx::Entity> MakeTurret(
-      entityx::EntityManager &entities, const glm::vec3 &position);
+      entityx::EntityManager &entities, const glm::vec3 &position, const float frecuencia);
 
   static std::vector<entityx::Entity> MakeTrap(
-      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient);
+      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient, const float frecuencia);
 
   static std::vector<entityx::Entity> MakeManueleth(
       entityx::EntityManager &entities, const glm::vec3 &position);

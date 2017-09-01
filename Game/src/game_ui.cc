@@ -7,6 +7,8 @@
 #include <engine/core/resource_manager.h>
 #include <engine/systems/two_d/sprite_renderer.h>
 
+#include "components.h"
+
 using namespace engine::core;
 using namespace engine::systems::two_d;
 using namespace engine::components::two_d;
@@ -24,11 +26,14 @@ GameUi::GameUi(Game* parent_scene) {
   camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1.0f));
   camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
   auto health_bar = entities.create();
+  health_bar.assign<WhatOption>(1);
   health_bar.assign<Transform>(glm::vec3(100.0f, 520.0f, 0.0f), nullptr,
                                glm::vec3(17.0f, 17.0f, 1.0f));
   health_bar.assign<Sprite>(
       gui_texture_atlas,
       Rectangle(glm::vec2(3.0f, 20.0f), glm::vec2(10.0f, 1.0f)));
+
+  parent_scene->events.subscribe<Health>(*this);
 
   // auto stamina_bar = entities.create();
   // stamina_bar.assign<Transform>(glm::vec3(100.0f, 490.0f, 0.0f), nullptr,
@@ -44,4 +49,27 @@ GameUi::GameUi(Game* parent_scene) {
 
 void GameUi::Update(entityx::TimeDelta dt) {
   systems.update<SpriteRenderer>(dt);
+}
+
+void GameUi::receive(const Health& health) {
+  entities.each<Transform, WhatOption>(
+    [&](entityx::Entity health_bar, Transform &transform,
+      WhatOption &wo){
+      auto scale = transform.GetLocalScale();
+      auto position = transform.GetLocalPosition();
+      if(init_x == 0){
+        init_x = scale.x;
+      }
+      if(init_pos == 0){
+        init_pos = position.x;
+      }
+      float result = init_x * (health.hp / health.init_hp);
+      if(result > 0){
+        scale.x = result;
+      }
+      else scale.x = 0;
+      transform.SetLocalScale(scale);
+      float newpos = init_pos - (170 - ((170*(health.hp / health.init_hp))))/2.0f;
+      transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
+    });
 }

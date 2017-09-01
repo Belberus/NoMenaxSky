@@ -6,7 +6,7 @@
 
 #include "systems.h"
 
-Floor3D::Floor3D() {
+Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
   systems.add<TurretIaSystem>();
@@ -36,3 +36,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
 }
 
 void Floor3D::OnPlayerEnteringDoor(Door entering_door) {}
+
+void Floor3D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {}
+
+void Floor3D::OnPlayerEnteringBossDoorWithoutKey() {}

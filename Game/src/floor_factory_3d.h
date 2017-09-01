@@ -8,7 +8,7 @@
 
 class FloorFactory3D {
  public:
-  static std::unique_ptr<Floor3D> MakeFloor1();
+  static std::unique_ptr<Floor3D> MakeFloor1(Game *parent_scene);
 };
 
 #endif  // FLOOR_FACTORY_3D_H_

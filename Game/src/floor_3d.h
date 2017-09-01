@@ -5,9 +5,11 @@
 
 class Floor3D : public Floor {
  public:
-  Floor3D();
+  Floor3D(Game *parent_scene);
   void Update(entityx::TimeDelta dt) override;
   void OnPlayerEnteringDoor(Door entering_door) override;
+  void OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) override;
+  void OnPlayerEnteringBossDoorWithoutKey() override;
   friend class FloorFactory3D;
 };
 #endif  // FLOOR_3D_H_

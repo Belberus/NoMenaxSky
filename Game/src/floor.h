@@ -11,14 +11,17 @@
 #include <engine/events/collision.h>
 #include <entityx/entityx.h>
 
-#include "components.h"
+#include "game.h"
 
 class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
  public:
-  Floor();
+  Floor(Game *parent_scene);
   virtual ~Floor();
   virtual void OnPlayerEnteringDoor(Door entering_door) = 0;
+  virtual void OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) = 0;
+  virtual void OnPlayerEnteringBossDoorWithoutKey() = 0;
   void receive(const engine::events::Collision &collision);
+  void receive(const Health &health);
 
  protected:
   class Room {
@@ -33,7 +36,10 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
 
   static bool IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
                                         entityx::Entity door);
+  static bool IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
+                                            entityx::Entity door);
 
+  Game *parent_scene_;
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;
 };

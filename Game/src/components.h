@@ -9,9 +9,10 @@
 #include <glm/glm.hpp>
 
 struct Health {
+  float init_hp;
   float hp;
   std::string death_fx;
-  Health(float hp, std::string death_fx) : hp(hp), death_fx(death_fx) {}
+  Health(float init_hp, float hp, std::string death_fx) : init_hp(init_hp), hp(hp), death_fx(death_fx) {}
 };
 
 struct MeleeWeapon {
@@ -49,7 +50,7 @@ struct ArrowMenu {
 };
 
 struct ArrowOptions {
-  enum Option { MODE, MUSIC_VOL, FX_VOL, SALIR };
+  enum Option { MUSIC_VOL, FX_VOL, SALIR, MODE };
 
   Option option;
 
@@ -83,11 +84,20 @@ struct Door {
   std::string pos;
 };
 
+struct BossDoor {
+	BossDoor(const std::string &next_door, const std::string &pos)
+      : next_door(next_door), pos(pos) {}
+	std::string next_door;
+	std::string pos;
+};
+
 struct Player {
   enum Orientation { UP, DOWN, RIGHT, LEFT };
   Orientation orientation;
+  bool key;
 
-  Player(Orientation orientation) : orientation(orientation) {}
+  Player(Orientation orientation) : orientation(orientation), key(true) {}
+  // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
 };
 
 struct Ghost {
@@ -105,9 +115,9 @@ struct GhostHitBox{
 };
 
 struct Turret{
-	Turret() : time_passed(0.0), random_shoot(0.5) {}
+	Turret(float frecuencia) : time_passed(0.0), frecuencia(frecuencia) {}
 	float time_passed;
-	float random_shoot;
+	float frecuencia;
 };
 
 struct RoomLimit {};
@@ -120,14 +130,25 @@ struct TurretLegs{};
 
 struct LowCollision {};
 
-struct Manueleth {};
+struct Manueleth {
+	Manueleth() : comportamiento(Comportamiento::NORMAL), time_for_shooting(0.0), hits(0) {}
+	enum Comportamiento {NORMAL, PUSH, SPECIAL};
+	Comportamiento comportamiento;
+	float time_for_shooting;
+  	int hits;
+};
+
+struct Chest {
+	Chest(bool key) : key(key) {}
+	bool key;
+};
 
 struct Trap {
 	enum Orientation { UP, DOWN, RIGHT, LEFT};
 	Orientation orientation;
 	float time_passed;
-	float random_shoot;
-	Trap(Orientation orientation) : orientation(orientation), time_passed(0.0), random_shoot(0.6) {}
+	float frecuencia;
+	Trap(Orientation orientation, float frecuencia) : orientation(orientation), time_passed(0.0), frecuencia(frecuencia) {}
 };
 
 struct EnemyProjectile{

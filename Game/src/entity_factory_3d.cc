@@ -19,7 +19,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(2.0f, 2.0f));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
-  player.assign<Health>(100.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(100.0f, 100.0f,
+                        "assets/media/fx/gaunt/default/death.wav");
   entities_created.push_back(player);
 
   // adding sword entity

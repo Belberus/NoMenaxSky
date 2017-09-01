@@ -160,6 +160,9 @@ FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name) {
 void FloorFactory::ParseRoomContents(const tmx::Map &map,
                                      const tmx::ObjectGroup &object_layer,
                                      Floor2D::Room &room) {
+  srand(time(NULL));
+  float frecuencias[10] = {250.0f,  500.0f,  750.0f,  1000.0f, 1250.0f,
+                           1500.0f, 1750.0f, 2000.0f, 2250.0f, 2500.0f};
   for (const auto &object : object_layer.getObjects()) {
     auto object_aabb = object.getAABB();
     auto object_pos = object.getPosition();
@@ -182,6 +185,22 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
         return std::vector<entityx::Entity>({id});
       };
       room.entity_creators_.push_back(fn_door);
+    } else if (object.getType() == "bossDoor") {
+      cmp::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto properties = object.getProperties();
+      BossDoor bossDoor(properties[0].getStringValue(),
+                        properties[1].getStringValue());
+      auto fn_bossDoor =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<cmp::common::Transform>(position);
+        id.assign<cmp::two_d::AABBCollider>(collider);
+        id.assign<BossDoor>(bossDoor);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_bossDoor);
     } else if (object.getType() == "fantasma") {
       auto fn_ghost =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
@@ -189,17 +208,19 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
       };
       room.entity_creators_.push_back(fn_ghost);
     } else if (object.getType() == "torreta") {
+      float frecuencia = frecuencias[(rand() % 3)];
       auto fn_turret =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
-        return EntityFactory::MakeTurret(em, position);
+        return EntityFactory::MakeTurret(em, position, frecuencia);
       };
       room.entity_creators_.push_back(fn_turret);
     } else if (object.getType() == "trampa") {
       auto properties = object.getProperties();
       std::string direccion = properties[0].getStringValue();
+      float frecuencia = frecuencias[(rand() % 10)];
       auto fn_trap =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
-        return EntityFactory::MakeTrap(em, position, direccion);
+        return EntityFactory::MakeTrap(em, position, direccion, frecuencia);
       };
       room.entity_creators_.push_back(fn_trap);
     } else if (object.getType() == "manueleth") {
@@ -208,12 +229,39 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
         return EntityFactory::MakeManueleth(em, position);
       };
       room.entity_creators_.push_back(fn_manueleth);
+    } else if (object.getType() == "cofre1") {
+      cmp::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto fn_cofre =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<cmp::common::Transform>(position);
+        id.assign<cmp::two_d::AABBCollider>(collider);
+        id.assign<Chest>(false);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_cofre);
+    } else if (object.getType() == "cofre2") {
+      cmp::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto fn_cofre =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<cmp::common::Transform>(position);
+        id.assign<cmp::two_d::AABBCollider>(collider);
+        id.assign<Chest>(true);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_cofre);
     }
   }
 }
 
-std::unique_ptr<Floor2D> FloorFactory::MakeFloor1(const std::string &file_name) {
-  auto floor = std::make_unique<Floor2D>();
+std::unique_ptr<Floor2D> FloorFactory::MakeFloor1(const std::string &file_name,
+                                                  Game *parent_scene) {
+  auto floor = std::make_unique<Floor2D>(parent_scene);
   tmx::Map tiled_map;
   tiled_map.load(file_name);
   ParseTilemap(tiled_map, *floor);

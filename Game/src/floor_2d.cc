@@ -19,11 +19,13 @@ using namespace engine::events;
 using namespace engine::components::two_d;
 using namespace engine::components::common;
 
-Floor2D::Floor2D() {
+Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
   systems.add<GhostAnimationSystem>();
+  systems.add<ManuelethAnimationSystem>();
   systems.add<TurretIaSystem>();
+  systems.add<ManuelethIaSystem>();
   systems.add<TrapIaSystem>();
   systems.add<TurretWalkingSystem>();
   systems.add<EnemyProjectileAnimationSystem>();
@@ -36,6 +38,7 @@ Floor2D::Floor2D() {
   systems.add<ColliderRenderer>();
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
+  systems.add<ChestCollisionSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
   // systems.add<IgnoreCollisionSystem>(&entities, &events);
@@ -46,7 +49,9 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);
   systems.update<GhostIaSystem>(dt);
   systems.update<GhostAnimationSystem>(dt);
+  systems.update<ManuelethAnimationSystem>(dt);
   systems.update<TurretIaSystem>(dt);
+  systems.update<ManuelethIaSystem>(dt);
   systems.update<TrapIaSystem>(dt);
   systems.update<TurretWalkingSystem>(dt);
   systems.update<EnemyProjectileAnimationSystem>(dt);
@@ -55,6 +60,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   systems.update<KnightWalkingSystem>(dt);
   systems.update<SpriteAnimator>(dt);
   systems.update<KnightAttackSystem>(dt);
+  systems.update<ChestCollisionSystem>(dt);
   systems.update<TurretAttackSystem>(dt);
   systems.update<HealthSystem>(dt);
   systems.update<ColorAnimator>(dt);
@@ -114,3 +120,34 @@ void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
         transform.SetLocalPosition(next_position_player);
       });
 }
+
+void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
+  entities.each<Camera, Transform>(
+      [&](entityx::Entity entity, Camera& camera, Transform& transform) {
+        glm::vec3 next_pos = transform.GetLocalPosition();
+        if (entering_door.pos == "top") {
+          next_pos += glm::vec3(0.0f, 288.0f, 0.0f);
+        }
+        transform.SetLocalPosition(next_pos);
+      });
+
+  glm::vec3 next_position_player;
+
+  entities.each<BossDoor, Transform, AABBCollider>(
+      [&](entityx::Entity entity, BossDoor& bossDoor, Transform& transform,
+          AABBCollider& collider) {
+        if (entering_door.pos == "top" && bossDoor.pos == "bottom") {
+          next_position_player =
+              transform.GetLocalPosition() +
+              glm::vec3(0.0f, 9.0f + collider.half_size.y, 0.0f);
+          return;
+        }
+      });
+
+  entities.each<Player, Transform>(
+      [&](entityx::Entity entity, Player& player, Transform& transform) {
+        transform.SetLocalPosition(next_position_player);
+      });
+}
+
+void Floor2D::OnPlayerEnteringBossDoorWithoutKey() {}

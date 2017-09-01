@@ -16,7 +16,8 @@
 
 class FloorFactory {
  public:
-  static std::unique_ptr<Floor2D> MakeFloor1(const std::string &file_name);
+  static std::unique_ptr<Floor2D> MakeFloor1(const std::string &file_name,
+                                             Game *parent_scene);
 
  private:
   static void ParseTilemap(const tmx::Map &map, Floor2D &floor);
@@ -24,7 +25,8 @@ class FloorFactory {
       const tmx::TileLayer &tiled_tile_layer, const tmx::Map &tiled_map);
   static void ParseTileObjects(const tmx::Map &map, Floor2D &floor);
   static void ParseStaticColliders(const tmx::Map &map,
-                                   const std::string &layer_name, Floor2D &floor);
+                                   const std::string &layer_name,
+                                   Floor2D &floor);
   static std::unordered_map<std::string, std::unique_ptr<Floor2D::Room>>
   ParseRooms(const tmx::Map &map, const std::string &layer_name);
   static void ParseRoomContents(const tmx::Map &map,

@@ -2,9 +2,16 @@
 
 #include <engine/events/collision.h>
 
-Floor::Floor() { events.subscribe<engine::events::Collision>(*this); }
+Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
+  events.subscribe<engine::events::Collision>(*this);
+  events.subscribe<Health>(*this);
+}
 
 Floor::~Floor() = default;
+
+void Floor::receive(const Health& health) {
+  parent_scene_->events.emit<Health>(health);
+}
 
 void Floor::receive(const engine::events::Collision& collision) {
   auto collision_copy = collision;
@@ -13,14 +20,42 @@ void Floor::receive(const engine::events::Collision& collision) {
   }
   auto player = collision_copy.e0.component<Player>();
   auto door = collision_copy.e1.component<Door>();
-  if (door && player &&
-      IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
-    Door previous_door(*door);
-    rooms_[current_room_]->Unload(*this);
-    current_room_ = previous_door.next_door;
-    rooms_[current_room_]->Load(*this);
-    OnPlayerEnteringDoor(previous_door);
+  auto bossDoor = collision_copy.e1.component<BossDoor>();
+  if (door && player) {
+    if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
+      Door previous_door(*door);
+      rooms_[current_room_]->Unload(*this);
+      current_room_ = previous_door.next_door;
+      rooms_[current_room_]->Load(*this);
+      OnPlayerEnteringDoor(previous_door);
+    }
+  } else if (bossDoor && player) {
+    // Con puerta de boss
+    auto bossDoor = collision_copy.e1.component<BossDoor>();
+    auto player = collision_copy.e0.component<Player>();
+    if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
+      if (player->key == true) {
+        BossDoor previous_door(*bossDoor);
+        rooms_[current_room_]->Unload(*this);
+        current_room_ = previous_door.next_door;
+        rooms_[current_room_]->Load(*this);
+        OnPlayerEnteringBossDoorWithKey(previous_door);
+      } else {
+        OnPlayerEnteringBossDoorWithoutKey();
+      }
+    }
   }
+}
+
+bool Floor::IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
+                                          entityx::Entity bossDoor) {
+  Player::Orientation crossing_entity_orientation =
+      crossing_entity.component<Player>()->orientation;
+  auto bossDoor_component = *bossDoor.component<BossDoor>();
+  auto trying_cross_bossDoor =
+      bossDoor_component.pos == "top" &&
+      (crossing_entity_orientation == Player::Orientation::UP);
+  return trying_cross_bossDoor;
 }
 
 bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
@@ -41,7 +76,6 @@ bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
   auto trying_cross_bottom_door =
       door_component.pos == "bottom" &&
       (crossing_entity_orientation == Player::Orientation::DOWN);
-
   return trying_cross_left_door || trying_cross_right_door ||
          trying_cross_top_door || trying_cross_bottom_door;
 }

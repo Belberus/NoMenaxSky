@@ -9,10 +9,10 @@
 
 #include "entity_factory_3d.h"
 
-std::unique_ptr<Floor3D> FloorFactory3D::MakeFloor1() {
+std::unique_ptr<Floor3D> FloorFactory3D::MakeFloor1(Game *parent_scene) {
   engine::core::Engine::GetInstance().EnableDepthTest(
       engine::core::Engine::DepthTest::kLess);
-  std::unique_ptr<Floor3D> floor(std::make_unique<Floor3D>());
+  std::unique_ptr<Floor3D> floor(std::make_unique<Floor3D>(parent_scene));
   // create the floor model
   auto floor_model = floor->entities.create();
   floor_model.assign<engine::components::three_d::Model>(
@@ -55,15 +55,15 @@ std::unique_ptr<Floor3D> FloorFactory3D::MakeFloor1() {
   c5.assign<engine::components::two_d::AABBCollider>(glm::vec2(0, 0),
                                                      glm::vec2(7, 7));
   auto c6 = floor->entities.create();
-  c6.assign<engine::components::common::Transform>(glm::vec3(18, 62, 0));
+  c6.assign<engine::components::common::Transform>(glm::vec3(18, 33, 0));
   c6.assign<engine::components::two_d::AABBCollider>(glm::vec2(0, 0),
                                                      glm::vec2(7, 7));
   auto c7 = floor->entities.create();
-  c7.assign<engine::components::common::Transform>(glm::vec3(-20, 62, 0));
+  c7.assign<engine::components::common::Transform>(glm::vec3(-20, 33, 0));
   c7.assign<engine::components::two_d::AABBCollider>(glm::vec2(0, 0),
                                                      glm::vec2(7, 7));
   auto c8 = floor->entities.create();
-  c8.assign<engine::components::common::Transform>(glm::vec3(-42, 62, 0));
+  c8.assign<engine::components::common::Transform>(glm::vec3(-42, 33, 0));
   c8.assign<engine::components::two_d::AABBCollider>(glm::vec2(0, 0),
                                                      glm::vec2(7, 7));
   return floor;

@@ -67,6 +67,25 @@ class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class ManuelethAnimationSystem : public entityx::System<ManuelethAnimationSystem> {
+  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class ManuelethIaSystem : public entityx::System<ManuelethIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+};
+
 class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -81,6 +100,16 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
  private:
   static const float turretSpeed;
 };
+
+class ChestCollisionSystem : public entityx::System<ChestCollisionSystem>,
+                           public entityx::Receiver<ChestCollisionSystem> {
+public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 
 class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
                            public entityx::Receiver<TurretAttackSystem> {

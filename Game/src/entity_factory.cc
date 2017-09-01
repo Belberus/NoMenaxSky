@@ -25,9 +25,9 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<Physics>(glm::vec3(0, 0, 0));
   player.assign<Transform>(position);
   player.assign<Player>(Player::Orientation::DOWN);
-  player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 8));
+  player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
-  player.assign<Health>(100.0f, 100.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -236,7 +236,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   turret.assign<ColorAnimation>(std::move(color_frames));
   turret.assign<Turret>();
-  turret.assign<Health>(50.0f, 50.0f, "assets/media/fx/turret/default/death.wav");
+  turret.assign<Health>(40.0f, 40.0f, "assets/media/fx/turret/default/death.wav");
 
   engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
     
@@ -280,19 +280,19 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 }
 
  std::vector<entityx::Entity> EntityFactory::MakeTrap(
-      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient){
+      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient, const float frecuencia){
 
  	std::vector<entityx::Entity> entities_created;
     entityx::Entity trap = entities.create();
 
     if (orient == "abajo") {
-    	trap.assign<Trap>(Trap::Orientation::DOWN);
+    	trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
     } else if (orient == "arriba") {
-    	trap.assign<Trap>(Trap::Orientation::UP);
+    	trap.assign<Trap>(Trap::Orientation::UP, frecuencia);
     } else if (orient == "izquierda") {
-    	trap.assign<Trap>(Trap::Orientation::LEFT);
+    	trap.assign<Trap>(Trap::Orientation::LEFT, frecuencia);
     } else if (orient == "derecha") {
-    	trap.assign<Trap>(Trap::Orientation::RIGHT);
+    	trap.assign<Trap>(Trap::Orientation::RIGHT, frecuencia);
     }
 
     trap.assign<Transform>(position);
@@ -315,7 +315,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
-	  manueleth.assign<Health>(500.0f, 500.0f, "assets/media/fx/turret/default/death.wav");
+	  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/turret/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
@@ -376,7 +376,6 @@ std::vector<entityx::Entity> EntityFactory::MakeEnemyProjectile(entityx::EntityM
 	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
 	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
 
-	  	
 	  } else if (type == "trampa") {
 		enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
 		enemyProjectile.assign<Physics>(velocity);
@@ -386,6 +385,16 @@ std::vector<entityx::Entity> EntityFactory::MakeEnemyProjectile(entityx::EntityM
 
 	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
 	  	shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+	  
+	  } else if (type == "manueleth") {
+	  	enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+		enemyProjectile.assign<Physics>(velocity);
+		enemyProjectile.assign<EnemyProjectile>(20.0f);
+
+		loadTexture = "assets/spritesheets/manueleth.png";
+
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
+	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
 	  }
 
     auto texture_atlas =

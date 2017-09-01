@@ -16,7 +16,7 @@
 
 class FloorFactory {
  public:
-  static std::unique_ptr<Floor> MakeFloor1(const std::string &file_name);
+  static std::unique_ptr<Floor> MakeFloor1(const std::string &file_name, Game* parent_scene);
 
  private:
   static void ParseTilemap(const tmx::Map &map, Floor &floor);

@@ -11,14 +11,18 @@
 #include <engine/events/collision.h>
 #include <entityx/entityx.h>
 
+#include "game.h"
+
 class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
  public:
-  Floor();
+  Floor(Game *parent_scene);
   virtual ~Floor();
   void Update(entityx::TimeDelta dt) override;
   void receive(const engine::events::Collision &collision);
+  void receive(const Health &health);
 
  private:
+  Game *parent_scene_;
   class Room {
    public:
     Room();

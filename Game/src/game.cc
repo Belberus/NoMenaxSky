@@ -34,7 +34,7 @@ void Game::Update(entityx::TimeDelta dt) {
         // Engine::GetInstance().Get<AudioManager>().
         //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
         scenes_.clear();
-        scenes_.push_back(FloorFactory::MakeFloor1("assets/castle/floor1.tmx"));
+        scenes_.push_back(FloorFactory::MakeFloor1("assets/castle/floor1.tmx", this));
         scenes_.push_back(std::make_unique<GameUi>(this));
         break;
       case State::kExit:

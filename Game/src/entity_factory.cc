@@ -27,7 +27,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 8));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
-  player.assign<Health>(100.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(100.0f, 100.0f, "assets/media/fx/gaunt/default/death.wav");
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -172,7 +172,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   ghost.assign<ColorAnimation>(std::move(color_frames));
   ghost.assign<Ghost>();
-  ghost.assign<Health>(20.0f, "assets/media/fx/ghost/default/death.wav");
+  ghost.assign<Health>(20.0f, 20.0f, "assets/media/fx/ghost/default/death.wav");
   
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));
@@ -236,7 +236,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   turret.assign<ColorAnimation>(std::move(color_frames));
   turret.assign<Turret>();
-  turret.assign<Health>(50.0f, "assets/media/fx/turret/default/death.wav");
+  turret.assign<Health>(50.0f, 50.0f, "assets/media/fx/turret/default/death.wav");
 
   engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
     
@@ -315,7 +315,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
-	  manueleth.assign<Health>(500.0f, "assets/media/fx/turret/default/death.wav");
+	  manueleth.assign<Health>(500.0f, 500.0f, "assets/media/fx/turret/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));

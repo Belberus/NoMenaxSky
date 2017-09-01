@@ -1004,10 +1004,17 @@ void TurretAttackSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}
 
+float lastPlayerHP;
 void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
                           entityx::TimeDelta dt) {
   es.each<Health>([&](entityx::Entity entity, Health &health) {
+    if(entity.component<Player>()){
+      if(lastPlayerHP != health.hp && health.hp != health.init_hp){
+        events.emit<Health>(health);
+        lastPlayerHP = health.hp;
+      }
+    }
     if (health.hp <= 0.0f) {
       Engine::GetInstance().Get<AudioManager>().PlaySound(health.death_fx,
                                                           false, 1);

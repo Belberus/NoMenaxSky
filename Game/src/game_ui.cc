@@ -30,6 +30,8 @@ GameUi::GameUi(Game* parent_scene) {
       gui_texture_atlas,
       Rectangle(glm::vec2(3.0f, 20.0f), glm::vec2(10.0f, 1.0f)));
 
+  parent_scene->events.subscribe<Health>(*this);
+
   // auto stamina_bar = entities.create();
   // stamina_bar.assign<Transform>(glm::vec3(100.0f, 490.0f, 0.0f), nullptr,
   //                              glm::vec3(17.0f, 17.0f, 1.0f));
@@ -45,3 +47,16 @@ GameUi::GameUi(Game* parent_scene) {
 void GameUi::Update(entityx::TimeDelta dt) {
   systems.update<SpriteRenderer>(dt);
 }
+
+void GameUi::receive(const Health& health) {
+  std::cout << (health.hp / health.init_hp) << std::endl;
+  entities.each<Transform>(
+    [&](entityx::Entity health_bar, Transform &transform){
+      transform.SetLocalScale(glm::vec3(0.0f, 0.0f, 0.0f));
+    });
+}
+
+  /*Engine::GetInstance().Get<EntityManager>().each<health_bar, Player>(
+    [&](entityx::Entity health_bar, entityx::Entity Player){
+      std::cout << "pss" << std::endl;
+    });*/

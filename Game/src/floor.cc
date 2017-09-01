@@ -18,8 +18,10 @@ using namespace engine::events;
 using namespace engine::components::two_d;
 using namespace engine::components::common;
 
-Floor::Floor() {
+Floor::Floor(Game *parent_scene) {
+  parent_scene_ = parent_scene;
   events.subscribe<Collision>(*this);
+  events.subscribe<Health>(*this);
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
   systems.add<GhostAnimationSystem>();
@@ -43,6 +45,10 @@ Floor::Floor() {
 }
 
 Floor::~Floor() {}
+
+void Floor::receive(const Health& health){
+  parent_scene_->events.emit<Health>(health);
+}
 
 void Floor::Update(entityx::TimeDelta dt) {
   systems.update<PlayerInputSystem>(dt);

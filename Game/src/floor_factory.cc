@@ -212,8 +212,8 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
   }
 }
 
-std::unique_ptr<Floor> FloorFactory::MakeFloor1(const std::string &file_name) {
-  auto floor = std::make_unique<Floor>();
+std::unique_ptr<Floor> FloorFactory::MakeFloor1(const std::string &file_name, Game* parent_scene) {
+  auto floor = std::make_unique<Floor>(parent_scene);
   tmx::Map tiled_map;
   tiled_map.load(file_name);
   ParseTilemap(tiled_map, *floor);

@@ -7,6 +7,7 @@
 #include <engine/core/scene.h>
 
 #include "events.h"
+#include "components.h"
 
 class Game : public engine::core::Scene, public entityx::Receiver<Game> {
  public:

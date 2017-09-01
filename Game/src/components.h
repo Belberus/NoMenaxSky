@@ -83,11 +83,20 @@ struct Door {
   std::string pos;
 };
 
+struct BossDoor {
+	BossDoor(const std::string &next_door, const std::string &pos)
+      : next_door(next_door), pos(pos) {}
+	std::string next_door;
+	std::string pos;
+};
+
 struct Player {
   enum Orientation { UP, DOWN, RIGHT, LEFT };
   Orientation orientation;
+  bool key;
 
-  Player(Orientation orientation) : orientation(orientation) {}
+  Player(Orientation orientation) : orientation(orientation), key(true) {}
+  // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
 };
 
 struct Ghost {
@@ -128,12 +137,17 @@ struct Manueleth {
   	int hits;
 };
 
+struct Chest {
+	Chest(bool key) : key(key) {}
+	bool key;
+};
+
 struct Trap {
 	enum Orientation { UP, DOWN, RIGHT, LEFT};
 	Orientation orientation;
 	float time_passed;
-	float random_shoot;
-	Trap(Orientation orientation) : orientation(orientation), time_passed(0.0), random_shoot(0.6) {}
+	float frecuencia;
+	Trap(Orientation orientation, float frecuencia) : orientation(orientation), time_passed(0.0), frecuencia(frecuencia) {}
 };
 
 struct EnemyProjectile{

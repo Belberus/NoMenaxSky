@@ -710,11 +710,16 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
             std::pow(std::abs(player_position.x - manueleth_position.x), 2) +
             std::pow(std::abs(player_position.y - manueleth_position.y), 2));
 
-      	if (distancia <= 20.0f) {
+      	if (distancia <= 30.0f) {
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
-      			// PUSH BACK ENFRENTE DE LA PUERTA DEL BOSS
-
+      			std::cerr <<"Time to push back" << std::endl; 
+      			es.each<Player, Transform>(
+			      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
+			       glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 100.0f , manueleth_position.z);
+			       player_transform.SetLocalPosition(new_position);
+			   
+			   });
       			manueleth.hits = 0;
       		}
       	} else {
@@ -739,9 +744,6 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 	      	}
       	}
    });
-  
-
-
 }
 
 const float TurretIaSystem::turretSpeed = 10.0f;
@@ -768,7 +770,6 @@ void TurretIaSystem::update(entityx::EntityManager &es,
         turret.time_passed += (dt * 1000.0f);
 
         if (distancia < 50.0f) {
-          // + DISPARAR SI TOCA
           turret_physics.velocity =
               -1.0f *
               glm::normalize(player_position -
@@ -808,9 +809,9 @@ void TrapIaSystem::update(entityx::EntityManager &es,
         trap_position = trap_transform.GetWorldPosition();
       
 
-		trap.time_passed += (dt * 1000.0f);
+		trap.time_passed += (dt * 250.0f);
 
-		if (trap.time_passed >= 2500.0f) {
+		if (trap.time_passed >= trap.frecuencia) {
 			Engine::GetInstance().Get<AudioManager>().PlaySound(
 	                "assets/media/fx/turret/default/attack.wav", false, 1);
 			glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
@@ -1008,6 +1009,7 @@ void KnightAttackSystem::receive(const Collision &collision) {
     }
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
+    // Torreta
   } else if (e0_weapon && e0_weapon->drawn &&
              e0_weapon->owner.component<Player>() &&
              collision_copy.e1.component<Turret>()) {
@@ -1023,6 +1025,29 @@ void KnightAttackSystem::receive(const Collision &collision) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
 
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+    // Manueleth
+  } else if (e0_weapon && e0_weapon->drawn &&
+             e0_weapon->owner.component<Player>() &&
+             collision_copy.e1.component<Manueleth>()) {
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+    auto e1_manueleth = collision_copy.e1.component<Manueleth>();
+    e1_manueleth->hits += 1;
+    std::cerr << "Hit" << std::endl;
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/manueleth/default/hit.wav", false, 0.7f);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+  } else if (e1_weapon && e1_weapon->drawn &&
+             e1_weapon->owner.component<Player>() &&
+             collision_copy.e0.component<Manueleth>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+	auto e0_manueleth = collision_copy.e0.component<Manueleth>();
+    e0_manueleth->hits += 1;
+    std::cerr << "Hit" << std::endl;
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   }
@@ -1114,50 +1139,43 @@ void HealthSystem::update(entityx::EntityManager &es,
   });
 }
 
-/*
-IgnoreCollisionSystem::IgnoreCollisionSystem(
-    entityx::EntityManager *entity_manager,
-    entityx::EventManager *event_manager)
-    : entity_manager_(entity_manager), event_manager_(event_manager) {}
-
-void IgnoreCollisionSystem::configure(entityx::EventManager &event_manager) {
-  event_manager.subscribe<entityx::ComponentAddedEvent<Ghost>>(*this);
-  event_manager.subscribe<entityx::ComponentAddedEvent<TurretProjectile>>(*this);
+void ChestCollisionSystem::configure(entityx::EventManager &event_manager) {
+	event_manager.subscribe<Collision>(*this);
 }
 
-void IgnoreCollisionSystem::update(entityx::EntityManager &es,
-                                   entityx::EventManager &events,
-                                   entityx::TimeDelta dt) {}
 
-void IgnoreCollisionSystem::receive(
-    const entityx::ComponentAddedEvent<Ghost> &new_entity) {
-  for (auto low_profile_collider :
-       entity_manager_->entities_with_components<LowCollision>()) {
-    event_manager_->emit<IgnoreCollision>(new_entity.entity,
-                                          low_profile_collider, true);
+void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
   }
+  auto e0_player = collision_copy.e0.component<Player>();
+  auto e1_player = collision_copy.e1.component<Player>();
+
+  if (e0_player && collision_copy.e1.component<Chest>()) {
+  	auto chest = collision_copy.e1.component<Chest>();
+  	if (chest->key == true) {
+  		// Mensaje de que has encontrado la llave, actualizar GUI con la imagen de la llave
+  		e0_player->key = true;
+  		std::cerr << "has encontrado la llave" << std::endl;
+  	} else {
+  		// Mensaje de que la llave esta en otro cofre
+  		std::cerr << "la llave esta en otro cofre" << std::endl;
+  	}
+  } else if (e1_player && collision_copy.e0.component<Chest>()) {
+  	auto chest = collision_copy.e0.component<Chest>();
+  	if (chest->key == true) {
+  		// Mensaje de que has encontrado la llave, actualizar GUI con la imagen de la llave
+  		e1_player->key = true;
+  		std::cerr << "has encontrado la llave" << std::endl;
+  	} else {
+  		// Mensaje de que la llave esta en otro cofre
+  		std::cerr << "la llave esta en otro cofre" << std::endl;
+  	}
+  }  
 }
 
-void IgnoreCollisionSystem::receive(const entityx::ComponentAddedEvent<TurretProjectile> &new_entity) {
-	for (auto low_profile_collider :
-       entity_manager_->entities_with_components<LowCollision>()) {
-       	std::cerr << "Estamos en el receive, lowcollision" << std::endl;
-    event_manager_->emit<IgnoreCollision>(new_entity.entity,
-                                          low_profile_collider, true);
- 	}
- 	for (auto ghost :
-       entity_manager_->entities_with_components<Ghost>()) {
-       	std::cerr << "Estamos en el receive, ghost" << std::endl;
-    event_manager_->emit<IgnoreCollision>(new_entity.entity,
-                                          ghost, true);
- 	}
-	for (auto turret : entity_manager_->entities_with_components<Turret>()) {
-		std::cerr << "Estamos en el receive, turret" << std::endl;
-  		event_manager_->emit<IgnoreCollision>(new_entity.entity, turret, true);
-  	}
-  	for (auto projectile : entity_manager_->entities_with_components<TurretProjectile>()) {
-  		std::cerr << "Estamos en el receive, projectile" << std::endl;
-  		event_manager_->emit<IgnoreCollision>(new_entity.entity, projectile, true);
-  	}
-}
-*/
+
+void ChestCollisionSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}

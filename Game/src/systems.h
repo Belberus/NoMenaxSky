@@ -101,6 +101,16 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
   static const float turretSpeed;
 };
 
+class ChestCollisionSystem : public entityx::System<ChestCollisionSystem>,
+                           public entityx::Receiver<ChestCollisionSystem> {
+public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+
 class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
                            public entityx::Receiver<TurretAttackSystem> {
  public:

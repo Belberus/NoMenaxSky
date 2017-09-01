@@ -32,6 +32,8 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
 
   static bool IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
                                         entityx::Entity door);
+  static bool IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
+                                        entityx::Entity door);
 
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;

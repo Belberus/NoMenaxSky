@@ -25,7 +25,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<Physics>(glm::vec3(0, 0, 0));
   player.assign<Transform>(position);
   player.assign<Player>(Player::Orientation::DOWN);
-  player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(8, 8));
+  player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Health>(200.0f, "assets/media/fx/gaunt/default/death.wav");
 
@@ -280,19 +280,19 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 }
 
  std::vector<entityx::Entity> EntityFactory::MakeTrap(
-      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient){
+      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient, const float frecuencia){
 
  	std::vector<entityx::Entity> entities_created;
     entityx::Entity trap = entities.create();
 
     if (orient == "abajo") {
-    	trap.assign<Trap>(Trap::Orientation::DOWN);
+    	trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
     } else if (orient == "arriba") {
-    	trap.assign<Trap>(Trap::Orientation::UP);
+    	trap.assign<Trap>(Trap::Orientation::UP, frecuencia);
     } else if (orient == "izquierda") {
-    	trap.assign<Trap>(Trap::Orientation::LEFT);
+    	trap.assign<Trap>(Trap::Orientation::LEFT, frecuencia);
     } else if (orient == "derecha") {
-    	trap.assign<Trap>(Trap::Orientation::RIGHT);
+    	trap.assign<Trap>(Trap::Orientation::RIGHT, frecuencia);
     }
 
     trap.assign<Transform>(position);

@@ -300,6 +300,8 @@ bool engine::systems::two_d::Physics::ShouldIgnoreMovingCollision(entityx::Entit
     return true;
   }else if ((e1.has_component<EnemyProjectile>() && e2.has_component<Manueleth>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<Manueleth>())) {
     return true;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<GhostHitBox>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<GhostHitBox>())) {
+    return true;
   } else return false;
 }
 

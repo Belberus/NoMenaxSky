@@ -1,142 +1,30 @@
 #include "floor.h"
 
-#include <engine/components/common/camera.h>
-#include <engine/components/common/physics.h>
-#include <engine/components/common/transform.h>
-#include <engine/systems/two_d/collider_renderer.h>
-#include <engine/systems/two_d/color_animator.h>
-#include <engine/systems/two_d/physics.h>
-#include <engine/systems/two_d/sprite_animator.h>
-#include <engine/systems/two_d/sprite_renderer.h>
-#include <engine/systems/two_d/tilemap_renderer.h>
+#include <engine/events/collision.h>
 
-#include "components.h"
-#include "systems.h"
+Floor::Floor() { events.subscribe<engine::events::Collision>(*this); }
 
-using namespace engine::systems::two_d;
-using namespace engine::events;
-using namespace engine::components::two_d;
-using namespace engine::components::common;
+Floor::~Floor() = default;
 
-Floor::Floor() {
-  events.subscribe<Collision>(*this);
-  systems.add<PlayerInputSystem>();
-  systems.add<GhostIaSystem>();
-  systems.add<GhostAnimationSystem>();
-  systems.add<TurretIaSystem>();
-  systems.add<TrapIaSystem>();
-  systems.add<TurretWalkingSystem>();
-  systems.add<EnemyProjectileAnimationSystem>();
-  systems.add<engine::systems::two_d::Physics>();
-  systems.add<KnightAnimationSystem>();
-  systems.add<KnightWalkingSystem>();
-  systems.add<SpriteAnimator>();
-  systems.add<TilemapRenderer>();
-  systems.add<SpriteRenderer>();
-  systems.add<ColliderRenderer>();
-  systems.add<KnightAttackSystem>();
-  systems.add<TurretAttackSystem>();
-  systems.add<HealthSystem>();
-  systems.add<ColorAnimator>();
-  //systems.add<IgnoreCollisionSystem>(&entities, &events);
-  systems.configure();
-}
-
-Floor::~Floor() {}
-
-void Floor::Update(entityx::TimeDelta dt) {
-  systems.update<PlayerInputSystem>(dt);
-  systems.update<GhostIaSystem>(dt);
-  systems.update<GhostAnimationSystem>(dt);
-  systems.update<TurretIaSystem>(dt);
-  systems.update<TrapIaSystem>(dt);
-  systems.update<TurretWalkingSystem>(dt);
-  systems.update<EnemyProjectileAnimationSystem>(dt);
-  systems.update<engine::systems::two_d::Physics>(dt);
-  systems.update<KnightAnimationSystem>(dt);
-  systems.update<KnightWalkingSystem>(dt);
-  systems.update<SpriteAnimator>(dt);
-  systems.update<KnightAttackSystem>(dt);
-  systems.update<TurretAttackSystem>(dt);
-  systems.update<HealthSystem>(dt);
-  systems.update<ColorAnimator>(dt);
-  systems.update<TilemapRenderer>(dt);
-  systems.update<SpriteRenderer>(dt);
-  systems.update<ColliderRenderer>(dt);
-  //systems.update<IgnoreCollisionSystem>(dt);
-}
-
-void Floor::receive(const Collision& collision) {
+void Floor::receive(const engine::events::Collision& collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
     return;
   }
   auto player = collision_copy.e0.component<Player>();
   auto door = collision_copy.e1.component<Door>();
-  if (door && player) {
-    if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
-      Door previous_door(*door);
-      rooms_[current_room_]->Unload(*this);
-      current_room_ = previous_door.next_door;
-      rooms_[current_room_]->Load(*this);
-      entities.each<Camera, Transform>(
-          [&](entityx::Entity entity, Camera& camera, Transform& transform) {
-            glm::vec3 next_pos = transform.GetLocalPosition();
-            if (previous_door.pos == "top") {
-              next_pos += glm::vec3(0.0f, 288.0f, 0.0f);
-            } else if (previous_door.pos == "bottom") {
-              next_pos += glm::vec3(0.0f, -288.0f, 0.0f);
-            } else if (previous_door.pos == "left") {
-              next_pos += glm::vec3(-544.0f, 0.0f, 0.0f);
-            } else if (previous_door.pos == "right") {
-              next_pos += glm::vec3(544.0f, 0.0f, 0.0f);
-            } else {
-              // error
-            }
-            transform.SetLocalPosition(next_pos);
-          });
-
-      glm::vec3 next_position_player;
-
-      entities.each<Door, Transform, AABBCollider>(
-          [&](entityx::Entity entity, Door& door, Transform& transform,
-              AABBCollider& collider) {
-            if (previous_door.pos == "top" && door.pos == "bottom") {
-              next_position_player =
-                  transform.GetLocalPosition() +
-                  glm::vec3(0.0f, 9.0f + collider.half_size.y, 0.0f);
-              return;
-            } else if (previous_door.pos == "bottom" && door.pos == "top") {
-              next_position_player =
-                  transform.GetLocalPosition() +
-                  glm::vec3(0.0f, -9.0f - collider.half_size.y, 0.0f);
-              return;
-            } else if (previous_door.pos == "left" && door.pos == "right") {
-              next_position_player =
-                  transform.GetLocalPosition() +
-                  glm::vec3(-9.0f - collider.half_size.x, 0.0f, 0.0f);
-              return;
-            } else if (previous_door.pos == "right" && door.pos == "left") {
-              next_position_player =
-                  transform.GetLocalPosition() +
-                  glm::vec3(9.0f + collider.half_size.x, 0.0f, 0.0f);
-              return;
-            }
-          });
-
-      entities.each<Player, Transform>(
-          [&](entityx::Entity entity, Player& player, Transform& transform) {
-            transform.SetLocalPosition(next_position_player);
-          });
-    }
+  if (door && player &&
+      IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
+    Door previous_door(*door);
+    rooms_[current_room_]->Unload(*this);
+    current_room_ = previous_door.next_door;
+    rooms_[current_room_]->Load(*this);
+    OnPlayerEnteringDoor(previous_door);
   }
 }
 
 bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
                                       entityx::Entity door) {
-  /*auto crossing_entity_velocity =
-      crossing_entity.component<engine::components::common::Physics>()
-          ->velocity; */
   Player::Orientation crossing_entity_orientation =
       crossing_entity.component<Player>()->orientation;
   auto door_component = *door.component<Door>();
@@ -157,8 +45,6 @@ bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
   return trying_cross_left_door || trying_cross_right_door ||
          trying_cross_top_door || trying_cross_bottom_door;
 }
-
-Floor::Room::Room() : entity_creators_() {}
 
 void Floor::Room::Load(Floor& floor) {
   for (auto& fn : entity_creators_) {

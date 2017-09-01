@@ -66,7 +66,7 @@ cmp::two_d::Tilemap::Layer FloorFactory::ParseTilemapLayer(
   return cmp::two_d::Tilemap::Layer(tilemap_tiles);
 }
 
-void FloorFactory::ParseTilemap(const tmx::Map &map, Floor &floor) {
+void FloorFactory::ParseTilemap(const tmx::Map &map, Floor2D &floor) {
   auto texture =
       engine::core::Engine::GetInstance()
           .Get<engine::core::ResourceManager>()
@@ -85,7 +85,7 @@ void FloorFactory::ParseTilemap(const tmx::Map &map, Floor &floor) {
       tilemap_layers, texture);
 }
 
-void FloorFactory::ParseTileObjects(const tmx::Map &map, Floor &floor) {
+void FloorFactory::ParseTileObjects(const tmx::Map &map, Floor2D &floor) {
   auto texture =
       engine::core::Engine::GetInstance()
           .Get<engine::core::ResourceManager>()
@@ -113,7 +113,7 @@ void FloorFactory::ParseTileObjects(const tmx::Map &map, Floor &floor) {
 
 void FloorFactory::ParseStaticColliders(const tmx::Map &map,
                                         const std::string &layer_name,
-                                        Floor &floor) {
+                                        Floor2D &floor) {
   for (auto &layer : map.getLayers()) {
     if (layer->getType() == tmx::Layer::Type::Object &&
         layer->getName() == layer_name) {
@@ -141,15 +141,15 @@ void FloorFactory::ParseStaticColliders(const tmx::Map &map,
   }
 }
 
-std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
+std::unordered_map<std::string, std::unique_ptr<Floor2D::Room>>
 FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name) {
   ;
-  std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms;
+  std::unordered_map<std::string, std::unique_ptr<Floor2D::Room>> rooms;
   for (auto &layer : map.getLayers()) {
     if (layer->getType() == tmx::Layer::Type::Object &&
         std::regex_match(layer->getName(), std::regex(layer_name))) {
       auto object_layer = dynamic_cast<tmx::ObjectGroup *>(layer.get());
-      auto floor = std::make_unique<Floor::Room>();
+      auto floor = std::make_unique<Floor2D::Room>();
       ParseRoomContents(map, *object_layer, *floor);
       rooms.emplace(layer->getName(), std::move(floor));
     }
@@ -159,7 +159,7 @@ FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name) {
 
 void FloorFactory::ParseRoomContents(const tmx::Map &map,
                                      const tmx::ObjectGroup &object_layer,
-                                     Floor::Room &room) {
+                                     Floor2D::Room &room) {
   for (const auto &object : object_layer.getObjects()) {
     auto object_aabb = object.getAABB();
     auto object_pos = object.getPosition();
@@ -212,8 +212,8 @@ void FloorFactory::ParseRoomContents(const tmx::Map &map,
   }
 }
 
-std::unique_ptr<Floor> FloorFactory::MakeFloor1(const std::string &file_name) {
-  auto floor = std::make_unique<Floor>();
+std::unique_ptr<Floor2D> FloorFactory::MakeFloor1(const std::string &file_name) {
+  auto floor = std::make_unique<Floor2D>();
   tmx::Map tiled_map;
   tiled_map.load(file_name);
   ParseTilemap(tiled_map, *floor);

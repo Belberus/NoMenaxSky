@@ -29,8 +29,9 @@ std::vector<entityx::Entity> EntityFactory2D::MakeKnight(
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
-  player.assign<Health>(200.0f, 200.0f,
-                        "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Energy>(100.0f, 100.0f);
+  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -159,7 +160,137 @@ std::vector<entityx::Entity> EntityFactory2D::MakeKnight(
   weapon_cmp.drawn = false;
   sword_hitbox.assign<MeleeWeapon>(weapon_cmp);
   entities_created.push_back(sword_hitbox);
+
+  // adding shield entity
+  auto shield = entities.create();
+  shield.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
+                                 player.component<Transform>().get());
+  shield.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                    glm::vec2(8.0f, 3.0f), true);
+  shield.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+  shield.assign<Shield>(player);
+  
+  std::vector<ColorAnimation::KeyFrame> color_frames_shield;
+  color_frames_shield.emplace_back(glm::vec3(-0.3f, 1.0f, 0.0f), 0.2f);
+  color_frames_shield.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+  shield.assign<ColorAnimation>(std::move(color_frames_shield));
+
+  entities_created.push_back(shield);
+
   return entities_created;
+}
+
+std::vector<entityx::Entity> EntityFactory2D::MakeLancer(entityx::EntityManager &entities, const glm::vec3 &position){
+    std::vector<entityx::Entity> entities_created;
+    entityx::Entity lancer = entities.create();
+
+    lancer.assign<Transform>(position);
+    lancer.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7)); 
+    lancer.assign<Physics>(glm::vec3(0, 0, 0));
+    std::vector<ColorAnimation::KeyFrame> color_frames;
+    color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+    color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+    lancer.assign<ColorAnimation>(std::move(color_frames));
+    lancer.assign<Lancer>();
+    lancer.assign<Health>(30.0f, 30.0f, "assets/media/fx/lanc/default/mov.wav" ); // CAMBIAR POR EL DE MUERTE CUANDO ESTE
+
+    std::vector<engine::utils::Rectangle> moving_bottom;
+    moving_bottom.emplace_back(glm::vec2(3, 177), glm::vec2(25, 25));
+    std::vector<engine::utils::Rectangle> moving_top;
+    moving_top.emplace_back(glm::vec2(32, 177), glm::vec2(25, 25));
+    std::vector<engine::utils::Rectangle> moving_right;
+    moving_right.emplace_back(glm::vec2(61, 177), glm::vec2(25, 25));
+    std::vector<engine::utils::Rectangle> moving_left;
+    moving_left.emplace_back(glm::vec2(90, 177), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> attack_bottom;
+    attack_bottom.emplace_back(glm::vec2(3, 148), glm::vec2(25, 25));
+    attack_bottom.emplace_back(glm::vec2(32, 148), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> attack_top;
+    attack_top.emplace_back(glm::vec2(3., 119), glm::vec2(25, 25));
+    attack_top.emplace_back(glm::vec2(32, 119), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> attack_right;
+    attack_right.emplace_back(glm::vec2(3., 90), glm::vec2(25, 25));
+    attack_right.emplace_back(glm::vec2(32, 90), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> attack_left;
+    attack_left.emplace_back(glm::vec2(3., 61), glm::vec2(25, 25));
+    attack_left.emplace_back(glm::vec2(32, 61), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> moving;
+    moving.emplace_back(glm::vec2(32, 32), glm::vec2(25, 25));
+    moving.emplace_back(glm::vec2(32, 61), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> stand;
+    stand.emplace_back(glm::vec2(3, 32), glm::vec2(25, 25));
+
+    std::vector<engine::utils::Rectangle> death;
+    death.emplace_back(glm::vec2(3, 3), glm::vec2(25, 25));
+
+    auto texture_atlas =
+        Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+            "assets/spritesheets/lancero.png");
+
+    SpriteAnimation::AnimationClip moving_bottom_anim("moving_bottom", texture_atlas, 
+                                                    moving_bottom, 100.0f);
+    SpriteAnimation::AnimationClip moving_top_anim("moving_top", texture_atlas,
+                                                    moving_top, 100.0f);
+    SpriteAnimation::AnimationClip moving_right_anim("moving_right", texture_atlas, 
+                                                    moving_right, 100.0f);
+    SpriteAnimation::AnimationClip moving_left_anim("moving_left", texture_atlas,
+                                                    moving_left, 100.0f);
+    
+    SpriteAnimation::AnimationClip attack_bottom_anim("attack_bottom", texture_atlas, 
+                                                    attack_bottom, 100.0f);
+    SpriteAnimation::AnimationClip attack_top_anim("attack_top", texture_atlas,
+                                                    attack_top, 100.0f);
+    SpriteAnimation::AnimationClip attack_right_anim("attack_right", texture_atlas, 
+                                                    attack_right, 100.0f);
+    SpriteAnimation::AnimationClip attack_left_anim("attack_left", texture_atlas,
+                                                    attack_left, 100.0f);
+
+    SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving, 100.0f);
+
+    SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand, 100.0f);
+
+    SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death, 100.0f);
+
+    SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim, moving_left_anim, 
+                          attack_bottom_anim, attack_top_anim, attack_right_anim, attack_left_anim, 
+                          death_anim});
+
+    lancer.assign<SpriteAnimation>(anim);
+    lancer.assign<Sprite>(texture_atlas);
+    entities_created.push_back(lancer);
+
+    // adding legs
+    auto legs = entities.create();
+    legs.assign<Physics>(glm::vec3(0, 0, 0));
+    legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                                   lancer.component<Transform>().get());
+
+    SpriteAnimation legs_anim({moving_anim, stand_still});
+    legs.assign<SpriteAnimation>(legs_anim);
+    legs.assign<LancerLegs>();
+    legs.assign<Sprite>(texture_atlas);
+    ParentLink parentLink;
+    parentLink.owner = lancer;
+    legs.assign<ParentLink>(parentLink);
+    entities_created.push_back(legs);
+
+    // adding hitbox
+    auto lanc_hitbox = entities.create();
+    lanc_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                                   lancer.component<Transform>().get());
+    lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                      glm::vec2(25.0f, 25.0f), true);
+    lanc_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+    lanc_hitbox.assign<LancerHitBox>(10.0f, lancer); 
+    entities_created.push_back(lanc_hitbox);
+
+    return entities_created;
 }
 
 std::vector<entityx::Entity> EntityFactory2D::MakeGhost(
@@ -174,8 +305,8 @@ std::vector<entityx::Entity> EntityFactory2D::MakeGhost(
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   ghost.assign<ColorAnimation>(std::move(color_frames));
   ghost.assign<Ghost>();
-  ghost.assign<Health>(20.0f, 20.0f, "assets/media/fx/ghost/default/death.wav");
-
+  ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
+  
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));
   moving_bottom.emplace_back(glm::vec2(15, 88), glm::vec2(8, 13));
@@ -283,128 +414,127 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory2D::MakeTrap(
-    entityx::EntityManager &entities, const glm::vec3 &position,
-    const std::string &orient, const float frecuencia) {
-  std::vector<entityx::Entity> entities_created;
-  entityx::Entity trap = entities.create();
+ std::vector<entityx::Entity> EntityFactory2D::MakeTrap(
+      entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient, const float frecuencia){
 
-  if (orient == "abajo") {
-    trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
-  } else if (orient == "arriba") {
-    trap.assign<Trap>(Trap::Orientation::UP, frecuencia);
-  } else if (orient == "izquierda") {
-    trap.assign<Trap>(Trap::Orientation::LEFT, frecuencia);
-  } else if (orient == "derecha") {
-    trap.assign<Trap>(Trap::Orientation::RIGHT, frecuencia);
-  }
+ 	std::vector<entityx::Entity> entities_created;
+    entityx::Entity trap = entities.create();
 
-  trap.assign<Transform>(position);
+    if (orient == "abajo") {
+    	trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
+    } else if (orient == "arriba") {
+    	trap.assign<Trap>(Trap::Orientation::UP, frecuencia);
+    } else if (orient == "izquierda") {
+    	trap.assign<Trap>(Trap::Orientation::LEFT, frecuencia);
+    } else if (orient == "derecha") {
+    	trap.assign<Trap>(Trap::Orientation::RIGHT, frecuencia);
+    }
 
-  entities_created.push_back(trap);
-  return entities_created;
-}
+    trap.assign<Transform>(position);
+    
+    entities_created.push_back(trap);
+    return entities_created;
+ }
 
-std::vector<entityx::Entity> EntityFactory2D::MakeManueleth(
-    entityx::EntityManager &entities, const glm::vec3 &position) {
-  std::vector<entityx::Entity> entities_created;
-  entityx::Entity manueleth = entities.create();
+ std::vector<entityx::Entity> EntityFactory2D::MakeManueleth(
+      entityx::EntityManager &entities, const glm::vec3 &position){
 
-  manueleth.assign<Transform>(position);
-  manueleth.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10));
-  manueleth.assign<Physics>(glm::vec3(0, 0, 0));
-  std::vector<ColorAnimation::KeyFrame> color_frames;
-  color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
-  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
-  manueleth.assign<ColorAnimation>(std::move(color_frames));
-  manueleth.assign<Manueleth>();
-  manueleth.assign<Health>(250.0f, 250.0f,
-                           "assets/media/fx/turret/default/death.wav");
+ 	  std::vector<entityx::Entity> entities_created;
+	  entityx::Entity manueleth = entities.create();
 
-  std::vector<engine::utils::Rectangle> talking;
-  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
-  talking.emplace_back(glm::vec2(26, 83), glm::vec2(19, 19));
+	  manueleth.assign<Transform>(position);
+	  manueleth.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10));
+	  manueleth.assign<Physics>(glm::vec3(0, 0, 0));
+	  std::vector<ColorAnimation::KeyFrame> color_frames;
+	  color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+	  manueleth.assign<ColorAnimation>(std::move(color_frames));
+	  manueleth.assign<Manueleth>();
+	  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/turret/default/death.wav");
+	    
+	  std::vector<engine::utils::Rectangle> talking;
+	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
+	  talking.emplace_back(glm::vec2(26, 83), glm::vec2(19, 19));
 
-  std::vector<engine::utils::Rectangle> attacking;
-  attacking.emplace_back(glm::vec2(3, 37), glm::vec2(19, 19));
-  attacking.emplace_back(glm::vec2(26, 37), glm::vec2(19, 19));
+	  std::vector<engine::utils::Rectangle> attacking;
+	  attacking.emplace_back(glm::vec2(3, 37), glm::vec2(19, 19));
+	  attacking.emplace_back(glm::vec2(26, 37), glm::vec2(19, 19));
 
-  std::vector<engine::utils::Rectangle> pushing;
-  pushing.emplace_back(glm::vec2(3, 60), glm::vec2(19, 19));
+	  std::vector<engine::utils::Rectangle> pushing;
+	  pushing.emplace_back(glm::vec2(3, 60), glm::vec2(19, 19));
 
-  std::vector<engine::utils::Rectangle> death;
-  death.emplace_back(glm::vec2(3, 14), glm::vec2(19, 19));
-  death.emplace_back(glm::vec2(26, 14), glm::vec2(19, 19));
+	  std::vector<engine::utils::Rectangle> death;
+	  death.emplace_back(glm::vec2(3, 14), glm::vec2(19, 19));
+	  death.emplace_back(glm::vec2(26, 14), glm::vec2(19, 19));
 
-  auto texture_atlas =
-      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-          "assets/spritesheets/manueleth.png");
+	  auto texture_atlas =
+	      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	          "assets/spritesheets/manueleth.png");
+	  	
+	  SpriteAnimation::AnimationClip talking_anim(
+	      "talking", texture_atlas, talking, 100.0f);
+	  SpriteAnimation::AnimationClip attacking_anim(
+	      "attacking", texture_atlas, attacking, 100.0f);
+	   SpriteAnimation::AnimationClip pushing_anim(
+	      "pushing", texture_atlas, pushing, 100.0f);
+	    SpriteAnimation::AnimationClip death_anim(
+	      "death", texture_atlas, death, 100.0f);
 
-  SpriteAnimation::AnimationClip talking_anim("talking", texture_atlas, talking,
-                                              100.0f);
-  SpriteAnimation::AnimationClip attacking_anim("attacking", texture_atlas,
-                                                attacking, 100.0f);
-  SpriteAnimation::AnimationClip pushing_anim("pushing", texture_atlas, pushing,
-                                              100.0f);
-  SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death,
-                                            100.0f);
+	  SpriteAnimation manueleth_anim({talking_anim, attacking_anim, pushing_anim, death_anim});
+	  manueleth.assign<SpriteAnimation>(manueleth_anim); 
+	  manueleth.assign<Sprite>(texture_atlas);
+	  entities_created.push_back(manueleth);
+	  return entities_created;
+ }
 
-  SpriteAnimation manueleth_anim(
-      {talking_anim, attacking_anim, pushing_anim, death_anim});
-  manueleth.assign<SpriteAnimation>(manueleth_anim);
-  manueleth.assign<Sprite>(texture_atlas);
-  entities_created.push_back(manueleth);
-  return entities_created;
-}
 
-std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(
-    entityx::EntityManager &entities, const glm::vec3 &position,
-    const float &rotation, const glm::vec3 &velocity, const std::string &type) {
-  std::vector<entityx::Entity> entities_created;
-  entityx::Entity enemyProjectile = entities.create();
-  std::vector<engine::utils::Rectangle> shoot;
-  std::string loadTexture;
 
-  Transform t(position);
-  // enemyProjectile.assign<Transform>(position);
-  glm::quat model_rotation;
-  model_rotation =
-      glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-  t.SetLocalOrientation(model_rotation);
-  enemyProjectile.assign<Transform>(t);
+std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
 
-  if (type == "torreta") {
-    enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
-    enemyProjectile.assign<Physics>(velocity);
-    enemyProjectile.assign<EnemyProjectile>(15.0f);
+	std::vector<entityx::Entity> entities_created;
+    entityx::Entity enemyProjectile = entities.create();
+    std::vector<engine::utils::Rectangle> shoot;
+    std::string loadTexture;
 
-    loadTexture = "assets/spritesheets/torreta.png";
+    Transform t(position);
+    //enemyProjectile.assign<Transform>(position);
+    glm::quat model_rotation;
+    model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    t.SetLocalOrientation(model_rotation);
+    enemyProjectile.assign<Transform>(t);
 
-    shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
-    shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
+    if (type == "torreta") {
+	  	enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+	  	enemyProjectile.assign<Physics>(velocity);
+	  	enemyProjectile.assign<EnemyProjectile>(15.0f);
 
-  } else if (type == "trampa") {
-    enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
-    enemyProjectile.assign<Physics>(velocity);
-    enemyProjectile.assign<EnemyProjectile>(20.0f);
+	  	loadTexture = "assets/spritesheets/torreta.png";
 
-    loadTexture = "assets/spritesheets/proyectil_trampa.png";
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
+	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
 
-    shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
-    shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+	  } else if (type == "trampa") {
+		enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+		enemyProjectile.assign<Physics>(velocity);
+		enemyProjectile.assign<EnemyProjectile>(20.0f);
 
-  } else if (type == "manueleth") {
-    enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
-    enemyProjectile.assign<Physics>(velocity);
-    enemyProjectile.assign<EnemyProjectile>(20.0f);
+		loadTexture = "assets/spritesheets/proyectil_trampa.png";
 
-    loadTexture = "assets/spritesheets/manueleth.png";
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
+	  	shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+	  
+	  } else if (type == "manueleth") {
+	  	enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+		enemyProjectile.assign<Physics>(velocity);
+		enemyProjectile.assign<EnemyProjectile>(20.0f);
 
-    shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
-    shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
-  }
+		loadTexture = "assets/spritesheets/manueleth.png";
 
-  auto texture_atlas =
+	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
+	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
+	  }
+
+    auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(loadTexture);
 
   SpriteAnimation::AnimationClip shooting_anim("shooting", texture_atlas, shoot,

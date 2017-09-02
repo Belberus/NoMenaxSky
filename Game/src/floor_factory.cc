@@ -219,6 +219,12 @@ void FloorFactory::ParseRoomContents(
         return factory->MakeTurret(em, position, frecuencia);
       };
       room.entity_creators_.push_back(fn_turret);
+    } else if (object.getType() == "lancero") {
+      auto fn_lancer =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        return factory->MakeLancer(em, position);
+      };
+      room.entity_creators_.push_back(fn_lancer);
     } else if (object.getType() == "trampa") {
       auto properties = object.getProperties();
       std::string direccion = properties[0].getStringValue();

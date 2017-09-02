@@ -27,5 +27,8 @@ struct EntityFactory2D : public EntityFactory {
       entityx::EntityManager &entities, const glm::vec3 &position,
       const float &rotation, const glm::vec3 &velocity,
       const std::string &type) override;
+
+  std::vector<entityx::Entity> MakeLancer(entityx::EntityManager &entities,
+                                          const glm::vec3 &position) override;
 };
 #endif  // ENTITY_FACTORY_2D_H_

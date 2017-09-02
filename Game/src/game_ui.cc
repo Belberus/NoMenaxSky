@@ -34,14 +34,15 @@ GameUi::GameUi(Game* parent_scene) {
       Rectangle(glm::vec2(3.0f, 20.0f), glm::vec2(10.0f, 1.0f)));
 
   parent_scene->events.subscribe<Health>(*this);
+  parent_scene->events.subscribe<Energy>(*this);
 
-  // auto stamina_bar = entities.create();
-  // stamina_bar.assign<Transform>(glm::vec3(100.0f, 490.0f, 0.0f), nullptr,
-  //                              glm::vec3(17.0f, 17.0f, 1.0f));
-  // stamina_bar.assign<Sprite>(
-  //    gui_texture_atlas,
-  //    Rectangle(glm::vec2(3.0f, 17.0f), glm::vec2(10.0f, 1.0f)));
-
+  auto stamina_bar = entities.create();
+  stamina_bar.assign<Transform>(glm::vec3(300.0f, 520.0f, 0.0f), nullptr,
+                               glm::vec3(17.0f, 17.0f, 1.0f));
+  stamina_bar.assign<Sprite>(
+      gui_texture_atlas,
+      Rectangle(glm::vec2(3.0f, 17.1f), glm::vec2(10.0f, 1.0f)));
+  stamina_bar.assign<D2Mode>();
   // adding systems
   systems.add<SpriteRenderer>();
   systems.configure();
@@ -49,6 +50,29 @@ GameUi::GameUi(Game* parent_scene) {
 
 void GameUi::Update(entityx::TimeDelta dt) {
   systems.update<SpriteRenderer>(dt);
+}
+
+void GameUi::receive(const Energy &energy){
+  entities.each<Transform, D2Mode>(
+    [&](entityx::Entity stamina_bar, Transform &transform,
+      D2Mode d2){
+      auto scale = transform.GetLocalScale();
+      auto position = transform.GetLocalPosition();
+      if(init_x_nrg == 0){
+        init_x_nrg = scale.x;
+      }
+      if(init_pos_nrg == 0){
+        init_pos_nrg = position.x;
+      }
+      float result = init_x_nrg * (energy.energy / energy.init_nrg);
+      if(result > 0){
+        scale.x = result;
+      }
+      else scale.x = result;
+      transform.SetLocalScale(scale);
+      float newpos = init_pos_nrg - (170 - ((170*(energy.energy / energy.init_nrg))))/2.0f;
+      transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
+    });
 }
 
 void GameUi::receive(const Health& health) {

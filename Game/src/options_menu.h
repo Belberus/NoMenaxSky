@@ -6,11 +6,15 @@
 
 #include "game.h"
 #include "events.h"
+#include "components.h"
 
-class OptionsMenu : public engine::core::Scene {
+class OptionsMenu : public engine::core::Scene,
+					public entityx::Receiver<OptionsMenu> {
  public:
   OptionsMenu(engine::core::Scene *parent_scene);
   void Update(entityx::TimeDelta dt) override;
+
+  void receive(const BackToMainMenu &event);
 
   int modo, musica, efectos;
 

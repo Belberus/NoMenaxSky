@@ -24,8 +24,9 @@ struct MeleeWeapon {
 };
 
 struct Energy {
-  int energy;
-  Energy(int e) : energy(e) {}
+  float init_nrg;
+  float energy;
+  Energy(float energy, float init_nrg) : energy(energy), init_nrg(init_nrg) {}
 };
 
 struct KnightAttack {
@@ -77,6 +78,18 @@ struct WhatOption {
   WhatOption(int what) : what(what) {}
 };
 
+struct D2Mode {};
+
+struct D3Mode {};
+
+struct MusicOn {};
+
+struct MusicOff {};
+
+struct FXOn {};
+
+struct FXOff {};
+
 struct Door {
   Door(const std::string &next_door, const std::string &pos)
       : next_door(next_door), pos(pos) {}
@@ -91,13 +104,42 @@ struct BossDoor {
 	std::string pos;
 };
 
+struct Shield {
+	enum Orientation { UP, DOWN, RIGHT, LEFT };
+	Orientation orientation;
+	bool active;
+	entityx::Entity owner;
+	float time_passed;
+	Shield(entityx::Entity owner) : owner(owner), orientation(Shield::Orientation::UP), active(false), time_passed(0.0f) {}
+};
+
 struct Player {
   enum Orientation { UP, DOWN, RIGHT, LEFT };
+  enum State {NORMAL, BLOCKING};
   Orientation orientation;
+  State state;
   bool key;
 
-  Player(Orientation orientation) : orientation(orientation), key(true) {}
+  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL) {}
   // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
+};
+
+struct Lancer {
+  enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
+ 
+  bool is_attacking;
+  float time_passed;
+
+  LancerOrientation orientation;
+
+  Lancer()
+      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(0.0f) {}
+};
+
+struct LancerHitBox {
+  LancerHitBox(float damage, entityx::Entity owner) : damage(damage), owner(owner) {}
+  entityx::Entity owner;
+  float damage;
 };
 
 struct Ghost {
@@ -127,6 +169,8 @@ struct Sword {};
 struct Legs{};
 
 struct TurretLegs{};
+
+struct LancerLegs{};
 
 struct LowCollision {};
 

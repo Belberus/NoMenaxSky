@@ -67,6 +67,12 @@ class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class LancerWalkingSystem : public entityx::System<LancerWalkingSystem> {
+  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 class ManuelethAnimationSystem : public entityx::System<ManuelethAnimationSystem> {
   public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -85,6 +91,7 @@ class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
 };
+
 
 class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
@@ -110,6 +117,14 @@ public:
               entityx::TimeDelta dt) override;
 };
 
+class ShieldSystem : public entityx::System<ShieldSystem>,
+                           public entityx::Receiver<ShieldSystem> {
+public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
 
 class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
                            public entityx::Receiver<TurretAttackSystem> {
@@ -179,6 +194,10 @@ class OptionsInputSystem : public entityx::System<OptionsInputSystem>,
   bool options_enter_pressed_;
   bool options_right_pressed_;
   bool options_left_pressed_;
+
+  int mode;
+  int music;
+  int fx;
 };
 
 class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
@@ -196,6 +215,21 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   static const float kAttackDuration;
   float time_passed_since_last_attack_;
   std::unordered_map<int, bool> keys_;
+};
+
+class LancerIaSystem : public entityx::System<LancerIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+ private:
+  static const float lancerSpeed;
+};
+
+class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
+  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
 };
 
 

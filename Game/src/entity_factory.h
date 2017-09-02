@@ -23,6 +23,9 @@ struct EntityFactory {
   virtual std::vector<entityx::Entity> MakeManueleth(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
+  virtual std::vector<entityx::Entity> MakeLancer(
+      entityx::EntityManager &entities, const glm::vec3 &position) = 0;
+
   virtual std::vector<entityx::Entity> MakeEnemyProjectile(
       entityx::EntityManager &entities, const glm::vec3 &position,
       const float &rotation, const glm::vec3 &velocity,

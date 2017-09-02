@@ -183,54 +183,49 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
     entityx::Entity lancer = entities.create();
 
     lancer.assign<Transform>(position);
-    lancer.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10)); // VERIFICAR
+    lancer.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7)); 
     lancer.assign<Physics>(glm::vec3(0, 0, 0));
     std::vector<ColorAnimation::KeyFrame> color_frames;
     color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
     color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     lancer.assign<ColorAnimation>(std::move(color_frames));
     lancer.assign<Lancer>();
-    lancer.assign<Health>(100.0f, 100.0f, "assets/media/fx/lanc/default/mov.wav" ); // CAMBIAR POR EL DE MUERTE CUANDO ESTE
+    lancer.assign<Health>(30.0f, 30.0f, "assets/media/fx/lanc/default/mov.wav" ); // CAMBIAR POR EL DE MUERTE CUANDO ESTE
 
     std::vector<engine::utils::Rectangle> moving_bottom;
-    moving_bottom.emplace_back(glm::vec2(3, 137), glm::vec2(15, 14));
+    moving_bottom.emplace_back(glm::vec2(3, 177), glm::vec2(25, 25));
     std::vector<engine::utils::Rectangle> moving_top;
-    moving_top.emplace_back(glm::vec2(22, 137), glm::vec2(15, 14));
+    moving_top.emplace_back(glm::vec2(32, 177), glm::vec2(25, 25));
     std::vector<engine::utils::Rectangle> moving_right;
-    moving_right.emplace_back(glm::vec2(41, 137), glm::vec2(15, 14));
+    moving_right.emplace_back(glm::vec2(61, 177), glm::vec2(25, 25));
     std::vector<engine::utils::Rectangle> moving_left;
-    moving_left.emplace_back(glm::vec2(60, 137), glm::vec2(15, 14));
+    moving_left.emplace_back(glm::vec2(90, 177), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> attack_bottom;
-    attack_bottom.emplace_back(glm::vec2(3, 99), glm::vec2(15, 14));
-    attack_bottom.emplace_back(glm::vec2(22, 99), glm::vec2(15, 14));
-    attack_bottom.emplace_back(glm::vec2(41, 99), glm::vec2(15, 14));
+    attack_bottom.emplace_back(glm::vec2(3, 148), glm::vec2(25, 25));
+    attack_bottom.emplace_back(glm::vec2(32, 148), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> attack_top;
-    attack_top.emplace_back(glm::vec2(3., 80), glm::vec2(15, 14));
-    attack_top.emplace_back(glm::vec2(22, 80), glm::vec2(15, 14));
-    attack_top.emplace_back(glm::vec2(41, 80), glm::vec2(15, 14));
+    attack_top.emplace_back(glm::vec2(3., 119), glm::vec2(25, 25));
+    attack_top.emplace_back(glm::vec2(32, 119), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> attack_right;
-    attack_right.emplace_back(glm::vec2(3., 61), glm::vec2(15, 14));
-    attack_right.emplace_back(glm::vec2(22, 61), glm::vec2(15, 14));
-    attack_right.emplace_back(glm::vec2(41, 61), glm::vec2(15, 14));
+    attack_right.emplace_back(glm::vec2(3., 90), glm::vec2(25, 25));
+    attack_right.emplace_back(glm::vec2(32, 90), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> attack_left;
-    attack_left.emplace_back(glm::vec2(3., 42), glm::vec2(15, 14));
-    attack_left.emplace_back(glm::vec2(22, 42), glm::vec2(15, 14));
-    attack_left.emplace_back(glm::vec2(41, 42), glm::vec2(15, 14));
+    attack_left.emplace_back(glm::vec2(3., 61), glm::vec2(25, 25));
+    attack_left.emplace_back(glm::vec2(32, 61), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> moving;
-    moving.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
-    moving.emplace_back(glm::vec2(22, 23), glm::vec2(15, 14));
-    moving.emplace_back(glm::vec2(41, 23), glm::vec2(15, 14));
+    moving.emplace_back(glm::vec2(32, 32), glm::vec2(25, 25));
+    moving.emplace_back(glm::vec2(32, 61), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> stand;
-    stand.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
+    stand.emplace_back(glm::vec2(3, 32), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> death;
-    death.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
+    death.emplace_back(glm::vec2(3, 3), glm::vec2(25, 25));
 
     auto texture_atlas =
         Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -262,7 +257,7 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
 
     SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim, moving_left_anim, 
                           attack_bottom_anim, attack_top_anim, attack_right_anim, attack_left_anim, 
-                          stand_still, death_anim});
+                          death_anim});
 
     lancer.assign<SpriteAnimation>(anim);
     lancer.assign<Sprite>(texture_atlas);
@@ -276,26 +271,21 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
 
     SpriteAnimation legs_anim({moving_anim, stand_still});
     legs.assign<SpriteAnimation>(legs_anim);
-    legs.assign<Legs>();
+    legs.assign<LancerLegs>();
     legs.assign<Sprite>(texture_atlas);
     ParentLink parentLink;
     parentLink.owner = lancer;
     legs.assign<ParentLink>(parentLink);
     entities_created.push_back(legs);
 
-    // adding sword entity
+    // adding hitbox
     auto lanc_hitbox = entities.create();
-    // CAMBIAR PARAMETROS PARA QUE ESTE BIEN
-    lanc_hitbox.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
+    lanc_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                    lancer.component<Transform>().get());
     lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                      glm::vec2(6.0f, 6.0f), true);
+                                      glm::vec2(25.0f, 25.0f), true);
     lanc_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
-    MeleeWeapon weapon_cmp;
-    weapon_cmp.damage = 25.0f;
-    weapon_cmp.owner = lancer;
-    weapon_cmp.drawn = false;
-    lanc_hitbox.assign<MeleeWeapon>(weapon_cmp);
+    lanc_hitbox.assign<LancerHitBox>(10.0f, lancer); 
     entities_created.push_back(lanc_hitbox);
 
     return entities_created;

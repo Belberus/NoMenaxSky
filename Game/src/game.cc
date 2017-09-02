@@ -54,25 +54,25 @@ void Game::Update(entityx::TimeDelta dt) {
             FloorFactory::MakeFloor1("assets/castle/floor1.tmx", this));
         scenes_.push_back(std::make_unique<GameUi>(this));
         break;
-      case State: kFloor2:
-        Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+      case State::kFloor2:
+       /* Engine::GetInstance().Get<AudioManager>().StopAllSounds();
         // Engine::GetInstance().Get<AudioManager>().
         //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
         scenes_.clear();
         // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
         scenes_.push_back(
-            FloorFactory::MakeFloor1("assets/castle/floor2.tmx", this));
-        scenes_.push_back(std::make_unique<GameUi>(this));
+            FloorFactory::MakeFloor2("assets/castle/floor2.tmx", this));
+        scenes_.push_back(std::make_unique<GameUi>(this));*/
         break;
-      case State: kFloor3:
-        Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+      case State::kFloor3:
+     /*   Engine::GetInstance().Get<AudioManager>().StopAllSounds();
         // Engine::GetInstance().Get<AudioManager>().
         //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
         scenes_.clear();
         // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
         scenes_.push_back(
-            FloorFactory::MakeFloor1("assets/castle/floor3.tmx", this));
-        scenes_.push_back(std::make_unique<GameUi>(this));
+            FloorFactory::MakeFloor3("assets/castle/floor3.tmx", this));
+        scenes_.push_back(std::make_unique<GameUi>(this));*/
         break;
       case State::kExit:
         break;

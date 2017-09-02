@@ -16,6 +16,8 @@ class CharacterSelectionMenu : public engine::core::Scene,
 
    void receive(const StartGame &event);
 
+   int role;
+
  private:
    engine::core::Scene *parent_scene_;
 };

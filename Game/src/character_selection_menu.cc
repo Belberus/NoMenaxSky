@@ -22,7 +22,7 @@ using namespace engine::components::two_d;
 using namespace engine::core;
 
 CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene)
-  : parent_scene_(parent_scene) {
+  : parent_scene_(parent_scene), role(0) {
 
 	events.subscribe<StartGame>(*this);
 
@@ -34,12 +34,27 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
   	menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
   	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
 
+  	entityx::Entity title = entities.create();
+    title.assign<Transform>(glm::vec3(0, 300, 0), menu_canvas_transform,
+                          glm::vec3(0.3, 0.3, 1));
+    auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+        "assets/personajes_menu/personajes.png");
+    title.assign<Sprite>(tex);
+
+    entityx::Entity cursor = entities.create();
+    cursor.assign<Transform>(glm::vec3(-155, 0, 0), menu_canvas_transform,
+                          glm::vec3(1.1f));
+    tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+        "assets/personajes_menu/cursor.png");
+    cursor.assign<Sprite>(tex);
+    cursor.assign<Cursor>();
+
 	entityx::Entity knight = entities.create();
 
-	auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/menu/ppc_front.png");
 
-	knight.assign<Transform>(glm::vec3(-50, 200, 0), 
+	knight.assign<Transform>(glm::vec3(-150, 125, 0), 
 		menu_canvas_transform, glm::vec3(10.0f));
 	knight.assign<Sprite>(tex);
 
@@ -49,7 +64,7 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/menu/ppc_front.png");
 
-	wizard.assign<Transform>(glm::vec3(150, 200, 0), 
+	wizard.assign<Transform>(glm::vec3(150, 125, 0), 
 		menu_canvas_transform, glm::vec3(10.0f));
 	wizard.assign<Sprite>(tex);
 
@@ -60,6 +75,32 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 }
 
 void CharacterSelectionMenu::Update(entityx::TimeDelta dt){
+
+	entityx::ComponentHandle<Characters> character;
+
+	entityx::ComponentHandle<Cursor> cursor;
+	entityx::ComponentHandle<Sprite> sprite;
+	entityx::ComponentHandle<Transform> transform;
+
+	for (entityx::Entity e :
+			entities.entities_with_components(character)){
+		// Cursor en mago cambiar a caballero
+		if (character->role == Characters::Role::KNIGHT && role == 1){
+			for (entityx::Entity e1 :
+					entities.entities_with_components(cursor, sprite, transform)){
+				transform->SetLocalPosition(glm::vec3(-155, 0, 0));
+			}
+		}
+
+		if (character->role == Characters::Role::WIZARD && role == 0){
+			for (entityx::Entity e1 :
+					entities.entities_with_components(cursor, sprite, transform)){
+				transform->SetLocalPosition(glm::vec3(145, 0, 0));
+			}
+		}
+
+	}
+
 	//systems.update<OptionsInputSystem>(dt);
   	systems.update<engine::systems::two_d::SpriteAnimator>(dt);
   	systems.update<engine::systems::two_d::SpriteRenderer>(dt);

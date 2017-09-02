@@ -131,6 +131,8 @@ struct Characters{
   Characters() : role(Role::KNIGHT) {}
 };
 
+struct Cursor {};
+
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
   enum AttackOrientation { ATK_UP, ATK_DOWN, ATK_RIGHT, ATK_LEFT};

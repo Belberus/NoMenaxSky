@@ -67,6 +67,12 @@ class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class LancerWalkingSystem : public entityx::System<LancerWalkingSystem> {
+  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 class ManuelethAnimationSystem : public entityx::System<ManuelethAnimationSystem> {
   public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -86,28 +92,6 @@ class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
   void receive(const engine::events::Collision &collision);
 };
 
-class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
-  public:
-    void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override;
-
-  private:
-    float timer;
-    float timer2;
-};
-
-class LancerIaSystem : public entityx::System<LancerIaSystem> {
-  public:
-    void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override;
-};
-
-class LancerAttackSystem : public entityx::System<LancerAttackSystem> {
-  void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override;
-  void configure(entityx::EventManager &event_manager) override;
-  void receive(const engine::events::Collision &collision);
-};
 
 class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
@@ -231,6 +215,21 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   static const float kAttackDuration;
   float time_passed_since_last_attack_;
   std::unordered_map<int, bool> keys_;
+};
+
+class LancerIaSystem : public entityx::System<LancerIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+ private:
+  static const float lancerSpeed;
+};
+
+class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
+  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
 };
 
 

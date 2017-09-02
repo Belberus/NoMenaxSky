@@ -221,68 +221,6 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   }
 }
 
-void LancerAnimationSystem::update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt){
-  entityx::ComponentHandle<Lancer> lancer;
-  //entityx::ComponentHandle<Transform> position_lancer;
-  entityx::ComponentHandle<Physics> physics;
-  entityx::ComponentHandle<SpriteAnimation> animation;
-
-  std::string animToPlay;
-
-  for (entityx::Entity e : es.entities_with_components(
-    lancer, physics, animation)){
-
-    if (lancer->is_attacking){
-      switch (lancer->atk_orientation) {
-        case Lancer::AttackOrientation::ATK_UP:
-          animToPlay = "attack_top";
-          break;
-        case Lancer::AttackOrientation::ATK_DOWN:
-          animToPlay = "attack_bottom";
-          break;
-        case Lancer::AttackOrientation::ATK_LEFT:
-          animToPlay = "attack_left";
-          break;
-        case Lancer::AttackOrientation::ATK_RIGHT:
-          animToPlay = "attack_right";
-          break;
-      }
-    } else if (physics->velocity.x > 0) {
-      animToPlay = "moving_right";
-      lancer->orientation = Lancer::LancerOrientation::RIGHT;
-      if (timer2 == 0.0) {
-        Engine::GetInstance().Get<AudioManager>().PlaySound(
-            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
-      }
-    } else if (physics->velocity.x < 0) {
-      animToPlay = "moving_left";
-      lancer->orientation = Lancer::LancerOrientation::LEFT;
-
-      if (timer2 == 0.0) {
-        Engine::GetInstance().Get<AudioManager>().PlaySound(
-            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
-      }
-    } else if (physics->velocity.y > 0) {
-      animToPlay = "moving_top";
-      lancer->orientation = Lancer::LancerOrientation::UP;
-
-      if (timer2 == 0.0) {
-        Engine::GetInstance().Get<AudioManager>().PlaySound(
-            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
-      }
-    } else if (physics->velocity.y < 0) {
-      animToPlay = "moving_bottom";
-      lancer->orientation = Lancer::LancerOrientation::DOWN;
-
-      if (timer2 == 0.0) {
-        Engine::GetInstance().Get<AudioManager>().PlaySound(
-            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
-      }
-    } 
-    animation->Play(animToPlay);
-  }
-}
-
 MenuInputSystem::MenuInputSystem()
     : up_pressed_(false), down_pressed_(false), enter_pressed_(false) {
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
@@ -728,7 +666,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     physics.velocity = new_velocity;
     shield_info->time_passed += (dt * 1000.0f);
     time_passed_since_last_attack_ += (dt * 1000.0f);
-    if (keys_[GLFW_KEY_SPACE]) {
+    if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
     	if (keys_[GLFW_KEY_UP]) {
     		shield_info->active = true;
 	        shield_info->orientation = Shield::Orientation::UP;
@@ -770,7 +708,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	      // HACK: dont harcode the weapon info
 	      // use actual player width, height and transform to position the weapon
 	      if (keys_[GLFW_KEY_UP]) {
-	      	if (keys_[GLFW_KEY_SPACE]) {
+	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
 	      		attack.is_attacking = false;
 	        	weapon_info->drawn = false;
 	        	shield_info->active = true;
@@ -783,7 +721,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
 	      	}       
 	      } else if (keys_[GLFW_KEY_DOWN]) {
-	      	if (keys_[GLFW_KEY_SPACE]) {
+	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
 	      		attack.is_attacking = false;
 	        	weapon_info->drawn = false;
 	        	shield_info->active = true;
@@ -796,7 +734,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
 	      	}  
 	      } else if (keys_[GLFW_KEY_LEFT]) {
-	      	if (keys_[GLFW_KEY_SPACE]) {
+	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
 	      		attack.is_attacking = false;
 	        	weapon_info->drawn = false;
 	        	shield_info->active = true;
@@ -809,7 +747,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 		        weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
 	      	}   
 	      } else if (keys_[GLFW_KEY_RIGHT]) {
-	      	if (keys_[GLFW_KEY_SPACE]) {
+	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
 	      		attack.is_attacking = false;
 	        	weapon_info->drawn = false;
 	        	shield_info->active = true;
@@ -1321,7 +1259,6 @@ void ShieldSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
 }
 
-// TODO: BAJADA DE ENERGIA AL COLISIONAR Y SUBIDA DE ENERGIA AL NO COLISIONAR
 void ShieldSystem::receive(const Collision &collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
@@ -1336,6 +1273,7 @@ void ShieldSystem::receive(const Collision &collision) {
     
     if ((e1_energy->energy -= 10.0f) < 0.0f) {
     	e1_energy->energy = 0.0f;
+    	collision_copy.e1.component<Shield>()->active = false;
     } else e1_energy->energy -= 10.0f;
 
     entityx::Entity proyectil = collision.e0;
@@ -1351,6 +1289,7 @@ void ShieldSystem::receive(const Collision &collision) {
     auto e0_energy = e0_player.component<Energy>();
     if ((e0_energy->energy -= 10.0f) < 0.0f) {
     	e0_energy->energy = 0.0f;
+    	collision_copy.e0.component<Shield>()->active = false;
     } else e0_energy->energy -= 10.0f;
 
     entityx::Entity proyectil = collision.e1;
@@ -1455,7 +1394,150 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
   }  
 }
 
-
 void ChestCollisionSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}
+
+float timerLancer;
+
+void LancerWalkingSystem::update(entityx::EntityManager &es,
+                                 entityx::EventManager &events,
+                                 entityx::TimeDelta dt) {
+  entityx::ComponentHandle<SpriteAnimation> animation;
+  entityx::ComponentHandle<Physics> physics;
+  entityx::ComponentHandle<ParentLink> parent;
+  entityx::ComponentHandle<LancerLegs> legs;
+
+  std::string animToPlay;
+
+  for (entityx::Entity e1 :
+       es.entities_with_components(animation, parent, legs)) {
+    if ((parent->owner.component<Physics>()->velocity.x < 0) ||
+        (parent->owner.component<Physics>()->velocity.x > 0) ||
+        (parent->owner.component<Physics>()->velocity.y > 0) ||
+        (parent->owner.component<Physics>()->velocity.y < 0)) {
+      animToPlay = "moving";
+
+      if (timerLancer == 0.0) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/mov.wav", false, 0.8f);
+      }
+    } else {
+      animToPlay = "stand";
+    }
+    animation->Play(animToPlay);
+  }
+  timerLancer += dt;
+  if (timerLancer >= 0.22) {
+    timerLancer = 0.0;
+  }
+}
+
+const float LancerIaSystem::lancerSpeed = 90.0f;
+
+void LancerIaSystem::update(entityx::EntityManager &es,
+                            entityx::EventManager &events,
+                            entityx::TimeDelta dt) {
+  glm::vec3 player_position;
+  es.each<Player, Transform>(
+      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
+        player_position = player_transform.GetWorldPosition();
+      });
+
+  glm::vec3 lancer_position;
+  es.each<Lancer, Transform, Physics>(
+      [&](entityx::Entity entity, Lancer &lancer, Transform &lancer_transform,
+          Physics &lancer_physics) {
+        lancer_position = lancer_transform.GetWorldPosition();
+        const float distancia = std::sqrt(
+            std::pow(std::abs(player_position.x - lancer_position.x), 2) +
+            std::pow(std::abs(player_position.y - lancer_position.y), 2));
+        lancer.time_passed += (dt * 1000.0f);
+
+        if (lancer.time_passed >= 5000.0f) {
+        	if (lancer_position.y >= player_position.y) {
+        		lancer.orientation = Lancer::LancerOrientation::DOWN;
+        	} else if (lancer_position.y < player_position.y) {
+        		lancer.orientation = Lancer::LancerOrientation::UP;
+        	} else if (lancer_position.x >= player_position.x) {	
+        		lancer.orientation = Lancer::LancerOrientation::LEFT;
+        	} else if (lancer_position.x < player_position.x) {
+        		lancer.orientation = Lancer::LancerOrientation::RIGHT;
+        	}
+
+        	if (distancia < 30.0f) {
+        		lancer_physics.velocity =
+	              -1.0f *
+	              glm::normalize(player_position -
+	                             lancer_transform.GetWorldPosition()) *
+	              lancerSpeed;
+        	} else if (distancia > 35.0f) {
+        		lancer_physics.velocity =
+	              1.0f *
+	              glm::normalize(player_position -
+	                             lancer_transform.GetWorldPosition()) *
+	              lancerSpeed;
+        	} else {
+        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        	}
+
+        	lancer.is_attacking = true;
+
+        	if (lancer.time_passed >= 10000.0f ) {
+        		lancer.time_passed = 0.0f;
+        		lancer.is_attacking = false;
+        	}
+        } else {
+        	lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        	lancer.is_attacking = false;
+        }
+    });
+}
+
+void LancerAnimationSystem::update(entityx::EntityManager &es,
+                            entityx::EventManager &events,
+                            entityx::TimeDelta dt) {
+  entityx::ComponentHandle<Lancer> lancer;
+  entityx::ComponentHandle<Transform> position_lancer;
+  entityx::ComponentHandle<Physics> physics_lancer;
+  entityx::ComponentHandle<SpriteAnimation> animation;
+  
+  std::string animToPlay;
+
+  for (entityx::Entity e0 : es.entities_with_components(
+           lancer, position_lancer, physics_lancer, animation)) {
+    
+  	if (lancer->is_attacking) {
+  		switch (lancer->orientation) {
+  			case Lancer::LancerOrientation::UP:
+  			animToPlay = "attack_top";
+  			break;
+  			case Lancer::LancerOrientation::DOWN:
+  			animToPlay = "attack_bottom";
+  			break;
+  			case Lancer::LancerOrientation::RIGHT:
+  			animToPlay = "attack_right";
+  			break;
+  			case Lancer::LancerOrientation::LEFT:
+  			animToPlay = "attack_left";
+  			break;
+  		}
+  	} else {
+  		switch (lancer->orientation) {
+  			case Lancer::LancerOrientation::UP:
+  			animToPlay = "moving_top";
+  			break;
+  			case Lancer::LancerOrientation::DOWN:
+  			animToPlay = "moving_bottom";
+  			break;
+  			case Lancer::LancerOrientation::RIGHT:
+  			animToPlay = "moving_right";
+  			break;
+  			case Lancer::LancerOrientation::LEFT:
+  			animToPlay = "moving_left";
+  			break;
+  		}
+  	}
+  	animation->Play(animToPlay);
+  }
+}

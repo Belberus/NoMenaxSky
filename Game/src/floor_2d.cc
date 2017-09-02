@@ -45,6 +45,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<ColliderRenderer>();
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
+  systems.add<LancerAttackSystem>();
   systems.add<ChestCollisionSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
@@ -73,6 +74,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   systems.update<KnightAttackSystem>(dt);
   systems.update<ChestCollisionSystem>(dt);
   systems.update<TurretAttackSystem>(dt);
+  systems.update<LancerAttackSystem>(dt);
   systems.update<HealthSystem>(dt);
   systems.update<ColorAnimator>(dt);
   systems.update<TilemapRenderer>(dt);

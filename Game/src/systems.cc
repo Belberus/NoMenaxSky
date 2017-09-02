@@ -700,7 +700,8 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       }
     	if(shield_info->time_passed >= 2000.0f) {
     		shield_info->time_passed = 0.0f;
-    		if (((shield_info->owner).component<Energy>()->energy += 20.0f) >= 100.0f) {
+    		float actual_energy = (shield_info->owner).component<Energy>()->energy;
+    		if ((actual_energy + 20.0f) >= 100.0f) {
     			(shield_info->owner).component<Energy>()->energy = 100.0f;
     		} else (shield_info->owner).component<Energy>()->energy += 20.0f;
     	}
@@ -1205,6 +1206,23 @@ void KnightAttackSystem::receive(const Collision &collision) {
     e0_manueleth->hits += 1;
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
+    // Lancero
+  } else if (e0_weapon && e0_weapon->drawn &&
+             e0_weapon->owner.component<Player>() &&
+             collision_copy.e1.component<Lancer>()) {
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/manueleth/default/hit.wav", false, 0.7f);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+  } else if (e1_weapon && e1_weapon->drawn &&
+             e1_weapon->owner.component<Player>() &&
+             collision_copy.e0.component<Lancer>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
   }
 }
 
@@ -1279,7 +1297,8 @@ void ShieldSystem::receive(const Collision &collision) {
   	auto e1_player = collision_copy.e1.component<Shield>()->owner;
     auto e1_energy = e1_player.component<Energy>();
     
-    if ((e1_energy->energy -= 10.0f) < 0.0f) {
+    float actual_energy = e1_energy->energy; 
+    if ((actual_energy - 10.0f) <= 0.0f) {
     	e1_energy->energy = 0.0f;
     	collision_copy.e1.component<Shield>()->active = false;
     } else e1_energy->energy -= 10.0f;
@@ -1295,7 +1314,9 @@ void ShieldSystem::receive(const Collision &collision) {
   } else if (e1_projectile && collision_copy.e0.component<Shield>()) {
     auto e0_player = collision_copy.e0.component<Shield>()->owner;
     auto e0_energy = e0_player.component<Energy>();
-    if ((e0_energy->energy -= 10.0f) < 0.0f) {
+    
+    float actual_energy = e0_energy->energy; 
+    if ((actual_energy - 10.0f) <= 0.0f) {
     	e0_energy->energy = 0.0f;
     	collision_copy.e0.component<Shield>()->active = false;
     } else e0_energy->energy -= 10.0f;
@@ -1354,6 +1375,21 @@ void HealthSystem::update(entityx::EntityManager &es,
           entity_legs.destroy();
         }
       });
+
+      es.each<LancerLegs, ParentLink>([&](entityx::Entity entity_legs,
+                                          LancerLegs &legs,
+                                          ParentLink &parent) {
+        if (parent.owner == entity) {
+          entity_legs.destroy();
+        }
+      });
+
+      es.each<LancerHitBox>(
+          [&](entityx::Entity entity_hitbox, LancerHitBox &lancer_hitbox) {
+            if (lancer_hitbox.owner == entity) {
+              entity_hitbox.destroy();
+            }
+          });
 
       es.each<GhostHitBox>(
           [&](entityx::Entity entity_hitbox, GhostHitBox &ghost_hitbox) {
@@ -1442,7 +1478,7 @@ void LancerWalkingSystem::update(entityx::EntityManager &es,
   }
 }
 
-const float LancerIaSystem::lancerSpeed = 90.0f;
+const float LancerIaSystem::lancerSpeed = 70.0f;
 
 void LancerIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
@@ -1464,15 +1500,16 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         lancer.time_passed += (dt * 1000.0f);
 
         if (lancer.time_passed >= 5000.0f) {
+        	lancer.is_attacking = true;
         	if (lancer_position.y >= player_position.y) {
         		lancer.orientation = Lancer::LancerOrientation::DOWN;
         	} else if (lancer_position.y < player_position.y) {
         		lancer.orientation = Lancer::LancerOrientation::UP;
-        	} else if (lancer_position.x >= player_position.x) {	
+        	} /*else if (lancer_position.x >= player_position.x) {	
         		lancer.orientation = Lancer::LancerOrientation::LEFT;
         	} else if (lancer_position.x < player_position.x) {
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
-        	}
+        	}*/
 
         	if (distancia < 30.0f) {
         		lancer_physics.velocity =
@@ -1490,15 +1527,27 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         	}
 
-        	lancer.is_attacking = true;
-
         	if (lancer.time_passed >= 10000.0f ) {
         		lancer.time_passed = 0.0f;
         		lancer.is_attacking = false;
         	}
         } else {
-        	lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         	lancer.is_attacking = false;
+        	if (distancia < 30.0f) {
+        		lancer_physics.velocity =
+	              -1.0f *
+	              glm::normalize(player_position -
+	                             lancer_transform.GetWorldPosition()) *
+	              10.0f;
+        	} else if (distancia > 35.0f) {
+        		lancer_physics.velocity =
+	              1.0f *
+	              glm::normalize(player_position -
+	                             lancer_transform.GetWorldPosition()) *
+	              10.0f;
+        	} else {
+        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        	}   	
         }
     });
 }
@@ -1515,7 +1564,6 @@ void LancerAnimationSystem::update(entityx::EntityManager &es,
 
   for (entityx::Entity e0 : es.entities_with_components(
            lancer, position_lancer, physics_lancer, animation)) {
-    
   	if (lancer->is_attacking) {
   		switch (lancer->orientation) {
   			case Lancer::LancerOrientation::UP:
@@ -1550,3 +1598,40 @@ void LancerAnimationSystem::update(entityx::EntityManager &es,
   	animation->Play(animToPlay);
   }
 }
+
+
+void LancerAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void LancerAttackSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<LancerHitBox>();
+  auto e1_projectile = collision_copy.e1.component<LancerHitBox>();
+
+  if (e0_projectile && collision_copy.e1.component<Player>() && (e0_projectile->owner).component<Lancer>()->is_attacking){
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+
+  } else if (e1_projectile && collision_copy.e0.component<Player>() && (e1_projectile->owner).component<Lancer>()->is_attacking) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+    e0_color_animation->Play();
+  } 
+}
+
+void LancerAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}

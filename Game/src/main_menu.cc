@@ -17,7 +17,7 @@ using namespace engine::core;
 
 MainMenu::MainMenu(engine::core::Scene* parent_scene)
     : parent_scene_(parent_scene) {
-  events.subscribe<StartGame>(*this);
+  events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
 
   // adding entities
@@ -78,8 +78,8 @@ void MainMenu::Update(entityx::TimeDelta dt) {
   systems.update<engine::systems::two_d::SpriteRenderer>(dt);
 }
 
-void MainMenu::receive(const StartGame& start_game) {
-  parent_scene_->events.emit<StartGame>(start_game);
+void MainMenu::receive(const CharSelect& char_select) {
+  parent_scene_->events.emit<CharSelect>(char_select);
 }
 
 void MainMenu::receive(const OptionMenu& option_menu) {

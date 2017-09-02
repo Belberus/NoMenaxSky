@@ -123,6 +123,13 @@ struct Player {
   // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
 };
 
+struct Characters{
+  enum Role { KNIGHT, WIZARD };
+  Role role;
+
+  Characters() : role(Role::KNIGHT) {}
+};
+
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
   enum AttackOrientation { ATK_UP, ATK_DOWN, ATK_RIGHT, ATK_LEFT};

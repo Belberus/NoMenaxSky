@@ -321,7 +321,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
     if (enter_pressed_) {
       switch (arrow_menu->option) {
         case ArrowMenu::Option::JUGAR:
-          events.emit<StartGame>();
+          events.emit<CharSelect>();
           break;
         case ArrowMenu::Option::OPCIONES:
           events.emit<OptionMenu>();

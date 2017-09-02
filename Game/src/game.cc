@@ -5,6 +5,8 @@
 #include "main_menu.h"
 #include "main_menu_background.h"
 #include "options_menu.h"
+#include "character_selection_menu.h"
+
 
 #include "floor_factory.h"
 #include "floor_factory_3d.h"
@@ -22,7 +24,8 @@ Game::Game()
   outfile << "1 1 1" << std::endl;
   outfile.close();
     
-  events.subscribe<StartGame>(*this);
+  //events.subscribe<StartGame>(*this);
+  events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
   events.subscribe<BackToMainMenu>(*this);
   scenes_.emplace_back(new MainMenuBackground());
@@ -43,6 +46,10 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kOptionsMenu:
         scenes_.pop_back();
         scenes_.push_back(std::make_unique<OptionsMenu>(this));
+        break;
+      case State::kCharSelMenu:
+        scenes_.pop_back();
+        scenes_.push_back(std::make_unique<CharacterSelectionMenu>(this));
         break;
       case State::kFloor1:
         Engine::GetInstance().Get<AudioManager>().StopAllSounds();
@@ -70,6 +77,8 @@ void Game::Update(entityx::TimeDelta dt) {
 
 void Game::receive(const StartGame& event) { next_state_ = State::kFloor1; }
 
-void Game::receive(const OptionMenu& event) {  next_state_ = State::kOptionsMenu; }
+void Game::receive(const CharSelect& event) { next_state_ = State::kCharSelMenu; }
+
+void Game::receive(const OptionMenu& event) { next_state_ = State::kOptionsMenu; }
 
 void Game::receive(const BackToMainMenu& event) {  next_state_ = State::kMainMenu; }

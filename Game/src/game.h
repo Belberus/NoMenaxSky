@@ -27,6 +27,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void receive(const StartGame &event);
   void receive(const OptionMenu &event);
   void receive(const BackToMainMenu &event);
+  void receive(const CharSelect &event);
 
  private:
   State current_state_;

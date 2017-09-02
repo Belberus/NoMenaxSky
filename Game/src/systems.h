@@ -216,6 +216,24 @@ class OptionsInputSystem : public entityx::System<OptionsInputSystem>,
   int fx;
 };
 
+// class SelectionInputSystem : public entityx::System<OptionsInputSystem>, 
+//                              public entityx::Receiver<OptionsInputSystem>{
+
+//   public:
+//     SelectionInputSystem();
+//     void update(entityx::EntityManager &es, entityx::EventManager &events,
+//               entityx::TimeDelta dt) override;
+
+//     void receive(const engine::events::KeyPressed &key_pressed);
+//     void receive(const engine::events::KeyReleased &key_released);
+
+//   private:
+//     bool selection_right_pressed_;
+//     bool selection_left_pressed_;
+
+
+// };
+
 class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
                           public entityx::Receiver<PlayerInputSystem> {
  public:

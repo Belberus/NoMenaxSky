@@ -24,8 +24,9 @@ struct MeleeWeapon {
 };
 
 struct Energy {
+  float init_nrg;
   float energy;
-  Energy(float energy) : energy(energy) {}
+  Energy(float energy, float init_nrg) : energy(energy), init_nrg(init_nrg) {}
 };
 
 struct KnightAttack {

@@ -22,6 +22,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   virtual void OnPlayerEnteringBossDoorWithoutKey() = 0;
   void receive(const engine::events::Collision &collision);
   void receive(const Health &health);
+  void receive(const Energy &energy);
 
  protected:
   class Room {

@@ -41,6 +41,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<ChestCollisionSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
+  systems.add<ShieldSystem>();
   // systems.add<IgnoreCollisionSystem>(&entities, &events);
   systems.configure();
 }
@@ -67,6 +68,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   systems.update<TilemapRenderer>(dt);
   systems.update<SpriteRenderer>(dt);
   systems.update<ColliderRenderer>(dt);
+  systems.update<ShieldSystem>(dt);
   // systems.update<IgnoreCollisionSystem>(dt);
 }
 

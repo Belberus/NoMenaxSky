@@ -13,11 +13,11 @@
 #include <engine/events/ignore_collision.h>
 #include <time.h>
 #include <cmath>
-#include "entity_factory.h"
+#include "entity_factory_2d.h"
 #include "events.h"
 
-#include <iostream>
 #include <string.h>
+#include <iostream>
 
 #include <GLFW/glfw3.h>
 
@@ -25,7 +25,6 @@ using namespace engine::core;
 using namespace engine::components::two_d;
 using namespace engine::components::common;
 using namespace engine::events;
-
 
 void KnightAnimationSystem::update(entityx::EntityManager &es,
                                    entityx::EventManager &events,
@@ -36,7 +35,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Player> player;
   std::string animToPlay;
 
-  //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
+  // auto soundEngine = Engine::GetInstance().Get<AudioManager>();
 
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack, player)) {
@@ -57,14 +56,12 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
     } else if (physics->velocity.x > 0) {
       animToPlay = "moving_right";
-      player->orientation = Player::Orientation::RIGHT;
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
       }
     } else if (physics->velocity.x < 0) {
       animToPlay = "moving_left";
-      player->orientation = Player::Orientation::LEFT;
 
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -72,7 +69,6 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
     } else if (physics->velocity.y > 0) {
       animToPlay = "moving_top";
-      player->orientation = Player::Orientation::UP;
 
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -80,7 +76,6 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
       }
     } else if (physics->velocity.y < 0) {
       animToPlay = "moving_bottom";
-      player->orientation = Player::Orientation::DOWN;
 
       if (timer2 == 0.0) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -265,7 +260,9 @@ void MenuInputSystem::receive(const KeyReleased &key_released) {
 }
 
 OptionsInputSystem::OptionsInputSystem()
-    : options_up_pressed_(false), options_down_pressed_(false), options_enter_pressed_(false) {
+    : options_up_pressed_(false),
+      options_down_pressed_(false),
+      options_enter_pressed_(false) {
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
@@ -273,11 +270,10 @@ OptionsInputSystem::OptionsInputSystem()
 void OptionsInputSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {
-
   entityx::ComponentHandle<ArrowOptions> arrow_options;
   entityx::ComponentHandle<Transform> position;
   entityx::ComponentHandle<GameOptions> opciones;
-  
+
   for (entityx::Entity entity :
        es.entities_with_components(arrow_options, position, opciones)) {
     auto new_position = position->GetLocalPosition();
@@ -291,12 +287,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           new_position.y += 70;
 
           if (opciones->modo == GameOptions::Modo::TWO_D &&
-              opciones->musica == GameOptions::Musica::MUSIC_OFF){
+              opciones->musica == GameOptions::Musica::MUSIC_OFF) {
             new_position.x -= 150;
           }
 
           if (opciones->modo == GameOptions::Modo::THREE_D &&
-              opciones->musica == GameOptions::Musica::MUSIC_ON){
+              opciones->musica == GameOptions::Musica::MUSIC_ON) {
             new_position.x += 150;
           }
 
@@ -306,12 +302,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           new_position.y += 70;
 
           if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
-              opciones->efectos == GameOptions::Efectos::FX_OFF){
+              opciones->efectos == GameOptions::Efectos::FX_OFF) {
             new_position.x -= 150;
           }
 
           if (opciones->musica == GameOptions::Musica::MUSIC_OFF &&
-              opciones->efectos == GameOptions::Efectos::FX_ON){
+              opciones->efectos == GameOptions::Efectos::FX_ON) {
             new_position.x += 150;
           }
 
@@ -320,7 +316,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::SALIR:
           new_position.y += 70;
 
-          if (opciones->efectos == GameOptions::Efectos::FX_OFF){
+          if (opciones->efectos == GameOptions::Efectos::FX_OFF) {
             new_position.x += 150;
           }
 
@@ -333,14 +329,14 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
       switch (arrow_options->option) {
         case ArrowOptions::Option::MODE:
           new_position.y -= 70;
-          
+
           if (opciones->modo == GameOptions::Modo::TWO_D &&
-              opciones->musica == GameOptions::Musica::MUSIC_OFF){
+              opciones->musica == GameOptions::Musica::MUSIC_OFF) {
             new_position.x += 150;
           }
 
           if (opciones->modo == GameOptions::Modo::THREE_D &&
-              opciones->musica == GameOptions::Musica::MUSIC_ON){
+              opciones->musica == GameOptions::Musica::MUSIC_ON) {
             new_position.x -= 150;
           }
 
@@ -348,14 +344,14 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           break;
         case ArrowOptions::Option::MUSIC_VOL:
           new_position.y -= 70;
-          
+
           if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
-              opciones->efectos == GameOptions::Efectos::FX_OFF){
+              opciones->efectos == GameOptions::Efectos::FX_OFF) {
             new_position.x += 150;
           }
 
           if (opciones->musica == GameOptions::Musica::MUSIC_OFF &&
-              opciones->efectos == GameOptions::Efectos::FX_ON){
+              opciones->efectos == GameOptions::Efectos::FX_ON) {
             new_position.x -= 150;
           }
 
@@ -364,7 +360,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::FX_VOL:
           new_position.y -= 70;
 
-          if (opciones->efectos == GameOptions::Efectos::FX_OFF){
+          if (opciones->efectos == GameOptions::Efectos::FX_OFF) {
             new_position.x -= 150;
           }
 
@@ -385,7 +381,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
 
               break;
             case GameOptions::Modo::THREE_D:
-              break; 
+              break;
           }
           break;
         case ArrowOptions::Option::MUSIC_VOL:
@@ -422,12 +418,12 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Modo::THREE_D:
               new_position.x -= 150;
               opciones->modo = GameOptions::Modo::TWO_D;
-              break; 
+              break;
           }
           break;
         case ArrowOptions::Option::MUSIC_VOL:
           switch (opciones->musica) {
-            case GameOptions::Musica::MUSIC_ON:             
+            case GameOptions::Musica::MUSIC_ON:
               break;
             case GameOptions::Musica::MUSIC_OFF:
               new_position.x -= 150;
@@ -437,7 +433,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           break;
         case ArrowOptions::Option::FX_VOL:
           switch (opciones->efectos) {
-            case GameOptions::Efectos::FX_ON:             
+            case GameOptions::Efectos::FX_ON:
               break;
             case GameOptions::Efectos::FX_OFF:
               new_position.x -= 150;
@@ -449,50 +445,50 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           break;
       }
     }
-     if (options_enter_pressed_) {
-       options_enter_pressed_ = false;
-       switch (arrow_options->option) {
-         case ArrowOptions::Option::MODE:
-    //       switch (opciones->modo) {
-    //         case GameOptions::Modo::TWO_D:
-    //           new_position.x += 250;
-    //           opciones->modo = GameOptions::Modo::THREE_D;
-    //           break;
-    //         case GameOptions::Modo::THREE_D:
-    //           new_position.x -= 250;
-    //           opciones->modo = GameOptions::Modo::TWO_D;
-    //           break; 
-    //       }
-           break;
-         case ArrowOptions::Option::MUSIC_VOL:
-    //       switch (opciones->musica) {
-    //         case GameOptions::Musica::MUSIC_ON:
-    //           new_position.x += 250;
-    //           opciones->musica = GameOptions::Musica::MUSIC_OFF;
-    //           break;
-    //         case GameOptions::Musica::MUSIC_OFF:
-    //           new_position.x -= 250;
-    //           opciones->musica = GameOptions::Musica::MUSIC_ON;
-    //           break;
-    //       }
-           break;
-         case ArrowOptions::Option::FX_VOL:
-    //       switch (opciones->efectos) {
-    //         case GameOptions::Efectos::FX_ON:
-    //           new_position.x += 250;
-    //           opciones->efectos = GameOptions::Efectos::FX_OFF;
-    //           break;
-    //         case GameOptions::Efectos::FX_OFF:
-    //           new_position.x -= 250;
-    //           opciones->efectos = GameOptions::Efectos::FX_ON;
-    //           break;
-    //       }
-           break;
-         case ArrowOptions::Option::SALIR:
-         // TO DO: volver al menu pricnipal
-           break;
-       }
-     }
+    if (options_enter_pressed_) {
+      options_enter_pressed_ = false;
+      switch (arrow_options->option) {
+        case ArrowOptions::Option::MODE:
+          //       switch (opciones->modo) {
+          //         case GameOptions::Modo::TWO_D:
+          //           new_position.x += 250;
+          //           opciones->modo = GameOptions::Modo::THREE_D;
+          //           break;
+          //         case GameOptions::Modo::THREE_D:
+          //           new_position.x -= 250;
+          //           opciones->modo = GameOptions::Modo::TWO_D;
+          //           break;
+          //       }
+          break;
+        case ArrowOptions::Option::MUSIC_VOL:
+          //       switch (opciones->musica) {
+          //         case GameOptions::Musica::MUSIC_ON:
+          //           new_position.x += 250;
+          //           opciones->musica = GameOptions::Musica::MUSIC_OFF;
+          //           break;
+          //         case GameOptions::Musica::MUSIC_OFF:
+          //           new_position.x -= 250;
+          //           opciones->musica = GameOptions::Musica::MUSIC_ON;
+          //           break;
+          //       }
+          break;
+        case ArrowOptions::Option::FX_VOL:
+          //       switch (opciones->efectos) {
+          //         case GameOptions::Efectos::FX_ON:
+          //           new_position.x += 250;
+          //           opciones->efectos = GameOptions::Efectos::FX_OFF;
+          //           break;
+          //         case GameOptions::Efectos::FX_OFF:
+          //           new_position.x -= 250;
+          //           opciones->efectos = GameOptions::Efectos::FX_ON;
+          //           break;
+          //       }
+          break;
+        case ArrowOptions::Option::SALIR:
+          // TO DO: volver al menu pricnipal
+          break;
+      }
+    }
     position->SetLocalPosition(new_position);
   }
 }
@@ -525,7 +521,7 @@ void OptionsInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
-const float PlayerInputSystem::kSpeed = 150.0f;
+const float PlayerInputSystem::kSpeed = 50.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
@@ -578,15 +574,19 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                                              KnightAttack &attack) {
     glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
     if (keys_[GLFW_KEY_W]) {
+      player.orientation = Player::Orientation::UP;
       new_velocity.y += 1.0f;
     }
     if (keys_[GLFW_KEY_S]) {
+      player.orientation = Player::Orientation::DOWN;
       new_velocity.y += -1.0f;
     }
     if (keys_[GLFW_KEY_A]) {
+      player.orientation = Player::Orientation::LEFT;
       new_velocity.x += -1.0f;
     }
     if (keys_[GLFW_KEY_D]) {
+      player.orientation = Player::Orientation::RIGHT;
       new_velocity.x += 1.0f;
     }
     if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
@@ -667,83 +667,88 @@ void TurretWalkingSystem::update(entityx::EntityManager &es,
 }
 
 void ManuelethAnimationSystem::update(entityx::EntityManager &es,
-                            entityx::EventManager &events,
-                            entityx::TimeDelta dt) {
+                                      entityx::EventManager &events,
+                                      entityx::TimeDelta dt) {
   entityx::ComponentHandle<Manueleth> manueleth;
   entityx::ComponentHandle<SpriteAnimation> animation;
   std::string animToPlay;
 
-  for (entityx::Entity e0 : es.entities_with_components(
-           manueleth, animation)) {
-  	switch (manueleth->comportamiento) {
-  		case (Manueleth::Comportamiento::NORMAL):
-  			animToPlay = "attacking";
-  		break;
-  		case (Manueleth::Comportamiento::PUSH):
-  			animToPlay = "pushing";
-  		break;
-  		case (Manueleth::Comportamiento::SPECIAL):
-  			animToPlay = "talking";
-  		break;
-  	}
-  	animation->Play(animToPlay); 
+  for (entityx::Entity e0 : es.entities_with_components(manueleth, animation)) {
+    switch (manueleth->comportamiento) {
+      case (Manueleth::Comportamiento::NORMAL):
+        animToPlay = "attacking";
+        break;
+      case (Manueleth::Comportamiento::PUSH):
+        animToPlay = "pushing";
+        break;
+      case (Manueleth::Comportamiento::SPECIAL):
+        animToPlay = "talking";
+        break;
+    }
+    animation->Play(animToPlay);
   }
 }
 
-
 void ManuelethIaSystem::update(entityx::EntityManager &es,
-                            entityx::EventManager &events,
-                            entityx::TimeDelta dt) {
+                               entityx::EventManager &events,
+                               entityx::TimeDelta dt) {
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         player_position = player_transform.GetWorldPosition();
-   });
+      });
   glm::vec3 manueleth_position;
   es.each<Manueleth, Transform>(
       [&](entityx::Entity entity, Manueleth &manueleth, Transform &transform) {
 
-      	manueleth.time_for_shooting += (dt * 1000.0f);
+        manueleth.time_for_shooting += (dt * 1000.0f);
 
-      	manueleth_position = transform.GetWorldPosition();
-      	const float distancia = std::sqrt(
+        manueleth_position = transform.GetWorldPosition();
+        const float distancia = std::sqrt(
             std::pow(std::abs(player_position.x - manueleth_position.x), 2) +
             std::pow(std::abs(player_position.y - manueleth_position.y), 2));
 
-      	if (distancia <= 30.0f) {
-      		if (manueleth.hits >= 3) {
-      			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
-      			std::cerr <<"Time to push back" << std::endl; 
-      			es.each<Player, Transform>(
-			      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
-			       glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 100.0f , manueleth_position.z);
-			       player_transform.SetLocalPosition(new_position);
-			   
-			   });
-      			manueleth.hits = 0;
-      		}
-      	} else {
-      		if (manueleth.time_for_shooting >= 2000.0f) {
-      		manueleth.comportamiento = Manueleth::Comportamiento::NORMAL;
+        if (distancia <= 30.0f) {
+          if (manueleth.hits >= 3) {
+            manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
+            std::cerr << "Time to push back" << std::endl;
+            es.each<Player, Transform>([&](entityx::Entity entity,
+                                           Player &player,
+                                           Transform &player_transform) {
+              glm::vec3 new_position(manueleth_position.x,
+                                     manueleth_position.y - 100.0f,
+                                     manueleth_position.z);
+              player_transform.SetLocalPosition(new_position);
 
-      		manueleth_position = transform.GetWorldPosition();
+            });
+            manueleth.hits = 0;
+          }
+        } else {
+          if (manueleth.time_for_shooting >= 2000.0f) {
+            manueleth.comportamiento = Manueleth::Comportamiento::NORMAL;
 
-            glm::vec3 vector_player_manueleth(player_position.x - manueleth_position.x, player_position.y - manueleth_position.y, 0.0f);
-	            glm::vec3 vector_manueleth_v(0.0f, 1.0f, 0.0f);
-	           
-	            float angle_rad = std::atan2(vector_player_manueleth.y - vector_manueleth_v.y, vector_player_manueleth.x - vector_manueleth_v.x);
+            manueleth_position = transform.GetWorldPosition();
 
-	            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-	            new_velocity = glm::normalize(player_position -
-	                             transform.GetWorldPosition()) *
-	              100.0f;
-	            
-	            EntityFactory::MakeEnemyProjectile(
-	                es, manueleth_position, angle_rad, new_velocity, "manueleth");
-	            manueleth.time_for_shooting = 0.0;
-	      	}
-      	}
-   });
+            glm::vec3 vector_player_manueleth(
+                player_position.x - manueleth_position.x,
+                player_position.y - manueleth_position.y, 0.0f);
+            glm::vec3 vector_manueleth_v(0.0f, 1.0f, 0.0f);
+
+            float angle_rad =
+                std::atan2(vector_player_manueleth.y - vector_manueleth_v.y,
+                           vector_player_manueleth.x - vector_manueleth_v.x);
+
+            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+            new_velocity =
+                glm::normalize(player_position - transform.GetWorldPosition()) *
+                100.0f;
+
+            EntityFactory2D().MakeEnemyProjectile(
+                es, manueleth_position, angle_rad, new_velocity, "manueleth");
+            manueleth.time_for_shooting = 0.0;
+          }
+        }
+      });
 }
 
 const float TurretIaSystem::turretSpeed = 10.0f;
@@ -760,88 +765,93 @@ void TurretIaSystem::update(entityx::EntityManager &es,
   // Comprobamos la distancia a la que esta, si esta a menos de X distancia se
   // movera y disparara (disminuyendo asi la precision)
   glm::vec3 turret_position;
-  es.each<Turret, Transform, Physics>(
-      [&](entityx::Entity entity, Turret &turret, Transform &turret_transform,
-          Physics &turret_physics) {
-        turret_position = turret_transform.GetWorldPosition();
-        const float distancia = std::sqrt(
-            std::pow(std::abs(player_position.x - turret_position.x), 2) +
-            std::pow(std::abs(player_position.y - turret_position.y), 2));
-        turret.time_passed += (dt * 250.0f);
+  es.each<Turret, Transform, Physics>([&](entityx::Entity entity,
+                                          Turret &turret,
+                                          Transform &turret_transform,
+                                          Physics &turret_physics) {
+    turret_position = turret_transform.GetWorldPosition();
+    const float distancia =
+        std::sqrt(std::pow(std::abs(player_position.x - turret_position.x), 2) +
+                  std::pow(std::abs(player_position.y - turret_position.y), 2));
+    turret.time_passed += (dt * 250.0f);
 
-        if (distancia < 50.0f) {
-          turret_physics.velocity =
-              -1.0f *
-              glm::normalize(player_position -
-                             turret_transform.GetWorldPosition()) *
-              turretSpeed;              
-        } else {
-	          turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	          
-	        if (turret.time_passed >= turret.frecuencia) {
-	            Engine::GetInstance().Get<AudioManager>().PlaySound(
-	                "assets/media/fx/turret/default/attack.wav", false, 1);
+    if (distancia < 50.0f) {
+      turret_physics.velocity =
+          -1.0f *
+          glm::normalize(player_position -
+                         turret_transform.GetWorldPosition()) *
+          turretSpeed;
+    } else {
+      turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	        	glm::vec3 vector_player_turret(player_position.x - turret_position.x, player_position.y - turret_position.y, 0.0f);
-	            glm::vec3 vector_turret_v(0.0f, 1.0f, 0.0f);
-	           
-	            float angle_rad = std::atan2(vector_player_turret.y - vector_turret_v.y, vector_player_turret.x - vector_turret_v.x);
+      if (turret.time_passed >= turret.frecuencia) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/turret/default/attack.wav", false, 1);
 
-	            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-	            new_velocity = glm::normalize(player_position -
-	                             turret_transform.GetWorldPosition()) *
-	              100.0f;
-	            
-	            EntityFactory::MakeEnemyProjectile(
-	                es, turret_position, angle_rad, new_velocity, "torreta");
-	            turret.time_passed = 0.0;
-	          }              
-	        }    
-      });
+        glm::vec3 vector_player_turret(player_position.x - turret_position.x,
+                                       player_position.y - turret_position.y,
+                                       0.0f);
+        glm::vec3 vector_turret_v(0.0f, 1.0f, 0.0f);
+
+        float angle_rad =
+            std::atan2(vector_player_turret.y - vector_turret_v.y,
+                       vector_player_turret.x - vector_turret_v.x);
+
+        glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+        new_velocity = glm::normalize(player_position -
+                                      turret_transform.GetWorldPosition()) *
+                       100.0f;
+
+        EntityFactory2D().MakeEnemyProjectile(es, turret_position, angle_rad,
+                                               new_velocity, "torreta");
+        turret.time_passed = 0.0;
+      }
+    }
+  });
 }
 
 void TrapIaSystem::update(entityx::EntityManager &es,
-                                             entityx::EventManager &events,
-                                             entityx::TimeDelta dt) {
-	glm::vec3 trap_position;
-	es.each<Trap, Transform>(
-      [&](entityx::Entity entity, Trap &trap, Transform &trap_transform) {
-        trap_position = trap_transform.GetWorldPosition();
-      
+                          entityx::EventManager &events,
+                          entityx::TimeDelta dt) {
+  glm::vec3 trap_position;
+  es.each<Trap, Transform>([&](entityx::Entity entity, Trap &trap,
+                               Transform &trap_transform) {
+    trap_position = trap_transform.GetWorldPosition();
 
-		trap.time_passed += (dt * 250.0f);
+    trap.time_passed += (dt * 250.0f);
 
-		if (trap.time_passed >= trap.frecuencia) {
-			Engine::GetInstance().Get<AudioManager>().PlaySound(
-	                "assets/media/fx/turret/default/attack.wav", false, 1);
-			glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-			switch(trap.orientation) {
-				case Trap::Orientation::UP :
-					EntityFactory::MakeEnemyProjectile(
-	                es, trap_position, 1.57, glm::vec3(0.0f, 100.0f, 0.0f), "trampa");
-				break;
-				case Trap::Orientation::DOWN :
-					EntityFactory::MakeEnemyProjectile(
-	                es, trap_position, -1.57, glm::vec3(0.0f, -100.0f, 0.0f), "trampa");
-				break;
-				case Trap::Orientation::LEFT :
-					EntityFactory::MakeEnemyProjectile(
-	                es, trap_position, -3.14, glm::vec3(-100.0f, 0.0f, 0.0f), "trampa");
-				break;
-				case Trap::Orientation::RIGHT :
-					EntityFactory::MakeEnemyProjectile(
-	                es, trap_position, 0.0, glm::vec3(100.0f, 0.0f, 0.0f), "trampa");
-				break;
-			}
-			trap.time_passed = 0.0;
-		}
-	});
-
+    if (trap.time_passed >= trap.frecuencia) {
+      Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/fx/turret/default/attack.wav", false, 1);
+      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+      switch (trap.orientation) {
+        case Trap::Orientation::UP:
+          EntityFactory2D().MakeEnemyProjectile(
+              es, trap_position, 1.57, glm::vec3(0.0f, 100.0f, 0.0f), "trampa");
+          break;
+        case Trap::Orientation::DOWN:
+          EntityFactory2D().MakeEnemyProjectile(es, trap_position, -1.57,
+                                                 glm::vec3(0.0f, -100.0f, 0.0f),
+                                                 "trampa");
+          break;
+        case Trap::Orientation::LEFT:
+          EntityFactory2D().MakeEnemyProjectile(es, trap_position, -3.14,
+                                                 glm::vec3(-100.0f, 0.0f, 0.0f),
+                                                 "trampa");
+          break;
+        case Trap::Orientation::RIGHT:
+          EntityFactory2D().MakeEnemyProjectile(
+              es, trap_position, 0.0, glm::vec3(100.0f, 0.0f, 0.0f), "trampa");
+          break;
+      }
+      trap.time_passed = 0.0;
+    }
+  });
 }
 
 void EnemyProjectileAnimationSystem::update(entityx::EntityManager &es,
-                                             entityx::EventManager &events,
-                                             entityx::TimeDelta dt) {
+                                            entityx::EventManager &events,
+                                            entityx::TimeDelta dt) {
   entityx::ComponentHandle<SpriteAnimation> animation;
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<EnemyProjectile> enemyProjectile;
@@ -1045,7 +1055,7 @@ void KnightAttackSystem::receive(const Collision &collision) {
              collision_copy.e0.component<Manueleth>()) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
-	auto e0_manueleth = collision_copy.e0.component<Manueleth>();
+    auto e0_manueleth = collision_copy.e0.component<Manueleth>();
     e0_manueleth->hits += 1;
     std::cerr << "Hit" << std::endl;
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
@@ -1112,8 +1122,8 @@ void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
                           entityx::TimeDelta dt) {
   es.each<Health>([&](entityx::Entity entity, Health &health) {
-    if(entity.component<Player>()){
-      if(lastPlayerHP != health.hp && health.hp != health.init_hp){
+    if (entity.component<Player>()) {
+      if (lastPlayerHP != health.hp && health.hp != health.init_hp) {
         events.emit<Health>(health);
         lastPlayerHP = health.hp;
       }
@@ -1147,9 +1157,8 @@ void HealthSystem::update(entityx::EntityManager &es,
 }
 
 void ChestCollisionSystem::configure(entityx::EventManager &event_manager) {
-	event_manager.subscribe<Collision>(*this);
+  event_manager.subscribe<Collision>(*this);
 }
-
 
 void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
   auto collision_copy = collision;
@@ -1160,29 +1169,30 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
   auto e1_player = collision_copy.e1.component<Player>();
 
   if (e0_player && collision_copy.e1.component<Chest>()) {
-  	auto chest = collision_copy.e1.component<Chest>();
-  	if (chest->key == true) {
-  		// Mensaje de que has encontrado la llave, actualizar GUI con la imagen de la llave
-  		e0_player->key = true;
-  		std::cerr << "has encontrado la llave" << std::endl;
-  	} else {
-  		// Mensaje de que la llave esta en otro cofre
-  		std::cerr << "la llave esta en otro cofre" << std::endl;
-  	}
+    auto chest = collision_copy.e1.component<Chest>();
+    if (chest->key == true) {
+      // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
+      // la llave
+      e0_player->key = true;
+      std::cerr << "has encontrado la llave" << std::endl;
+    } else {
+      // Mensaje de que la llave esta en otro cofre
+      std::cerr << "la llave esta en otro cofre" << std::endl;
+    }
   } else if (e1_player && collision_copy.e0.component<Chest>()) {
-  	auto chest = collision_copy.e0.component<Chest>();
-  	if (chest->key == true) {
-  		// Mensaje de que has encontrado la llave, actualizar GUI con la imagen de la llave
-  		e1_player->key = true;
-  		std::cerr << "has encontrado la llave" << std::endl;
-  	} else {
-  		// Mensaje de que la llave esta en otro cofre
-  		std::cerr << "la llave esta en otro cofre" << std::endl;
-  	}
-  }  
+    auto chest = collision_copy.e0.component<Chest>();
+    if (chest->key == true) {
+      // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
+      // la llave
+      e1_player->key = true;
+      std::cerr << "has encontrado la llave" << std::endl;
+    } else {
+      // Mensaje de que la llave esta en otro cofre
+      std::cerr << "la llave esta en otro cofre" << std::endl;
+    }
+  }
 }
 
-
 void ChestCollisionSystem::update(entityx::EntityManager &es,
-                                entityx::EventManager &events,
-                                entityx::TimeDelta dt) {}
+                                  entityx::EventManager &events,
+                                  entityx::TimeDelta dt) {}

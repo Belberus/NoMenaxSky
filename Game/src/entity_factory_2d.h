@@ -1,9 +1,10 @@
-#ifndef ENTITY_FACTORY_3D_H_
-#define ENTITY_FACTORY_3D_H_
+#ifndef ENTITY_FACTORY_2D_H_
+#define ENTITY_FACTORY_2D_H_
 
 #include "entity_factory.h"
 
-struct EntityFactory3D : public EntityFactory {
+struct EntityFactory2D : public EntityFactory {
+ public:
   std::vector<entityx::Entity> MakeKnight(entityx::EntityManager &entities,
                                           const glm::vec3 &position) override;
 
@@ -27,4 +28,4 @@ struct EntityFactory3D : public EntityFactory {
       const float &rotation, const glm::vec3 &velocity,
       const std::string &type) override;
 };
-#endif  // ENTITY_FACTORY_3D_H_
+#endif  // ENTITY_FACTORY_2D_H_

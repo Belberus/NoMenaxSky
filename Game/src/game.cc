@@ -7,7 +7,6 @@
 #include "options_menu.h"
 
 #include "floor_factory.h"
-#include "floor_factory_3d.h"
 
 using namespace engine::core;
 
@@ -35,9 +34,10 @@ void Game::Update(entityx::TimeDelta dt) {
         // Engine::GetInstance().Get<AudioManager>().
         //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
         scenes_.clear();
-        // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
+        // scenes_.push_back(
+        //    FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
         scenes_.push_back(
-            FloorFactory::MakeFloor1("assets/castle/floor1.tmx", this));
+            FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
         scenes_.push_back(std::make_unique<GameUi>(this));
         break;
       case State::kExit:

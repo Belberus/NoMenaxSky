@@ -34,13 +34,40 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<KnightAttack> attack;
   entityx::ComponentHandle<Player> player;
+  entityx::ComponentHandle<Shield> shield;
   std::string animToPlay;
 
-  //auto soundEngine = Engine::GetInstance().Get<AudioManager>();
+  entityx::Entity player_entity;
+  for (auto e : es.entities_with_components<Player>()) {
+    player_entity = e;
+  }
 
+  for (entityx::Entity e0 :
+       es.entities_with_components(shield)) {
+  	if (shield->owner == player_entity) {
+  		break;
+  	}
+  }
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack, player)) {
-    if (attack->is_attacking) {
+    if(shield->active) {
+    	Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/warrior/alt.wav", false, 1);
+    	switch (shield->orientation) {
+        case Shield::Orientation::UP:
+          animToPlay = "defend_top";
+          break;
+        case Shield::Orientation::DOWN:
+          animToPlay = "defend_bottom";
+          break;
+        case Shield::Orientation::LEFT:
+          animToPlay = "defend_left";
+          break;
+        case Shield::Orientation::RIGHT:
+          animToPlay = "defend_right";
+          break;
+      }
+    } else if (attack->is_attacking) {
       switch (attack->orientation) {
         case KnightAttack::Orientation::UP:
           animToPlay = "attack_top";
@@ -525,7 +552,7 @@ void OptionsInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
-const float PlayerInputSystem::kSpeed = 150.0f;
+const float PlayerInputSystem::kSpeed = 140.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
@@ -539,6 +566,7 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_DOWN, false);
   keys_.emplace(GLFW_KEY_LEFT, false);
   keys_.emplace(GLFW_KEY_RIGHT, false);
+  keys_.emplace(GLFW_KEY_SPACE, false);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
@@ -573,6 +601,16 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
   }
 
+  entityx::ComponentHandle<Transform> shield_transform;
+  entityx::ComponentHandle<Shield> shield_info;
+  entityx::ComponentHandle<AABBCollider> shield_collider;
+  for (auto e : es.entities_with_components(shield_transform, shield_info,
+                                            shield_collider)) {
+    if (shield_info->owner == player_entity) {
+      break;
+    }
+  }
+
   es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
                                              Player &player, Physics &physics,
                                              KnightAttack &attack) {
@@ -594,40 +632,111 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
       // play sound
     }
     physics.velocity = new_velocity;
-
-    weapon_info->drawn = false;
+    shield_info->time_passed += (dt * 1000.0f);
     time_passed_since_last_attack_ += (dt * 1000.0f);
-    if (time_passed_since_last_attack_ >= PlayerInputSystem::kAttackDuration) {
-      time_passed_since_last_attack_ = 0.0f;
-      attack.is_attacking = true;
-      weapon_info->drawn = true;
-      // HACK: dont harcode the weapon info
-      // use actual player width, height and transform to position the weapon
-      if (keys_[GLFW_KEY_UP]) {
-        attack.orientation = KnightAttack::Orientation::UP;
-        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-        weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
-      } else if (keys_[GLFW_KEY_DOWN]) {
-        attack.orientation = KnightAttack::Orientation::DOWN;
-        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-        weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
-      } else if (keys_[GLFW_KEY_LEFT]) {
-        attack.orientation = KnightAttack::Orientation::LEFT;
-        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-        weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
-      } else if (keys_[GLFW_KEY_RIGHT]) {
-        attack.orientation = KnightAttack::Orientation::RIGHT;
-        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-        weapon_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
-      } else {
-        attack.is_attacking = false;
-        weapon_info->drawn = false;
-      }
+    if (keys_[GLFW_KEY_SPACE]) {
+    	if (keys_[GLFW_KEY_UP]) {
+    		shield_info->active = true;
+	        shield_info->orientation = Shield::Orientation::UP;
+	        shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+	        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+	      } else if (keys_[GLFW_KEY_DOWN]) {
+	      	shield_info->active = true;
+	        shield_info->orientation = Shield::Orientation::DOWN;
+	        shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+	        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+	      } else if (keys_[GLFW_KEY_LEFT]) {
+	      	shield_info->active = true;
+	        shield_info->orientation = Shield::Orientation::LEFT;
+	        shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+	        shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+	      } else if (keys_[GLFW_KEY_RIGHT]) {
+	      	shield_info->active = true;
+	        shield_info->orientation = Shield::Orientation::RIGHT;
+	        shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+	        shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+	      } else {
+	        shield_info->active = false;
+	        weapon_info->drawn = false;
+	        attack.is_attacking = false;
+	      }
+    } else {
+    	if(shield_info->time_passed >= 2000.0f) {
+    		shield_info->time_passed = 0.0f;
+    		if (((shield_info->owner).component<Energy>()->energy += 30.0f) > 100.0f) {
+    			(shield_info->owner).component<Energy>()->energy = 100.0f;
+    		} else (shield_info->owner).component<Energy>()->energy += 30.0f;
+    	}
+    	shield_info->active = false;
+    	weapon_info->drawn = false;  
+	    if (time_passed_since_last_attack_ >= PlayerInputSystem::kAttackDuration) {
+	      time_passed_since_last_attack_ = 0.0f;
+	      attack.is_attacking = true;
+	      weapon_info->drawn = true;
+	      // HACK: dont harcode the weapon info
+	      // use actual player width, height and transform to position the weapon
+	      if (keys_[GLFW_KEY_UP]) {
+	      	if (keys_[GLFW_KEY_SPACE]) {
+	      		attack.is_attacking = false;
+	        	weapon_info->drawn = false;
+	        	shield_info->active = true;
+	        	shield_info->orientation = Shield::Orientation::UP;
+		        shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+		        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+	      	} else {
+	      		attack.orientation = KnightAttack::Orientation::UP;	
+		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+	      	}       
+	      } else if (keys_[GLFW_KEY_DOWN]) {
+	      	if (keys_[GLFW_KEY_SPACE]) {
+	      		attack.is_attacking = false;
+	        	weapon_info->drawn = false;
+	        	shield_info->active = true;
+	        	shield_info->orientation = Shield::Orientation::DOWN;
+	        	shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+	        	shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+	      	} else {
+	      		attack.orientation = KnightAttack::Orientation::DOWN;
+		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+	      	}  
+	      } else if (keys_[GLFW_KEY_LEFT]) {
+	      	if (keys_[GLFW_KEY_SPACE]) {
+	      		attack.is_attacking = false;
+	        	weapon_info->drawn = false;
+	        	shield_info->active = true;
+	        	shield_info->orientation = Shield::Orientation::LEFT;
+	        	shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+	        	shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+	      	} else {
+	      		attack.orientation = KnightAttack::Orientation::LEFT;
+		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+		        weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+	      	}   
+	      } else if (keys_[GLFW_KEY_RIGHT]) {
+	      	if (keys_[GLFW_KEY_SPACE]) {
+	      		attack.is_attacking = false;
+	        	weapon_info->drawn = false;
+	        	shield_info->active = true;
+	        	shield_info->orientation = Shield::Orientation::RIGHT;
+	        	shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+	        	shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+	      	} else {
+	      		attack.orientation = KnightAttack::Orientation::RIGHT;
+		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+		        weapon_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+	      	}	        
+	      } else {
+	        attack.is_attacking = false;
+	        weapon_info->drawn = false;
+	      }
 
-      if (attack.is_attacking) {
-        // play sound
-      }
-    }
+	      if (attack.is_attacking) {
+	        // play sound
+	      }
+	    }  	
+    }   
   });
 }
 
@@ -694,6 +803,9 @@ void ManuelethAnimationSystem::update(entityx::EntityManager &es,
 void ManuelethIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
+  entityx::ComponentHandle<Player> p;
+  entityx::ComponentHandle<Transform> t;
+
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
@@ -710,20 +822,20 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
             std::pow(std::abs(player_position.x - manueleth_position.x), 2) +
             std::pow(std::abs(player_position.y - manueleth_position.y), 2));
 
-      	if (distancia <= 30.0f) {
+      	if (distancia <= 45.0f) {
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
-      			std::cerr <<"Time to push back" << std::endl; 
-      			es.each<Player, Transform>(
-			      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
-			       glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 100.0f , manueleth_position.z);
-			       player_transform.SetLocalPosition(new_position);
-			   
-			   });
+
+      			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 160.0f , manueleth_position.z);
+
+      			 for (entityx::Entity e0 : es.entities_with_components(
+           			p, t)) {
+      			 	t->SetLocalPosition(new_position);
+      			 }
       			manueleth.hits = 0;
       		}
       	} else {
-      		if (manueleth.time_for_shooting >= 2000.0f) {
+      		if (manueleth.time_for_shooting >= 1000.0f) {
       		manueleth.comportamiento = Manueleth::Comportamiento::NORMAL;
 
       		manueleth_position = transform.GetWorldPosition();
@@ -1047,7 +1159,6 @@ void KnightAttackSystem::receive(const Collision &collision) {
     e0_health->hp -= e1_weapon->damage;
 	auto e0_manueleth = collision_copy.e0.component<Manueleth>();
     e0_manueleth->hits += 1;
-    std::cerr << "Hit" << std::endl;
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   }
@@ -1104,6 +1215,56 @@ void TurretAttackSystem::receive(const Collision &collision) {
 }
 
 void TurretAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}
+
+void ShieldSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+// TODO: BAJADA DE ENERGIA AL COLISIONAR Y SUBIDA DE ENERGIA AL NO COLISIONAR
+void ShieldSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<EnemyProjectile>();
+  auto e1_projectile = collision_copy.e1.component<EnemyProjectile>();
+
+  if (e0_projectile && collision_copy.e1.component<Shield>()) {
+  	auto e1_player = collision_copy.e1.component<Shield>()->owner;
+    auto e1_energy = e1_player.component<Energy>();
+    
+    if ((e1_energy->energy -= 10.0f) < 0.0f) {
+    	e1_energy->energy = 0.0f;
+    } else e1_energy->energy -= 10.0f;
+
+    entityx::Entity proyectil = collision.e0;
+    proyectil.destroy();
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/warrior/alt_hit.wav", false, 1); // Sonido de bloqueo
+    /*auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();*/
+
+  } else if (e1_projectile && collision_copy.e0.component<Shield>()) {
+    auto e0_player = collision_copy.e0.component<Shield>()->owner;
+    auto e0_energy = e0_player.component<Energy>();
+    if ((e0_energy->energy -= 10.0f) < 0.0f) {
+    	e0_energy->energy = 0.0f;
+    } else e0_energy->energy -= 10.0f;
+
+    entityx::Entity proyectil = collision.e1;
+    proyectil.destroy();
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/warrior/alt_hit.wav", false, 1);	// Sonido de bloqueo
+    /*auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+    e0_color_animation->Play();*/
+  } 
+}
+
+void ShieldSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}
 

@@ -110,6 +110,14 @@ public:
               entityx::TimeDelta dt) override;
 };
 
+class ShieldSystem : public entityx::System<ShieldSystem>,
+                           public entityx::Receiver<ShieldSystem> {
+public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
 
 class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
                            public entityx::Receiver<TurretAttackSystem> {

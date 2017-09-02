@@ -39,6 +39,7 @@ Floor::Floor() {
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
   systems.add<ChestCollisionSystem>();
+  systems.add<ShieldSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
   //systems.add<IgnoreCollisionSystem>(&entities, &events);
@@ -64,6 +65,7 @@ void Floor::Update(entityx::TimeDelta dt) {
   systems.update<KnightAttackSystem>(dt);
   systems.update<ChestCollisionSystem>(dt);
   systems.update<TurretAttackSystem>(dt);
+  systems.update<ShieldSystem>(dt);
   systems.update<HealthSystem>(dt);
   systems.update<ColorAnimator>(dt);
   systems.update<TilemapRenderer>(dt);
@@ -195,9 +197,7 @@ bool Floor::IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
 
 bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
                                       entityx::Entity door) {
-  /*auto crossing_entity_velocity =
-      crossing_entity.component<engine::components::common::Physics>()
-          ->velocity; */
+  
   Player::Orientation crossing_entity_orientation =
       crossing_entity.component<Player>()->orientation;
   auto door_component = *door.component<Door>();

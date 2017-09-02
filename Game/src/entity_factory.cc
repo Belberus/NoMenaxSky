@@ -28,6 +28,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Health>(200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Energy>(100.0f);
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -156,6 +157,23 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   weapon_cmp.drawn = false;
   sword_hitbox.assign<MeleeWeapon>(weapon_cmp);
   entities_created.push_back(sword_hitbox);
+
+  // adding shield entity
+  auto shield = entities.create();
+  shield.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
+                                 player.component<Transform>().get());
+  shield.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                    glm::vec2(8.0f, 3.0f), true);
+  shield.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+  shield.assign<Shield>(player);
+  /*
+  std::vector<ColorAnimation::KeyFrame> color_frames_shield;
+  color_frames_shield.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+  color_frames_shield.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+  shield.assign<ColorAnimation>(std::move(color_frames_shield));*/
+
+  entities_created.push_back(shield);
+
   return entities_created;
 }
 
@@ -172,7 +190,7 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   ghost.assign<ColorAnimation>(std::move(color_frames));
   ghost.assign<Ghost>();
-  ghost.assign<Health>(20.0f, "assets/media/fx/ghost/default/death.wav");
+  ghost.assign<Health>(10.0f, "assets/media/fx/ghost/default/death.wav");
   
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));

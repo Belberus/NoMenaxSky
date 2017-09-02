@@ -90,6 +90,10 @@ class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
   public:
     void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+
+  private:
+    float timer;
+    float timer2;
 };
 
 class LancerIaSystem : public entityx::System<LancerIaSystem> {

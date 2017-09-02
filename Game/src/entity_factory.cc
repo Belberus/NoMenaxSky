@@ -185,7 +185,7 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
     lancer.assign<Transform>(position);
     lancer.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(5, 10)); // VERIFICAR
     lancer.assign<Physics>(glm::vec3(0, 0, 0));
-     std::vector<ColorAnimation::KeyFrame> color_frames;
+    std::vector<ColorAnimation::KeyFrame> color_frames;
     color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
     color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     lancer.assign<ColorAnimation>(std::move(color_frames));
@@ -315,7 +315,6 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   ghost.assign<ColorAnimation>(std::move(color_frames));
   ghost.assign<Ghost>();
   ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
-
   
   std::vector<engine::utils::Rectangle> moving_bottom;
   moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(8, 13));

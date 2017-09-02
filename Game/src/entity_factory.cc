@@ -219,7 +219,7 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
 
     std::vector<engine::utils::Rectangle> moving;
     moving.emplace_back(glm::vec2(32, 32), glm::vec2(25, 25));
-    moving.emplace_back(glm::vec2(32, 61), glm::vec2(25, 25));
+    moving.emplace_back(glm::vec2(61, 32), glm::vec2(25, 25));
 
     std::vector<engine::utils::Rectangle> stand;
     stand.emplace_back(glm::vec2(3, 32), glm::vec2(25, 25));
@@ -283,9 +283,9 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
     lanc_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                    lancer.component<Transform>().get());
     lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                      glm::vec2(25.0f, 25.0f), true);
+                                      glm::vec2(11.0f, 11.0f), true);
     lanc_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
-    lanc_hitbox.assign<LancerHitBox>(10.0f, lancer); 
+    lanc_hitbox.assign<LancerHitBox>(2.0f, lancer); 
     entities_created.push_back(lanc_hitbox);
 
     return entities_created;

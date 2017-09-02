@@ -133,7 +133,7 @@ struct Lancer {
   LancerOrientation orientation;
 
   Lancer()
-      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(0.0f) {}
+      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
 };
 
 struct LancerHitBox {

@@ -232,6 +232,14 @@ class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class LancerAttackSystem : public entityx::System<LancerAttackSystem>,
+                           public entityx::Receiver<LancerAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
 
 
 

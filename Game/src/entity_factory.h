@@ -22,6 +22,9 @@ class EntityFactory {
   static std::vector<entityx::Entity> MakeManueleth(
       entityx::EntityManager &entities, const glm::vec3 &position);
 
+  static std::vector<entityx::Entity> MakeLancer(
+      entityx::EntityManager &entities, const glm::vec3 &position);
+
   static std::vector<entityx::Entity> MakeEnemyProjectile(
       entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type);
 };

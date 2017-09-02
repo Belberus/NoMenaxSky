@@ -150,6 +150,10 @@ struct Manueleth {
   	int hits;
 };
 
+struct Lancer {
+  Lancer();
+};
+
 struct Chest {
 	Chest(bool key) : key(key) {}
 	bool key;

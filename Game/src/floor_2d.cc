@@ -10,10 +10,14 @@
 #include <engine/systems/two_d/sprite_renderer.h>
 #include <engine/systems/two_d/tilemap_renderer.h>
 
+#include <engine/core/audio_manager.h>
+#include <engine/core/engine.h>
+
 #include "components.h"
 #include "floor.h"
 #include "systems.h"
 
+using namespace engine::core;
 using namespace engine::systems::two_d;
 using namespace engine::events;
 using namespace engine::components::two_d;
@@ -72,7 +76,9 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   // systems.update<IgnoreCollisionSystem>(dt);
 }
 
+bool once2 = false;
 void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
+  once2 = false;
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {
         glm::vec3 next_pos = transform.GetLocalPosition();
@@ -124,6 +130,12 @@ void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
 }
 
 void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
+  if(!once2){
+    once2 = true;
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/fx/defaults/boss_door.wav", false, 0.4f);
+  }
+  
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {
         glm::vec3 next_pos = transform.GetLocalPosition();

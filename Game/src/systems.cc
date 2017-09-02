@@ -692,7 +692,12 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        weapon_info->drawn = false;
 	        attack.is_attacking = false;
 	      }
-    } else {
+    } 
+    else {
+      if(shield_info->owner.component<Energy>()->energy <= 0.0f){
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/low_nrg.wav", false, 0.5f);
+      }
     	if(shield_info->time_passed >= 2000.0f) {
     		shield_info->time_passed = 0.0f;
     		if (((shield_info->owner).component<Energy>()->energy += 20.0f) >= 100.0f) {

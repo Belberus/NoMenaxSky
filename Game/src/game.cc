@@ -45,7 +45,7 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<OptionsMenu>(this));
         break;
       case State::kFloor1:
-        Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+        Engine::GetInstance().Get<AudioManager>().StopMusic();
         // Engine::GetInstance().Get<AudioManager>().
         //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
         scenes_.clear();

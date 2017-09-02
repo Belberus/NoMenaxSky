@@ -692,7 +692,12 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        weapon_info->drawn = false;
 	        attack.is_attacking = false;
 	      }
-    } else {
+    } 
+    else {
+      if(shield_info->owner.component<Energy>()->energy <= 0.0f){
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/low_nrg.wav", false, 0.5f);
+      }
     	if(shield_info->time_passed >= 2000.0f) {
     		shield_info->time_passed = 0.0f;
     		float actual_energy = (shield_info->owner).component<Energy>()->energy;
@@ -858,12 +863,14 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
       	if (distancia <= 45.0f) {
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
-
+            Engine::GetInstance().Get<AudioManager>().PlaySound(
+              "assets/media/fx/manueleth/default/shockwave.wav", false, 1);
       			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 160.0f , manueleth_position.z);
 
       			 for (entityx::Entity e0 : es.entities_with_components(
            			p, t)) {
       			 	t->SetLocalPosition(new_position);
+
       			 }
       			manueleth.hits = 0;
       		}
@@ -886,6 +893,9 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 	            EntityFactory::MakeEnemyProjectile(
 	                es, manueleth_position, angle_rad, new_velocity, "manueleth");
 	            manueleth.time_for_shooting = 0.0;
+
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+              "assets/media/fx/manueleth/default/attack.wav", false, 0.8f);
 	      	}
       	}
    });
@@ -1181,7 +1191,7 @@ void KnightAttackSystem::receive(const Collision &collision) {
     auto e1_manueleth = collision_copy.e1.component<Manueleth>();
     e1_manueleth->hits += 1;
     Engine::GetInstance().Get<AudioManager>().PlaySound(
-        "assets/media/fx/manueleth/default/hit.wav", false, 0.7f);
+        "assets/media/fx/manueleth/default/hit.wav", false, 0.5f);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&

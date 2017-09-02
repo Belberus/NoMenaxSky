@@ -4,6 +4,7 @@
 #include <engine/components/common/transform.h>
 #include <engine/components/two_d/sprite_animation.h>
 #include <engine/components/two_d/sprite.h>
+#include <engine/core/audio_manager.h>
 #include <engine/components/two_d/texture.h>
 #include <engine/core/engine.h>
 #include <engine/core/resource_manager.h>
@@ -89,8 +90,16 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
   file.close();
 
   if (!modo) opciones_iniciales.modo = GameOptions::Modo::THREE_D;
-  if (!musica) opciones_iniciales.musica = GameOptions::Musica::MUSIC_OFF;
-  if (!efectos) opciones_iniciales.efectos = GameOptions::Efectos::FX_OFF;
+  if (!musica){
+    opciones_iniciales.musica = GameOptions::Musica::MUSIC_OFF;
+    Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(0.0f);
+  } 
+  else Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
+  if (!efectos){
+    opciones_iniciales.efectos = GameOptions::Efectos::FX_OFF;
+    Engine::GetInstance().Get<AudioManager>().SetVolumeFX(0.0f);
+  } 
+  else Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
 
   std::shared_ptr<Texture> tex2 = nullptr;
 
@@ -131,11 +140,13 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
       "assets/option_menu/on_seleccionado.png");
     tex2 = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/off_noseleccionado.png");
+    Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
   } else {
     tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/on_noseleccionado.png");
     tex2 = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/off_seleccionado.png");
+    Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(0.0f);
   }
 
   
@@ -157,11 +168,13 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
       "assets/option_menu/on_seleccionado.png");
     tex2 = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/off_noseleccionado.png");
+    Engine::GetInstance().Get<AudioManager>().SetVolumeFX(1);
   } else {
     tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/on_noseleccionado.png");
     tex2 = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/off_seleccionado.png");
+    Engine::GetInstance().Get<AudioManager>().SetVolumeFX(0.0f);
   }
  
   option_on_fx.assign<Sprite>(tex);
@@ -254,12 +267,14 @@ void OptionsMenu::Update( entityx::TimeDelta dt) {
         entities.entities_with_components(sprite, music_on)){
         e2.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/on_seleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
       }
 
       for (entityx::Entity e3 :
         entities.entities_with_components(sprite, music_off)){
         e3.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/off_noseleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
       }
       
       musica = 1;
@@ -270,12 +285,14 @@ void OptionsMenu::Update( entityx::TimeDelta dt) {
         entities.entities_with_components(sprite, music_on)){
         e2.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/on_noseleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(0.0f);
       }
 
       for (entityx::Entity e3 :
         entities.entities_with_components(sprite, music_off)){
         e3.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/off_seleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(0.0f);
       }
       
       musica = 0;
@@ -286,12 +303,14 @@ void OptionsMenu::Update( entityx::TimeDelta dt) {
         entities.entities_with_components(sprite, fx_on)){
         e2.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/on_seleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeFX(1);
       }
 
       for (entityx::Entity e3 :
         entities.entities_with_components(sprite, fx_off)){
         e3.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/off_noseleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeFX(1);
       }
       
       efectos = 1;
@@ -302,12 +321,14 @@ void OptionsMenu::Update( entityx::TimeDelta dt) {
         entities.entities_with_components(sprite, fx_on)){
         e2.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/on_noseleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeFX(0.0f);
       }
 
       for (entityx::Entity e3 :
         entities.entities_with_components(sprite, fx_off)){
         e3.replace<Sprite>(Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
                     "assets/option_menu/off_seleccionado.png"));
+        Engine::GetInstance().Get<AudioManager>().SetVolumeFX(0.0f);
       }
       
       efectos = 0;

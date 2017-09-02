@@ -7,11 +7,15 @@ Floor::~Floor() = default;
 Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<engine::events::Collision>(*this);
   events.subscribe<Health>(*this);
-
+  events.subscribe<Energy>(*this);
 }
 
 void Floor::receive(const Health& health) {
   parent_scene_->events.emit<Health>(health);
+}
+
+void Floor::receive(const Energy& energy) {
+  parent_scene_->events.emit<Energy>(energy);
 }
 
 void Floor::receive(const engine::events::Collision& collision) {

@@ -27,7 +27,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
-  player.assign<Energy>(100.0f);
+  player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
 
 

@@ -27,7 +27,7 @@ using namespace engine::components::two_d;
 using namespace engine::components::common;
 using namespace engine::events;
 
-
+bool once = false;
 void KnightAnimationSystem::update(entityx::EntityManager &es,
                                    entityx::EventManager &events,
                                    entityx::TimeDelta dt) {
@@ -52,8 +52,11 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
   for (entityx::Entity e1 :
        es.entities_with_components(animation, physics, attack, player)) {
     if(shield->active) {
-    	Engine::GetInstance().Get<AudioManager>().PlaySound(
+      if(!once){
+        once = true;
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/warrior/alt.wav", false, 0.6f);
+      }    	
     	switch (shield->orientation) {
         case Shield::Orientation::UP:
           animToPlay = "defend_top";
@@ -69,6 +72,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
           break;
       }
     } else if (attack->is_attacking) {
+      once = false;
       switch (attack->orientation) {
         case KnightAttack::Orientation::UP:
           animToPlay = "attack_top";
@@ -84,6 +88,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
           break;
       }
     } else if (physics->velocity.x > 0) {
+      once = false;
       animToPlay = "moving_right";
       player->orientation = Player::Orientation::RIGHT;
       if (timer2 == 0.0) {
@@ -91,6 +96,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
       }
     } else if (physics->velocity.x < 0) {
+      once = false;
       animToPlay = "moving_left";
       player->orientation = Player::Orientation::LEFT;
 
@@ -99,6 +105,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
       }
     } else if (physics->velocity.y > 0) {
+      once = false;
       animToPlay = "moving_top";
       player->orientation = Player::Orientation::UP;
 
@@ -107,6 +114,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
       }
     } else if (physics->velocity.y < 0) {
+      once = false;
       animToPlay = "moving_bottom";
       player->orientation = Player::Orientation::DOWN;
 
@@ -115,6 +123,7 @@ void KnightAnimationSystem::update(entityx::EntityManager &es,
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
       }
     } else {
+      once = false;
       if (lastAnim.empty()) {
         animToPlay = "moving_bottom";
       } else

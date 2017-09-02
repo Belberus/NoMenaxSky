@@ -26,6 +26,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void Update(entityx::TimeDelta dt) override;
   void receive(const StartGame &event);
   void receive(const OptionMenu &event);
+  void receive(const BackToMainMenu &event);
 
  private:
   State current_state_;

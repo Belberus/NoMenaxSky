@@ -77,6 +77,18 @@ struct WhatOption {
   WhatOption(int what) : what(what) {}
 };
 
+struct D2Mode {};
+
+struct D3Mode {};
+
+struct MusicOn {};
+
+struct MusicOff {};
+
+struct FXOn {};
+
+struct FXOff {};
+
 struct Door {
   Door(const std::string &next_door, const std::string &pos)
       : next_door(next_door), pos(pos) {}

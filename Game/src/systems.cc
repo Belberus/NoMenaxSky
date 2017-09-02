@@ -17,6 +17,7 @@
 #include "events.h"
 
 #include <iostream>
+#include <fstream>
 #include <string.h>
 
 #include <GLFW/glfw3.h>
@@ -265,7 +266,15 @@ void MenuInputSystem::receive(const KeyReleased &key_released) {
 }
 
 OptionsInputSystem::OptionsInputSystem()
-    : options_up_pressed_(false), options_down_pressed_(false), options_enter_pressed_(false) {
+    : options_up_pressed_(false), options_down_pressed_(false), options_enter_pressed_(false),
+      options_right_pressed_(false), options_left_pressed_(false) {
+  std::string filename = "assets/config/opciones.txt";
+  std::fstream file(filename.c_str(), std::ios_base::in);
+
+  file >> mode >> music >> fx;
+
+  file.close();
+
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
@@ -382,7 +391,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Modo::TWO_D:
               new_position.x += 150;
               opciones->modo = GameOptions::Modo::THREE_D;
-
+              mode = 0;
               break;
             case GameOptions::Modo::THREE_D:
               break; 
@@ -393,6 +402,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Musica::MUSIC_ON:
               new_position.x += 150;
               opciones->musica = GameOptions::Musica::MUSIC_OFF;
+              music = 0;
               break;
             case GameOptions::Musica::MUSIC_OFF:
               break;
@@ -403,6 +413,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Efectos::FX_ON:
               new_position.x += 150;
               opciones->efectos = GameOptions::Efectos::FX_OFF;
+              fx = 0;
               break;
             case GameOptions::Efectos::FX_OFF:
               break;
@@ -422,6 +433,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Modo::THREE_D:
               new_position.x -= 150;
               opciones->modo = GameOptions::Modo::TWO_D;
+              mode = 1;
               break; 
           }
           break;
@@ -432,6 +444,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Musica::MUSIC_OFF:
               new_position.x -= 150;
               opciones->musica = GameOptions::Musica::MUSIC_ON;
+              music = 1;
               break;
           }
           break;
@@ -442,6 +455,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Efectos::FX_OFF:
               new_position.x -= 150;
               opciones->efectos = GameOptions::Efectos::FX_ON;
+              fx = 1;
               break;
           }
           break;
@@ -449,10 +463,10 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           break;
       }
     }
-     if (options_enter_pressed_) {
-       options_enter_pressed_ = false;
-       switch (arrow_options->option) {
-         case ArrowOptions::Option::MODE:
+    if (options_enter_pressed_) {
+      options_enter_pressed_ = false;
+      switch (arrow_options->option) {
+        case ArrowOptions::Option::MODE:
     //       switch (opciones->modo) {
     //         case GameOptions::Modo::TWO_D:
     //           new_position.x += 250;
@@ -464,7 +478,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //           break; 
     //       }
            break;
-         case ArrowOptions::Option::MUSIC_VOL:
+        case ArrowOptions::Option::MUSIC_VOL:
     //       switch (opciones->musica) {
     //         case GameOptions::Musica::MUSIC_ON:
     //           new_position.x += 250;
@@ -476,7 +490,7 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //           break;
     //       }
            break;
-         case ArrowOptions::Option::FX_VOL:
+        case ArrowOptions::Option::FX_VOL:
     //       switch (opciones->efectos) {
     //         case GameOptions::Efectos::FX_ON:
     //           new_position.x += 250;
@@ -488,11 +502,19 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //           break;
     //       }
            break;
-         case ArrowOptions::Option::SALIR:
-         // TO DO: volver al menu pricnipal
-           break;
-       }
-     }
+        case ArrowOptions::Option::SALIR:
+          std::string filename = "assets/config/opciones.txt";
+          
+          std::ofstream outfile;
+          outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
+          outfile << mode << " " << music << " " << fx;
+          outfile.close();
+          
+          events.emit<BackToMainMenu>();
+          
+          break;
+      }
+    }
     position->SetLocalPosition(new_position);
   }
 }

@@ -15,7 +15,7 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<KnightAnimationSystem>();
   systems.add<KnightWalkingSystem>();
   systems.add<engine::systems::two_d::ColliderRenderer>();
-  systems.add<engine::systems::three_d::ModelRenderer>();
+  //systems.add<engine::systems::three_d::ModelRenderer>();
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
   systems.add<HealthSystem>();
@@ -31,7 +31,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
   systems.update<KnightAttackSystem>(dt);
   systems.update<TurretAttackSystem>(dt);
   systems.update<HealthSystem>(dt);
-  systems.update<engine::systems::three_d::ModelRenderer>(dt);
+  //systems.update<engine::systems::three_d::ModelRenderer>(dt);
   systems.update<engine::systems::two_d::ColliderRenderer>(dt);
 }
 

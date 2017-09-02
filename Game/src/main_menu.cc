@@ -86,4 +86,5 @@ void MainMenu::receive(const OptionMenu& option_menu) {
   parent_scene_->events.emit<OptionMenu>(option_menu);
 }
 
+
 void MainMenu::AddEntities() {}

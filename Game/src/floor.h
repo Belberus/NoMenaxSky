@@ -11,17 +11,21 @@
 #include <engine/events/collision.h>
 #include <entityx/entityx.h>
 
+#include "game.h"
+
 class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
  public:
-  Floor();
+  Floor(Game *parent_scene);
   virtual ~Floor();
-  void Update(entityx::TimeDelta dt) override;
+  virtual void OnPlayerEnteringDoor(Door entering_door) = 0;
+  virtual void OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) = 0;
+  virtual void OnPlayerEnteringBossDoorWithoutKey() = 0;
   void receive(const engine::events::Collision &collision);
+  void receive(const Health &health);
 
- private:
+ protected:
   class Room {
    public:
-    Room();
     void Load(Floor &floor);
     void Unload(Floor &floor);
     std::vector<
@@ -33,10 +37,10 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   static bool IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
                                         entityx::Entity door);
   static bool IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
-                                        entityx::Entity door);
+                                            entityx::Entity door);
 
+  Game *parent_scene_;
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;
-  friend class FloorFactory;
 };
 #endif  // FLOOR_H_

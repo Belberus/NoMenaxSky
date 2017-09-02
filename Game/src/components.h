@@ -9,9 +9,10 @@
 #include <glm/glm.hpp>
 
 struct Health {
+  float init_hp;
   float hp;
   std::string death_fx;
-  Health(float hp, std::string death_fx) : hp(hp), death_fx(death_fx) {}
+  Health(float init_hp, float hp, std::string death_fx) : init_hp(init_hp), hp(hp), death_fx(death_fx) {}
 };
 
 struct MeleeWeapon {
@@ -75,6 +76,18 @@ struct WhatOption {
 
   WhatOption(int what) : what(what) {}
 };
+
+struct D2Mode {};
+
+struct D3Mode {};
+
+struct MusicOn {};
+
+struct MusicOff {};
+
+struct FXOn {};
+
+struct FXOff {};
 
 struct Door {
   Door(const std::string &next_door, const std::string &pos)

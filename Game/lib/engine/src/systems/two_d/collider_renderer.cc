@@ -61,8 +61,8 @@ void engine::systems::two_d::ColliderRenderer::update(
       auto tl = collider->center +
                 glm::vec2(-1.0f * collider->half_size.x, collider->half_size.y);
       auto tr = collider->center + collider->half_size;
-      glm::vec3 data[] = {glm::vec3(bl, 0.0f), glm::vec3(br, 0.0f),
-                          glm::vec3(tr, 0.0f), glm::vec3(tl, 0.0f)};
+      glm::vec3 data[] = {glm::vec3(bl, 50.0f), glm::vec3(br, 50.0f),
+                          glm::vec3(tr, 50.0f), glm::vec3(tl, 50.0f)};
       glBindVertexArray(pimpl_->vao_);
       glBindBuffer(GL_ARRAY_BUFFER, pimpl_->buffer_);
       glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);

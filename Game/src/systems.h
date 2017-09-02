@@ -187,6 +187,10 @@ class OptionsInputSystem : public entityx::System<OptionsInputSystem>,
   bool options_enter_pressed_;
   bool options_right_pressed_;
   bool options_left_pressed_;
+
+  int mode;
+  int music;
+  int fx;
 };
 
 class PlayerInputSystem : public entityx::System<PlayerInputSystem>,

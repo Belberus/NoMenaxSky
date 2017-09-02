@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.78.0 commit date:2017-02-24, commit time:14:33, hash:e92f235283</authoring_tool>
     </contributor>
-    <created>2017-08-30T16:10:42</created>
-    <modified>2017-08-30T16:10:42</modified>
+    <created>2017-09-01T01:46:51</created>
+    <modified>2017-09-01T01:46:51</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -107,7 +107,7 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="caballero" name="caballero" type="NODE">
-        <matrix sid="transform">1 0 0 -0.08129573 0 -1.62921e-7 -1 0 0 1 -1.62921e-7 0 0 0 0 1</matrix>
+        <matrix sid="transform">1 0 0 0 0 -1.62921e-7 -1 0 0 1 -1.62921e-7 0 0 0 0 1</matrix>
         <instance_geometry url="#caballero-mesh" name="caballero">
           <bind_material>
             <technique_common>

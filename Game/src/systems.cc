@@ -947,6 +947,9 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 	            EntityFactory::MakeEnemyProjectile(
 	                es, manueleth_position, angle_rad, new_velocity, "manueleth");
 	            manueleth.time_for_shooting = 0.0;
+
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+              "assets/media/fx/manueleth/attack.wav", true, 0.8f);
 	      	}
       	}
    });

@@ -123,6 +123,25 @@ struct Player {
   // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
 };
 
+struct Lancer {
+  enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
+  enum AttackOrientation { ATK_UP, ATK_DOWN, ATK_RIGHT, ATK_LEFT};
+
+  bool is_attacking;
+  
+  LancerOrientation orientation;
+  AttackOrientation atk_orientation;
+
+  Lancer()
+      : is_attacking(false), orientation(LancerOrientation::DOWN) {}
+};
+
+struct LancerHitBox {
+  LancerHitBox(float damage, entityx::Entity owner) : damage(damage), owner(owner) {}
+  entityx::Entity owner;
+  float damage;
+};
+
 struct Ghost {
 	Ghost(): comportamiento(Comportamiento::FOLLOW), time_passed(0.0) {}
 	enum Comportamiento { FOLLOW, DAMAGE_TOP, DAMAGE_BOTTOM, DAMAGE_LEFT, DAMAGE_RIGHT };

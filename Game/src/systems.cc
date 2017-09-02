@@ -186,6 +186,7 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Transform> position_ghost;
   entityx::ComponentHandle<Physics> physics_ghost;
   entityx::ComponentHandle<SpriteAnimation> animation;
+  
   std::string animToPlay;
 
   for (entityx::Entity e0 : es.entities_with_components(
@@ -208,6 +209,68 @@ void GhostAnimationSystem::update(entityx::EntityManager &es,
       animToPlay = "moving_top";
       animation->Play(animToPlay);
     }
+  }
+}
+
+void LancerAnimationSystem::update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt){
+  entityx::ComponentHandle<Lancer> lancer;
+  //entityx::ComponentHandle<Transform> position_lancer;
+  entityx::ComponentHandle<Physics> physics;
+  entityx::ComponentHandle<SpriteAnimation> animation;
+
+  std::string animToPlay;
+
+  for (entityx::Entity e : es.entities_with_components(
+    lancer, physics, animation)){
+
+    if (lancer->is_attacking){
+      switch (lancer->atk_orientation) {
+        case Lancer::AttackOrientation::ATK_UP:
+          animToPlay = "attack_top";
+          break;
+        case Lancer::AttackOrientation::ATK_DOWN:
+          animToPlay = "attack_bottom";
+          break;
+        case Lancer::AttackOrientation::ATK_LEFT:
+          animToPlay = "attack_left";
+          break;
+        case Lancer::AttackOrientation::ATK_RIGHT:
+          animToPlay = "attack_right";
+          break;
+      }
+    } else if (physics->velocity.x > 0) {
+      animToPlay = "moving_right";
+      lancer->orientation = Lancer::LancerOrientation::RIGHT;
+      if (timer2 == 0.0) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
+      }
+    } else if (physics->velocity.x < 0) {
+      animToPlay = "moving_left";
+      lancer->orientation = Lancer::LancerOrientation::LEFT;
+
+      if (timer2 == 0.0) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
+      }
+    } else if (physics->velocity.y > 0) {
+      animToPlay = "moving_top";
+      lancer->orientation = Lancer::LancerOrientation::UP;
+
+      if (timer2 == 0.0) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
+      }
+    } else if (physics->velocity.y < 0) {
+      animToPlay = "moving_bottom";
+      lancer->orientation = Lancer::LancerOrientation::DOWN;
+
+      if (timer2 == 0.0) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/mov.wav", false, 0.6f);
+      }
+    } 
+    animation->Play(animToPlay);
   }
 }
 

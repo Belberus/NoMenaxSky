@@ -86,6 +86,29 @@ class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
   void receive(const engine::events::Collision &collision);
 };
 
+class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
+  public:
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+  private:
+    float timer;
+    float timer2;
+};
+
+class LancerIaSystem : public entityx::System<LancerIaSystem> {
+  public:
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class LancerAttackSystem : public entityx::System<LancerAttackSystem> {
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+};
+
 class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,

@@ -24,8 +24,8 @@ struct MeleeWeapon {
 };
 
 struct Energy {
-  int energy;
-  Energy(int e) : energy(e) {}
+  float energy;
+  Energy(float energy) : energy(energy) {}
 };
 
 struct KnightAttack {
@@ -103,12 +103,23 @@ struct BossDoor {
 	std::string pos;
 };
 
+struct Shield {
+	enum Orientation { UP, DOWN, RIGHT, LEFT };
+	Orientation orientation;
+	bool active;
+	entityx::Entity owner;
+	float time_passed;
+	Shield(entityx::Entity owner) : owner(owner), orientation(Shield::Orientation::UP), active(false), time_passed(0.0f) {}
+};
+
 struct Player {
   enum Orientation { UP, DOWN, RIGHT, LEFT };
+  enum State {NORMAL, BLOCKING};
   Orientation orientation;
+  State state;
   bool key;
 
-  Player(Orientation orientation) : orientation(orientation), key(true) {}
+  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL) {}
   // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
 };
 

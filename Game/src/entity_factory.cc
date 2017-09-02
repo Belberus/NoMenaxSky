@@ -167,11 +167,11 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
                                     glm::vec2(8.0f, 3.0f), true);
   shield.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
   shield.assign<Shield>(player);
-  /*
+  
   std::vector<ColorAnimation::KeyFrame> color_frames_shield;
-  color_frames_shield.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+  color_frames_shield.emplace_back(glm::vec3(-0.3f, 1.0f, 0.0f), 0.2f);
   color_frames_shield.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
-  shield.assign<ColorAnimation>(std::move(color_frames_shield));*/
+  shield.assign<ColorAnimation>(std::move(color_frames_shield));
 
   entities_created.push_back(shield);
 

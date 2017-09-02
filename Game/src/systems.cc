@@ -1245,7 +1245,6 @@ void ShieldSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
 }
 
-// TODO: BAJADA DE ENERGIA AL COLISIONAR Y SUBIDA DE ENERGIA AL NO COLISIONAR
 void ShieldSystem::receive(const Collision &collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {

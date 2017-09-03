@@ -109,16 +109,13 @@ void GameUi::receive(const Health& health) {
 }
 
 void GameUi::receive(const Player& player){
-  std::cout << "aviso llave" << std::endl;
   entities.each<Transform, MenuImage>(
     [&](entityx::Entity key_bar, Transform &transform,
       MenuImage &mi){
         if(player.key){
-          std::cout << "hay llave colega" << std::endl;
           transform.SetLocalScale(glm::vec3(2,2,2));
         }
         else{
-          std::cout << "no hay llave primo" << std::endl;
           transform.SetLocalScale(glm::vec3(0.0f,0.0f,0.0f));
         }
     });

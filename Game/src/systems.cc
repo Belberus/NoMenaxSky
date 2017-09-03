@@ -1220,13 +1220,13 @@ void KnightAttackSystem::receive(const Collision &collision) {
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
     // Lancero
-  } else if (e0_weapon && e0_weapon->drawn &&
+  } else if (e0_weapon && e0_weapon->drawn && 
              e0_weapon->owner.component<Player>() &&
              collision_copy.e1.component<Lancer>()) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
     Engine::GetInstance().Get<AudioManager>().PlaySound(
-        "assets/media/fx/lanc/default/hit.wav", false, 0.5f);
+        "assets/media/fx/lanc/default/hit.wav", false, 0.7f);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&

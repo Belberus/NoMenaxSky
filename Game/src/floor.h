@@ -24,7 +24,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   void receive(const Health &health);
   void receive(const Energy &energy);
 
- protected:
+ private:
   class Room {
    public:
     void Load(Floor &floor);
@@ -43,5 +43,6 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   Game *parent_scene_;
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;
+  friend class FloorFactory;
 };
 #endif  // FLOOR_H_

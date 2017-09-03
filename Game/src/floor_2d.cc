@@ -10,10 +10,14 @@
 #include <engine/systems/two_d/sprite_renderer.h>
 #include <engine/systems/two_d/tilemap_renderer.h>
 
+#include <engine/core/audio_manager.h>
+#include <engine/core/engine.h>
+
 #include "components.h"
 #include "floor.h"
 #include "systems.h"
 
+using namespace engine::core;
 using namespace engine::systems::two_d;
 using namespace engine::events;
 using namespace engine::components::two_d;
@@ -27,10 +31,13 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<TurretIaSystem>();
   systems.add<ManuelethIaSystem>();
   systems.add<TrapIaSystem>();
+  systems.add<LancerIaSystem>();
   systems.add<TurretWalkingSystem>();
+  systems.add<LancerWalkingSystem>();
   systems.add<EnemyProjectileAnimationSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<KnightAnimationSystem>();
+  systems.add<LancerAnimationSystem>();
   systems.add<KnightWalkingSystem>();
   systems.add<SpriteAnimator>();
   systems.add<TilemapRenderer>();
@@ -38,6 +45,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<ColliderRenderer>();
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
+  systems.add<LancerAttackSystem>();
   systems.add<ChestCollisionSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
@@ -52,17 +60,21 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   systems.update<GhostAnimationSystem>(dt);
   systems.update<ManuelethAnimationSystem>(dt);
   systems.update<TurretIaSystem>(dt);
+  systems.update<LancerIaSystem>(dt);
   systems.update<ManuelethIaSystem>(dt);
   systems.update<TrapIaSystem>(dt);
   systems.update<TurretWalkingSystem>(dt);
+  systems.update<LancerWalkingSystem>(dt);
   systems.update<EnemyProjectileAnimationSystem>(dt);
   systems.update<engine::systems::two_d::Physics>(dt);
   systems.update<KnightAnimationSystem>(dt);
+  systems.update<LancerAnimationSystem>(dt);
   systems.update<KnightWalkingSystem>(dt);
   systems.update<SpriteAnimator>(dt);
   systems.update<KnightAttackSystem>(dt);
   systems.update<ChestCollisionSystem>(dt);
   systems.update<TurretAttackSystem>(dt);
+  systems.update<LancerAttackSystem>(dt);
   systems.update<HealthSystem>(dt);
   systems.update<ColorAnimator>(dt);
   systems.update<TilemapRenderer>(dt);
@@ -72,7 +84,9 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   // systems.update<IgnoreCollisionSystem>(dt);
 }
 
+bool once2 = false;
 void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
+  once2 = false;
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {
         glm::vec3 next_pos = transform.GetLocalPosition();
@@ -124,6 +138,12 @@ void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
 }
 
 void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
+  if(!once2){
+    once2 = true;
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/fx/defaults/boss_door.wav", false, 0.4f);
+  }
+  
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {
         glm::vec3 next_pos = transform.GetLocalPosition();

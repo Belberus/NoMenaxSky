@@ -135,15 +135,14 @@ struct Cursor {};
 
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
-  enum AttackOrientation { ATK_UP, ATK_DOWN, ATK_RIGHT, ATK_LEFT};
-
+ 
   bool is_attacking;
-  
+  float time_passed;
+
   LancerOrientation orientation;
-  AttackOrientation atk_orientation;
 
   Lancer()
-      : is_attacking(false), orientation(LancerOrientation::DOWN) {}
+      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
 };
 
 struct LancerHitBox {
@@ -179,6 +178,8 @@ struct Sword {};
 struct Legs{};
 
 struct TurretLegs{};
+
+struct LancerLegs{};
 
 struct LowCollision {};
 

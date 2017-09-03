@@ -15,6 +15,7 @@ class AudioManager {
   ~AudioManager();
   void PlaySound(const std::string &sound_filename, bool looped, float volume);
   void StopAllSounds();
+  void StopMusic();
   void SetVolumeFX(float volume);
   void SetVolumeMusic(float volume);
   void PlaySound3D(const std::string &sound_filename, bool looped,

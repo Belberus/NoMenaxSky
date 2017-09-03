@@ -1631,3 +1631,39 @@ void LancerAttackSystem::receive(const Collision &collision) {
 void LancerAttackSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}
+
+void GhostAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void GhostAttackSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<GhostHitBox>();
+  auto e1_projectile = collision_copy.e1.component<GhostHitBox>();
+
+  if (e0_projectile && collision_copy.e1.component<Player>()){
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+
+  } else if (e1_projectile && collision_copy.e0.component<Player>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+    e0_color_animation->Play();
+  } 
+}
+
+void GhostAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}

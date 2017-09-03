@@ -241,6 +241,16 @@ class LancerAttackSystem : public entityx::System<LancerAttackSystem>,
               entityx::TimeDelta dt) override;
 };
 
+class GhostAttackSystem : public entityx::System<GhostAttackSystem>,
+                           public entityx::Receiver<GhostAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+
 
 
 #endif  // SYSTEMS_H_

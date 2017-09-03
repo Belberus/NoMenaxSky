@@ -46,11 +46,11 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
   systems.add<LancerAttackSystem>();
+  //systems.add<GhostAttackSystem>();
   systems.add<ChestCollisionSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
   systems.add<ShieldSystem>();
-  // systems.add<IgnoreCollisionSystem>(&entities, &events);
   systems.configure();
 }
 
@@ -75,13 +75,13 @@ void Floor2D::Update(entityx::TimeDelta dt) {
   systems.update<ChestCollisionSystem>(dt);
   systems.update<TurretAttackSystem>(dt);
   systems.update<LancerAttackSystem>(dt);
+  //systems.update<GhostAttackSystem>(dt);
   systems.update<HealthSystem>(dt);
   systems.update<ColorAnimator>(dt);
   systems.update<TilemapRenderer>(dt);
   systems.update<SpriteRenderer>(dt);
   systems.update<ColliderRenderer>(dt);
   systems.update<ShieldSystem>(dt);
-  // systems.update<IgnoreCollisionSystem>(dt);
 }
 
 bool once2 = false;

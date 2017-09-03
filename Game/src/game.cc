@@ -28,6 +28,7 @@ Game::Game()
   events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
   events.subscribe<BackToMainMenu>(*this);
+  events.subscribe<StartGame>(*this);
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(

@@ -13,8 +13,6 @@
 #include "systems.h"
 #include "components.h"
 
-#include <fstream>
-
 #include "character_selection_menu.h"
 
 using namespace engine::components::common;
@@ -48,6 +46,7 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
         "assets/personajes_menu/cursor.png");
     cursor.assign<Sprite>(tex);
     cursor.assign<Cursor>();
+    cursor.assign<Characters>();
 
 	entityx::Entity knight = entities.create();
 
@@ -68,41 +67,13 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 		menu_canvas_transform, glm::vec3(10.0f));
 	wizard.assign<Sprite>(tex);
 
-	systems.add<engine::systems::two_d::SpriteAnimator>();
   	systems.add<engine::systems::two_d::SpriteRenderer>();
-  	//systems.add<SelectionInputSystem>();
+  	systems.add<SelectionInputSystem>();
   	systems.configure();
 }
 
 void CharacterSelectionMenu::Update(entityx::TimeDelta dt){
-
-	entityx::ComponentHandle<Characters> character;
-
-	entityx::ComponentHandle<Cursor> cursor;
-	entityx::ComponentHandle<Sprite> sprite;
-	entityx::ComponentHandle<Transform> transform;
-
-	for (entityx::Entity e :
-			entities.entities_with_components(character)){
-		// Cursor en mago cambiar a caballero
-		if (character->role == Characters::Role::KNIGHT && role == 1){
-			for (entityx::Entity e1 :
-					entities.entities_with_components(cursor, sprite, transform)){
-				transform->SetLocalPosition(glm::vec3(-155, 0, 0));
-			}
-		}
-
-		if (character->role == Characters::Role::WIZARD && role == 0){
-			for (entityx::Entity e1 :
-					entities.entities_with_components(cursor, sprite, transform)){
-				transform->SetLocalPosition(glm::vec3(145, 0, 0));
-			}
-		}
-
-	}
-
-	//systems.update<OptionsInputSystem>(dt);
-  	systems.update<engine::systems::two_d::SpriteAnimator>(dt);
+	systems.update<SelectionInputSystem>(dt);
   	systems.update<engine::systems::two_d::SpriteRenderer>(dt);
 }
 

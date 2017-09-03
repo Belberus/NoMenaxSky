@@ -274,6 +274,7 @@ std::unique_ptr<Floor2D> FloorFactory::MakeFloor1(const std::string &file_name,
   auto camera = floor->entities.create();
   camera.assign<cmp::common::Transform>(glm::vec3(1376.0f, 640.0f, 1.0f));
   camera.assign<cmp::common::Camera>(512.0f, 288.0f, 0.1f, 1000.0f);
+
   EntityFactory::MakeKnight(floor->entities, glm::vec3(1376.0f, 640.0f, 0));
   return floor;
 }

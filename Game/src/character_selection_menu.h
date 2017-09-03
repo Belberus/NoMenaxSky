@@ -6,7 +6,6 @@
 
 #include "game.h"
 #include "events.h"
-#include "components.h"
 
 class CharacterSelectionMenu : public engine::core::Scene,
 							   public entityx::Receiver<CharacterSelectionMenu> {

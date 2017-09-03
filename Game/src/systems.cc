@@ -646,6 +646,77 @@ void OptionsInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+SelectionInputSystem::SelectionInputSystem() :
+    selection_enter_pressed_(false), selection_right_pressed_(false), selection_left_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void SelectionInputSystem::update(entityx::EntityManager &es, 
+        entityx::EventManager &events, entityx::TimeDelta dt) {
+
+  entityx::ComponentHandle<Characters> character;
+  entityx::ComponentHandle<Cursor> cursor;
+  entityx::ComponentHandle<Transform> position;
+
+  for (entityx::Entity e :
+          es.entities_with_components(character, cursor, position)){
+    auto new_position = position->GetLocalPosition();
+
+    if (selection_right_pressed_){
+       selection_right_pressed_ = false;
+       switch (character->role) {
+         case Characters::Role::KNIGHT:
+            new_position.x += 300;
+            character->role = Characters::Role::WIZARD;
+            break;
+          case Characters::Role::WIZARD:
+            break;
+       }
+    }
+
+    if (selection_left_pressed_){
+       selection_left_pressed_ = false;
+       switch (character->role) {
+         case Characters::Role::KNIGHT:
+            break;
+          case Characters::Role::WIZARD:
+            new_position.x -= 300;
+            character->role = Characters::Role::KNIGHT;
+            break;
+       }
+    }
+
+    position->SetLocalPosition(new_position);
+
+    if (selection_enter_pressed_){
+      events.emit<StartGame>();
+    }
+
+  }
+}
+
+void SelectionInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_RIGHT) {
+    selection_right_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_LEFT) {
+    selection_left_pressed_ = true;
+  }
+}
+
+void SelectionInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_RIGHT) {
+    selection_right_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_LEFT) {
+    selection_left_pressed_ = false;
+  }
+}
+
 const float PlayerInputSystem::kSpeed = 140.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;

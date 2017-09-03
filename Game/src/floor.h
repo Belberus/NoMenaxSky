@@ -12,6 +12,7 @@
 #include <entityx/entityx.h>
 
 #include "game.h"
+#include "events.h"
 
 class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
  public:
@@ -20,11 +21,14 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   virtual void OnPlayerEnteringDoor(Door entering_door) = 0;
   virtual void OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) = 0;
   virtual void OnPlayerEnteringBossDoorWithoutKey() = 0;
+  virtual void PauseGame(bool pause) = 0;
+  virtual bool GetPaused() = 0;
   void receive(const engine::events::Collision &collision);
   void receive(const Health &health);
   void receive(const Energy &energy);
-
- protected:
+  void receive(const PauseMenuEvent &pm);
+  void receive(const BackToGame &event);
+ private:
   class Room {
    public:
     void Load(Floor &floor);
@@ -43,5 +47,6 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   Game *parent_scene_;
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;
+  friend class FloorFactory;
 };
 #endif  // FLOOR_H_

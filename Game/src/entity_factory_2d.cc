@@ -1,10 +1,11 @@
-#include "entity_factory.h"
+#include "entity_factory_2d.h"
 
 #include <string>
 
 #include <engine/components/common/camera.h>
 #include <engine/components/common/physics.h>
 #include <engine/components/common/transform.h>
+#include <engine/components/three_d/model.h>
 #include <engine/components/two_d/aabb_collider.h>
 #include <engine/components/two_d/color_animation.h>
 #include <engine/components/two_d/sprite_animation.h>
@@ -15,10 +16,11 @@
 
 using namespace engine::components::common;
 using namespace engine::components::two_d;
+using namespace engine::components::three_d;
 using namespace engine::core;
 using namespace engine::utils;
 
-std::vector<entityx::Entity> EntityFactory::MakeKnight(
+std::vector<entityx::Entity> EntityFactory2D::MakeKnight(
     entityx::EntityManager &entities, const glm::vec3 &position) {
   std::vector<entityx::Entity> entities_created;
   auto player = entities.create();
@@ -115,16 +117,17 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
                                                   attack_left, 100.0f);
   SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
                                              100.0f);
-  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand, 100.0f);
+  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand,
+                                             100.0f);
   SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death,
                                             100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
                         moving_left_anim, defend_bottom_anim, defend_top_anim,
                         defend_right_anim, defend_left_anim, attack_bottom_anim,
-                        attack_top_anim, attack_right_anim, attack_left_anim, death_anim});
+                        attack_top_anim, attack_right_anim, attack_left_anim,
+                        death_anim});
 
-  
   player.assign<SpriteAnimation>(anim);
   player.assign<Sprite>(texture_atlas);
   entities_created.push_back(player);
@@ -133,7 +136,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   auto legs = entities.create();
   legs.assign<Physics>(glm::vec3(0, 0, 0));
   legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                                 player.component<Transform>().get());
+                         player.component<Transform>().get());
 
   SpriteAnimation legs_anim({moving_anim, stand_still});
   legs.assign<SpriteAnimation>(legs_anim);
@@ -143,7 +146,6 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   parentLink.owner = player;
   legs.assign<ParentLink>(parentLink);
   entities_created.push_back(legs);
-
 
   // adding sword entity
   auto sword_hitbox = entities.create();
@@ -178,7 +180,7 @@ std::vector<entityx::Entity> EntityFactory::MakeKnight(
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &entities, const glm::vec3 &position){
+std::vector<entityx::Entity> EntityFactory2D::MakeLancer(entityx::EntityManager &entities, const glm::vec3 &position){
     std::vector<entityx::Entity> entities_created;
     entityx::Entity lancer = entities.create();
 
@@ -291,9 +293,8 @@ std::vector<entityx::Entity> EntityFactory::MakeLancer(entityx::EntityManager &e
     return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeGhost(
+std::vector<entityx::Entity> EntityFactory2D::MakeGhost(
     entityx::EntityManager &entities, const glm::vec3 &position) {
-  
   std::vector<entityx::Entity> entities_created;
   entityx::Entity ghost = entities.create();
   ghost.assign<Transform>(position);
@@ -336,11 +337,11 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
                                                   moving_left, 100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
-                        moving_left_anim});  
+                        moving_left_anim});
 
   ghost.assign<SpriteAnimation>(anim);
   ghost.assign<Sprite>(texture_atlas);
-  
+
   entities_created.push_back(ghost);
 
   // adding hitbox as a second entity
@@ -355,8 +356,9 @@ std::vector<entityx::Entity> EntityFactory::MakeGhost(
   return entities_created;
 }
 
-std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &entities, const glm::vec3 &position, const float frecuencia) {
-	
+std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
+    entityx::EntityManager &entities, const glm::vec3 &position,
+    const float frecuencia) {
   std::vector<entityx::Entity> entities_created;
   entityx::Entity turret = entities.create();
 
@@ -368,10 +370,11 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
   turret.assign<ColorAnimation>(std::move(color_frames));
   turret.assign<Turret>(frecuencia);
-  turret.assign<Health>(40.0f, 40.0f, "assets/media/fx/turret/default/death.wav");
+  turret.assign<Health>(40.0f, 40.0f,
+                        "assets/media/fx/turret/default/death.wav");
 
-  engine::utils::Rectangle head (glm::vec2(3, 62), glm::vec2(15, 20));
-    
+  engine::utils::Rectangle head(glm::vec2(3, 62), glm::vec2(15, 20));
+
   std::vector<engine::utils::Rectangle> moving;
   moving.emplace_back(glm::vec2(3, 38), glm::vec2(15, 20));
   moving.emplace_back(glm::vec2(22, 38), glm::vec2(15, 20));
@@ -383,21 +386,21 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
           "assets/spritesheets/torreta.png");
-  	
-  SpriteAnimation::AnimationClip moving_anim(
-      "moving", texture_atlas, moving, 100.0f);
-  SpriteAnimation::AnimationClip stand_anim(
-      "stand", texture_atlas, stand, 100.0f);
+
+  SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
+                                             100.0f);
+  SpriteAnimation::AnimationClip stand_anim("stand", texture_atlas, stand,
+                                            100.0f);
 
   // La cabeza no tiene animacion porque no se mueve
   turret.assign<Sprite>(texture_atlas, head);
   entities_created.push_back(turret);
-  
+
   entityx::Entity legs = entities.create();
 
   legs.assign<Physics>(glm::vec3(0, 0, 0));
   legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                                 turret.component<Transform>().get());
+                         turret.component<Transform>().get());
 
   SpriteAnimation legs_anim({moving_anim, stand_anim});
   legs.assign<SpriteAnimation>(legs_anim);
@@ -411,7 +414,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
   return entities_created;
 }
 
- std::vector<entityx::Entity> EntityFactory::MakeTrap(
+ std::vector<entityx::Entity> EntityFactory2D::MakeTrap(
       entityx::EntityManager &entities, const glm::vec3 &position,  const std::string &orient, const float frecuencia){
 
  	std::vector<entityx::Entity> entities_created;
@@ -433,7 +436,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
     return entities_created;
  }
 
- std::vector<entityx::Entity> EntityFactory::MakeManueleth(
+ std::vector<entityx::Entity> EntityFactory2D::MakeManueleth(
       entityx::EntityManager &entities, const glm::vec3 &position){
 
  	  std::vector<entityx::Entity> entities_created;
@@ -486,7 +489,7 @@ std::vector<entityx::Entity> EntityFactory::MakeTurret(entityx::EntityManager &e
 
 
 
-std::vector<entityx::Entity> EntityFactory::MakeEnemyProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
+std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
 
 	std::vector<entityx::Entity> entities_created;
     entityx::Entity enemyProjectile = entities.create();
@@ -534,13 +537,13 @@ std::vector<entityx::Entity> EntityFactory::MakeEnemyProjectile(entityx::EntityM
     auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(loadTexture);
 
-    SpriteAnimation::AnimationClip shooting_anim(
-      "shooting", texture_atlas, shoot, 100.0f);
+  SpriteAnimation::AnimationClip shooting_anim("shooting", texture_atlas, shoot,
+                                               100.0f);
 
-	SpriteAnimation shoot_anim({shooting_anim});
-	enemyProjectile.assign<SpriteAnimation>(shoot_anim);
-	enemyProjectile.assign<Sprite>(texture_atlas);
+  SpriteAnimation shoot_anim({shooting_anim});
+  enemyProjectile.assign<SpriteAnimation>(shoot_anim);
+  enemyProjectile.assign<Sprite>(texture_atlas);
 
-	entities_created.push_back(enemyProjectile);
-	return entities_created;
+  entities_created.push_back(enemyProjectile);
+  return entities_created;
 }

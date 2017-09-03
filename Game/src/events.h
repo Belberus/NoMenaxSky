@@ -3,4 +3,6 @@
 struct StartGame {};
 struct OptionMenu {};
 struct BackToMainMenu {};
+struct PauseMenuEvent {};
+struct BackToGame {};
 #endif // EVENTS_H_

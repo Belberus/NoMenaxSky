@@ -55,38 +55,68 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
 }
 
 void Floor2D::Update(entityx::TimeDelta dt) {
-  systems.update<PlayerInputSystem>(dt);
-  systems.update<GhostIaSystem>(dt);
-  systems.update<GhostAnimationSystem>(dt);
-  systems.update<ManuelethAnimationSystem>(dt);
-  systems.update<TurretIaSystem>(dt);
-  systems.update<LancerIaSystem>(dt);
-  systems.update<ManuelethIaSystem>(dt);
-  systems.update<TrapIaSystem>(dt);
-  systems.update<TurretWalkingSystem>(dt);
-  systems.update<LancerWalkingSystem>(dt);
-  systems.update<EnemyProjectileAnimationSystem>(dt);
-  systems.update<engine::systems::two_d::Physics>(dt);
-  systems.update<KnightAnimationSystem>(dt);
-  systems.update<LancerAnimationSystem>(dt);
-  systems.update<KnightWalkingSystem>(dt);
-  systems.update<SpriteAnimator>(dt);
-  systems.update<KnightAttackSystem>(dt);
-  systems.update<ChestCollisionSystem>(dt);
-  systems.update<TurretAttackSystem>(dt);
-  systems.update<LancerAttackSystem>(dt);
-  //systems.update<GhostAttackSystem>(dt);
-  systems.update<HealthSystem>(dt);
-  systems.update<ColorAnimator>(dt);
-  systems.update<TilemapRenderer>(dt);
-  systems.update<SpriteRenderer>(dt);
-  systems.update<ColliderRenderer>(dt);
-  systems.update<ShieldSystem>(dt);
+
+  if(!paused){
+    systems.update<PlayerInputSystem>(dt);
+    systems.update<GhostIaSystem>(dt);
+    systems.update<GhostAnimationSystem>(dt);
+    systems.update<ManuelethAnimationSystem>(dt);
+    systems.update<TurretIaSystem>(dt);
+    systems.update<LancerIaSystem>(dt);
+    systems.update<ManuelethIaSystem>(dt);
+    systems.update<TrapIaSystem>(dt);
+    systems.update<TurretWalkingSystem>(dt);
+    systems.update<LancerWalkingSystem>(dt);
+    systems.update<EnemyProjectileAnimationSystem>(dt);
+    systems.update<engine::systems::two_d::Physics>(dt);
+    systems.update<KnightAnimationSystem>(dt);
+    systems.update<LancerAnimationSystem>(dt);
+    systems.update<KnightWalkingSystem>(dt);
+    systems.update<SpriteAnimator>(dt);
+    systems.update<KnightAttackSystem>(dt);
+    //systems.update<GhostAttackSystem>(dt);
+    systems.update<ChestCollisionSystem>(dt);
+    systems.update<TurretAttackSystem>(dt);
+    systems.update<LancerAttackSystem>(dt);
+    systems.update<HealthSystem>(dt);
+    systems.update<ColorAnimator>(dt);
+    systems.update<TilemapRenderer>(dt);
+    systems.update<SpriteRenderer>(dt);
+    systems.update<ColliderRenderer>(dt);
+    systems.update<ShieldSystem>(dt);
+  }
+  else{ //is paused
+    systems.update<PlayerInputSystem>(dt);
+    systems.update<GhostIaSystem>(0);
+    systems.update<GhostAnimationSystem>(0);
+    systems.update<ManuelethAnimationSystem>(0);
+    systems.update<TurretIaSystem>(0);
+    systems.update<LancerIaSystem>(0);
+    systems.update<ManuelethIaSystem>(0);
+    systems.update<TrapIaSystem>(0);
+    systems.update<TurretWalkingSystem>(0);
+    systems.update<LancerWalkingSystem>(0);
+    systems.update<EnemyProjectileAnimationSystem>(0);
+    systems.update<engine::systems::two_d::Physics>(0);
+    systems.update<KnightAnimationSystem>(0);
+    systems.update<LancerAnimationSystem>(0);
+    systems.update<KnightWalkingSystem>(0);
+    //systems.update<GhostAttackSystem>(0);
+    systems.update<SpriteAnimator>(0);
+    systems.update<KnightAttackSystem>(0);
+    systems.update<ChestCollisionSystem>(0);
+    systems.update<TurretAttackSystem>(0);
+    systems.update<LancerAttackSystem>(0);
+    systems.update<HealthSystem>(0);
+    systems.update<ColorAnimator>(0);
+    systems.update<TilemapRenderer>(0);
+    systems.update<SpriteRenderer>(0);
+    systems.update<ColliderRenderer>(0);
+    systems.update<ShieldSystem>(0);
+  }
 }
 
-bool once2 = false;
 void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
-  once2 = false;
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {
         glm::vec3 next_pos = transform.GetLocalPosition();
@@ -138,11 +168,8 @@ void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
 }
 
 void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
-  if(!once2){
-    once2 = true;
     Engine::GetInstance().Get<AudioManager>().PlaySound(
           "assets/media/fx/defaults/boss_door.wav", false, 0.4f);
-  }
   
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {
@@ -173,3 +200,11 @@ void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
 }
 
 void Floor2D::OnPlayerEnteringBossDoorWithoutKey() {}
+
+void Floor2D::PauseGame(bool pause){
+  paused = pause;
+}
+
+bool Floor2D::GetPaused(){
+  return paused;
+}

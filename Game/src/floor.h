@@ -38,6 +38,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
         std::function<std::vector<entityx::Entity>(entityx::EntityManager &)>>
         entity_creators_;
     std::vector<entityx::Entity> created_entities_;
+    bool visited = false;
   };
 
   static bool IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,

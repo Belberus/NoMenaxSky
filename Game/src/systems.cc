@@ -1472,7 +1472,6 @@ void ChestSystem::update(entityx::EntityManager &es,
     [&](entityx::Entity entity, Player &player, Transform &transform){
       if(player.key  && check){
         check = false;
-        std::cout << "key!" << std::endl;
         events.emit<Player>(player);
       }
     });

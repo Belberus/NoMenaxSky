@@ -771,6 +771,7 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_ESCAPE, false);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+  Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
 }
 
 bool PlayerInputSystem::is_paused(){
@@ -791,6 +792,11 @@ void PlayerInputSystem::receive(const KeyReleased &key_released) {
   if (keys_.count(key_released.key)) {
     keys_[key_released.key] = false;
   }
+}
+
+void PlayerInputSystem::receive(const BackToGame &resumeGame){
+  std::cout << "despauso en systems" << std::endl;
+  set_paused(false);
 }
 
 void PlayerInputSystem::update(entityx::EntityManager &es,
@@ -822,6 +828,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   }
 
   if(keys_[GLFW_KEY_ESCAPE] && !is_paused()) {
+    events.subscribe<BackToGame>(*this);
     set_paused(true);
     events.emit<PauseMenuEvent>();
   }
@@ -830,6 +837,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   //   events.emit<BackToGame>();
   // }
 
+  //std::cout << "is paused: " << is_paused() << std::endl;
   if(!is_paused()){
     es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
                                                Player &player, Physics &physics,

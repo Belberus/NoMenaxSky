@@ -90,7 +90,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<PauseInputSystem>(dt);
   }
   else{ //is paused
-    systems.update<PlayerInputSystem>(dt);
+    systems.update<PlayerInputSystem>(0);
     systems.update<GhostIaSystem>(0);
     systems.update<GhostAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);

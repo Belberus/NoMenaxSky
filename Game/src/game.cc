@@ -79,7 +79,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.push_back(std::make_unique<GameUi>(this));
         } else {
           scenes_.pop_back();
-          events.emit<BackToGame>();
+          scenes_.front()->events.emit<BackToGame>();
         }
         
         break;

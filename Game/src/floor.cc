@@ -24,7 +24,6 @@ void Floor::receive(const PauseMenuEvent& pm){
 }
 
 void Floor::receive(const BackToGame& event){
-  std::cout << "llega back to game floor" << std::endl;
   PauseGame(false);
   parent_scene_->events.emit<BackToGame>(event);
 }

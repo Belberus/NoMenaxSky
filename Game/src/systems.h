@@ -9,6 +9,7 @@
 #include <engine/events/key_released.h>
 
 #include "components.h"
+#include "events.h"
 /*
 /// This systems is responbile of making sure that certain entities dont
 /// collide.
@@ -264,6 +265,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   PlayerInputSystem();
   void receive(const engine::events::KeyPressed &key_pressed);
   void receive(const engine::events::KeyReleased &key_released);
+  void receive(const BackToGame &resumeGame);
 
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;

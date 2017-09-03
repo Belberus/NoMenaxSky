@@ -7,6 +7,9 @@ struct EntityFactory3D : public EntityFactory {
   std::vector<entityx::Entity> MakeKnight(entityx::EntityManager &entities,
                                           const glm::vec3 &position) override;
 
+  std::vector<entityx::Entity> MakeWizard(entityx::EntityManager &entities,
+                                          const glm::vec3 &position) override;
+
   std::vector<entityx::Entity> MakeGhost(entityx::EntityManager &entities,
                                          const glm::vec3 &position) override;
 

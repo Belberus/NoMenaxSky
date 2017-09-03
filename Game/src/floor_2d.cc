@@ -46,15 +46,17 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<KnightAttackSystem>();
   systems.add<TurretAttackSystem>();
   systems.add<LancerAttackSystem>();
-  systems.add<ChestCollisionSystem>();
+  //systems.add<GhostAttackSystem>();
+  systems.add<ChestSystem>();
+  systems.add<LeverSystem>();
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
   systems.add<ShieldSystem>();
-  // systems.add<IgnoreCollisionSystem>(&entities, &events);
   systems.configure();
 }
 
 void Floor2D::Update(entityx::TimeDelta dt) {
+
   if(!paused){
     systems.update<PlayerInputSystem>(dt);
     systems.update<GhostIaSystem>(dt);
@@ -73,7 +75,9 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<KnightWalkingSystem>(dt);
     systems.update<SpriteAnimator>(dt);
     systems.update<KnightAttackSystem>(dt);
-    systems.update<ChestCollisionSystem>(dt);
+    //systems.update<GhostAttackSystem>(dt);
+    systems.update<ChestSystem>(dt);
+    systems.update<LeverSystem>(dt);
     systems.update<TurretAttackSystem>(dt);
     systems.update<LancerAttackSystem>(dt);
     systems.update<HealthSystem>(dt);
@@ -82,7 +86,6 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<SpriteRenderer>(dt);
     systems.update<ColliderRenderer>(dt);
     systems.update<ShieldSystem>(dt);
-    // systems.update<IgnoreCollisionSystem>(dt);
   }
   else{ //is paused
     systems.update<PlayerInputSystem>(dt);
@@ -100,9 +103,11 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<KnightAnimationSystem>(0);
     systems.update<LancerAnimationSystem>(0);
     systems.update<KnightWalkingSystem>(0);
+    //systems.update<GhostAttackSystem>(0);
     systems.update<SpriteAnimator>(0);
     systems.update<KnightAttackSystem>(0);
-    systems.update<ChestCollisionSystem>(0);
+    systems.update<ChestSystem>(0);
+    systems.update<LeverSystem>(0);
     systems.update<TurretAttackSystem>(0);
     systems.update<LancerAttackSystem>(0);
     systems.update<HealthSystem>(0);
@@ -111,9 +116,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<SpriteRenderer>(0);
     systems.update<ColliderRenderer>(0);
     systems.update<ShieldSystem>(0);
-    // systems.update<IgnoreCollisionSystem>(dt);
   }
-  
 }
 
 void Floor2D::OnPlayerEnteringDoor(Door entering_door) {

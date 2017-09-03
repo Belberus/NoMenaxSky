@@ -108,8 +108,17 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
   static const float turretSpeed;
 };
 
-class ChestCollisionSystem : public entityx::System<ChestCollisionSystem>,
-                           public entityx::Receiver<ChestCollisionSystem> {
+class ChestSystem : public entityx::System<ChestSystem>,
+                           public entityx::Receiver<ChestSystem> {
+public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class LeverSystem : public entityx::System<LeverSystem>,
+                           public entityx::Receiver<LeverSystem> {
 public:
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
@@ -240,6 +249,16 @@ class LancerAttackSystem : public entityx::System<LancerAttackSystem>,
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };
+
+class GhostAttackSystem : public entityx::System<GhostAttackSystem>,
+                           public entityx::Receiver<GhostAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 
 
 

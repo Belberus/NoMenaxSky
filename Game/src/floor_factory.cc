@@ -266,6 +266,32 @@ void FloorFactory::ParseRoomContents(
         return std::vector<entityx::Entity>({id});
       };
       room.entity_creators_.push_back(fn_cofre);
+    } else if (object.getType() == "palanca1") {
+      engine::components::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto fn_palanca =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<engine::components::common::Transform>(position);
+        id.assign<engine::components::two_d::AABBCollider>(collider);
+        id.assign<Lever>(1);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_palanca);
+    } else if (object.getType() == "palanca2") {
+      engine::components::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto fn_palanca =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<engine::components::common::Transform>(position);
+        id.assign<engine::components::two_d::AABBCollider>(collider);
+        id.assign<Lever>(2);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_palanca);
     }
   }
 }

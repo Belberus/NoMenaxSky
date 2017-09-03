@@ -54,6 +54,11 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
   return entities_created;
 }
 
+std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
+    entityx::EntityManager& entities, const glm::vec3& position) {
+  return std::vector<entityx::Entity>();
+}
+
 std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
     entityx::EntityManager& entities, const glm::vec3& position) {
   return std::vector<entityx::Entity>();

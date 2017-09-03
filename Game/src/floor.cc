@@ -38,23 +38,22 @@ void Floor::receive(const engine::events::Collision& collision) {
   auto player = collision_copy.e0.component<Player>();
   auto door = collision_copy.e1.component<Door>();
   auto bossDoor = collision_copy.e1.component<BossDoor>();
-/*
-  int enemies_in_the_room;
-  created_entities_.each<Ghost>(
-      [&](entityx::Entity entity, Ghost &ghost) {
-      enemies_in_the_room++;
-      });
-  created_entities_.each<Turret>(
-      [&](entityx::Entity entity, Ghost &ghost) {
-      enemies_in_the_room++;
-      });
-  created_entities_.each<Lancer>(
-      [&](entityx::Entity entity, Ghost &ghost) {
-      enemies_in_the_room++;
-      });*/
 
+  int enemies_in_the_room = 0;
+  for (auto e : entities.entities_with_components<Ghost>()) {
+    enemies_in_the_room++;
+  }
+  for (auto e : entities.entities_with_components<Turret>()) {
+    enemies_in_the_room++;
+  }
+  for (auto e : entities.entities_with_components<Lancer>()) {
+    enemies_in_the_room++;
+  }
+  for (auto e : entities.entities_with_components<Manueleth>()) {
+    enemies_in_the_room++;
+  }
 
-  if (door && player /*&& enemies_in_the_room == 0*/) {
+  if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
       Door previous_door(*door);
       rooms_[current_room_]->Unload(*this);
@@ -62,7 +61,7 @@ void Floor::receive(const engine::events::Collision& collision) {
       rooms_[current_room_]->Load(*this);
       OnPlayerEnteringDoor(previous_door);
     }
-  } else if (bossDoor && player /*&& enemies_in_the_room == 0*/) {
+  } else if (bossDoor && player && enemies_in_the_room == 0) {
     // Con puerta de boss
     auto bossDoor = collision_copy.e1.component<BossDoor>();
     auto player = collision_copy.e0.component<Player>();

@@ -10,6 +10,7 @@ class GameUi : public engine::core::Scene,public entityx::Receiver<GameUi> {
   void Update(entityx::TimeDelta dt) override;
   void receive(const Health &health);
   void receive(const Energy &energy);
+  void receive(const Player &player);
   private:
  	float init_x = 0;
 	float init_pos = 0;

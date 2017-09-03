@@ -875,7 +875,7 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
             Engine::GetInstance().Get<AudioManager>().PlaySound(
-              "assets/media/fx/manueleth/default/shockwave.wav", false, 1);
+              "assets/media/fx/manueleth/default/shockwave.wav", false, 0.6f);
       			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 160.0f , manueleth_position.z);
 
       			 for (entityx::Entity e0 : es.entities_with_components(
@@ -1226,7 +1226,7 @@ void KnightAttackSystem::receive(const Collision &collision) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
     Engine::GetInstance().Get<AudioManager>().PlaySound(
-        "assets/media/fx/manueleth/default/hit.wav", false, 0.7f);
+        "assets/media/fx/lanc/default/hit.wav", false, 0.5f);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -1419,6 +1419,7 @@ void ChestCollisionSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
 }
 
+bool check = true;
 void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
@@ -1432,8 +1433,14 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
-      e0_player->key = true;
-      std::cerr << "has encontrado la llave" << std::endl;
+      if(!e0_player->key){
+        e0_player->key = true;
+        check = true;
+        std::cerr << "has encontrado la llave" << std::endl;
+      } 
+      else {//ya la tiene, no des la turra
+        //TODO: texto de que ya la tienes -__-
+      }
     } else {
       // Mensaje de que la llave esta en otro cofre
       std::cerr << "la llave esta en otro cofre" << std::endl;
@@ -1443,8 +1450,14 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
-      e1_player->key = true;
-      std::cerr << "has encontrado la llave" << std::endl;
+      if(!e1_player->key){
+        e1_player->key = true;
+        check = true;
+        std::cerr << "has encontrado la llave" << std::endl;
+      }
+      else{
+        //TODO: QUE YA LA TIENES!!
+      }
     } else {
       // Mensaje de que la llave esta en otro cofre
       std::cerr << "la llave esta en otro cofre" << std::endl;
@@ -1454,7 +1467,16 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
 
 void ChestCollisionSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
-                                entityx::TimeDelta dt) {}
+                                entityx::TimeDelta dt) {
+  es.each<Player, Transform>(
+    [&](entityx::Entity entity, Player &player, Transform &transform){
+      if(player.key  && check){
+        check = false;
+        std::cout << "key!" << std::endl;
+        events.emit<Player>(player);
+      }
+    });
+}
 
 float timerLancer;
 
@@ -1514,6 +1536,8 @@ void LancerIaSystem::update(entityx::EntityManager &es,
 
         if (lancer.time_passed >= 5000.0f) {
         	lancer.is_attacking = true;
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/attack.wav", false, 0.8f);
         	if (lancer_position.y >= player_position.y) {
         		lancer.orientation = Lancer::LancerOrientation::DOWN;
         	} else if (lancer_position.y < player_position.y) {
@@ -1524,7 +1548,7 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
         	}*/
 
-        	if (distancia < 30.0f) {
+        	if (distancia < 30.0f) { 
         		lancer_physics.velocity =
 	              -1.0f *
 	              glm::normalize(player_position -

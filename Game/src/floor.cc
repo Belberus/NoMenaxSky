@@ -10,6 +10,11 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<Energy>(*this);
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
+  events.subscribe<Player>(*this);
+}
+
+void Floor::receive(const Player& player) {
+  parent_scene_->events.emit<Player>(player);
 }
 
 void Floor::receive(const PauseMenuEvent& pm){

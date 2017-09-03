@@ -22,10 +22,14 @@ class AudioManager {
   						glm::vec3 pos, float volume);
   void LoadSound(const std::string &sound_filename);
   void ResetSounds();
+  bool getMusicMute();
+  bool getFxMute();
 
  private:
   irrklang::ISoundEngine *sound_engine_fx_;
   irrklang::ISoundEngine *sound_engine_music_;
+  bool music_mute;
+  bool fx_mute;
 };
 }  // namespace core
 }  // namespace engine

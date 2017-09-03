@@ -66,8 +66,8 @@ void Game::Update(entityx::TimeDelta dt) {
         if (new_game){
           new_game = false;
           Engine::GetInstance().Get<AudioManager>().StopMusic();
-          // Engine::GetInstance().Get<AudioManager>().
-          //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
+          Engine::GetInstance().Get<AudioManager>().
+            PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
           //scenes_.push_back(
           //    FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));

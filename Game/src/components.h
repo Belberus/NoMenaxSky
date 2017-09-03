@@ -59,7 +59,7 @@ struct ArrowOptions {
 };
 
 struct PauseOptions {
-  enum Option { CONTINUAR, SALIR };
+  enum Option { CONTINUAR, SALIR, MUSIC, FX};
 
   Option option;
 

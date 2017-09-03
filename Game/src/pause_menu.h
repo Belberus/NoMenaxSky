@@ -15,7 +15,11 @@ class PauseMenu : public engine::core::Scene,
 
   void receive(const BackToMainMenu &event);
   void receive(const BackToGame &event);
+  void receive(const MuteMusic &muteMusic);
+  void receive(const MuteFx &muteFx);
  private:
+ 	entityx::Entity fx_option_;
+ 	entityx::Entity music_option_;
  	Game *parent_scene_;
 };
 #endif  // PAUSE_MENU_H_

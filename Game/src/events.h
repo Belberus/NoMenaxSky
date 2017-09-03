@@ -8,4 +8,6 @@ struct Death {};
 struct PauseMenuEvent {};
 struct BackToGame {};
 struct ResumeGame {};
+struct MuteMusic {};
+struct MuteFx {};
 #endif // EVENTS_H_

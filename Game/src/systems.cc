@@ -305,6 +305,7 @@ PauseInputSystem::PauseInputSystem()
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
 
+float timerEnter = 0.0f;
 void PauseInputSystem::update(entityx::EntityManager &es,
                              entityx::EventManager &events,
                              entityx::TimeDelta dt) {
@@ -318,10 +319,18 @@ void PauseInputSystem::update(entityx::EntityManager &es,
       switch (arrow_menu->option) {
         case PauseOptions::Option::CONTINUAR:
           break;
-        case PauseOptions::Option::SALIR:
+        case PauseOptions::Option::FX:
           new_position.y += 70;
           arrow_menu->option = PauseOptions::Option::CONTINUAR;
-          break;
+        break;
+        case PauseOptions::Option::MUSIC:
+          new_position.y += 70;
+          arrow_menu->option = PauseOptions::Option::FX;
+        break;       
+        case PauseOptions::Option::SALIR:
+          new_position.y += 70;
+          arrow_menu->option = PauseOptions::Option::MUSIC;
+        break;  
       }
     }
     if (down_pressed_) {
@@ -329,8 +338,16 @@ void PauseInputSystem::update(entityx::EntityManager &es,
       switch (arrow_menu->option) {
         case PauseOptions::Option::CONTINUAR:
           new_position.y -= 70;
-          arrow_menu->option = PauseOptions::Option::SALIR;
+          arrow_menu->option = PauseOptions::Option::FX;
           break;
+        case PauseOptions::Option::FX:
+          new_position.y -= 70;
+          arrow_menu->option = PauseOptions::Option::MUSIC;
+          break;
+        case PauseOptions::Option::MUSIC:
+          new_position.y -= 70;
+          arrow_menu->option = PauseOptions::Option::SALIR;
+          break;  
         case PauseOptions::Option::SALIR:
           break;
       }
@@ -338,13 +355,23 @@ void PauseInputSystem::update(entityx::EntityManager &es,
     if (enter_pressed_) {
       switch (arrow_menu->option) {
         case PauseOptions::Option::CONTINUAR:
-          std::cout << "mandamos back to game" << std::endl;
           events.emit<BackToGame>();
           break;
+        case PauseOptions::Option::FX:
+            events.emit<MuteFx>();
+          break;
+        case PauseOptions::Option::MUSIC:
+            events.emit<MuteMusic>();  
+          break;  
         case PauseOptions::Option::SALIR:
           events.emit<BackToMainMenu>();
           break;
       }
+      enter_pressed_ = false;
+    }
+    timerEnter += dt;
+    if(timerEnter >= 0.5){
+      timerEnter = 0;
     }
     transform->SetLocalPosition(new_position);
   }
@@ -795,7 +822,6 @@ void PlayerInputSystem::receive(const KeyReleased &key_released) {
 }
 
 void PlayerInputSystem::receive(const BackToGame &resumeGame){
-  std::cout << "despauso en systems" << std::endl;
   set_paused(false);
 }
 
@@ -837,7 +863,6 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   //   events.emit<BackToGame>();
   // }
 
-  //std::cout << "is paused: " << is_paused() << std::endl;
   if(!is_paused()){
     es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
                                                Player &player, Physics &physics,

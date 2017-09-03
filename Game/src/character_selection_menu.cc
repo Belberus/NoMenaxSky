@@ -1,3 +1,5 @@
+#include "character_selection_menu.h"
+
 #include <engine/components/common/camera.h>
 #include <engine/components/common/transform.h>
 #include <engine/components/two_d/sprite_animation.h>
@@ -12,8 +14,6 @@
 #include "entity_factory.h"
 #include "systems.h"
 #include "components.h"
-
-#include "character_selection_menu.h"
 
 using namespace engine::components::common;
 using namespace engine::components::two_d;

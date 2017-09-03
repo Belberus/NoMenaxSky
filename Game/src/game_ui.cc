@@ -16,7 +16,9 @@ using namespace engine::components::common;
 using namespace engine::components::two_d;
 using namespace engine::utils;
 
-GameUi::GameUi(Game* parent_scene) {
+GameUi::GameUi(Game* parent_scene) 
+  : parent_scene_(parent_scene) {
+
   // adding entities
   auto gui_texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -33,8 +35,8 @@ GameUi::GameUi(Game* parent_scene) {
       gui_texture_atlas,
       Rectangle(glm::vec2(3.0f, 20.0f), glm::vec2(10.0f, 1.0f)));
 
-  parent_scene->events.subscribe<Health>(*this);
-  parent_scene->events.subscribe<Energy>(*this);
+  parent_scene_->events.subscribe<Health>(*this);
+  parent_scene_->events.subscribe<Energy>(*this);
 
   auto stamina_bar = entities.create();
   stamina_bar.assign<Transform>(glm::vec3(300.0f, 520.0f, 0.0f), nullptr,

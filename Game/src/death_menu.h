@@ -10,9 +10,8 @@
 
 class DeathMenu : public engine::core::Scene,
 				  public entityx::Receiver<DeathMenu> {
-	
 	public:
-		DeathMenu(engine::core::Scene * parent_scene);
+		DeathMenu(engine::core::Scene *parent_scene);
 		void Update(entityx::TimeDelta dt) override;
 
 		void receive(const BackToMainMenu &event);

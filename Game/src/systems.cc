@@ -625,6 +625,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
     position->SetLocalPosition(new_position);
 
     if (selection_enter_pressed_){
+      selection_enter_pressed_ = false;
       events.emit<StartGame>();
     }
 
@@ -649,6 +650,34 @@ void SelectionInputSystem::receive(const KeyReleased &key_released) {
   } else if (key_released.key == GLFW_KEY_LEFT) {
     selection_left_pressed_ = false;
   }
+}
+
+DeathInputSystem::DeathInputSystem() :
+    selection_enter_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void DeathInputSystem::update(entityx::EntityManager &es, 
+  entityx::EventManager &events, entityx::TimeDelta dt){
+
+  if (selection_enter_pressed_){
+    selection_enter_pressed_ = false;
+    events.emit<BackToMainMenu>();
+  }
+}
+
+void DeathInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } 
+}
+
+void DeathInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } 
 }
 
 const float PlayerInputSystem::kSpeed = 140.0f;
@@ -1423,12 +1452,16 @@ float lastPlayerHP;
 void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
                           entityx::TimeDelta dt) {
+  bool es_player = false;
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (entity.component<Player>()) {
+      es_player = true;
       if (lastPlayerHP != health.hp && health.hp != health.init_hp) {
         events.emit<Health>(health);
         lastPlayerHP = health.hp;
       }
+    } else {
+      es_player = false;
     }
     if (health.hp <= 0.0f) {
       Engine::GetInstance().Get<AudioManager>().PlaySound(health.death_fx,
@@ -1468,7 +1501,13 @@ void HealthSystem::update(entityx::EntityManager &es,
               entity_hitbox.destroy();
             }
           });
+      
       entity.destroy();
+
+      if (es_player) {
+        std::cout << "muerto" << std::endl;
+        events.emit<Death>();
+      }
     }
   });
 }

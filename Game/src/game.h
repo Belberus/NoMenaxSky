@@ -16,6 +16,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
     kOptionsMenu,
     kPauseMenu,
     kCharSelMenu,
+    kDeathMenu,
     kFloor1,
     kFloor2,
     kFloor3,
@@ -28,6 +29,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void receive(const OptionMenu &event);
   void receive(const BackToMainMenu &event);
   void receive(const CharSelect &event);
+  void receive(const Death &event);
 
  private:
   State current_state_;

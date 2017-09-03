@@ -1,3 +1,5 @@
+#include "death_menu.h"
+
 #include <engine/components/common/camera.h>
 #include <engine/components/common/transform.h>
 #include <engine/components/two_d/sprite_animation.h>
@@ -13,7 +15,6 @@
 #include "systems.h"
 #include "components.h"
 
-#include "death_menu.h"
 
 using namespace engine::components::common;
 using namespace engine::components::two_d;
@@ -32,12 +33,35 @@ DeathMenu::DeathMenu(engine::core::Scene *parent_scene)
   	menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
   	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
 
+  	entityx::ComponentHandle<Characters> character;
+
+  	auto tex = nullptr;
+
+  	std::vector<engine::utils::Rectangle> death_knight;
+  	death_knight.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
+
+  	// Lo mismo para wizard
+
+  	for (entityx::Entity e :
+  			entities.entities_with_components(character)){
+  		if (character->role == Characters::Role::KNIGHT){
+
+  		} else {
+
+  		}
+  	}
+
+
+    systems.add<engine::systems::two_d::SpriteRenderer>();
+    systems.add<DeathInputSystem>();
+    systems.configure();
 }
 
-void Update(entityx::TimeDelta dt) {
+void DeathMenu::Update(entityx::TimeDelta dt) {
+    systems.update<DeathInputSystem>(dt);
   	systems.update<engine::systems::two_d::SpriteRenderer>(dt);
 }
 
-void receive(const BackToMainMenu &event) {
-	parent_scene_->events.emit<BackToMainMenu>(event);
+void DeathMenu::receive(const BackToMainMenu &back_to_main) {
+	parent_scene_->events.emit<BackToMainMenu>(back_to_main);
 }

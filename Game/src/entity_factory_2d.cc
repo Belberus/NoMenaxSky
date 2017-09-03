@@ -180,6 +180,164 @@ std::vector<entityx::Entity> EntityFactory2D::MakeKnight(
   return entities_created;
 }
 
+std::vector<entityx::Entity> EntityFactory2D::MakeWizard(
+    entityx::EntityManager &entities, const glm::vec3 &position) {
+  std::vector<entityx::Entity> entities_created;
+  auto player = entities.create();
+  player.assign<Physics>(glm::vec3(0, 0, 0));
+  player.assign<Transform>(position);
+  player.assign<Player>(Player::Orientation::DOWN);
+  player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
+  player.assign<Energy>(100.0f, 100.0f);
+  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+
+  std::vector<ColorAnimation::KeyFrame> color_frames;
+  color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+  player.assign<ColorAnimation>(std::move(color_frames));
+
+  std::vector<engine::utils::Rectangle> moving_bottom;
+  moving_bottom.emplace_back(glm::vec2(3, 137), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> moving_top;
+  moving_top.emplace_back(glm::vec2(22, 137), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> moving_right;
+  moving_right.emplace_back(glm::vec2(41, 137), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> moving_left;
+  moving_left.emplace_back(glm::vec2(60, 137), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> defend_bottom;
+  defend_bottom.emplace_back(glm::vec2(3, 118), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> defend_top;
+  defend_top.emplace_back(glm::vec2(22, 118), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> defend_right;
+  defend_right.emplace_back(glm::vec2(41, 118), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> defend_left;
+  defend_left.emplace_back(glm::vec2(60, 118), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> attack_bottom;
+  attack_bottom.emplace_back(glm::vec2(3, 99), glm::vec2(15, 14));
+  attack_bottom.emplace_back(glm::vec2(22, 99), glm::vec2(15, 14));
+  attack_bottom.emplace_back(glm::vec2(41, 99), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> attack_top;
+  attack_top.emplace_back(glm::vec2(3., 80), glm::vec2(15, 14));
+  attack_top.emplace_back(glm::vec2(22, 80), glm::vec2(15, 14));
+  attack_top.emplace_back(glm::vec2(41, 80), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> attack_right;
+  attack_right.emplace_back(glm::vec2(3., 61), glm::vec2(15, 14));
+  attack_right.emplace_back(glm::vec2(22, 61), glm::vec2(15, 14));
+  attack_right.emplace_back(glm::vec2(41, 61), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> attack_left;
+  attack_left.emplace_back(glm::vec2(3., 42), glm::vec2(15, 14));
+  attack_left.emplace_back(glm::vec2(22, 42), glm::vec2(15, 14));
+  attack_left.emplace_back(glm::vec2(41, 42), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> moving;
+  moving.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
+  moving.emplace_back(glm::vec2(22, 23), glm::vec2(15, 14));
+  moving.emplace_back(glm::vec2(41, 23), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> stand;
+  stand.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
+
+  std::vector<engine::utils::Rectangle> death;
+  death.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
+
+  auto texture_atlas =
+      Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+          "assets/spritesheets/mago.png");
+
+  SpriteAnimation::AnimationClip moving_bottom_anim(
+      "moving_bottom", texture_atlas, moving_bottom, 100.0f);
+  SpriteAnimation::AnimationClip moving_top_anim("moving_top", texture_atlas,
+                                                 moving_top, 100.0f);
+  SpriteAnimation::AnimationClip moving_right_anim(
+      "moving_right", texture_atlas, moving_right, 100.0f);
+  SpriteAnimation::AnimationClip moving_left_anim("moving_left", texture_atlas,
+                                                  moving_left, 100.0f);
+  SpriteAnimation::AnimationClip defend_bottom_anim(
+      "defend_bottom", texture_atlas, defend_bottom, 100.0f);
+  SpriteAnimation::AnimationClip defend_top_anim("defend_top", texture_atlas,
+                                                 defend_top, 100.0f);
+  SpriteAnimation::AnimationClip defend_right_anim(
+      "defend_right", texture_atlas, defend_right, 100.0f);
+  SpriteAnimation::AnimationClip defend_left_anim("defend_left", texture_atlas,
+                                                  defend_left, 100.0f);
+  SpriteAnimation::AnimationClip attack_bottom_anim(
+      "attack_bottom", texture_atlas, attack_bottom, 100.0f);
+  SpriteAnimation::AnimationClip attack_top_anim("attack_top", texture_atlas,
+                                                 attack_top, 100.0f);
+  SpriteAnimation::AnimationClip attack_right_anim(
+      "attack_right", texture_atlas, attack_right, 100.0f);
+  SpriteAnimation::AnimationClip attack_left_anim("attack_left", texture_atlas,
+                                                  attack_left, 100.0f);
+  SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
+                                             100.0f);
+  SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand,
+                                             100.0f);
+  SpriteAnimation::AnimationClip death_anim("death", texture_atlas, death,
+                                            100.0f);
+
+  SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
+                        moving_left_anim, defend_bottom_anim, defend_top_anim,
+                        defend_right_anim, defend_left_anim, attack_bottom_anim,
+                        attack_top_anim, attack_right_anim, attack_left_anim,
+                        death_anim});
+
+  player.assign<SpriteAnimation>(anim);
+  player.assign<Sprite>(texture_atlas);
+  entities_created.push_back(player);
+
+  // adding legs
+  auto legs = entities.create();
+  legs.assign<Physics>(glm::vec3(0, 0, 0));
+  legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                         player.component<Transform>().get());
+
+  SpriteAnimation legs_anim({moving_anim, stand_still});
+  legs.assign<SpriteAnimation>(legs_anim);
+  legs.assign<Legs>();
+  legs.assign<Sprite>(texture_atlas);
+  ParentLink parentLink;
+  parentLink.owner = player;
+  legs.assign<ParentLink>(parentLink);
+  entities_created.push_back(legs);
+
+  // adding sword entity
+  auto sword_hitbox = entities.create();
+  sword_hitbox.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
+                                 player.component<Transform>().get());
+  sword_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                    glm::vec2(6.0f, 6.0f), true);
+  sword_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+  MeleeWeapon weapon_cmp;
+  weapon_cmp.damage = 10.0f;
+  weapon_cmp.owner = player;
+  weapon_cmp.drawn = false;
+  sword_hitbox.assign<MeleeWeapon>(weapon_cmp);
+  entities_created.push_back(sword_hitbox);
+
+  // adding shield entity
+  auto shield = entities.create();
+  shield.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
+                                 player.component<Transform>().get());
+  shield.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                    glm::vec2(8.0f, 3.0f), true);
+  shield.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+  shield.assign<Shield>(player);
+  
+  std::vector<ColorAnimation::KeyFrame> color_frames_shield;
+  color_frames_shield.emplace_back(glm::vec3(-0.3f, 1.0f, 0.0f), 0.2f);
+  color_frames_shield.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+  shield.assign<ColorAnimation>(std::move(color_frames_shield));
+
+  entities_created.push_back(shield);
+
+  return entities_created;
+}
+
 std::vector<entityx::Entity> EntityFactory2D::MakeLancer(entityx::EntityManager &entities, const glm::vec3 &position){
     std::vector<entityx::Entity> entities_created;
     entityx::Entity lancer = entities.create();

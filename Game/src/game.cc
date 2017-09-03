@@ -7,7 +7,7 @@
 #include "options_menu.h"
 #include "character_selection_menu.h"
 #include "death_menu.h"
-
+#include "pause_menu.h"
 
 #include "floor_factory.h"
 
@@ -28,6 +28,8 @@ Game::Game()
   events.subscribe<BackToMainMenu>(*this);
   events.subscribe<StartGame>(*this);
   events.subscribe<Death>(*this);
+  events.subscribe<PauseMenuEvent>(*this);
+  events.subscribe<BackToGame>(*this);
 
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
@@ -56,6 +58,8 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.pop_back(); // Sacamos el floor
         scenes_.pop_back(); // Sacamos la UI
         scenes_.push_back(std::make_unique<DeathMenu>(this));
+      case State::kPauseMenu:
+        scenes_.push_back(std::make_unique<PauseMenu>(this));
         break;
       case State::kFloor1:
         Engine::GetInstance().Get<AudioManager>().StopMusic();
@@ -64,6 +68,9 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.clear();
         //scenes_.push_back(
         //    FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
+        /*scenes_.push_back(
+            FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
+        */ 
         scenes_.push_back(
            FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
         scenes_.push_back(std::make_unique<GameUi>(this));
@@ -118,3 +125,12 @@ void Game::receive(const Death& event){
 
   std::cout << "cambiando a menu muerte" << std::endl;
   next_state_ = State::kDeathMenu; }
+
+
+void Game::receive(const PauseMenuEvent& event) {
+  next_state_ = State::kPauseMenu;
+}
+
+void Game::receive(const BackToGame& event) {
+  scenes_.pop_back();
+}

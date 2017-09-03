@@ -580,6 +580,7 @@ void OptionsInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+
 SelectionInputSystem::SelectionInputSystem() :
     selection_enter_pressed_(false), selection_right_pressed_(false), selection_left_pressed_(false) {
 
@@ -695,6 +696,7 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_LEFT, false);
   keys_.emplace(GLFW_KEY_RIGHT, false);
   keys_.emplace(GLFW_KEY_SPACE, false);
+  keys_.emplace(GLFW_KEY_ESCAPE, false);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
@@ -711,6 +713,7 @@ void PlayerInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+bool pausedM = false;
 void PlayerInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
@@ -739,143 +742,154 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
   }
 
-  es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
-                                             Player &player, Physics &physics,
-                                             KnightAttack &attack) {
-    glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-    if (keys_[GLFW_KEY_W]) {
-      player.orientation = Player::Orientation::UP;
-      new_velocity.y += 1.0f;
-    }
-    if (keys_[GLFW_KEY_S]) {
-      player.orientation = Player::Orientation::DOWN;
-      new_velocity.y += -1.0f;
-    }
-    if (keys_[GLFW_KEY_A]) {
-      player.orientation = Player::Orientation::LEFT;
-      new_velocity.x += -1.0f;
-    }
-    if (keys_[GLFW_KEY_D]) {
-      player.orientation = Player::Orientation::RIGHT;
-      new_velocity.x += 1.0f;
-    }
-    if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
-      new_velocity = glm::normalize(new_velocity) * kSpeed;
-      // play sound
-    }
-    physics.velocity = new_velocity;
-    shield_info->time_passed += (dt * 1000.0f);
-    time_passed_since_last_attack_ += (dt * 1000.0f);
-    if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
-    	if (keys_[GLFW_KEY_UP]) {
-    		shield_info->active = true;
-	        shield_info->orientation = Shield::Orientation::UP;
-	        shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
-	        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
-	      } else if (keys_[GLFW_KEY_DOWN]) {
-	      	shield_info->active = true;
-	        shield_info->orientation = Shield::Orientation::DOWN;
-	        shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
-	        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
-	      } else if (keys_[GLFW_KEY_LEFT]) {
-	      	shield_info->active = true;
-	        shield_info->orientation = Shield::Orientation::LEFT;
-	        shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
-	        shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
-	      } else if (keys_[GLFW_KEY_RIGHT]) {
-	      	shield_info->active = true;
-	        shield_info->orientation = Shield::Orientation::RIGHT;
-	        shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
-	        shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
-	      } else {
-	        shield_info->active = false;
-	        weapon_info->drawn = false;
-	        attack.is_attacking = false;
-	      }
-    } 
-    else {
-      if(shield_info->owner.component<Energy>()->energy <= 0.0f){
-        Engine::GetInstance().Get<AudioManager>().PlaySound(
-        "assets/media/fx/gaunt/default/low_nrg.wav", false, 0.5f);
-      }
-    	if(shield_info->time_passed >= 2000.0f) {
-    		shield_info->time_passed = 0.0f;
-    		float actual_energy = (shield_info->owner).component<Energy>()->energy;
-    		if ((actual_energy + 20.0f) >= 100.0f) {
-    			(shield_info->owner).component<Energy>()->energy = 100.0f;
-    		} else (shield_info->owner).component<Energy>()->energy += 20.0f;
-    	}
-    	shield_info->active = false;
-    	weapon_info->drawn = false;  
-	    if (time_passed_since_last_attack_ >= PlayerInputSystem::kAttackDuration) {
-	      time_passed_since_last_attack_ = 0.0f;
-	      attack.is_attacking = true;
-	      weapon_info->drawn = true;
-	      // HACK: dont harcode the weapon info
-	      // use actual player width, height and transform to position the weapon
-	      if (keys_[GLFW_KEY_UP]) {
-	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
-	      		attack.is_attacking = false;
-	        	weapon_info->drawn = false;
-	        	shield_info->active = true;
-	        	shield_info->orientation = Shield::Orientation::UP;
-		        shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
-		        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
-	      	} else {
-	      		attack.orientation = KnightAttack::Orientation::UP;	
-		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
-	      	}       
-	      } else if (keys_[GLFW_KEY_DOWN]) {
-	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
-	      		attack.is_attacking = false;
-	        	weapon_info->drawn = false;
-	        	shield_info->active = true;
-	        	shield_info->orientation = Shield::Orientation::DOWN;
-	        	shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
-	        	shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
-	      	} else {
-	      		attack.orientation = KnightAttack::Orientation::DOWN;
-		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
-	      	}  
-	      } else if (keys_[GLFW_KEY_LEFT]) {
-	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
-	      		attack.is_attacking = false;
-	        	weapon_info->drawn = false;
-	        	shield_info->active = true;
-	        	shield_info->orientation = Shield::Orientation::LEFT;
-	        	shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
-	        	shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
-	      	} else {
-	      		attack.orientation = KnightAttack::Orientation::LEFT;
-		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-		        weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
-	      	}   
-	      } else if (keys_[GLFW_KEY_RIGHT]) {
-	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
-	      		attack.is_attacking = false;
-	        	weapon_info->drawn = false;
-	        	shield_info->active = true;
-	        	shield_info->orientation = Shield::Orientation::RIGHT;
-	        	shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
-	        	shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
-	      	} else {
-	      		attack.orientation = KnightAttack::Orientation::RIGHT;
-		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
-		        weapon_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
-	      	}	        
-	      } else {
-	        attack.is_attacking = false;
-	        weapon_info->drawn = false;
-	      }
+  if(keys_[GLFW_KEY_ESCAPE] && !keys_[GLFW_KEY_SPACE] && !pausedM) {
+    pausedM = true;
+    events.emit<PauseMenuEvent>();
+  }
+  if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
+    pausedM = false;
+    events.emit<BackToGame>();
+  }
 
-	      if (attack.is_attacking) {
-	        // play sound
-	      }
-	    }  	
-    }   
-  });
+  if(!pausedM){
+    es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
+                                               Player &player, Physics &physics,
+                                               KnightAttack &attack) {
+      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+      if (keys_[GLFW_KEY_W]) {
+        player.orientation = Player::Orientation::UP;
+        new_velocity.y += 1.0f;
+      }
+      if (keys_[GLFW_KEY_S]) {
+        player.orientation = Player::Orientation::DOWN;
+        new_velocity.y += -1.0f;
+      }
+      if (keys_[GLFW_KEY_A]) {
+        player.orientation = Player::Orientation::LEFT;
+        new_velocity.x += -1.0f;
+      }
+      if (keys_[GLFW_KEY_D]) {
+        player.orientation = Player::Orientation::RIGHT;
+        new_velocity.x += 1.0f;
+      }
+      if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
+        new_velocity = glm::normalize(new_velocity) * kSpeed;
+        // play sound
+      }
+      physics.velocity = new_velocity;
+      shield_info->time_passed += (dt * 1000.0f);
+      time_passed_since_last_attack_ += (dt * 1000.0f);
+      if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
+      	if (keys_[GLFW_KEY_UP]) {
+      		shield_info->active = true;
+  	        shield_info->orientation = Shield::Orientation::UP;
+  	        shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+  	        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+  	      } else if (keys_[GLFW_KEY_DOWN]) {
+  	      	shield_info->active = true;
+  	        shield_info->orientation = Shield::Orientation::DOWN;
+  	        shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+  	        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+  	      } else if (keys_[GLFW_KEY_LEFT]) {
+  	      	shield_info->active = true;
+  	        shield_info->orientation = Shield::Orientation::LEFT;
+  	        shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+  	        shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+  	      } else if (keys_[GLFW_KEY_RIGHT]) {
+  	      	shield_info->active = true;
+  	        shield_info->orientation = Shield::Orientation::RIGHT;
+  	        shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+  	        shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+  	      } else {
+  	        shield_info->active = false;
+  	        weapon_info->drawn = false;
+  	        attack.is_attacking = false;
+  	      }
+      } 
+      else {
+        if(shield_info->owner.component<Energy>()->energy <= 0.0f){
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/fx/gaunt/default/low_nrg.wav", false, 0.5f);
+        }
+      	if(shield_info->time_passed >= 2000.0f) {
+      		shield_info->time_passed = 0.0f;
+      		float actual_energy = (shield_info->owner).component<Energy>()->energy;
+      		if ((actual_energy + 20.0f) >= 100.0f) {
+      			(shield_info->owner).component<Energy>()->energy = 100.0f;
+      		} else (shield_info->owner).component<Energy>()->energy += 20.0f;
+      	}
+      	shield_info->active = false;
+      	weapon_info->drawn = false;  
+  	    if (time_passed_since_last_attack_ >= PlayerInputSystem::kAttackDuration) {
+  	      time_passed_since_last_attack_ = 0.0f;
+  	      attack.is_attacking = true;
+  	      weapon_info->drawn = true;
+  	      // HACK: dont harcode the weapon info
+  	      // use actual player width, height and transform to position the weapon
+  	      if (keys_[GLFW_KEY_UP]) {
+  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
+  	      		attack.is_attacking = false;
+  	        	weapon_info->drawn = false;
+  	        	shield_info->active = true;
+  	        	shield_info->orientation = Shield::Orientation::UP;
+  		        shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+  		        shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+  	      	} else {
+  	      		attack.orientation = KnightAttack::Orientation::UP;	
+  		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+  		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+  	      	}       
+  	      } else if (keys_[GLFW_KEY_DOWN]) {
+  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
+  	      		attack.is_attacking = false;
+  	        	weapon_info->drawn = false;
+  	        	shield_info->active = true;
+  	        	shield_info->orientation = Shield::Orientation::DOWN;
+  	        	shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+  	        	shield_collider->half_size  = glm::vec2(8.0f, 3.0f);
+  	      	} else {
+  	      		attack.orientation = KnightAttack::Orientation::DOWN;
+  		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+  		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+  	      	}  
+  	      } else if (keys_[GLFW_KEY_LEFT]) {
+  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
+  	      		attack.is_attacking = false;
+  	        	weapon_info->drawn = false;
+  	        	shield_info->active = true;
+  	        	shield_info->orientation = Shield::Orientation::LEFT;
+  	        	shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+  	        	shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+  	      	} else {
+  	      		attack.orientation = KnightAttack::Orientation::LEFT;
+  		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+  		        weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+  	      	}   
+  	      } else if (keys_[GLFW_KEY_RIGHT]) {
+  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
+  	      		attack.is_attacking = false;
+  	        	weapon_info->drawn = false;
+  	        	shield_info->active = true;
+  	        	shield_info->orientation = Shield::Orientation::RIGHT;
+  	        	shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+  	        	shield_collider->half_size  = glm::vec2(3.0f, 8.0f);
+  	      	} else {
+  	      		attack.orientation = KnightAttack::Orientation::RIGHT;
+  		        weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+  		        weapon_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+  	      	}	        
+  	      } else {
+  	        attack.is_attacking = false;
+  	        weapon_info->drawn = false;
+  	      }
+
+  	      if (attack.is_attacking) {
+  	        // play sound
+  	      }
+  	    }  	
+      }   
+    });
+  }
 }
 
 float timerTurret;
@@ -962,7 +976,7 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
             Engine::GetInstance().Get<AudioManager>().PlaySound(
-              "assets/media/fx/manueleth/default/shockwave.wav", false, 1);
+              "assets/media/fx/manueleth/default/shockwave.wav", false, 0.6f);
       			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 160.0f , manueleth_position.z);
 
       			 for (entityx::Entity e0 : es.entities_with_components(
@@ -1307,13 +1321,13 @@ void KnightAttackSystem::receive(const Collision &collision) {
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
     // Lancero
-  } else if (e0_weapon && e0_weapon->drawn &&
+  } else if (e0_weapon && e0_weapon->drawn && 
              e0_weapon->owner.component<Player>() &&
              collision_copy.e1.component<Lancer>()) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
     Engine::GetInstance().Get<AudioManager>().PlaySound(
-        "assets/media/fx/manueleth/default/hit.wav", false, 0.7f);
+        "assets/media/fx/lanc/default/hit.wav", false, 0.7f);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -1512,11 +1526,12 @@ void HealthSystem::update(entityx::EntityManager &es,
   });
 }
 
-void ChestCollisionSystem::configure(entityx::EventManager &event_manager) {
+void ChestSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
 }
 
-void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
+bool check = true;
+void ChestSystem::receive(const engine::events::Collision &collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
     return;
@@ -1529,8 +1544,14 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
-      e0_player->key = true;
-      std::cerr << "has encontrado la llave" << std::endl;
+      if(!e0_player->key){
+        e0_player->key = true;
+        check = true;
+        std::cerr << "has encontrado la llave" << std::endl;
+      } 
+      else {//ya la tiene, no des la turra
+        //TODO: texto de que ya la tienes -__-
+      }
     } else {
       // Mensaje de que la llave esta en otro cofre
       std::cerr << "la llave esta en otro cofre" << std::endl;
@@ -1540,8 +1561,14 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
-      e1_player->key = true;
-      std::cerr << "has encontrado la llave" << std::endl;
+      if(!e1_player->key){
+        e1_player->key = true;
+        check = true;
+        std::cerr << "has encontrado la llave" << std::endl;
+      }
+      else{
+        //TODO: QUE YA LA TIENES!!
+      }
     } else {
       // Mensaje de que la llave esta en otro cofre
       std::cerr << "la llave esta en otro cofre" << std::endl;
@@ -1549,9 +1576,17 @@ void ChestCollisionSystem::receive(const engine::events::Collision &collision) {
   }
 }
 
-void ChestCollisionSystem::update(entityx::EntityManager &es,
+void ChestSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
-                                entityx::TimeDelta dt) {}
+                                entityx::TimeDelta dt) {
+  es.each<Player, Transform>(
+    [&](entityx::Entity entity, Player &player, Transform &transform){
+      if(player.key  && check){
+        check = false;
+        events.emit<Player>(player);
+      }
+    });
+}
 
 float timerLancer;
 
@@ -1611,6 +1646,8 @@ void LancerIaSystem::update(entityx::EntityManager &es,
 
         if (lancer.time_passed >= 5000.0f) {
         	lancer.is_attacking = true;
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/attack.wav", false, 0.8f);
         	if (lancer_position.y >= player_position.y) {
         		lancer.orientation = Lancer::LancerOrientation::DOWN;
         	} else if (lancer_position.y < player_position.y) {
@@ -1621,7 +1658,7 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
         	}*/
 
-        	if (distancia < 30.0f) {
+        	if (distancia < 30.0f) { 
         		lancer_physics.velocity =
 	              -1.0f *
 	              glm::normalize(player_position -
@@ -1743,5 +1780,69 @@ void LancerAttackSystem::receive(const Collision &collision) {
 }
 
 void LancerAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}
+
+
+void GhostAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void GhostAttackSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<GhostHitBox>();
+  auto e1_projectile = collision_copy.e1.component<GhostHitBox>();
+
+  if (e0_projectile && collision_copy.e1.component<Player>()){
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
+
+  } else if (e1_projectile && collision_copy.e0.component<Player>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+    e0_color_animation->Play();
+  } 
+}
+
+void GhostAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}
+
+void LeverSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void LeverSystem::receive(const engine::events::Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_player = collision_copy.e0.component<Player>();
+  auto e1_player = collision_copy.e1.component<Player>();
+
+  if (e0_player && collision_copy.e1.component<Lever>()) {
+    auto lever = collision_copy.e1.component<Lever>();
+    lever->activated = true;
+    std::cerr << "Palanca activada" << std::endl;  
+  } else if (e1_player && collision_copy.e0.component<Lever>()) {
+    auto lever = collision_copy.e0.component<Lever>();
+    lever->activated = true;
+    std::cerr << "Palanca activada" << std::endl;
+  }
+}
+
+void LeverSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}

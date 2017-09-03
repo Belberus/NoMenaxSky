@@ -9,6 +9,8 @@ struct EntityFactory {
   virtual std::vector<entityx::Entity> MakeKnight(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
+  virtual std::vector<entityx::Entity> MakeWizard(
+      entityx::EntityManager &entities, const glm::vec3 &position) = 0;
   virtual std::vector<entityx::Entity> MakeGhost(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 

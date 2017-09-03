@@ -5,4 +5,6 @@ struct OptionMenu {};
 struct BackToMainMenu {};
 struct CharSelect {};
 struct Death {};
+struct PauseMenuEvent {};
+struct BackToGame {};
 #endif // EVENTS_H_

@@ -196,6 +196,12 @@ struct Chest {
 	bool key;
 };
 
+struct Lever {
+	Lever(int id) : id(id), activated(false) {}
+	int id;
+	bool activated;
+};
+
 struct Trap {
 	enum Orientation { UP, DOWN, RIGHT, LEFT};
 	Orientation orientation;

@@ -35,8 +35,9 @@ GameUi::GameUi(Game* parent_scene)
       gui_texture_atlas,
       Rectangle(glm::vec2(3.0f, 20.0f), glm::vec2(10.0f, 1.0f)));
 
-  parent_scene_->events.subscribe<Health>(*this);
-  parent_scene_->events.subscribe<Energy>(*this);
+  parent_scene->events.subscribe<Health>(*this);
+  parent_scene->events.subscribe<Energy>(*this);
+  parent_scene->events.subscribe<Player>(*this);
 
   auto stamina_bar = entities.create();
   stamina_bar.assign<Transform>(glm::vec3(300.0f, 520.0f, 0.0f), nullptr,
@@ -45,6 +46,15 @@ GameUi::GameUi(Game* parent_scene)
       gui_texture_atlas,
       Rectangle(glm::vec2(3.0f, 17.1f), glm::vec2(10.0f, 1.0f)));
   stamina_bar.assign<D2Mode>();
+
+  auto key_bar = entities.create();
+  key_bar.assign<Transform>(glm::vec3(500.0f, 520.0f, 0.0f), nullptr,
+                               glm::vec3(2.0f, 2.0f, 2.0f));
+  key_bar.assign<Sprite>(
+      gui_texture_atlas,
+      Rectangle(glm::vec2(3.0f, 3.0f), glm::vec2(16.0f, 8.0f)));
+  key_bar.assign<MenuImage>();
+
   // adding systems
   systems.add<SpriteRenderer>();
   systems.configure();
@@ -97,5 +107,19 @@ void GameUi::receive(const Health& health) {
       transform.SetLocalScale(scale);
       float newpos = init_pos - (170 - ((170*(health.hp / health.init_hp))))/2.0f;
       transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
+    });
+}
+
+
+void GameUi::receive(const Player& player){
+  entities.each<Transform, MenuImage>(
+    [&](entityx::Entity key_bar, Transform &transform,
+      MenuImage &mi){
+        if(player.key){
+          transform.SetLocalScale(glm::vec3(2,2,2));
+        }
+        else{
+          transform.SetLocalScale(glm::vec3(0.0f,0.0f,0.0f));
+        }
     });
 }

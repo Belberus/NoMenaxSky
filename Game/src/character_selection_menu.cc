@@ -51,7 +51,7 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 	entityx::Entity knight = entities.create();
 
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-      "assets/menu/ppc_front.png");
+      "assets/personajes_menu/knight.png");
 
 	knight.assign<Transform>(glm::vec3(-150, 125, 0), 
 		menu_canvas_transform, glm::vec3(10.0f));
@@ -61,7 +61,7 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 	entityx::Entity wizard = entities.create();
 
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-      "assets/menu/ppc_front.png");
+      "assets/personajes_menu/wizard.png");
 
 	wizard.assign<Transform>(glm::vec3(150, 125, 0), 
 		menu_canvas_transform, glm::vec3(10.0f));

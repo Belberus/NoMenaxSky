@@ -77,3 +77,11 @@ void Floor3D::OnPlayerEnteringDoor(Door entering_door) {
 void Floor3D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {}
 
 void Floor3D::OnPlayerEnteringBossDoorWithoutKey() {}
+
+void Floor3D::PauseGame(bool pause){
+  paused = pause;
+}
+
+bool Floor3D::GetPaused(){
+  return paused;
+}

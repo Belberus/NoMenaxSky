@@ -125,7 +125,9 @@ void Floor::Room::Load(Floor& floor) {
       //entityx::Entity id = floor.entities.create();
       auto new_entites = fn(floor.entities);
       for(auto &e : new_entites){
-        if(e.component<Health>()){
+        if((e.component<Health>()) || (e.component<TurretLegs>())
+          || (e.component<LancerLegs>()) || (e.component<GhostHitBox>())
+          || (e.component<LancerHitBox>())){
           e.destroy();
         }
       }

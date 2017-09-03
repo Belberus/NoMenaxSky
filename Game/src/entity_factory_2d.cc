@@ -350,7 +350,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeLancer(entityx::EntityManager 
     color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     lancer.assign<ColorAnimation>(std::move(color_frames));
     lancer.assign<Lancer>();
-    lancer.assign<Health>(30.0f, 30.0f, "assets/media/fx/lanc/default/mov.wav" ); // CAMBIAR POR EL DE MUERTE CUANDO ESTE
+    lancer.assign<Health>(30.0f, 30.0f, "assets/media/fx/lanc/default/death.wav" );
 
     std::vector<engine::utils::Rectangle> moving_bottom;
     moving_bottom.emplace_back(glm::vec2(3, 177), glm::vec2(25, 25));

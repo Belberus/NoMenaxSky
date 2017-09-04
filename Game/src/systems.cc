@@ -322,7 +322,7 @@ void MenuInputSystem::update(entityx::EntityManager &es,
     if (enter_pressed_) {
       switch (arrow_menu->option) {
         case ArrowMenu::Option::JUGAR:
-          events.emit<StartGame>();
+          events.emit<CharSelect>();
           break;
         case ArrowMenu::Option::OPCIONES:
           events.emit<OptionMenu>();
@@ -347,6 +347,104 @@ void MenuInputSystem::receive(const KeyPressed &key_pressed) {
 }
 
 void MenuInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_UP) {
+    up_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_DOWN) {
+    down_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_ENTER) {
+    enter_pressed_ = false;
+  }
+}
+
+PauseInputSystem::PauseInputSystem()
+    : up_pressed_(false), down_pressed_(false), enter_pressed_(false) {
+  Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+  Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+float timerEnter = 0.0f;
+void PauseInputSystem::update(entityx::EntityManager &es,
+                             entityx::EventManager &events,
+                             entityx::TimeDelta dt) {
+  entityx::ComponentHandle<PauseOptions> arrow_menu;
+  entityx::ComponentHandle<Transform> transform;
+  for (entityx::Entity entity :
+       es.entities_with_components(arrow_menu, transform)) {
+    auto new_position = transform->GetLocalPosition();
+    if (up_pressed_) {
+      up_pressed_ = false;
+      switch (arrow_menu->option) {
+        case PauseOptions::Option::CONTINUAR:
+          break;
+        case PauseOptions::Option::FX:
+          new_position.y += 70;
+          arrow_menu->option = PauseOptions::Option::CONTINUAR;
+        break;
+        case PauseOptions::Option::MUSIC:
+          new_position.y += 70;
+          arrow_menu->option = PauseOptions::Option::FX;
+        break;       
+        case PauseOptions::Option::SALIR:
+          new_position.y += 70;
+          arrow_menu->option = PauseOptions::Option::MUSIC;
+        break;  
+      }
+    }
+    if (down_pressed_) {
+      down_pressed_ = false;
+      switch (arrow_menu->option) {
+        case PauseOptions::Option::CONTINUAR:
+          new_position.y -= 70;
+          arrow_menu->option = PauseOptions::Option::FX;
+          break;
+        case PauseOptions::Option::FX:
+          new_position.y -= 70;
+          arrow_menu->option = PauseOptions::Option::MUSIC;
+          break;
+        case PauseOptions::Option::MUSIC:
+          new_position.y -= 70;
+          arrow_menu->option = PauseOptions::Option::SALIR;
+          break;  
+        case PauseOptions::Option::SALIR:
+          break;
+      }
+    }
+    if (enter_pressed_) {
+      switch (arrow_menu->option) {
+        case PauseOptions::Option::CONTINUAR:
+          events.emit<BackToGame>();
+          break;
+        case PauseOptions::Option::FX:
+            events.emit<MuteFx>();
+          break;
+        case PauseOptions::Option::MUSIC:
+            events.emit<MuteMusic>();  
+          break;  
+        case PauseOptions::Option::SALIR:
+          events.emit<BackToMainMenu>();
+          break;
+      }
+      enter_pressed_ = false;
+    }
+    timerEnter += dt;
+    if(timerEnter >= 0.5){
+      timerEnter = 0;
+    }
+    transform->SetLocalPosition(new_position);
+  }
+}
+
+void PauseInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_UP) {
+    up_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_DOWN) {
+    down_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_ENTER) {
+    enter_pressed_ = true;
+  }
+}
+
+void PauseInputSystem::receive(const KeyReleased &key_released) {
   if (key_released.key == GLFW_KEY_UP) {
     up_pressed_ = false;
   } else if (key_released.key == GLFW_KEY_DOWN) {
@@ -637,12 +735,114 @@ void OptionsInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+
+SelectionInputSystem::SelectionInputSystem() :
+    selection_enter_pressed_(false), selection_right_pressed_(false), selection_left_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void SelectionInputSystem::update(entityx::EntityManager &es, 
+        entityx::EventManager &events, entityx::TimeDelta dt) {
+
+  entityx::ComponentHandle<Characters> character;
+  entityx::ComponentHandle<Cursor> cursor;
+  entityx::ComponentHandle<Transform> position;
+
+  for (entityx::Entity e :
+          es.entities_with_components(character, cursor, position)){
+    auto new_position = position->GetLocalPosition();
+
+    if (selection_right_pressed_){
+       selection_right_pressed_ = false;
+       switch (character->role) {
+         case Characters::Role::KNIGHT:
+            new_position.x += 300;
+            character->role = Characters::Role::WIZARD;
+            std::cout << "wizard" << std::endl;
+            break;
+          case Characters::Role::WIZARD:
+            break;
+       }
+    }
+
+    if (selection_left_pressed_){
+       selection_left_pressed_ = false;
+       switch (character->role) {
+         case Characters::Role::KNIGHT:
+            break;
+          case Characters::Role::WIZARD:
+            new_position.x -= 300;
+            character->role = Characters::Role::KNIGHT;
+            break;
+       }
+    }
+
+    position->SetLocalPosition(new_position);
+
+    if (selection_enter_pressed_){
+      selection_enter_pressed_ = false;
+      events.emit<StartGame>();
+    }
+
+  }
+}
+
+void SelectionInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_RIGHT) {
+    selection_right_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_LEFT) {
+    selection_left_pressed_ = true;
+  }
+}
+
+void SelectionInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_RIGHT) {
+    selection_right_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_LEFT) {
+    selection_left_pressed_ = false;
+  }
+}
+
+DeathInputSystem::DeathInputSystem() :
+    selection_enter_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void DeathInputSystem::update(entityx::EntityManager &es, 
+  entityx::EventManager &events, entityx::TimeDelta dt){
+
+  if (selection_enter_pressed_){
+    selection_enter_pressed_ = false;
+    events.emit<BackToMainMenu>();
+  }
+}
+
+void DeathInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } 
+}
+
+void DeathInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } 
+}
+
 const float PlayerInputSystem::kSpeed = 140.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
 PlayerInputSystem::PlayerInputSystem()
-    : time_passed_since_last_attack_(kAttackDuration) {
+    : time_passed_since_last_attack_(kAttackDuration), paused_(false){
   keys_.emplace(GLFW_KEY_W, false);
   keys_.emplace(GLFW_KEY_S, false);
   keys_.emplace(GLFW_KEY_A, false);
@@ -655,6 +855,15 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_ESCAPE, false);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+  Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
+}
+
+bool PlayerInputSystem::is_paused(){
+  return paused_;
+}
+
+void PlayerInputSystem::set_paused(bool paused){
+  paused_ = paused;
 }
 
 void PlayerInputSystem::receive(const KeyPressed &key_pressed) {
@@ -669,7 +878,10 @@ void PlayerInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
-bool pausedM = false;
+void PlayerInputSystem::receive(const BackToGame &resumeGame){
+  set_paused(false);
+}
+
 void PlayerInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
@@ -677,7 +889,6 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   for (auto e : es.entities_with_components<Player>()) {
     player_entity = e;
   }
-
   if (player_entity.has_component<KnightAttack>()) {
 	  entityx::ComponentHandle<Transform> weapon_transform;
 	  entityx::ComponentHandle<MeleeWeapon> weapon_info;
@@ -699,16 +910,17 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	    }
 	  }
 
-	  if(keys_[GLFW_KEY_ESCAPE] && !keys_[GLFW_KEY_SPACE] && !pausedM) {
-	    pausedM = true;
+	  if(keys_[GLFW_KEY_ESCAPE] && !is_paused()) {
+	    events.subscribe<BackToGame>(*this);
+	    set_paused(true);
 	    events.emit<PauseMenuEvent>();
 	  }
-	  if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
-	    pausedM = false;
-	    events.emit<BackToGame>();
-	  }
+	  // if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
+	  //   pausedM = false;
+	  //   events.emit<BackToGame>();
+	  // }
 
-	  if(!pausedM){
+	  if(!is_paused()){
 	    es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
 	                                               KnightAttack &attack) {
@@ -849,15 +1061,17 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	    });
 	  }
 	} else if (player_entity.has_component<Wizard>()){
-		if(keys_[GLFW_KEY_ESCAPE] && !keys_[GLFW_KEY_SPACE] && !pausedM) {
-		    pausedM = true;
-		    events.emit<PauseMenuEvent>();
-	  	}
-	    if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
-		    pausedM = false;
-		    events.emit<BackToGame>();
-	  	}
-	  if(!pausedM){
+		if(keys_[GLFW_KEY_ESCAPE] && !is_paused()) {
+	    events.subscribe<BackToGame>(*this);
+	    set_paused(true);
+	    events.emit<PauseMenuEvent>();
+	  }
+	  // if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
+	  //   pausedM = false;
+	  //   events.emit<BackToGame>();
+	  // }
+
+	  if(!is_paused()){
 	    es.each<Player, Physics, Wizard>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
 	                                               Wizard &wizard) {
@@ -1102,7 +1316,7 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
             Engine::GetInstance().Get<AudioManager>().PlaySound(
-              "assets/media/fx/manueleth/default/shockwave.wav", false, 1);
+              "assets/media/fx/manueleth/default/shockwave.wav", false, 0.6f);
       			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 160.0f , manueleth_position.z);
 
       			 for (entityx::Entity e0 : es.entities_with_components(
@@ -1447,13 +1661,13 @@ void KnightAttackSystem::receive(const Collision &collision) {
     auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
     e0_color_animation->Play();
     // Lancero
-  } else if (e0_weapon && e0_weapon->drawn &&
+  } else if (e0_weapon && e0_weapon->drawn && 
              e0_weapon->owner.component<Player>() &&
              collision_copy.e1.component<Lancer>()) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
     Engine::GetInstance().Get<AudioManager>().PlaySound(
-        "assets/media/fx/manueleth/default/hit.wav", false, 0.7f);
+        "assets/media/fx/lanc/default/hit.wav", false, 0.7f);
     auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
     e1_color_animation->Play();
   } else if (e1_weapon && e1_weapon->drawn &&
@@ -1592,12 +1806,16 @@ float lastPlayerHP;
 void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
                           entityx::TimeDelta dt) {
+  bool es_player = false;
   es.each<Health>([&](entityx::Entity entity, Health &health) {
     if (entity.component<Player>()) {
+      es_player = true;
       if (lastPlayerHP != health.hp && health.hp != health.init_hp) {
         events.emit<Health>(health);
         lastPlayerHP = health.hp;
       }
+    } else {
+      es_player = false;
     }
     if (health.hp <= 0.0f) {
       Engine::GetInstance().Get<AudioManager>().PlaySound(health.death_fx,
@@ -1612,38 +1830,43 @@ void HealthSystem::update(entityx::EntityManager &es,
               entity_legs.destroy();
             }
           });
-	      es.each<TurretLegs, ParentLink>([&](entityx::Entity entity_legs,
-	                                          TurretLegs &legs,
-	                                          ParentLink &parent) {
-	        if (parent.owner == entity) {
-	          entity_legs.destroy();
-	        }
-	      });
+      es.each<TurretLegs, ParentLink>([&](entityx::Entity entity_legs,
+                                          TurretLegs &legs,
+                                          ParentLink &parent) {
+        if (parent.owner == entity) {
+          entity_legs.destroy();
+        }
+      });
 
-	      es.each<LancerLegs, ParentLink>([&](entityx::Entity entity_legs,
-	                                          LancerLegs &legs,
-	                                          ParentLink &parent) {
-	        if (parent.owner == entity) {
-	          entity_legs.destroy();
-	        }
-	      });
+      es.each<LancerLegs, ParentLink>([&](entityx::Entity entity_legs,
+                                          LancerLegs &legs,
+                                          ParentLink &parent) {
+        if (parent.owner == entity) {
+          entity_legs.destroy();
+        }
+      });
 
-	      es.each<LancerHitBox>(
-	          [&](entityx::Entity entity_hitbox, LancerHitBox &lancer_hitbox) {
-	            if (lancer_hitbox.owner == entity) {
-	              entity_hitbox.destroy();
-	            }
-	          });
+      es.each<LancerHitBox>(
+          [&](entityx::Entity entity_hitbox, LancerHitBox &lancer_hitbox) {
+            if (lancer_hitbox.owner == entity) {
+              entity_hitbox.destroy();
+            }
+          });
 
-	      es.each<GhostHitBox>(
-	          [&](entityx::Entity entity_hitbox, GhostHitBox &ghost_hitbox) {
-	            if (ghost_hitbox.owner == entity) {
-	              entity_hitbox.destroy();
-	            }
-	          });
-	      entity.destroy();
-      }  
+      es.each<GhostHitBox>(
+          [&](entityx::Entity entity_hitbox, GhostHitBox &ghost_hitbox) {
+            if (ghost_hitbox.owner == entity) {
+              entity_hitbox.destroy();
+            }
+          });
+      
+      entity.destroy();
+
+      if (es_player) {
+        events.emit<Death>();
+      }
     }
+}
   });
 }
 
@@ -1651,6 +1874,7 @@ void ChestSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
 }
 
+bool check = true;
 void ChestSystem::receive(const engine::events::Collision &collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
@@ -1664,8 +1888,14 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
-      e0_player->key = true;
-      std::cerr << "has encontrado la llave" << std::endl;
+      if(!e0_player->key){
+        e0_player->key = true;
+        check = true;
+        std::cerr << "has encontrado la llave" << std::endl;
+      } 
+      else {//ya la tiene, no des la turra
+        //TODO: texto de que ya la tienes -__-
+      }
     } else {
       // Mensaje de que la llave esta en otro cofre
       std::cerr << "la llave esta en otro cofre" << std::endl;
@@ -1675,8 +1905,14 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
-      e1_player->key = true;
-      std::cerr << "has encontrado la llave" << std::endl;
+      if(!e1_player->key){
+        e1_player->key = true;
+        check = true;
+        std::cerr << "has encontrado la llave" << std::endl;
+      }
+      else{
+        //TODO: QUE YA LA TIENES!!
+      }
     } else {
       // Mensaje de que la llave esta en otro cofre
       std::cerr << "la llave esta en otro cofre" << std::endl;
@@ -1686,7 +1922,15 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
 
 void ChestSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
-                                entityx::TimeDelta dt) {}
+                                entityx::TimeDelta dt) {
+  es.each<Player, Transform>(
+    [&](entityx::Entity entity, Player &player, Transform &transform){
+      if(player.key  && check){
+        check = false;
+        events.emit<Player>(player);
+      }
+    });
+}
 
 float timerLancer;
 
@@ -1746,6 +1990,8 @@ void LancerIaSystem::update(entityx::EntityManager &es,
 
         if (lancer.time_passed >= 5000.0f) {
         	lancer.is_attacking = true;
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/lanc/default/attack.wav", false, 0.8f);
         	if (lancer_position.y >= player_position.y) {
         		lancer.orientation = Lancer::LancerOrientation::DOWN;
         	} else if (lancer_position.y < player_position.y) {
@@ -1756,7 +2002,7 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
         	}*/
 
-        	if (distancia < 30.0f) {
+        	if (distancia < 30.0f) { 
         		lancer_physics.velocity =
 	              -1.0f *
 	              glm::normalize(player_position -

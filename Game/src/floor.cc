@@ -11,6 +11,12 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
   events.subscribe<StartLevel2>(*this);
+  events.subscribe<Player>(*this);
+  events.subscribe<Death>(*this);
+}
+
+void Floor::receive(const Player& player) {
+  parent_scene_->events.emit<Player>(player);
 }
 
 void Floor::receive(const PauseMenuEvent& pm){
@@ -33,6 +39,10 @@ void Floor::receive(const Health& health) {
 
 void Floor::receive(const Energy& energy) {
   parent_scene_->events.emit<Energy>(energy);
+}
+
+void Floor::receive(const Death& death) {
+  parent_scene_->events.emit<Death>();
 }
 
 void Floor::receive(const engine::events::Collision& collision) {
@@ -60,6 +70,7 @@ void Floor::receive(const engine::events::Collision& collision) {
 
   if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
+      rooms_[current_room_]->visited = true;
       Door previous_door(*door);
       rooms_[current_room_]->Unload(*this);
       current_room_ = previous_door.next_door;
@@ -72,6 +83,7 @@ void Floor::receive(const engine::events::Collision& collision) {
     auto player = collision_copy.e0.component<Player>();
     if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
       if (player->key == true) {
+        rooms_[current_room_]->visited = true;
         BossDoor previous_door(*bossDoor);
         rooms_[current_room_]->Unload(*this);
         current_room_ = previous_door.next_door;
@@ -119,10 +131,26 @@ bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
 
 void Floor::Room::Load(Floor& floor) {
   for (auto& fn : entity_creators_) {
-    entityx::Entity id = floor.entities.create();
-    auto new_entites = fn(floor.entities);
-    created_entities_.insert(created_entities_.end(), new_entites.begin(),
+    if(visited){
+      //entityx::Entity id = floor.entities.create();
+      auto new_entites = fn(floor.entities);
+      for(auto &e : new_entites){
+        if((e.component<Health>()) || (e.component<TurretLegs>())
+          || (e.component<LancerLegs>()) || (e.component<GhostHitBox>())
+          || (e.component<LancerHitBox>())){
+          e.destroy();
+        }
+      }
+      created_entities_.insert(created_entities_.end(), new_entites.begin(),
+                               new_entites.end());
+    }
+    else{ //load normally
+      entityx::Entity id = floor.entities.create();
+      auto new_entites = fn(floor.entities);
+      created_entities_.insert(created_entities_.end(), new_entites.begin(),
                              new_entites.end());
+    }
+    
   }
 }
 

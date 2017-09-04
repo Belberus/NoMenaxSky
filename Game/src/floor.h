@@ -13,6 +13,7 @@
 
 #include "game.h"
 #include "events.h"
+#include "systems.h"
 
 class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
  public:
@@ -29,6 +30,8 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   void receive(const Energy &energy);
   void receive(const PauseMenuEvent &pm);
   void receive(const BackToGame &event);
+  void receive(const Player &player);
+  void receive(const Death &death);
  private:
   class Room {
    public:
@@ -38,6 +41,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
         std::function<std::vector<entityx::Entity>(entityx::EntityManager &)>>
         entity_creators_;
     std::vector<entityx::Entity> created_entities_;
+    bool visited = false;
   };
 
   static bool IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,

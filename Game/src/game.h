@@ -16,6 +16,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
     kOptionsMenu,
     kPauseMenu,
     kCharSelMenu,
+    kDeathMenu,
     kFloor1,
     kFloor2,
     kFloor3,
@@ -28,11 +29,14 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void receive(const StartLevel2 &event);
   void receive(const OptionMenu &event);
   void receive(const BackToMainMenu &event);
+  void receive(const CharSelect &event);
+  void receive(const Death &event);
   void receive(const PauseMenuEvent &event);
   void receive(const BackToGame &event);
  private:
   State current_state_;
   State next_state_;
   std::vector<std::unique_ptr<engine::core::Scene>> scenes_;
+  bool new_game;
 };
 #endif  // GAME_H_

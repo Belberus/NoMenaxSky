@@ -12,6 +12,7 @@ class MainMenu : public engine::core::Scene,
   MainMenu(engine::core::Scene *parent_scene);
   void Update(entityx::TimeDelta dt) override;
   void receive(const StartGame &event);
+  void receive(const CharSelect &event);
   void receive(const OptionMenu &event);
 
  private:

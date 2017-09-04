@@ -54,6 +54,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<HealthSystem>();
   systems.add<ColorAnimator>();
   systems.add<ShieldSystem>();
+  systems.add<PauseInputSystem>();
   systems.configure();
 }
 
@@ -90,15 +91,16 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<SpriteRenderer>(dt);
     systems.update<ColliderRenderer>(dt);
     systems.update<ShieldSystem>(dt);
+    systems.update<PauseInputSystem>(dt);
   }
   else{ //is paused
-    systems.update<PlayerInputSystem>(dt);
+    systems.update<PlayerInputSystem>(0);
     systems.update<GhostIaSystem>(0);
     systems.update<GhostAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);
     systems.update<TurretIaSystem>(0);
     systems.update<LancerIaSystem>(0);
-    systems.update<ManuelethIaSystem>(0);
+    //systems.update<ManuelethIaSystem>(0);
     //systems.update<TrapIaSystem>(0);
     systems.update<TurretWalkingSystem>(0);
     systems.update<LancerWalkingSystem>(0);
@@ -122,6 +124,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<SpriteRenderer>(0);
     systems.update<ColliderRenderer>(0);
     systems.update<ShieldSystem>(0);
+    systems.update<PauseInputSystem>(dt);
   }
 }
 

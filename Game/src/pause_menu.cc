@@ -22,84 +22,84 @@ using namespace engine::core;
 PauseMenu::PauseMenu(Game* parent_scene) 
 	: parent_scene_(parent_scene) {
 
-	  events.subscribe<BackToMainMenu>(*this);
-	  events.subscribe<BackToGame>(*this);
-	  events.subscribe<MuteMusic>(*this);
-	  events.subscribe<MuteFx>(*this);
-  
-	  // adding entities
-	  auto camera = entities.create();
-	  camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1));
-	  camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
+	events.subscribe<BackToMainMenu>(*this);
+	events.subscribe<BackToGame>(*this);
+	events.subscribe<MuteMusic>(*this);
+	events.subscribe<MuteFx>(*this);
 
-	  auto menu_canvas = entities.create();
-	  menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
-	  auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
+	// adding entities
+	auto camera = entities.create();
+	camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1));
+	camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
 
-	  // exit option
-	  entityx::Entity exit_option = entities.create();
-	  exit_option.assign<Transform>(glm::vec3(0, 00, 0), menu_canvas_transform);
-	  auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/salir.png");
-	  exit_option.assign<Sprite>(tex);
+	auto menu_canvas = entities.create();
+	menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
+	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
 
-	  // mute/unmute music option
-	  music_option_ = entities.create();
-	  music_option_.assign<Transform>(glm::vec3(0, 70, 0), menu_canvas_transform);
-	  if(!Engine::GetInstance().Get<AudioManager>().getMusicMute()){
-	  	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/mute_music.png");
-	  	music_option_.assign<Sprite>(tex);
-	  }
-	  else{
-	  	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/unmute_music.png");
-	  	music_option_.assign<Sprite>(tex);
-	  }
+	// exit option
+	entityx::Entity exit_option = entities.create();
+	exit_option.assign<Transform>(glm::vec3(0, 00, 0), menu_canvas_transform);
+	auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/volver.png");
+	exit_option.assign<Sprite>(tex);
 
-	  // mute/unmute fx option
-	  fx_option_ = entities.create();
-	  fx_option_.assign<Transform>(glm::vec3(0, 140, 0), menu_canvas_transform);
-	  if(!Engine::GetInstance().Get<AudioManager>().getFxMute()){
-	  	std::cout << "FX no muted" << std::endl;
-	  	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/mute_fx.png");
-	  	fx_option_.assign<Sprite>(tex);
-	  }
-	  else{
-	  	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/unmute_fx.png");
-	  	fx_option_.assign<Sprite>(tex);
-	  }
+	// mute/unmute music option
+	music_option_ = entities.create();
+	music_option_.assign<Transform>(glm::vec3(0, 70, 0), menu_canvas_transform);
+	if(!Engine::GetInstance().Get<AudioManager>().getMusicMute()){
+		tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/mute_music.png");
+		music_option_.assign<Sprite>(tex);
+	}
+	else{
+		tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/unmute_music.png");
+		music_option_.assign<Sprite>(tex);
+	}
 
-	  // play option
-	  entityx::Entity play_option = entities.create();
-	  play_option.assign<Transform>(glm::vec3(0, 210, 0), menu_canvas_transform);
-	  tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/jugar.png");
-	  play_option.assign<Sprite>(tex);
+	// mute/unmute fx option
+	fx_option_ = entities.create();
+	fx_option_.assign<Transform>(glm::vec3(0, 140, 0), menu_canvas_transform);
+	if(!Engine::GetInstance().Get<AudioManager>().getFxMute()){
+		std::cout << "FX no muted" << std::endl;
+		tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/mute_fx.png");
+		fx_option_.assign<Sprite>(tex);
+	}
+	else{
+		tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/unmute_fx.png");
+		fx_option_.assign<Sprite>(tex);
+	}
 
-	  // Cambiar por juego pausado
-	  entityx::Entity title = entities.create();
-	  title.assign<Transform>(glm::vec3(0, 350, 0), menu_canvas_transform,
-	                          glm::vec3(0.3, 0.3, 1));
-	  tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/pausa.png");
-	  title.assign<Sprite>(tex);
+	// play option
+	entityx::Entity play_option = entities.create();
+	play_option.assign<Transform>(glm::vec3(0, 210, 0), menu_canvas_transform);
+	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/continuar.png");
+	play_option.assign<Sprite>(tex);
 
-	  // arrow
-	  entityx::Entity menuArrow = entities.create();
-	  menuArrow.assign<Transform>(glm::vec3(-90, 210, 0), menu_canvas_transform,
-	                              glm::vec3(2, 2, 1));
-	  tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	      "assets/menu/ppc_front.png");
-	  menuArrow.assign<Sprite>(tex);
-	  menuArrow.assign<PauseOptions>(PauseOptions::Option::CONTINUAR);
+	// Cambiar por juego pausado
+	entityx::Entity title = entities.create();
+	title.assign<Transform>(glm::vec3(0, 320, 0), menu_canvas_transform,
+	                      glm::vec3(0.3, 0.3, 1));
+	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/pausa.png");
+	title.assign<Sprite>(tex);
 
-	  // adding systems
-	  systems.add<engine::systems::two_d::SpriteRenderer>();
-	  systems.add<PauseInputSystem>();
-	  systems.configure();
+	// arrow
+	entityx::Entity menuArrow = entities.create();
+	menuArrow.assign<Transform>(glm::vec3(-90, 210, 0), menu_canvas_transform,
+	                          glm::vec3(2, 2, 1));
+	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+	  "assets/menu/ppc_front.png");
+	menuArrow.assign<Sprite>(tex);
+	menuArrow.assign<PauseOptions>(PauseOptions::Option::CONTINUAR);
+
+	// adding systems
+	systems.add<engine::systems::two_d::SpriteRenderer>();
+	systems.add<PauseInputSystem>();
+	systems.configure();
 
 
 }

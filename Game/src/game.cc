@@ -34,7 +34,7 @@ Game::Game()
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(
-      "assets/media/music/gauntleto_theme_v2.wav", true, 1);
+      "assets/media/music/gauntleto_theme_v2.wav", true, 0.7f);
 }
 
 void Game::Update(entityx::TimeDelta dt) {
@@ -45,7 +45,7 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.emplace_back(new MainMenuBackground());
         scenes_.emplace_back(new MainMenu(this));
         Engine::GetInstance().Get<AudioManager>().PlaySound(
-            "assets/media/music/gauntleto_theme_v2.wav", true, 1);
+            "assets/media/music/gauntleto_theme_v2.wav", true, 0.7f);
         break;
       case State::kOptionsMenu:
         scenes_.pop_back();
@@ -59,13 +59,15 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.pop_back(); // Sacamos el floor
         scenes_.pop_back(); // Sacamos la UI
         scenes_.push_back(std::make_unique<DeathMenu>(this));
+        Engine::GetInstance().Get<AudioManager>().StopMusic();
+        break;
       case State::kPauseMenu:
         scenes_.push_back(std::make_unique<PauseMenu>(this));
         break;
       case State::kFloor1:
         if (new_game){
           new_game = false;
-          Engine::GetInstance().Get<AudioManager>().StopMusic();
+          Engine::GetInstance().Get<AudioManager>().StopAllSounds();
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();

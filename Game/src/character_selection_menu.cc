@@ -40,8 +40,8 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
     title.assign<Sprite>(tex);
 
     entityx::Entity cursor = entities.create();
-    cursor.assign<Transform>(glm::vec3(-155, 0, 0), menu_canvas_transform,
-                          glm::vec3(1.1f));
+    cursor.assign<Transform>(glm::vec3(-155, -10, 0), menu_canvas_transform,
+                          glm::vec3(0.15f));
     tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
         "assets/personajes_menu/cursor.png");
     cursor.assign<Sprite>(tex);
@@ -79,6 +79,5 @@ void CharacterSelectionMenu::Update(entityx::TimeDelta dt){
 }
 
 void CharacterSelectionMenu::receive(const StartGame &event){
-
 	parent_scene_->events.emit<StartGame>(event);
 }

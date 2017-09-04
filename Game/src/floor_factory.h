@@ -18,11 +18,11 @@
 class FloorFactory {
  public:
   static std::unique_ptr<Floor> MakeFloorOne2D(const std::string &file_name,
-                                               Game *parent_scene);
+                                               Game *parent_scene, const std::string &role);
   static std::unique_ptr<Floor> MakeFloorTwo2D(const std::string &file_name,
-                                               Game *parent_scene);
+                                               Game *parent_scene, const std::string &role);
   static std::unique_ptr<Floor> MakeFloorThree2D(const std::string &file_name,
-                                               Game *parent_scene);
+                                               Game *parent_scene, const std::string &role);
   static std::unique_ptr<Floor> MakeFloorOne3D(const std::string &file_name,
                                                Game *parent_scene);
 

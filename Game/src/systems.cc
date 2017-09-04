@@ -758,7 +758,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
        selection_right_pressed_ = false;
        switch (character->role) {
          case Characters::Role::KNIGHT:
-            new_position.x += 300;
+            new_position.x += 315;
             character->role = Characters::Role::WIZARD;
             break;
           case Characters::Role::WIZARD:
@@ -772,7 +772,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
          case Characters::Role::KNIGHT:
             break;
           case Characters::Role::WIZARD:
-            new_position.x -= 300;
+            new_position.x -= 315;
             character->role = Characters::Role::KNIGHT;
             break;
        }
@@ -782,9 +782,10 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
 
     if (selection_enter_pressed_){
       selection_enter_pressed_ = false;
-      events.emit<StartGame>();
+      if (character->role == Characters::Role::KNIGHT) {
+        events.emit<StartGame>("knight");
+      } else events.emit<StartGame>("wizard");
     }
-
   }
 }
 
@@ -1848,6 +1849,10 @@ void HealthSystem::update(entityx::EntityManager &es,
       Engine::GetInstance().Get<AudioManager>().PlaySound(health.death_fx,
                                                           false, 1);
       if (entity.component<Manueleth>()) {
+        es.each<WizardProjectile>(
+          [&](entityx::Entity entity_p, WizardProjectile &w) {
+            entity_p.destroy();
+          });
       	entity.destroy();
       	events.emit<StartLevel2>();
       } else {

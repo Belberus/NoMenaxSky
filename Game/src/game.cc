@@ -8,6 +8,7 @@
 #include "character_selection_menu.h"
 #include "death_menu.h"
 #include "pause_menu.h"
+#include "components.h"
 #include "text.h"
 #include "text_factory.h"
 
@@ -83,9 +84,9 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-
           scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
+           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));
+          
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));
           scenes_.front()->events.emit<PauseGameEvent>();
@@ -104,7 +105,7 @@ void Game::Update(entityx::TimeDelta dt) {
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
           scenes_.push_back(
-              FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this));
+              FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this, character));
           scenes_.push_back(std::make_unique<GameUi>(this));
           text_to_play = "Buen trabajo.\nEn este nivel encontraras trampas, anda con cuidado.\nPara enfrentarte al boss debes activar dos palancas escondidas en diferentes puntos del mapa.\nBuena suerte.\nPulsa [ENTER] para continuar.";
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido2"));
@@ -126,7 +127,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.clear();
            // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
           scenes_.push_back(
-               FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this));
+               FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido3"));
           scenes_.front()->events.emit<PauseGameEvent>();
@@ -137,7 +138,6 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.pop_back(); 
           scenes_.front()->events.emit<BackToGame>();
         }
-        
         break;
       case State::kExit:
         break;
@@ -164,6 +164,7 @@ void Game::receive(const StartGame& event) {
     next_state_= State::kFloor3;
   }
   else next_state_ = State::kNull; //nunca deberia llegar!
+  character = event.text;
 }
   
 void Game::receive(const CharSelect& event) { 

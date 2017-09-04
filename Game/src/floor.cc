@@ -13,6 +13,13 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<StartLevel2>(*this);
   events.subscribe<Player>(*this);
   events.subscribe<Death>(*this);
+  events.subscribe<PauseGameEvent>(*this);
+  events.subscribe<UnpauseGameEvent>(*this);
+  events.subscribe<PlayText>(*this);
+}
+
+void Floor::receive(const PlayText& pt){
+  parent_scene_->events.emit<PlayText>(pt);
 }
 
 void Floor::receive(const Player& player) {
@@ -22,6 +29,15 @@ void Floor::receive(const Player& player) {
 void Floor::receive(const PauseMenuEvent& pm){
   PauseGame(true);
   parent_scene_->events.emit<PauseMenuEvent>(pm);
+}
+
+void Floor::receive(const PauseGameEvent& pg){
+  PauseGame(true);
+}
+
+void Floor::receive(const UnpauseGameEvent& upg){
+  PauseGame(false);
+  parent_scene_->events.emit<BackToGame>();
 }
 
 void Floor::receive(const BackToGame& event){
@@ -67,7 +83,6 @@ void Floor::receive(const engine::events::Collision& collision) {
   for (auto e : entities.entities_with_components<Manueleth>()) {
     enemies_in_the_room++;
   }
-
   if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
       rooms_[current_room_]->visited = true;

@@ -313,7 +313,6 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
       glm::vec3(1376.0f, 640.0f, 1.0f));
   camera.assign<engine::components::common::Camera>(512.0f, 288.0f, 0.1f,
                                                     1000.0f);
-
   if (role == "knight") {
     factory->MakeKnight(floor->entities, glm::vec3(1376.0f, 640.0f, 0));
   } else {

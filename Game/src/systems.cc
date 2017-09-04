@@ -760,7 +760,6 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
          case Characters::Role::KNIGHT:
             new_position.x += 300;
             character->role = Characters::Role::WIZARD;
-            std::cout << "wizard" << std::endl;
             break;
           case Characters::Role::WIZARD:
             break;

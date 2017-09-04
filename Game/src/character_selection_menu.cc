@@ -73,7 +73,8 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 }
 
 void CharacterSelectionMenu::Update(entityx::TimeDelta dt){
-	systems.update<SelectionInputSystem>(dt);
+    // Update systems
+	  systems.update<SelectionInputSystem>(dt);
   	systems.update<engine::systems::two_d::SpriteRenderer>(dt);
 }
 

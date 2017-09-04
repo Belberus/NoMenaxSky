@@ -259,6 +259,21 @@ class DeathInputSystem :  public entityx::System<DeathInputSystem>,
     bool selection_enter_pressed_;
 };
 
+class TextInputSystem :  public entityx::System<TextInputSystem>,
+                          public entityx::Receiver<TextInputSystem> {
+
+  public:
+    TextInputSystem();
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+    void receive(const engine::events::KeyPressed &key_pressed);
+    void receive(const engine::events::KeyReleased &key_released);
+
+  private:
+    bool selection_enter_pressed_;
+};
+
 class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
                           public entityx::Receiver<PlayerInputSystem> {
  public:

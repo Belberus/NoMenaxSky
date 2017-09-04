@@ -28,6 +28,8 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   void receive(const Health &health);
   void receive(const Energy &energy);
   void receive(const PauseMenuEvent &pm);
+  void receive(const PauseGameEvent& pg);
+  void receive(const UnpauseGameEvent& upg);
   void receive(const BackToGame &event);
   void receive(const Player &player);
   void receive(const Death &death);

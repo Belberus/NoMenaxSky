@@ -780,6 +780,34 @@ void DeathInputSystem::receive(const KeyReleased &key_released) {
   } 
 }
 
+TextInputSystem::TextInputSystem() :
+    selection_enter_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void TextInputSystem::update(entityx::EntityManager &es, 
+  entityx::EventManager &events, entityx::TimeDelta dt){
+
+  if (selection_enter_pressed_){
+    selection_enter_pressed_ = false;
+    events.emit<BackToGame>();
+  }
+}
+
+void TextInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } 
+}
+
+void TextInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } 
+}
+
 const float PlayerInputSystem::kSpeed = 140.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;

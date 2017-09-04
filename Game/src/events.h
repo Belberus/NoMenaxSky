@@ -10,4 +10,6 @@ struct BackToGame {};
 struct ResumeGame {};
 struct MuteMusic {};
 struct MuteFx {};
+struct PauseGameEvent {};
+struct UnpauseGameEvent {};
 #endif // EVENTS_H_

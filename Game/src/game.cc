@@ -8,12 +8,16 @@
 #include "character_selection_menu.h"
 #include "death_menu.h"
 #include "pause_menu.h"
+#include "text.h"
+#include "text_factory.h"
 
 #include "floor_factory.h"
 
 #include <fstream>
+#include <string>
 
 using namespace engine::core;
+using namespace std;
 
 Game::Game()
     : new_game(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
@@ -79,6 +83,10 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.push_back(
              FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
           scenes_.push_back(std::make_unique<GameUi>(this));
+          std::string texto = "Bienvenido. \nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas. \nWASD haran que Gauntleto se mueva. \nLas flechas de direccion haran que Gauntleto ataque. \nSi ademas de las flechas pulsas espacio, se defendera. \n¡Corre a detener al malvado Lord Menax y sus secuaces! \n Pulsa [ENTER] para continuar.";
+          //std::string ruta = textToImage(texto, glm::vec2(100,200), "bienvenido");
+          scenes_.push_back(std::make_unique<Text>(this,texto));
+          scenes_.front()->events.emit<PauseGameEvent>();
         } else {
           scenes_.pop_back();
           scenes_.front()->events.emit<BackToGame>();
@@ -141,3 +149,7 @@ void Game::receive(const PauseMenuEvent& event) {
 void Game::receive(const BackToGame& event) {
   next_state_ = State::kFloor1;
 }
+
+/*void Game::receive(const UnpauseGameEvent& upg){
+  next_state_ = State::kFloor1;
+}*/

@@ -1900,9 +1900,11 @@ void HealthSystem::update(entityx::EntityManager &es,
 
 void ChestSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
+  event_manager_ = &event_manager;
 }
 
 bool check = true;
+bool once2 = true;
 void ChestSystem::receive(const engine::events::Collision &collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
@@ -1916,17 +1918,29 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
       // la llave
+      if(once2){
+        once2=false;
+        std::cout << "envio mensaje hay llave" << std::endl;
+        PlayText pt("Has encontrado la llave.\n Ya puedes enfrentarte al boss del nivel.");
+        event_manager_->emit<PlayText>(pt);
+      }      
       if(!e0_player->key){
         e0_player->key = true;
         check = true;
-        std::cerr << "has encontrado la llave" << std::endl;
+        //std::cerr << "has encontrado la llave" << std::endl;
       } 
       else {//ya la tiene, no des la turra
         //TODO: texto de que ya la tienes -__-
       }
     } else {
       // Mensaje de que la llave esta en otro cofre
-      std::cerr << "la llave esta en otro cofre" << std::endl;
+      //std::cerr << "la llave esta en otro cofre" << std::endl;
+        if(once2){
+          once2 = false;
+          std::cout << "envio mensaje no hay llave" << std::endl;
+          PlayText pt("La llave está en otro cofre.\n Sigue buscando!");
+          event_manager_->emit<PlayText>(pt);
+        }        
     }
   } else if (e1_player && collision_copy.e0.component<Chest>()) {
     auto chest = collision_copy.e0.component<Chest>();
@@ -1936,18 +1950,19 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
       if(!e1_player->key){
         e1_player->key = true;
         check = true;
-        std::cerr << "has encontrado la llave" << std::endl;
+        //std::cerr << "has encontrado la llave" << std::endl;
       }
       else{
         //TODO: QUE YA LA TIENES!!
       }
     } else {
       // Mensaje de que la llave esta en otro cofre
-      std::cerr << "la llave esta en otro cofre" << std::endl;
+      //std::cerr << "la llave esta en otro cofre" << std::endl;
     }
   }
 }
 
+float timerChest = 0.0f;
 void ChestSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {
@@ -1956,8 +1971,15 @@ void ChestSystem::update(entityx::EntityManager &es,
       if(player.key  && check){
         check = false;
         events.emit<Player>(player);
+        
       }
     });
+  if(timerChest >= 5){
+    once2 = true;
+    timerChest = 0.0f;
+  }
+  timerChest +=dt;
+
 }
 
 float timerLancer;

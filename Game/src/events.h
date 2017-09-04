@@ -13,4 +13,8 @@ struct MuteMusic {};
 struct MuteFx {};
 struct PauseGameEvent {};
 struct UnpauseGameEvent {};
+struct PlayText{
+	std::string text;
+	PlayText(std::string text) : text(text){};
+};
 #endif // EVENTS_H_

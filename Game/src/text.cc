@@ -21,8 +21,8 @@ using namespace engine::components::two_d;
 using namespace engine::core;
 using namespace std;
 
-Text::Text(engine::core::Scene *parent_scene, string text)
-  : parent_scene_(parent_scene), text(text){
+Text::Text(engine::core::Scene *parent_scene, string text, string name)
+  : parent_scene_(parent_scene), text(text), name(name){
   	events.subscribe<BackToGame>(*this);
 
   	auto camera = entities.create();
@@ -36,13 +36,13 @@ Text::Text(engine::core::Scene *parent_scene, string text)
   	entityx::ComponentHandle<Characters> character;
     entityx::ComponentHandle<Cursor> cursor;
 
-    string route = textToImage(text, glm::vec2(400,100), "bienvenido");
+    string route = textToImage(text, glm::vec2(400,100), name);
 
     auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
           route);
     entityx::Entity text_entity = entities.create();
-    text_entity.assign<Transform>(glm::vec3(0,-200,0), text_canvas_transform,
-    	glm::vec3(2.0f));
+    text_entity.assign<Transform>(glm::vec3(0,-270,0), text_canvas_transform,
+    	glm::vec3(1.0f));
     text_entity.assign<Sprite>(tex);
 
     systems.add<engine::systems::two_d::SpriteRenderer>();

@@ -34,6 +34,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   void receive(const BackToGame &event);
   void receive(const Player &player);
   void receive(const Death &death);
+  void receive(const PlayText &pt);
  private:
   class Room {
    public:

@@ -61,7 +61,6 @@ PauseMenu::PauseMenu(Game* parent_scene)
 	fx_option_ = entities.create();
 	fx_option_.assign<Transform>(glm::vec3(0, 140, 0), menu_canvas_transform);
 	if(!Engine::GetInstance().Get<AudioManager>().getFxMute()){
-		std::cout << "FX no muted" << std::endl;
 		tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	  "assets/menu/mute_fx.png");
 		fx_option_.assign<Sprite>(tex);
@@ -119,7 +118,6 @@ void PauseMenu::receive(const BackToGame& event) {
 }
 
 void PauseMenu::receive(const MuteMusic& muteMusic){
-	std::cout << "mute music" << std::endl;
 	if(Engine::GetInstance().Get<AudioManager>().getMusicMute()){ //Estaba muted
 		Engine::GetInstance().Get<AudioManager>()
 		.SetVolumeMusic(1.0f);
@@ -139,7 +137,6 @@ void PauseMenu::receive(const MuteMusic& muteMusic){
 void PauseMenu::receive(const MuteFx& muteFx){
 	
 	if(Engine::GetInstance().Get<AudioManager>().getFxMute()){ //Estaba muted
-		std::cout << "unmute fx" << std::endl;
 		Engine::GetInstance().Get<AudioManager>()
 		.SetVolumeFX(1.0f);
 		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -147,7 +144,6 @@ void PauseMenu::receive(const MuteFx& muteFx){
 	  	fx_option_.replace<Sprite>(tex);
 	}
 	else{
-		std::cout << "mute fx" << std::endl;
 		Engine::GetInstance().Get<AudioManager>()
 		.SetVolumeFX(0.0f);
 		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(

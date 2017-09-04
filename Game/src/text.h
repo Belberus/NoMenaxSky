@@ -13,13 +13,14 @@ using namespace std;
 class Text : public engine::core::Scene,
 				  public entityx::Receiver<Text> {
 	public:
-		Text(engine::core::Scene *parent_scene, string text);
+		Text(engine::core::Scene *parent_scene, string text, string name);
 		void Update(entityx::TimeDelta dt) override;
 
 		void receive(const BackToGame &event);
 
 	private:
 		string text;
+		string name;
 		engine::core::Scene *parent_scene_;
 
 };

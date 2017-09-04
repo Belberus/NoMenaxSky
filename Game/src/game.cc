@@ -26,6 +26,7 @@ Game::Game()
   outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
   outfile << "1 1 1" << std::endl;
   outfile.close();
+  text_to_play = "Bienvenido.\nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas.\nWASD haran que Gauntleto se mueva.\nLas flechas de direccion haran que Gauntleto ataque.\nSi ademas de las flechas pulsas espacio, se defendera.\nCorre a detener al malvado Lord Menax y sus secuaces!\nPulsa [ENTER] para continuar.";
     
   events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
@@ -35,6 +36,7 @@ Game::Game()
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
   events.subscribe<StartLevel2>(*this);
+  events.subscribe<PlayText>(*this);
 
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
@@ -69,6 +71,10 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kPauseMenu:
         scenes_.push_back(std::make_unique<PauseMenu>(this));
         break;
+      case State::kText:
+        scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
+        scenes_.front()->events.emit<PauseGameEvent>();
+        break;
       case State::kFloor1:
         if (new_game){
           new_game = false;
@@ -80,12 +86,15 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.push_back(
              FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
           scenes_.push_back(std::make_unique<GameUi>(this));
-          std::string texto = "Bienvenido. \nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas. \nWASD haran que Gauntleto se mueva. \nLas flechas de direccion haran que Gauntleto ataque. \nSi ademas de las flechas pulsas espacio, se defendera. \n¡Corre a detener al malvado Lord Menax y sus secuaces! \n Pulsa [ENTER] para continuar.";
-          //std::string ruta = textToImage(texto, glm::vec2(100,200), "bienvenido");
-          scenes_.push_back(std::make_unique<Text>(this,texto));
+          //text_to_play = "Bienvenido.\nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas.\nWASD haran que Gauntleto se mueva.\nLas flechas de direccion haran que Gauntleto ataque.\nSi ademas de las flechas pulsas espacio, se defendera.\nCorre a detener al malvado Lord Menax y sus secuaces!\nPulsa [ENTER] para continuar.";
+          //scenes_.push_back(std::make_unique<Text>(this,text_to_play));
+          //PlayText pt("Bienvenido.\nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas.\nWASD haran que Gauntleto se mueva.\nLas flechas de direccion haran que Gauntleto ataque.\nSi ademas de las flechas pulsas espacio, se defendera.\nCorre a detener al malvado Lord Menax y sus secuaces!\nPulsa [ENTER] para continuar.");
+          //next_state_ = State::kText;
+          //scenes_.front()->events.emit<PlayText>(pt);
+          scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));
           scenes_.front()->events.emit<PauseGameEvent>();
         } else {
-          scenes_.pop_back();
+          scenes_.pop_back(); 
           scenes_.front()->events.emit<BackToGame>();
         }
         break;
@@ -146,6 +155,7 @@ void Game::receive(const BackToGame& event) {
   next_state_ = State::kFloor1;
 }
 
-/*void Game::receive(const UnpauseGameEvent& upg){
-  next_state_ = State::kFloor1;
-}*/
+void Game::receive(const PlayText& event){
+  text_to_play = event.text;
+  next_state_ = State::kText;  
+}

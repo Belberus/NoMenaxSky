@@ -560,7 +560,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
-	  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/turret/default/death.wav");
+	  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));

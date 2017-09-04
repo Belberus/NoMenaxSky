@@ -100,7 +100,7 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kFloor2:
         if(new_game2){
           new_game2 = false;
-          Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+          Engine::GetInstance().Get<AudioManager>().StopMusic();
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
@@ -129,6 +129,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.push_back(
                FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
           scenes_.push_back(std::make_unique<GameUi>(this));
+          text_to_play = "Muy bien.\nHa sido un entrenamiento divertido, verdad?\nAhora tendrás que enfrentarte a un reto de verdad.\nPulsa [ENTER] para continuar.";
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido3"));
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(3);

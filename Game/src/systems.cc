@@ -1846,13 +1846,15 @@ void HealthSystem::update(entityx::EntityManager &es,
     }
     if (health.hp <= 0.0f) {
       Engine::GetInstance().Get<AudioManager>().PlaySound(health.death_fx,
-                                                          false, 1);
+                                                          false, 0.7);
       if (entity.component<Manueleth>()) {
         es.each<WizardProjectile>(
           [&](entityx::Entity entity_p, WizardProjectile &w) {
             entity_p.destroy();
           });
       	entity.destroy();
+        PlayText pt("Enhorabuena.\nHas derrotado al Mago Manueleth.\nPulsa [ENTER] para continuar al siguiente nivel.");
+        events.emit<PlayText> (pt);
       	events.emit<StartLevel2>();
       } else {
       	es.each<Legs, ParentLink>(
@@ -2219,6 +2221,7 @@ void GhostAttackSystem::update(entityx::EntityManager &es,
 
 void LeverSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
+  event_manager_ = &event_manager;
 }
 
 void LeverSystem::receive(const engine::events::Collision &collision) {
@@ -2231,12 +2234,31 @@ void LeverSystem::receive(const engine::events::Collision &collision) {
 
   if (e0_player && collision_copy.e1.component<Lever>()) {
     auto lever = collision_copy.e1.component<Lever>();
-    lever->activated = true;
-    std::cerr << "Palanca activada" << std::endl;  
+    if(!lever->activated){
+      lever->activated = true;
+      PlayText pt("Palanca activada con éxito.");
+      event_manager_->emit<PlayText>(pt);
+      std::cerr << "Palanca activada" << std::endl;  
+    }
+    else{
+      PlayText pt("Ya has activado esta palanca.");
+      event_manager_->emit<PlayText>(pt);
+    }
+    
   } else if (e1_player && collision_copy.e0.component<Lever>()) {
     auto lever = collision_copy.e0.component<Lever>();
-    lever->activated = true;
-    std::cerr << "Palanca activada" << std::endl;
+    if(!lever->activated){
+      lever->activated = true;
+      std::cerr << "Palanca activada" << std::endl;
+      PlayText pt("Palanca activada con éxito.");
+      event_manager_->emit<PlayText>(pt);
+      std::cerr << "Palanca activada" << std::endl; 
+    }
+    else{
+      PlayText pt("Ya has activado esta palanca.");
+      event_manager_->emit<PlayText>(pt);
+    }
+    
   }
 }
 

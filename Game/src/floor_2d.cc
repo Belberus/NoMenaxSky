@@ -228,7 +228,21 @@ void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
       });
 }
 
-void Floor2D::OnPlayerEnteringBossDoorWithoutKey() {}
+void Floor2D::OnPlayerEnteringBossDoorWithoutKey() {
+  if(GetLevel() == 1){
+    PlayText pt("Consigue la llave de uno de los baúles para poder pasar.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
+  else if(GetLevel() == 2){
+    PlayText pt("Activa las dos palancas para poder pasar.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
+  else{
+    PlayText pt("Fuck off aye.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
+  
+}
 
 void Floor2D::PauseGame(bool pause){
   paused = pause;

@@ -43,7 +43,7 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
     cursor.assign<Transform>(glm::vec3(-155, -10, 0), menu_canvas_transform,
                           glm::vec3(0.15f));
     tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-        "assets/personajes_menu/cursor.png");
+        "assets/personajes_menu/dinosaur.png");
     cursor.assign<Sprite>(tex);
     cursor.assign<Cursor>();
     cursor.assign<Characters>(Characters::Role::KNIGHT);

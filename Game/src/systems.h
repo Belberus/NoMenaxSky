@@ -125,6 +125,8 @@ public:
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  entityx::EventManager *event_manager_;
 };
 
 class ShieldSystem : public entityx::System<ShieldSystem>,

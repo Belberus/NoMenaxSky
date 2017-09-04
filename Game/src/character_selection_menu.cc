@@ -79,6 +79,5 @@ void CharacterSelectionMenu::Update(entityx::TimeDelta dt){
 }
 
 void CharacterSelectionMenu::receive(const StartGame &event){
-
 	parent_scene_->events.emit<StartGame>(event);
 }

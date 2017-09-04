@@ -25,7 +25,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   };
   Game();
   void Update(entityx::TimeDelta dt) override;
-  void receive(const StartGame &event);
+  void receive(const StartGame &event, const Characters &c);
   void receive(const StartLevel2 &event);
   void receive(const OptionMenu &event);
   void receive(const BackToMainMenu &event);
@@ -37,6 +37,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   State current_state_;
   State next_state_;
   std::vector<std::unique_ptr<engine::core::Scene>> scenes_;
+  Characters character;
   bool new_game;
 };
 #endif  // GAME_H_

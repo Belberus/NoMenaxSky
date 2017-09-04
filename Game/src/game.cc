@@ -8,6 +8,7 @@
 #include "character_selection_menu.h"
 #include "death_menu.h"
 #include "pause_menu.h"
+#include "components.h"
 
 #include "floor_factory.h"
 
@@ -70,9 +71,12 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-
-          scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
+          if (character.role == Characters::Role::KNIGHT) {
+            scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, "knight"));
+          } else scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, "wizard"));
+          
           scenes_.push_back(std::make_unique<GameUi>(this));
         } else {
           scenes_.pop_back();
@@ -82,8 +86,11 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kFloor2:
          Engine::GetInstance().Get<AudioManager>().StopMusic();
          scenes_.clear();
-         scenes_.push_back(
-             FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this));
+         if (character.role == Characters::Role::KNIGHT) {
+            scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor2.tmx", this, "knight"));
+          } else scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor2.tmx", this, "wizard"));
          scenes_.push_back(std::make_unique<GameUi>(this));
         break;
       case State::kFloor3:
@@ -92,8 +99,11 @@ void Game::Update(entityx::TimeDelta dt) {
            //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
            scenes_.clear();
            // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
-           scenes_.push_back(
-               FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this));
+           if (character.role == Characters::Role::KNIGHT) {
+            scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor3.tmx", this, "knight"));
+          } else scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor3.tmx", this, "wizard"));
            scenes_.push_back(std::make_unique<GameUi>(this));
         break;
       case State::kExit:
@@ -110,8 +120,10 @@ void Game::Update(entityx::TimeDelta dt) {
   }
 }
 
-void Game::receive(const StartGame& event) { 
-  next_state_ = State::kFloor1; }
+void Game::receive(const StartGame& event, const Characters &c) { 
+  next_state_ = State::kFloor1;
+  character = c;
+}
   
 void Game::receive(const CharSelect& event) { 
   next_state_ = State::kCharSelMenu; }

@@ -782,7 +782,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
 
     if (selection_enter_pressed_){
       selection_enter_pressed_ = false;
-      events.emit<StartGame>();
+      events.emit<StartGame>(character);
     }
 
   }

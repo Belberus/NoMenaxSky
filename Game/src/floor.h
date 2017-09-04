@@ -24,6 +24,8 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   virtual void OnPlayerEnteringBossDoorWithoutKey() = 0;
   virtual void PauseGame(bool pause) = 0;
   virtual bool GetPaused() = 0;
+  Game* GetParentScene();
+  int GetLevel();
   void receive(const engine::events::Collision &collision);
   void receive(const Health &health);
   void receive(const StartLevel2 &event);
@@ -35,6 +37,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   void receive(const Player &player);
   void receive(const Death &death);
   void receive(const PlayText &pt);
+  void receive(const LevelEvent &le);
  private:
   class Room {
    public:
@@ -53,6 +56,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
                                             entityx::Entity door);
 
   Game *parent_scene_;
+  int level;
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;
   friend class FloorFactory;

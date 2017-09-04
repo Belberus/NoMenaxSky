@@ -16,6 +16,7 @@
 #include "components.h"
 #include "floor.h"
 #include "systems.h"
+#include "events.h"
 
 using namespace engine::core;
 using namespace engine::systems::two_d;
@@ -182,6 +183,22 @@ void Floor2D::OnPlayerEnteringDoor(Door entering_door) {
 void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
     Engine::GetInstance().Get<AudioManager>().PlaySound(
           "assets/media/fx/defaults/boss_door.wav", false, 0.4f);
+  if(GetLevel() == 1){
+    PlayText pt("Este es el temible Mago Manueleth.\nCon su poder lanza bolas magicas y conjura trampas que atacan periodicamente.\nDerrotalo para avanzar al siguiente piso del Castillo de Menax.\nPulsa [ENTER] para continuar.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
+  else if(GetLevel() == 2){
+    PlayText pt("Esta es la legendaria bandido Masiatrix.\nPulsa [ENTER] para continuar.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
+  else if(GetLevel() == 3){
+    PlayText pt("Finalmente, Lord Menax.\nSu extremadamente poderosa magia le permite invocar esbirros para acabar contigo.\nNo permitas que eso suceda, acaba con el y recupera tus tartas!\nPulsa [ENTER] para continuar.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
+  else{
+    PlayText pt("Que haces aqui.\nSolo los devs pueden estar aqui.\nTu no eres un dev.");
+    GetParentScene()->events.emit<PlayText>(pt);
+  }
   
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {

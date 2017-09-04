@@ -21,4 +21,8 @@ struct PlayText{
 	std::string text;
 	PlayText(std::string text) : text(text){};
 };
+struct LevelEvent {
+	int level;
+	LevelEvent(int level) : level(level){};
+};
 #endif // EVENTS_H_

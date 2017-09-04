@@ -46,7 +46,7 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
         "assets/personajes_menu/cursor.png");
     cursor.assign<Sprite>(tex);
     cursor.assign<Cursor>();
-    cursor.assign<Characters>();
+    cursor.assign<Characters>(Characters::Role::KNIGHT);
 
 	entityx::Entity knight = entities.create();
 
@@ -78,5 +78,6 @@ void CharacterSelectionMenu::Update(entityx::TimeDelta dt){
 }
 
 void CharacterSelectionMenu::receive(const StartGame &event){
+
 	parent_scene_->events.emit<StartGame>(event);
 }

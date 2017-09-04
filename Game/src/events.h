@@ -7,4 +7,5 @@ struct CharSelect {};
 struct Death {};
 struct PauseMenuEvent {};
 struct BackToGame {};
+struct ResumeGame {};
 #endif // EVENTS_H_

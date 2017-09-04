@@ -11,6 +11,7 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
   events.subscribe<Player>(*this);
+  events.subscribe<Death>(*this);
 }
 
 void Floor::receive(const Player& player) {
@@ -23,6 +24,7 @@ void Floor::receive(const PauseMenuEvent& pm){
 }
 
 void Floor::receive(const BackToGame& event){
+  std::cout << "llega back to game floor" << std::endl;
   PauseGame(false);
   parent_scene_->events.emit<BackToGame>(event);
 }
@@ -33,6 +35,10 @@ void Floor::receive(const Health& health) {
 
 void Floor::receive(const Energy& energy) {
   parent_scene_->events.emit<Energy>(energy);
+}
+
+void Floor::receive(const Death& death) {
+  parent_scene_->events.emit<Death>();
 }
 
 void Floor::receive(const engine::events::Collision& collision) {

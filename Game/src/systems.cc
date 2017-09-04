@@ -299,6 +299,77 @@ void MenuInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+PauseInputSystem::PauseInputSystem()
+    : up_pressed_(false), down_pressed_(false), enter_pressed_(false) {
+  Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+  Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void PauseInputSystem::update(entityx::EntityManager &es,
+                             entityx::EventManager &events,
+                             entityx::TimeDelta dt) {
+  entityx::ComponentHandle<PauseOptions> arrow_menu;
+  entityx::ComponentHandle<Transform> transform;
+  for (entityx::Entity entity :
+       es.entities_with_components(arrow_menu, transform)) {
+    auto new_position = transform->GetLocalPosition();
+    if (up_pressed_) {
+      up_pressed_ = false;
+      switch (arrow_menu->option) {
+        case PauseOptions::Option::CONTINUAR:
+          break;
+        case PauseOptions::Option::SALIR:
+          new_position.y += 70;
+          arrow_menu->option = PauseOptions::Option::CONTINUAR;
+          break;
+      }
+    }
+    if (down_pressed_) {
+      down_pressed_ = false;
+      switch (arrow_menu->option) {
+        case PauseOptions::Option::CONTINUAR:
+          new_position.y -= 70;
+          arrow_menu->option = PauseOptions::Option::SALIR;
+          break;
+        case PauseOptions::Option::SALIR:
+          break;
+      }
+    }
+    if (enter_pressed_) {
+      switch (arrow_menu->option) {
+        case PauseOptions::Option::CONTINUAR:
+          std::cout << "mandamos back to game" << std::endl;
+          events.emit<BackToGame>();
+          break;
+        case PauseOptions::Option::SALIR:
+          events.emit<BackToMainMenu>();
+          break;
+      }
+    }
+    transform->SetLocalPosition(new_position);
+  }
+}
+
+void PauseInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_UP) {
+    up_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_DOWN) {
+    down_pressed_ = true;
+  } else if (key_pressed.key == GLFW_KEY_ENTER) {
+    enter_pressed_ = true;
+  }
+}
+
+void PauseInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_UP) {
+    up_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_DOWN) {
+    down_pressed_ = false;
+  } else if (key_released.key == GLFW_KEY_ENTER) {
+    enter_pressed_ = false;
+  }
+}
+
 OptionsInputSystem::OptionsInputSystem()
     : options_up_pressed_(false), options_down_pressed_(false), options_enter_pressed_(false),
       options_right_pressed_(false), options_left_pressed_(false) {
@@ -605,6 +676,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
          case Characters::Role::KNIGHT:
             new_position.x += 300;
             character->role = Characters::Role::WIZARD;
+            std::cout << "wizard" << std::endl;
             break;
           case Characters::Role::WIZARD:
             break;
@@ -686,7 +758,7 @@ const float PlayerInputSystem::kSpeed = 140.0f;
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
 PlayerInputSystem::PlayerInputSystem()
-    : time_passed_since_last_attack_(kAttackDuration) {
+    : time_passed_since_last_attack_(kAttackDuration), paused_(false){
   keys_.emplace(GLFW_KEY_W, false);
   keys_.emplace(GLFW_KEY_S, false);
   keys_.emplace(GLFW_KEY_A, false);
@@ -701,6 +773,14 @@ PlayerInputSystem::PlayerInputSystem()
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
 
+bool PlayerInputSystem::is_paused(){
+  return paused_;
+}
+
+void PlayerInputSystem::set_paused(bool paused){
+  paused_ = paused;
+}
+
 void PlayerInputSystem::receive(const KeyPressed &key_pressed) {
   if (keys_.count(key_pressed.key)) {
     keys_[key_pressed.key] = true;
@@ -713,7 +793,6 @@ void PlayerInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
-bool pausedM = false;
 void PlayerInputSystem::update(entityx::EntityManager &es,
                                entityx::EventManager &events,
                                entityx::TimeDelta dt) {
@@ -742,16 +821,16 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     }
   }
 
-  if(keys_[GLFW_KEY_ESCAPE] && !keys_[GLFW_KEY_SPACE] && !pausedM) {
-    pausedM = true;
+  if(keys_[GLFW_KEY_ESCAPE] && !is_paused()) {
+    set_paused(true);
     events.emit<PauseMenuEvent>();
   }
-  if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
-    pausedM = false;
-    events.emit<BackToGame>();
-  }
+  // if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
+  //   pausedM = false;
+  //   events.emit<BackToGame>();
+  // }
 
-  if(!pausedM){
+  if(!is_paused()){
     es.each<Player, Physics, KnightAttack>([&](entityx::Entity entity,
                                                Player &player, Physics &physics,
                                                KnightAttack &attack) {
@@ -1519,7 +1598,6 @@ void HealthSystem::update(entityx::EntityManager &es,
       entity.destroy();
 
       if (es_player) {
-        std::cout << "muerto" << std::endl;
         events.emit<Death>();
       }
     }

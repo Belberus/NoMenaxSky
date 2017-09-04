@@ -16,7 +16,7 @@
 using namespace engine::core;
 
 Game::Game()
-    : current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
+    : new_game(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
   std::string filename = "assets/config/opciones.txt";
   std::ofstream outfile;
   outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
@@ -41,6 +41,7 @@ void Game::Update(entityx::TimeDelta dt) {
   if (next_state_ != State::kNull) {
     switch (next_state_) {
       case State::kMainMenu:
+        new_game = true;
         scenes_.emplace_back(new MainMenuBackground());
         scenes_.emplace_back(new MainMenu(this));
         Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -62,18 +63,25 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<PauseMenu>(this));
         break;
       case State::kFloor1:
-        Engine::GetInstance().Get<AudioManager>().StopMusic();
-        // Engine::GetInstance().Get<AudioManager>().
-        //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
-        scenes_.clear();
-        //scenes_.push_back(
-        //    FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
-        /*scenes_.push_back(
-            FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
-        */ 
-        scenes_.push_back(
-           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
-        scenes_.push_back(std::make_unique<GameUi>(this));
+        if (new_game){
+          new_game = false;
+          Engine::GetInstance().Get<AudioManager>().StopMusic();
+          // Engine::GetInstance().Get<AudioManager>().
+          //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
+          scenes_.clear();
+          //scenes_.push_back(
+          //    FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
+          /*scenes_.push_back(
+              FloorFactory::MakeFloorOne3D("test/untitled.tmx", this));
+          */ 
+          scenes_.push_back(
+             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this));
+          scenes_.push_back(std::make_unique<GameUi>(this));
+        } else {
+          scenes_.pop_back();
+          events.emit<BackToGame>();
+        }
+        
         break;
       case State::kFloor2:
         /* Engine::GetInstance().Get<AudioManager>().StopAllSounds();
@@ -122,15 +130,12 @@ void Game::receive(const BackToMainMenu& event) {
   next_state_ = State::kMainMenu; }
 
 void Game::receive(const Death& event){
-
-  std::cout << "cambiando a menu muerte" << std::endl;
   next_state_ = State::kDeathMenu; }
-
 
 void Game::receive(const PauseMenuEvent& event) {
   next_state_ = State::kPauseMenu;
 }
 
 void Game::receive(const BackToGame& event) {
-  scenes_.pop_back();
+  next_state_ = State::kFloor1;
 }

@@ -36,5 +36,6 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   State current_state_;
   State next_state_;
   std::vector<std::unique_ptr<engine::core::Scene>> scenes_;
+  bool new_game;
 };
 #endif  // GAME_H_

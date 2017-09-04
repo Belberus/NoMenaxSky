@@ -187,6 +187,21 @@ class MenuInputSystem : public entityx::System<MenuInputSystem>,
   bool enter_pressed_;
 };
 
+class PauseInputSystem : public entityx::System<PauseInputSystem>,
+                        public entityx::Receiver<PauseInputSystem> {
+ public:
+  PauseInputSystem();
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  void receive(const engine::events::KeyPressed &key_pressed);
+  void receive(const engine::events::KeyReleased &key_released);
+
+ private:
+  bool up_pressed_;
+  bool down_pressed_;
+  bool enter_pressed_;
+};
+
 class OptionsInputSystem : public entityx::System<OptionsInputSystem>, 
                            public entityx::Receiver<OptionsInputSystem>{
  public:
@@ -253,11 +268,16 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 
+  bool is_paused();
+
+  void set_paused(bool paused);
+
  private:
   static const float kSpeed;
   static const float kAttackDuration;
   float time_passed_since_last_attack_;
   std::unordered_map<int, bool> keys_;
+  bool paused_;
 };
 
 class LancerIaSystem : public entityx::System<LancerIaSystem> {

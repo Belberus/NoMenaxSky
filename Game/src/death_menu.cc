@@ -34,23 +34,36 @@ DeathMenu::DeathMenu(engine::core::Scene *parent_scene)
   	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
 
   	entityx::ComponentHandle<Characters> character;
+    entityx::ComponentHandle<Cursor> cursor;
 
-  	auto tex = nullptr;
+    entityx::Entity dead = entities.create();
 
-  	std::vector<engine::utils::Rectangle> death_knight;
-  	death_knight.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
+    auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+          "assets/death_menu/dead_knight.png");
 
-  	// Lo mismo para wizard
-
+    // NO coge esta entidad
   	for (entityx::Entity e :
-  			entities.entities_with_components(character)){
-  		if (character->role == Characters::Role::KNIGHT){
-
-  		} else {
-
-  		}
+  			entities.entities_with_components(character, cursor)){
+         std::cout << "dentro death" << std::endl;
+  		if (character->role == Characters::Role::WIZARD){
+         std::cout << "dentro death" << std::endl;
+         tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+          "assets/death_menu/dead_wizard.png");
+  		} 
   	}
 
+
+    dead.assign<Transform>(glm::vec3(-30, 80, 0), menu_canvas_transform,
+                          glm::vec3(10.0f));
+
+    dead.assign<Sprite>(tex);
+
+    entityx::Entity you_died = entities.create();
+    you_died.assign<Transform>(glm::vec3(0, 300, 0), menu_canvas_transform,
+                               glm::vec3(1.2f));
+    tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+      "assets/death_menu/you_died.png");
+    you_died.assign<Sprite>(tex);
 
     systems.add<engine::systems::two_d::SpriteRenderer>();
     systems.add<DeathInputSystem>();
@@ -63,5 +76,5 @@ void DeathMenu::Update(entityx::TimeDelta dt) {
 }
 
 void DeathMenu::receive(const BackToMainMenu &back_to_main) {
-	parent_scene_->events.emit<BackToMainMenu>(back_to_main);
+	  parent_scene_->events.emit<BackToMainMenu>(back_to_main);
 }

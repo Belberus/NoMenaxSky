@@ -58,6 +58,14 @@ struct ArrowOptions {
   ArrowOptions(Option option) : option(option) {}
 };
 
+struct PauseOptions {
+  enum Option { CONTINUAR, SALIR };
+
+  Option option;
+
+  PauseOptions(Option option) : option(option) {}
+};
+
 struct GameOptions {
   enum Modo { TWO_D, THREE_D };
   enum Musica { MUSIC_ON, MUSIC_OFF };
@@ -128,7 +136,7 @@ struct Characters{
   enum Role { KNIGHT, WIZARD };
   Role role;
 
-  Characters() : role(Role::KNIGHT) {}
+  Characters(Role role) : role(role) {}
 };
 
 struct Cursor {};

@@ -1,6 +1,7 @@
 #ifndef EVENTS_H_
 #define EVENTS_H_
 struct StartGame {};
+struct StartLevel2 {};
 struct OptionMenu {};
 struct BackToMainMenu {};
 struct CharSelect {};

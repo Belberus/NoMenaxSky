@@ -199,6 +199,11 @@ struct Manueleth {
   	int hits;
 };
 
+struct Wizard {
+	Wizard() : is_attacking(false) {};
+	bool is_attacking;
+};
+
 struct Chest {
 	Chest(bool key) : key(key) {}
 	bool key;
@@ -220,6 +225,11 @@ struct Trap {
 
 struct EnemyProjectile{
 	EnemyProjectile(float damage) : damage(damage){}
+	float damage;
+};
+
+struct WizardProjectile{
+	WizardProjectile(float damage) : damage(damage) {};
 	float damage;
 };
 

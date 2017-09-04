@@ -87,6 +87,12 @@ std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
   return std::vector<entityx::Entity>();
 }
 
+std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
+    entityx::EntityManager& entities, const glm::vec3& position,
+    const float& rotation, const glm::vec3& velocity, const std::string& type) {
+  return std::vector<entityx::Entity>();
+}
+
 std::vector<entityx::Entity> EntityFactory3D::MakeLancer(
     entityx::EntityManager& entities, const glm::vec3& position) {
   return std::vector<entityx::Entity>();

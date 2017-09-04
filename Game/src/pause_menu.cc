@@ -125,14 +125,14 @@ void PauseMenu::receive(const MuteMusic& muteMusic){
 		.SetVolumeMusic(1.0f);
 		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	      "assets/menu/mute_music.png");
-	  	music_option_.assign<Sprite>(tex);
+	  	music_option_.replace<Sprite>(tex);
 	}
 	else{
 		Engine::GetInstance().Get<AudioManager>()
 		.SetVolumeMusic(0.0f);
 		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	      "assets/menu/unmute_music.png");
-	  	music_option_.assign<Sprite>(tex);
+	  	music_option_.replace<Sprite>(tex);
 	}
 }
 
@@ -144,7 +144,7 @@ void PauseMenu::receive(const MuteFx& muteFx){
 		.SetVolumeFX(1.0f);
 		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	      "assets/menu/mute_fx.png");
-	  	fx_option_.assign<Sprite>(tex);
+	  	fx_option_.replace<Sprite>(tex);
 	}
 	else{
 		std::cout << "mute fx" << std::endl;
@@ -152,6 +152,6 @@ void PauseMenu::receive(const MuteFx& muteFx){
 		.SetVolumeFX(0.0f);
 		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	      "assets/menu/unmute_fx.png");
-	  	fx_option_.assign<Sprite>(tex);
+	  	fx_option_.replace<Sprite>(tex);
 	}
 }

@@ -25,6 +25,11 @@ struct EntityFactory3D : public EntityFactory {
   std::vector<entityx::Entity> MakeManueleth(
       entityx::EntityManager &entities, const glm::vec3 &position) override;
 
+  std::vector<entityx::Entity> MakeWizardProjectile(
+      entityx::EntityManager &entities, const glm::vec3 &position,
+      const float &rotation, const glm::vec3 &velocity,
+      const std::string &type) override;
+
   std::vector<entityx::Entity> MakeEnemyProjectile(
       entityx::EntityManager &entities, const glm::vec3 &position,
       const float &rotation, const glm::vec3 &velocity,

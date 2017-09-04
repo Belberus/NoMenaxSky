@@ -26,6 +26,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   virtual bool GetPaused() = 0;
   void receive(const engine::events::Collision &collision);
   void receive(const Health &health);
+  void receive(const StartLevel2 &event);
   void receive(const Energy &energy);
   void receive(const PauseMenuEvent &pm);
   void receive(const PauseGameEvent& pg);

@@ -286,6 +286,8 @@ bool engine::systems::two_d::Physics::ShouldIgnoreStaticCollision(entityx::Entit
     return true;
   } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<LowCollision>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<LowCollision>())) {
     return true;
+  } else if ((e1.has_component<WizardProjectile>() && e2.has_component<LowCollision>()) || (e2.has_component<WizardProjectile>() && e1.has_component<LowCollision>())) {
+    return true;
   } else return false;
 }
 
@@ -306,7 +308,15 @@ bool engine::systems::two_d::Physics::ShouldIgnoreMovingCollision(entityx::Entit
     return true;
   } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<LancerHitBox>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<LancerHitBox>())) {
     return true;
-  } else return false;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<WizardProjectile>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<WizardProjectile>())) {
+    return true;
+  } else if ((e1.has_component<WizardProjectile>() && e2.has_component<Player>()) || (e2.has_component<WizardProjectile>() && e1.has_component<Player>())) {
+    return true;
+  } else if ((e1.has_component<WizardProjectile>() && e2.has_component<LancerHitBox>()) || (e2.has_component<WizardProjectile>() && e1.has_component<LancerHitBox>())) {
+    return true;
+  } else if (e1.has_component<WizardProjectile>() && e2.has_component<WizardProjectile>()) {
+    return true;
+  }else return false;
 }
 
 void engine::systems::two_d::Physics::DoCollisionResponse(

@@ -782,9 +782,10 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
 
     if (selection_enter_pressed_){
       selection_enter_pressed_ = false;
-      events.emit<StartGame>(character);
+      if (character->role == Characters::Role::KNIGHT) {
+        events.emit<StartGame>("knight");
+      } else events.emit<StartGame>("wizard");
     }
-
   }
 }
 
@@ -1848,6 +1849,10 @@ void HealthSystem::update(entityx::EntityManager &es,
       Engine::GetInstance().Get<AudioManager>().PlaySound(health.death_fx,
                                                           false, 1);
       if (entity.component<Manueleth>()) {
+        es.each<WizardProjectile>(
+          [&](entityx::Entity entity_p, WizardProjectile &w) {
+            entity_p.destroy();
+          });
       	entity.destroy();
       	events.emit<StartLevel2>();
       } else {

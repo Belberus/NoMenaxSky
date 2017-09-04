@@ -296,7 +296,7 @@ void FloorFactory::ParseRoomContents(
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
-    const std::string &file_name, Game *parent_scene, std::string &role) {
+    const std::string &file_name, Game *parent_scene,  const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -322,7 +322,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
-    const std::string &file_name, Game *parent_scene, std::string &role) {
+    const std::string &file_name, Game *parent_scene,  const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -333,14 +333,14 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
   floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory);
   floor->current_room_ = "2.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
-
+  std::cerr << "Dentro" << std::endl;
   auto camera = floor->entities.create();
   camera.assign<engine::components::common::Transform>(
       glm::vec3(1006.0f, 2863.0f, 1.0f));
   camera.assign<engine::components::common::Camera>(512.0f, 288.0f, 0.1f,
                                                     1000.0f);
   if (role == "knight") {
-    factory->MakeKnight(floor->entities, glm::vec3(1006.0f, 640.0f, 0));
+    factory->MakeKnight(floor->entities, glm::vec3(1006.0f, 2863.0f, 0));
   } else {
     factory->MakeWizard(floor->entities, glm::vec3(1006.0f, 2863.0f, 0));
   } 
@@ -348,7 +348,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorThree2D(
-    const std::string &file_name, Game *parent_scene, std::string &role) {
+    const std::string &file_name, Game *parent_scene,  const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -366,10 +366,10 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorThree2D(
   camera.assign<engine::components::common::Camera>(512.0f, 288.0f, 0.1f,
                                                     1000.0f);
 
-  if (role = "knight") {
+  if (role == "knight") {
     factory->MakeKnight(floor->entities, glm::vec3(288.0f, 3272.0f, 0));
   } else {
-    factory->MakeWizard(floor->entities, glm::vec3(288.0f, 3204.0f, 0));
+    factory->MakeWizard(floor->entities, glm::vec3(288.0f, 3272.0f, 0));
   }
   return floor;
 }

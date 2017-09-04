@@ -1,6 +1,10 @@
 #ifndef EVENTS_H_
 #define EVENTS_H_
-struct StartGame {};
+
+struct StartGame {
+	std::string text;
+	StartGame(std::string text) : text(text) {};
+};
 struct StartLevel2 {};
 struct OptionMenu {};
 struct BackToMainMenu {};

@@ -83,11 +83,8 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-          if (character.role == Characters::Role::KNIGHT) {
-            scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, "knight"));
-          } else scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, "wizard"));
+          scenes_.push_back(
+           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));
           
           scenes_.push_back(std::make_unique<GameUi>(this));
           //text_to_play = "Bienvenido.\nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas.\nWASD haran que Gauntleto se mueva.\nLas flechas de direccion haran que Gauntleto ataque.\nSi ademas de las flechas pulsas espacio, se defendera.\nCorre a detener al malvado Lord Menax y sus secuaces!\nPulsa [ENTER] para continuar.";
@@ -105,11 +102,8 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kFloor2:
          Engine::GetInstance().Get<AudioManager>().StopMusic();
          scenes_.clear();
-         if (character.role == Characters::Role::KNIGHT) {
-            scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor2.tmx", this, "knight"));
-          } else scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor2.tmx", this, "wizard"));
+         scenes_.push_back(
+           FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this, character));
          scenes_.push_back(std::make_unique<GameUi>(this));
         break;
       case State::kFloor3:
@@ -118,11 +112,9 @@ void Game::Update(entityx::TimeDelta dt) {
            //  PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
            scenes_.clear();
            // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
-           if (character.role == Characters::Role::KNIGHT) {
-            scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor3.tmx", this, "knight"));
-          } else scenes_.push_back(
-             FloorFactory::MakeFloorOne2D("assets/castle/floor3.tmx", this, "wizard"));
+           scenes_.push_back(
+           FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
+          
            scenes_.push_back(std::make_unique<GameUi>(this));
         break;
       case State::kExit:
@@ -139,9 +131,9 @@ void Game::Update(entityx::TimeDelta dt) {
   }
 }
 
-void Game::receive(const StartGame& event, const Characters &c) { 
+void Game::receive(const StartGame& event) { 
   next_state_ = State::kFloor1;
-  character = c;
+  character = event.text;
 }
   
 void Game::receive(const CharSelect& event) { 

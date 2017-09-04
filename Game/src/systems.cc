@@ -758,7 +758,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
        selection_right_pressed_ = false;
        switch (character->role) {
          case Characters::Role::KNIGHT:
-            new_position.x += 300;
+            new_position.x += 315;
             character->role = Characters::Role::WIZARD;
             break;
           case Characters::Role::WIZARD:
@@ -772,7 +772,7 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
          case Characters::Role::KNIGHT:
             break;
           case Characters::Role::WIZARD:
-            new_position.x -= 300;
+            new_position.x -= 315;
             character->role = Characters::Role::KNIGHT;
             break;
        }

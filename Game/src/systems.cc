@@ -1828,7 +1828,6 @@ void ShieldSystem::update(entityx::EntityManager &es,
     });
 }
 
-
 float lastPlayerHP;
 
 void HealthSystem::update(entityx::EntityManager &es,

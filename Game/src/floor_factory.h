@@ -39,12 +39,12 @@ class FloorFactory {
 
   static std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
   ParseRooms(const tmx::Map &map, const std::string &layer_name,
-             const std::shared_ptr<EntityFactory> &factory);
+             const std::shared_ptr<EntityFactory> &factory, const std::string &level);
 
   static void ParseRoomContents(const tmx::Map &map,
                                 const tmx::ObjectGroup &object_layer,
                                 const std::shared_ptr<EntityFactory> &factory,
-                                Floor::Room &room);
+                                Floor::Room &room, const std::string &level);
 
   // NOTE: placing 3d objects in the level
   // For generating the 3D levels we keep using Tiled; we take an image of our

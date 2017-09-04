@@ -107,9 +107,10 @@ struct Door {
 
 struct BossDoor {
 	BossDoor(const std::string &next_door, const std::string &pos)
-      : next_door(next_door), pos(pos) {}
+      : next_door(next_door), pos(pos), level("0") {}
 	std::string next_door;
 	std::string pos;
+  std::string level;
 };
 
 struct Shield {

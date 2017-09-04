@@ -92,20 +92,48 @@ void Floor::receive(const engine::events::Collision& collision) {
       rooms_[current_room_]->Load(*this);
       OnPlayerEnteringDoor(previous_door);
     }
-  } else if (bossDoor && player && enemies_in_the_room == 0) {
-    // Con puerta de boss
-    auto bossDoor = collision_copy.e1.component<BossDoor>();
-    auto player = collision_copy.e0.component<Player>();
-    if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
-      if (player->key == true) {
+  } else if (bossDoor && player && enemies_in_the_room == 0) {  
+    if (bossDoor->level == "1") {
+      if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
+        if (player->key == true) {
+          rooms_[current_room_]->visited = true;
+          BossDoor previous_door(*bossDoor);
+          rooms_[current_room_]->Unload(*this);
+          current_room_ = previous_door.next_door;
+          rooms_[current_room_]->Load(*this);
+          OnPlayerEnteringBossDoorWithKey(previous_door);
+        } else {
+          OnPlayerEnteringBossDoorWithoutKey();
+        }
+      }
+    } else if (bossDoor->level == "2") {
+      bool palanca1 = false;
+      bool palanca2 = false;
+      if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
+        for (auto e : entities.entities_with_components<Lever>()) {
+          if (e.component<Lever>()->id == 1) {
+            palanca1 = e.component<Lever>()->activated;
+          } else if (e.component<Lever>()->id == 2) {
+            palanca2 = e.component<Lever>()->activated;
+          }
+        }
+        if (palanca1 && palanca2) {
+          rooms_[current_room_]->visited = true;
+          BossDoor previous_door(*bossDoor);
+          rooms_[current_room_]->Unload(*this);
+          current_room_ = previous_door.next_door;
+          rooms_[current_room_]->Load(*this);
+          OnPlayerEnteringBossDoorWithKey(previous_door);
+        }
+      }
+    } else {
+      if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
         rooms_[current_room_]->visited = true;
         BossDoor previous_door(*bossDoor);
         rooms_[current_room_]->Unload(*this);
         current_room_ = previous_door.next_door;
         rooms_[current_room_]->Load(*this);
         OnPlayerEnteringBossDoorWithKey(previous_door);
-      } else {
-        OnPlayerEnteringBossDoorWithoutKey();
       }
     }
   }

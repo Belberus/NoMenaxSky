@@ -145,14 +145,14 @@ void FloorFactory::ParseStaticColliders(const tmx::Map &map,
 
 std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
 FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name,
-                         const std::shared_ptr<EntityFactory> &factory) {
+                         const std::shared_ptr<EntityFactory> &factory, const std::string &level) {
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms;
   for (auto &layer : map.getLayers()) {
     if (layer->getType() == tmx::Layer::Type::Object &&
         std::regex_match(layer->getName(), std::regex(layer_name))) {
       auto object_layer = dynamic_cast<tmx::ObjectGroup *>(layer.get());
       auto floor = std::make_unique<Floor::Room>();
-      ParseRoomContents(map, *object_layer, factory, *floor);
+      ParseRoomContents(map, *object_layer, factory, *floor, level);
       rooms.emplace(layer->getName(), std::move(floor));
     }
   }
@@ -161,7 +161,8 @@ FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name,
 
 void FloorFactory::ParseRoomContents(
     const tmx::Map &map, const tmx::ObjectGroup &object_layer,
-    const std::shared_ptr<EntityFactory> &factory, Floor::Room &room) {
+    const std::shared_ptr<EntityFactory> &factory, Floor::Room &room, const std::string &level) {
+
   srand(time(NULL));
   float frecuencias[10] = {250.0f,  500.0f,  750.0f,  1000.0f, 1250.0f,
                            1500.0f, 1750.0f, 2000.0f, 2250.0f, 2500.0f};
@@ -196,6 +197,12 @@ void FloorFactory::ParseRoomContents(
       auto properties = object.getProperties();
       BossDoor bossDoor(properties[0].getStringValue(),
                         properties[1].getStringValue());
+      if (level == "1") {
+        bossDoor.level = "1";
+      } else if (level == "2") {
+        bossDoor.level = "2";
+      } else bossDoor.level = "3";
+
       auto fn_bossDoor =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
         auto id = em.create();
@@ -304,7 +311,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
   ParseTilemap(tiled_map, *floor);
   ParseTileObjects(tiled_map, *floor);
   ParseStaticColliders(tiled_map, "Colisiones", *floor);
-  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory);
+  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
 
@@ -330,7 +337,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
   ParseTilemap(tiled_map, *floor);
   ParseTileObjects(tiled_map, *floor);
   ParseStaticColliders(tiled_map, "Colisiones", *floor);
-  floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory);
+  floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory, "2");
   floor->current_room_ = "2.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
   std::cerr << "Dentro" << std::endl;
@@ -356,7 +363,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorThree2D(
   ParseTilemap(tiled_map, *floor);
   ParseTileObjects(tiled_map, *floor);
   ParseStaticColliders(tiled_map, "Colisiones", *floor);
-  floor->rooms_ = ParseRooms(tiled_map, "(3\\.\\d*)", factory);
+  floor->rooms_ = ParseRooms(tiled_map, "(3\\.\\d*)", factory, "3");
   floor->current_room_ = "3.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
 
@@ -405,7 +412,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   tmx::Map tiled_map;
   tiled_map.load("assets/test/untitled.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
-  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory);
+  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
   return floor;

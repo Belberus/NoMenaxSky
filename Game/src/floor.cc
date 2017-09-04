@@ -16,6 +16,16 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<PauseGameEvent>(*this);
   events.subscribe<UnpauseGameEvent>(*this);
   events.subscribe<PlayText>(*this);
+  events.subscribe<LevelEvent>(*this);
+
+}
+
+Game* Floor::GetParentScene(){
+  return parent_scene_;
+}
+
+int Floor::GetLevel(){
+  return level;
 }
 
 void Floor::receive(const PlayText& pt){
@@ -59,6 +69,10 @@ void Floor::receive(const Energy& energy) {
 
 void Floor::receive(const Death& death) {
   parent_scene_->events.emit<Death>();
+}
+
+void Floor::receive(const LevelEvent& le){
+  level = le.level;
 }
 
 void Floor::receive(const engine::events::Collision& collision) {

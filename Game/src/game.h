@@ -35,11 +35,15 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void receive(const PauseMenuEvent &event);
   void receive(const BackToGame &event);
   void receive(const PlayText &event);
+  int getLevel();
  private:
   State current_state_;
   State next_state_;
   std::vector<std::unique_ptr<engine::core::Scene>> scenes_;
   bool new_game;
+  bool new_game2;
+  bool new_game3;
   std::string text_to_play;
+  int level;
 };
 #endif  // GAME_H_

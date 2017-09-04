@@ -9,31 +9,7 @@
 #include <engine/events/key_released.h>
 
 #include "components.h"
-/*
-/// This systems is responbile of making sure that certain entities dont
-/// collide.
-class IgnoreCollisionSystem : public entityx::System<IgnoreCollisionSystem>,
-                              public entityx::Receiver<IgnoreCollisionSystem> {
- public:
-  IgnoreCollisionSystem(entityx::EntityManager *entity_manager,
-                        entityx::EventManager *event_manager);
-  void configure(entityx::EventManager &event_manager) override;
-  void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override;
-  /// When a component ghost is added, that means that a new ghost entity is
-  /// being added, so we make sure that this entity doesnt collide with already
-  /// existing low profile buildings.
-  /// @param new_entity info about the event.
-  void receive(const entityx::ComponentAddedEvent<Ghost> &new_entity);
 
-  void receive(const entityx::ComponentAddedEvent<TurretProjectile> &new_entity);
-
- private:
-  entityx::EntityManager *entity_manager_;
-  entityx::EventManager *event_manager_;
-  std::vector<entityx::Entity> ghosts_;
-};
-*/
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -57,6 +33,27 @@ class KnightAttackSystem : public entityx::System<KnightAttackSystem>,
 
 class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class WizardAnimationSystem : public entityx::System<WizardAnimationSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+ private:
+  std::string lastAnim;
+  std::string lastOrientation;
+  float timer;
+  float timer2;
+};
+
+class WizardAttackSystem : public entityx::System<WizardAttackSystem>,
+                           public entityx::Receiver<WizardAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };

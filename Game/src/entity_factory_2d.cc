@@ -190,6 +190,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeWizard(
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Wizard>();
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
   color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
@@ -197,53 +198,43 @@ std::vector<entityx::Entity> EntityFactory2D::MakeWizard(
   player.assign<ColorAnimation>(std::move(color_frames));
 
   std::vector<engine::utils::Rectangle> moving_bottom;
-  moving_bottom.emplace_back(glm::vec2(3, 137), glm::vec2(15, 14));
+  moving_bottom.emplace_back(glm::vec2(3, 145), glm::vec2(15, 15));
+
   std::vector<engine::utils::Rectangle> moving_top;
-  moving_top.emplace_back(glm::vec2(22, 137), glm::vec2(15, 14));
+  moving_top.emplace_back(glm::vec2(22, 145), glm::vec2(15, 15));
+
   std::vector<engine::utils::Rectangle> moving_right;
-  moving_right.emplace_back(glm::vec2(41, 137), glm::vec2(15, 14));
+  moving_right.emplace_back(glm::vec2(41, 145), glm::vec2(15, 15));
+
   std::vector<engine::utils::Rectangle> moving_left;
-  moving_left.emplace_back(glm::vec2(60, 137), glm::vec2(15, 14));
+  moving_left.emplace_back(glm::vec2(60, 145), glm::vec2(15, 15));
 
-  std::vector<engine::utils::Rectangle> defend_bottom;
-  defend_bottom.emplace_back(glm::vec2(3, 118), glm::vec2(15, 14));
-  std::vector<engine::utils::Rectangle> defend_top;
-  defend_top.emplace_back(glm::vec2(22, 118), glm::vec2(15, 14));
-  std::vector<engine::utils::Rectangle> defend_right;
-  defend_right.emplace_back(glm::vec2(41, 118), glm::vec2(15, 14));
-  std::vector<engine::utils::Rectangle> defend_left;
-  defend_left.emplace_back(glm::vec2(60, 118), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> walking_bottom;
+  walking_bottom.emplace_back(glm::vec2(3, 107), glm::vec2(15, 15));
+  walking_bottom.emplace_back(glm::vec2(22, 107), glm::vec2(15, 15));
 
-  std::vector<engine::utils::Rectangle> attack_bottom;
-  attack_bottom.emplace_back(glm::vec2(3, 99), glm::vec2(15, 14));
-  attack_bottom.emplace_back(glm::vec2(22, 99), glm::vec2(15, 14));
-  attack_bottom.emplace_back(glm::vec2(41, 99), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> walking_top;
+  walking_top.emplace_back(glm::vec2(3, 88), glm::vec2(15, 15));
+  walking_top.emplace_back(glm::vec2(22, 88), glm::vec2(15, 15));
+  
+  std::vector<engine::utils::Rectangle> walking_right;
+  walking_right.emplace_back(glm::vec2(3, 69), glm::vec2(15, 15));
+  walking_right.emplace_back(glm::vec2(22, 69), glm::vec2(15, 15));
 
-  std::vector<engine::utils::Rectangle> attack_top;
-  attack_top.emplace_back(glm::vec2(3., 80), glm::vec2(15, 14));
-  attack_top.emplace_back(glm::vec2(22, 80), glm::vec2(15, 14));
-  attack_top.emplace_back(glm::vec2(41, 80), glm::vec2(15, 14));
-
-  std::vector<engine::utils::Rectangle> attack_right;
-  attack_right.emplace_back(glm::vec2(3., 61), glm::vec2(15, 14));
-  attack_right.emplace_back(glm::vec2(22, 61), glm::vec2(15, 14));
-  attack_right.emplace_back(glm::vec2(41, 61), glm::vec2(15, 14));
-
-  std::vector<engine::utils::Rectangle> attack_left;
-  attack_left.emplace_back(glm::vec2(3., 42), glm::vec2(15, 14));
-  attack_left.emplace_back(glm::vec2(22, 42), glm::vec2(15, 14));
-  attack_left.emplace_back(glm::vec2(41, 42), glm::vec2(15, 14));
+  std::vector<engine::utils::Rectangle> walking_left;
+  walking_left.emplace_back(glm::vec2(3, 50), glm::vec2(15, 15));
+  walking_left.emplace_back(glm::vec2(22, 50), glm::vec2(15, 15));
 
   std::vector<engine::utils::Rectangle> moving;
-  moving.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
-  moving.emplace_back(glm::vec2(22, 23), glm::vec2(15, 14));
-  moving.emplace_back(glm::vec2(41, 23), glm::vec2(15, 14));
+  moving.emplace_back(glm::vec2(3, 31), glm::vec2(15, 15));
+  moving.emplace_back(glm::vec2(22, 31), glm::vec2(15, 15));
+  moving.emplace_back(glm::vec2(41, 31), glm::vec2(15, 15));
 
   std::vector<engine::utils::Rectangle> stand;
-  stand.emplace_back(glm::vec2(3, 23), glm::vec2(15, 14));
+  stand.emplace_back(glm::vec2(3, 31), glm::vec2(15, 15));
 
   std::vector<engine::utils::Rectangle> death;
-  death.emplace_back(glm::vec2(3, 4), glm::vec2(22, 14));
+  death.emplace_back(glm::vec2(3, 12), glm::vec2(22, 15));
 
   auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
@@ -257,22 +248,14 @@ std::vector<entityx::Entity> EntityFactory2D::MakeWizard(
       "moving_right", texture_atlas, moving_right, 100.0f);
   SpriteAnimation::AnimationClip moving_left_anim("moving_left", texture_atlas,
                                                   moving_left, 100.0f);
-  SpriteAnimation::AnimationClip defend_bottom_anim(
-      "defend_bottom", texture_atlas, defend_bottom, 100.0f);
-  SpriteAnimation::AnimationClip defend_top_anim("defend_top", texture_atlas,
-                                                 defend_top, 100.0f);
-  SpriteAnimation::AnimationClip defend_right_anim(
-      "defend_right", texture_atlas, defend_right, 100.0f);
-  SpriteAnimation::AnimationClip defend_left_anim("defend_left", texture_atlas,
-                                                  defend_left, 100.0f);
-  SpriteAnimation::AnimationClip attack_bottom_anim(
-      "attack_bottom", texture_atlas, attack_bottom, 100.0f);
-  SpriteAnimation::AnimationClip attack_top_anim("attack_top", texture_atlas,
-                                                 attack_top, 100.0f);
-  SpriteAnimation::AnimationClip attack_right_anim(
-      "attack_right", texture_atlas, attack_right, 100.0f);
-  SpriteAnimation::AnimationClip attack_left_anim("attack_left", texture_atlas,
-                                                  attack_left, 100.0f);
+  SpriteAnimation::AnimationClip walking_bottom_anim(
+      "walking_bottom", texture_atlas, walking_bottom, 100.0f);
+  SpriteAnimation::AnimationClip walking_top_anim("walking_top", texture_atlas,
+                                                 walking_top, 100.0f);
+  SpriteAnimation::AnimationClip walking_right_anim(
+      "walking_right", texture_atlas, walking_right, 100.0f);
+  SpriteAnimation::AnimationClip walking_left_anim("walking_left", texture_atlas,
+                                                  walking_left, 100.0f);
   SpriteAnimation::AnimationClip moving_anim("moving", texture_atlas, moving,
                                              100.0f);
   SpriteAnimation::AnimationClip stand_still("stand", texture_atlas, stand,
@@ -281,9 +264,8 @@ std::vector<entityx::Entity> EntityFactory2D::MakeWizard(
                                             100.0f);
 
   SpriteAnimation anim({moving_bottom_anim, moving_top_anim, moving_right_anim,
-                        moving_left_anim, defend_bottom_anim, defend_top_anim,
-                        defend_right_anim, defend_left_anim, attack_bottom_anim,
-                        attack_top_anim, attack_right_anim, attack_left_anim,
+                        moving_left_anim, walking_bottom_anim,
+                        walking_top_anim, walking_right_anim, walking_left_anim,
                         death_anim});
 
   player.assign<SpriteAnimation>(anim);
@@ -304,36 +286,6 @@ std::vector<entityx::Entity> EntityFactory2D::MakeWizard(
   parentLink.owner = player;
   legs.assign<ParentLink>(parentLink);
   entities_created.push_back(legs);
-
-  // adding sword entity
-  auto sword_hitbox = entities.create();
-  sword_hitbox.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
-                                 player.component<Transform>().get());
-  sword_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                    glm::vec2(6.0f, 6.0f), true);
-  sword_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
-  MeleeWeapon weapon_cmp;
-  weapon_cmp.damage = 10.0f;
-  weapon_cmp.owner = player;
-  weapon_cmp.drawn = false;
-  sword_hitbox.assign<MeleeWeapon>(weapon_cmp);
-  entities_created.push_back(sword_hitbox);
-
-  // adding shield entity
-  auto shield = entities.create();
-  shield.assign<Transform>(glm::vec3(0.0f, -9.0f, 0.0f),
-                                 player.component<Transform>().get());
-  shield.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                    glm::vec2(8.0f, 3.0f), true);
-  shield.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
-  shield.assign<Shield>(player);
-  
-  std::vector<ColorAnimation::KeyFrame> color_frames_shield;
-  color_frames_shield.emplace_back(glm::vec3(-0.3f, 1.0f, 0.0f), 0.2f);
-  color_frames_shield.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
-  shield.assign<ColorAnimation>(std::move(color_frames_shield));
-
-  entities_created.push_back(shield);
 
   return entities_created;
 }
@@ -704,4 +656,49 @@ std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::Entit
 
   entities_created.push_back(enemyProjectile);
   return entities_created;
+}
+
+std::vector<entityx::Entity> EntityFactory2D::MakeWizardProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
+
+  std::vector<entityx::Entity> entities_created;
+    entityx::Entity wizardProjectile = entities.create();
+    
+    if (type == "normal") {
+      Transform t(position);
+      glm::quat model_rotation;
+      model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+      t.SetLocalOrientation(model_rotation);
+      wizardProjectile.assign<Transform>(t);
+      wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+      wizardProjectile.assign<Physics>(velocity);
+      wizardProjectile.assign<WizardProjectile>(10.0f);
+
+    } else if (type == "special") {
+      Transform t(position);
+      glm::quat model_rotation;
+      model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+      t.SetLocalOrientation(model_rotation);
+      t.SetLocalScale(glm::vec3(1,2,2));
+      wizardProjectile.assign<Transform>(t);
+      wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(4, 4));
+      wizardProjectile.assign<Physics>(velocity);
+      wizardProjectile.assign<WizardProjectile>(25.0f);
+    } 
+
+    std::vector<engine::utils::Rectangle> shoot;
+    shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
+    shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+
+    auto texture_atlas =
+      Engine::GetInstance().Get<ResourceManager>().Load<Texture>("assets/spritesheets/mago.png");
+
+    SpriteAnimation::AnimationClip shooting_anim("shooting", texture_atlas, shoot,
+                                               100.0f);
+
+    SpriteAnimation shoot_anim({shooting_anim});
+    wizardProjectile.assign<SpriteAnimation>(shoot_anim);
+    wizardProjectile.assign<Sprite>(texture_atlas);
+
+    entities_created.push_back(wizardProjectile);
+    return entities_created;
 }

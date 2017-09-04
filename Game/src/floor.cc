@@ -10,6 +10,7 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<Energy>(*this);
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
+  events.subscribe<StartLevel2>(*this);
 }
 
 void Floor::receive(const PauseMenuEvent& pm){
@@ -20,6 +21,10 @@ void Floor::receive(const PauseMenuEvent& pm){
 void Floor::receive(const BackToGame& event){
   PauseGame(false);
   parent_scene_->events.emit<BackToGame>(event);
+}
+
+void Floor::receive(const StartLevel2& event) {
+  parent_scene_->events.emit<StartLevel2>();
 }
 
 void Floor::receive(const Health& health) {

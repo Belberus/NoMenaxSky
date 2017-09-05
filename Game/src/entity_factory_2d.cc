@@ -30,7 +30,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeKnight(
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
-  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(300.0f, 300.0f, "assets/media/fx/gaunt/default/death.wav");
 
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
@@ -560,7 +560,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
-	  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
+	  manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));

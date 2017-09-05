@@ -1853,8 +1853,6 @@ void HealthSystem::update(entityx::EntityManager &es,
             entity_p.destroy();
           });
       	entity.destroy();
-        PlayText pt("Enhorabuena.\nHas derrotado al Mago Manueleth.\nPulsa [ENTER] para continuar al siguiente nivel.");
-        events.emit<PlayText> (pt);
       	events.emit<StartLevel2>();
       } else {
       	es.each<Legs, ParentLink>(
@@ -1921,48 +1919,41 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
   if (e0_player && collision_copy.e1.component<Chest>()) {
     auto chest = collision_copy.e1.component<Chest>();
     if (chest->key == true) {
-      // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
-      // la llave
       if(once2){
         once2=false;
-        std::cout << "envio mensaje hay llave" << std::endl;
-        PlayText pt("Has encontrado la llave.\n Ya puedes enfrentarte al boss del nivel.");
+        PlayText pt("Has encontrado la llave!\n\nDirigete a la puerta del boss para enfrentarte a el.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
         event_manager_->emit<PlayText>(pt);
       }      
       if(!e0_player->key){
         e0_player->key = true;
         check = true;
-        //std::cerr << "has encontrado la llave" << std::endl;
       } 
       else {//ya la tiene, no des la turra
         //TODO: texto de que ya la tienes -__-
       }
     } else {
-      // Mensaje de que la llave esta en otro cofre
-      //std::cerr << "la llave esta en otro cofre" << std::endl;
         if(once2){
           once2 = false;
-          std::cout << "envio mensaje no hay llave" << std::endl;
-          PlayText pt("La llave está en otro cofre.\n Sigue buscando!");
+          PlayText pt("La llave no esta en este cofre.\n\nSigue buscando, seguro que la encuentras.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
           event_manager_->emit<PlayText>(pt);
         }        
     }
   } else if (e1_player && collision_copy.e0.component<Chest>()) {
     auto chest = collision_copy.e0.component<Chest>();
     if (chest->key == true) {
-      // Mensaje de que has encontrado la llave, actualizar GUI con la imagen de
-      // la llave
+
       if(!e1_player->key){
         e1_player->key = true;
         check = true;
-        //std::cerr << "has encontrado la llave" << std::endl;
+        PlayText pt("Has encontrado la llave!\n\nDirigete a la puerta del boss para enfrentarte a el.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+        event_manager_->emit<PlayText>(pt);
       }
       else{
         //TODO: QUE YA LA TIENES!!
       }
     } else {
-      // Mensaje de que la llave esta en otro cofre
-      //std::cerr << "la llave esta en otro cofre" << std::endl;
+      PlayText pt("La llave no esta en este cofre.\n\nSigue buscando, seguro que la encuentras.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+          event_manager_->emit<PlayText>(pt);
     }
   }
 }
@@ -2236,12 +2227,12 @@ void LeverSystem::receive(const engine::events::Collision &collision) {
     auto lever = collision_copy.e1.component<Lever>();
     if(!lever->activated){
       lever->activated = true;
-      PlayText pt("Palanca activada con éxito.");
+      e0_player->levers_activated++;
+      PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
       event_manager_->emit<PlayText>(pt);
-      std::cerr << "Palanca activada" << std::endl;  
     }
     else{
-      PlayText pt("Ya has activado esta palanca.");
+      PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
       event_manager_->emit<PlayText>(pt);
     }
     
@@ -2249,13 +2240,12 @@ void LeverSystem::receive(const engine::events::Collision &collision) {
     auto lever = collision_copy.e0.component<Lever>();
     if(!lever->activated){
       lever->activated = true;
-      std::cerr << "Palanca activada" << std::endl;
-      PlayText pt("Palanca activada con éxito.");
+      e0_player->levers_activated++;
+      PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
       event_manager_->emit<PlayText>(pt);
-      std::cerr << "Palanca activada" << std::endl; 
     }
     else{
-      PlayText pt("Ya has activado esta palanca.");
+      PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
       event_manager_->emit<PlayText>(pt);
     }
     

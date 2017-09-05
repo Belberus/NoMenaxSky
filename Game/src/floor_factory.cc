@@ -197,6 +197,7 @@ void FloorFactory::ParseRoomContents(
       auto properties = object.getProperties();
       BossDoor bossDoor(properties[0].getStringValue(),
                         properties[1].getStringValue());
+      std::cerr << level << std::endl;
       if (level == "1") {
         bossDoor.level = "1";
       } else if (level == "2") {
@@ -281,7 +282,7 @@ void FloorFactory::ParseRoomContents(
         auto id = em.create();
         id.assign<engine::components::common::Transform>(position);
         id.assign<engine::components::two_d::AABBCollider>(collider);
-        id.assign<Lever>(1);
+        id.assign<Lever>("1");
         return std::vector<entityx::Entity>({id});
       };
       room.entity_creators_.push_back(fn_palanca);
@@ -294,7 +295,7 @@ void FloorFactory::ParseRoomContents(
         auto id = em.create();
         id.assign<engine::components::common::Transform>(position);
         id.assign<engine::components::two_d::AABBCollider>(collider);
-        id.assign<Lever>(2);
+        id.assign<Lever>("2");
         return std::vector<entityx::Entity>({id});
       };
       room.entity_creators_.push_back(fn_palanca);

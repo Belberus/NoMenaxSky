@@ -66,8 +66,8 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<GhostIaSystem>(dt);
     systems.update<GhostAnimationSystem>(dt);
     systems.update<ManuelethAnimationSystem>(dt);
-    systems.update<TurretIaSystem>(dt);
-    systems.update<LancerIaSystem>(dt);
+    //systems.update<TurretIaSystem>(dt);
+    //systems.update<LancerIaSystem>(dt);
     //systems.update<ManuelethIaSystem>(dt);
     //systems.update<TrapIaSystem>(dt);
     systems.update<TurretWalkingSystem>(dt);
@@ -99,8 +99,8 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<GhostIaSystem>(0);
     systems.update<GhostAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);
-    systems.update<TurretIaSystem>(0);
-    systems.update<LancerIaSystem>(0);
+    //systems.update<TurretIaSystem>(0);
+    //systems.update<LancerIaSystem>(0);
     //systems.update<ManuelethIaSystem>(0);
     //systems.update<TrapIaSystem>(0);
     systems.update<TurretWalkingSystem>(0);
@@ -184,15 +184,15 @@ void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
     Engine::GetInstance().Get<AudioManager>().PlaySound(
           "assets/media/fx/defaults/boss_door.wav", false, 0.4f);
   if(GetLevel() == 1){
-    PlayText pt("Este es el temible Mago Manueleth.\nCon su poder lanza bolas magicas y conjura trampas que atacan periodicamente.\nDerrotalo para avanzar al siguiente piso del Castillo de Menax.\nPulsa [ENTER] para continuar.");
+    PlayText pt("Este es el temible y poderoso mago Manueleth.\n\nCuidado con las bolas magicas que lanza y sus trampas.\n\nDerrotalo para avanzar al siguiente piso del Castillo de Menax.\n\n\n                    Pulsa [ENTER] para continuar.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
   else if(GetLevel() == 2){
-    PlayText pt("Esta es la legendaria bandido Masiatrix.\nPulsa [ENTER] para continuar.");
+    PlayText pt("Esta es la legendaria Masiatrix, maestra del sigilo y las argucias.\n\nDeberas descubir cual es la copia verdadera y atacarla.\n\nDerrotala para avanzar al siguiente piso del Castillo de Menax.\n\n\n                    Pulsa [ENTER] para continuar.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
   else if(GetLevel() == 3){
-    PlayText pt("Finalmente, Lord Menax.\nSu extremadamente poderosa magia le permite invocar esbirros para acabar contigo.\nNo permitas que eso suceda, acaba con el y recupera tus tartas!\nPulsa [ENTER] para continuar.");
+    PlayText pt("Finalmente, Lord Menax.\n\nTen cuidado, sera un enfrentamiento duro. No dejes que te salte encima\no estaras muerto antes de que te des cuenta.\n\nDerrotalo para recuperar tus queridas tartas!\n\n                    Pulsa [ENTER] para continuar.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
   else{
@@ -230,15 +230,15 @@ void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
 
 void Floor2D::OnPlayerEnteringBossDoorWithoutKey() {
   if(GetLevel() == 1){
-    PlayText pt("Consigue la llave de uno de los baúles para poder pasar.");
+    PlayText pt("Busca la llave situada en uno de los dos baules para poder entrar.\n\n\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
   else if(GetLevel() == 2){
-    PlayText pt("Activa las dos palancas para poder pasar.");
+    PlayText pt("Activa las dos palancas para poder entrar.\n\n\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
   else{
-    PlayText pt("Fuck off aye.");
+    PlayText pt("Nunca deberia llegarse aqui");
     GetParentScene()->events.emit<PlayText>(pt);
   }
   

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2017.07.25" orientation="orthogonal" renderorder="right-down" width="250" height="250" tilewidth="16" tileheight="16" nextobjectid="134">
+<map version="1.0" tiledversion="2017.07.25" orientation="orthogonal" renderorder="right-down" width="250" height="250" tilewidth="16" tileheight="16" nextobjectid="135">
  <tileset firstgid="1" source="NoMenaxSky.tsx"/>
  <layer name="Fondo" width="250" height="250">
   <data encoding="csv">
@@ -1330,8 +1330,8 @@
   <object id="81" x="531.994" y="275.005" width="7.99609" height="8.7454"/>
   <object id="82" x="167.004" y="37.1212" width="65.9889" height="59.3958"/>
   <object id="83" x="163.988" y="87.9986" width="7.99609" height="8.56391"/>
-  <object id="84" x="228.002" y="87.9903" width="7.99609" height="8.56391"/>
-  <object id="85" x="340.01" y="88.0103" width="7.99609" height="8.56391"/>
+  <object id="84" x="228.002" y="87.9903" width="7.99609" height="24.0185"/>
+  <object id="85" x="340.01" y="88.0103" width="7.99609" height="23.8366"/>
   <object id="86" x="404.024" y="88.002" width="7.99609" height="8.56391"/>
   <object id="87" x="343.026" y="37.1329" width="65.9889" height="59.3958"/>
   <object id="94" type="low" x="207.982" y="111.994" width="158.999" height="17.9602"/>
@@ -1355,13 +1355,6 @@
   <object id="112" type="low" x="357.987" y="181.984" width="18.9642" height="10.5227"/>
   <object id="113" type="low" x="197.967" y="229.989" width="18.9642" height="10.5227"/>
   <object id="114" type="low" x="197.99" y="181.979" width="18.9642" height="10.5227"/>
-  <object id="130" type="bossDoor" x="276.409" y="277.682" width="26.2727" height="5.54545">
-   <properties>
-    <property name="next" value="3.1"/>
-    <property name="pos" value="bottom"/>
-    <property name="trigger" type="bool" value="true"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup name="3.0">
   <object id="115" type="jugador" x="280.25" y="720.833" width="15" height="14"/>
@@ -1402,5 +1395,12 @@
   <object id="127" type="menax" x="284.797" y="88.4311" width="6.5273" height="7.5014"/>
   <object id="128" type="enemySpawn" x="194.097" y="95.9448" width="12.0273" height="14.0014"/>
   <object id="129" type="enemySpawn" x="370.084" y="95.9288" width="12.0273" height="14.0014"/>
+  <object id="134" type="bossDoor" x="275.053" y="277.702" width="26.2727" height="5.54545">
+   <properties>
+    <property name="next" value="3.1"/>
+    <property name="pos" value="bottom"/>
+    <property name="trigger" type="bool" value="true"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -97,6 +97,7 @@ void Floor::receive(const engine::events::Collision& collision) {
   for (auto e : entities.entities_with_components<Manueleth>()) {
     enemies_in_the_room++;
   }
+  enemies_in_the_room = 0;
   if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
       rooms_[current_room_]->visited = true;
@@ -120,18 +121,13 @@ void Floor::receive(const engine::events::Collision& collision) {
           OnPlayerEnteringBossDoorWithoutKey();
         }
       }
-    } else if (bossDoor->level == "2") {
-      bool palanca1 = false;
-      bool palanca2 = false;
+    } else if (bossDoor->level == "2") {      
+      int levers_activated;
       if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
-        for (auto e : entities.entities_with_components<Lever>()) {
-          if (e.component<Lever>()->id == 1) {
-            palanca1 = e.component<Lever>()->activated;
-          } else if (e.component<Lever>()->id == 2) {
-            palanca2 = e.component<Lever>()->activated;
-          }
+        for (auto e : entities.entities_with_components<Player>()) {
+          levers_activated = e.component<Player>()->levers_activated;
         }
-        if (palanca1 && palanca2) {
+        if (levers_activated == 2) {
           rooms_[current_room_]->visited = true;
           BossDoor previous_door(*bossDoor);
           rooms_[current_room_]->Unload(*this);

@@ -128,9 +128,10 @@ struct Player {
   Orientation orientation;
   State state;
   bool key;
+  int levers_activated;
 
-  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL) {}
-  // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
+  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL), levers_activated(0) {}
+  // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO Y LEVERS_ACTIVATED A 0
 };
 
 struct Characters{
@@ -211,9 +212,9 @@ struct Chest {
 };
 
 struct Lever {
-	Lever(int id) : id(id), activated(false) {}
-	int id;
-	bool activated;
+	Lever(std::string id) : id(id), activated(false) {}
+	std::string id;
+  bool activated;
 };
 
 struct Trap {

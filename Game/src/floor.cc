@@ -8,6 +8,55 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<engine::events::Collision>(*this);
   events.subscribe<Health>(*this);
   events.subscribe<Energy>(*this);
+  events.subscribe<PauseMenuEvent>(*this);
+  events.subscribe<BackToGame>(*this);
+  events.subscribe<StartLevel2>(*this);
+  events.subscribe<Player>(*this);
+  events.subscribe<Death>(*this);
+  events.subscribe<PauseGameEvent>(*this);
+  events.subscribe<UnpauseGameEvent>(*this);
+  events.subscribe<PlayText>(*this);
+  events.subscribe<LevelEvent>(*this);
+
+}
+
+Game* Floor::GetParentScene(){
+  return parent_scene_;
+}
+
+int Floor::GetLevel(){
+  return level;
+}
+
+void Floor::receive(const PlayText& pt){
+  parent_scene_->events.emit<PlayText>(pt);
+}
+
+void Floor::receive(const Player& player) {
+  parent_scene_->events.emit<Player>(player);
+}
+
+void Floor::receive(const PauseMenuEvent& pm){
+  PauseGame(true);
+  parent_scene_->events.emit<PauseMenuEvent>(pm);
+}
+
+void Floor::receive(const PauseGameEvent& pg){
+  PauseGame(true);
+}
+
+void Floor::receive(const UnpauseGameEvent& upg){
+  PauseGame(false);
+  parent_scene_->events.emit<BackToGame>();
+}
+
+void Floor::receive(const BackToGame& event){
+  PauseGame(false);
+  parent_scene_->events.emit<BackToGame>(event);
+}
+
+void Floor::receive(const StartLevel2& event) {
+  parent_scene_->events.emit<StartLevel2>();
 }
 
 void Floor::receive(const Health& health) {
@@ -18,6 +67,14 @@ void Floor::receive(const Energy& energy) {
   parent_scene_->events.emit<Energy>(energy);
 }
 
+void Floor::receive(const Death& death) {
+  parent_scene_->events.emit<Death>();
+}
+
+void Floor::receive(const LevelEvent& le){
+  level = le.level;
+}
+
 void Floor::receive(const engine::events::Collision& collision) {
   auto collision_copy = collision;
   if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
@@ -26,32 +83,75 @@ void Floor::receive(const engine::events::Collision& collision) {
   auto player = collision_copy.e0.component<Player>();
   auto door = collision_copy.e1.component<Door>();
   auto bossDoor = collision_copy.e1.component<BossDoor>();
-  if (door && player) {
+
+  int enemies_in_the_room = 0;
+  for (auto e : entities.entities_with_components<Ghost>()) {
+    enemies_in_the_room++;
+  }
+  for (auto e : entities.entities_with_components<Turret>()) {
+    enemies_in_the_room++;
+  }
+  for (auto e : entities.entities_with_components<Lancer>()) {
+    enemies_in_the_room++;
+  }
+  for (auto e : entities.entities_with_components<Manueleth>()) {
+    enemies_in_the_room++;
+  }
+  if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
+      rooms_[current_room_]->visited = true;
       Door previous_door(*door);
       rooms_[current_room_]->Unload(*this);
       current_room_ = previous_door.next_door;
       rooms_[current_room_]->Load(*this);
       OnPlayerEnteringDoor(previous_door);
     }
-  } else if (bossDoor && player) {
-    // Con puerta de boss
-    auto bossDoor = collision_copy.e1.component<BossDoor>();
-    auto player = collision_copy.e0.component<Player>();
-    if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
-      if (player->key == true) {
+  } else if (bossDoor && player && enemies_in_the_room == 0) {  
+    if (bossDoor->level == "1") {
+      if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
+        if (player->key == true) {
+          rooms_[current_room_]->visited = true;
+          BossDoor previous_door(*bossDoor);
+          rooms_[current_room_]->Unload(*this);
+          current_room_ = previous_door.next_door;
+          rooms_[current_room_]->Load(*this);
+          OnPlayerEnteringBossDoorWithKey(previous_door);
+        } else {
+          OnPlayerEnteringBossDoorWithoutKey();
+        }
+      }
+    } else if (bossDoor->level == "2") {
+      bool palanca1 = false;
+      bool palanca2 = false;
+      if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
+        for (auto e : entities.entities_with_components<Lever>()) {
+          if (e.component<Lever>()->id == 1) {
+            palanca1 = e.component<Lever>()->activated;
+          } else if (e.component<Lever>()->id == 2) {
+            palanca2 = e.component<Lever>()->activated;
+          }
+        }
+        if (palanca1 && palanca2) {
+          rooms_[current_room_]->visited = true;
+          BossDoor previous_door(*bossDoor);
+          rooms_[current_room_]->Unload(*this);
+          current_room_ = previous_door.next_door;
+          rooms_[current_room_]->Load(*this);
+          OnPlayerEnteringBossDoorWithKey(previous_door);
+        }
+      }
+    } else {
+      if (IsEntityTryingToCrossBossDoor(collision_copy.e0, collision_copy.e1)) {
+        rooms_[current_room_]->visited = true;
         BossDoor previous_door(*bossDoor);
         rooms_[current_room_]->Unload(*this);
         current_room_ = previous_door.next_door;
         rooms_[current_room_]->Load(*this);
         OnPlayerEnteringBossDoorWithKey(previous_door);
-      } else {
-        OnPlayerEnteringBossDoorWithoutKey();
       }
     }
   }
 }
-
 bool Floor::IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
                                           entityx::Entity bossDoor) {
   Player::Orientation crossing_entity_orientation =
@@ -87,10 +187,26 @@ bool Floor::IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
 
 void Floor::Room::Load(Floor& floor) {
   for (auto& fn : entity_creators_) {
-    entityx::Entity id = floor.entities.create();
-    auto new_entites = fn(floor.entities);
-    created_entities_.insert(created_entities_.end(), new_entites.begin(),
+    if(visited){
+      //entityx::Entity id = floor.entities.create();
+      auto new_entites = fn(floor.entities);
+      for(auto &e : new_entites){
+        if((e.component<Health>()) || (e.component<TurretLegs>())
+          || (e.component<LancerLegs>()) || (e.component<GhostHitBox>())
+          || (e.component<LancerHitBox>())){
+          e.destroy();
+        }
+      }
+      created_entities_.insert(created_entities_.end(), new_entites.begin(),
+                               new_entites.end());
+    }
+    else{ //load normally
+      entityx::Entity id = floor.entities.create();
+      auto new_entites = fn(floor.entities);
+      created_entities_.insert(created_entities_.end(), new_entites.begin(),
                              new_entites.end());
+    }
+    
   }
 }
 

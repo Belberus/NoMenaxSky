@@ -9,6 +9,9 @@ struct EntityFactory {
   virtual std::vector<entityx::Entity> MakeKnight(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
+  virtual std::vector<entityx::Entity> MakeWizard(entityx::EntityManager &entities,
+                                          const glm::vec3 &position) = 0;
+ 
   virtual std::vector<entityx::Entity> MakeGhost(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
@@ -25,6 +28,11 @@ struct EntityFactory {
 
   virtual std::vector<entityx::Entity> MakeLancer(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
+
+  virtual std::vector<entityx::Entity> MakeWizardProjectile(
+      entityx::EntityManager &entities, const glm::vec3 &position,
+      const float &rotation, const glm::vec3 &velocity,
+      const std::string &type) = 0 ;
 
   virtual std::vector<entityx::Entity> MakeEnemyProjectile(
       entityx::EntityManager &entities, const glm::vec3 &position,

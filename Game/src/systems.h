@@ -9,31 +9,9 @@
 #include <engine/events/key_released.h>
 
 #include "components.h"
-/*
-/// This systems is responbile of making sure that certain entities dont
-/// collide.
-class IgnoreCollisionSystem : public entityx::System<IgnoreCollisionSystem>,
-                              public entityx::Receiver<IgnoreCollisionSystem> {
- public:
-  IgnoreCollisionSystem(entityx::EntityManager *entity_manager,
-                        entityx::EventManager *event_manager);
-  void configure(entityx::EventManager &event_manager) override;
-  void update(entityx::EntityManager &es, entityx::EventManager &events,
-              entityx::TimeDelta dt) override;
-  /// When a component ghost is added, that means that a new ghost entity is
-  /// being added, so we make sure that this entity doesnt collide with already
-  /// existing low profile buildings.
-  /// @param new_entity info about the event.
-  void receive(const entityx::ComponentAddedEvent<Ghost> &new_entity);
 
-  void receive(const entityx::ComponentAddedEvent<TurretProjectile> &new_entity);
+#include "events.h"
 
- private:
-  entityx::EntityManager *entity_manager_;
-  entityx::EventManager *event_manager_;
-  std::vector<entityx::Entity> ghosts_;
-};
-*/
 class KnightAnimationSystem : public entityx::System<KnightAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -57,6 +35,27 @@ class KnightAttackSystem : public entityx::System<KnightAttackSystem>,
 
 class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class WizardAnimationSystem : public entityx::System<WizardAnimationSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+ private:
+  std::string lastAnim;
+  std::string lastOrientation;
+  float timer;
+  float timer2;
+};
+
+class WizardAttackSystem : public entityx::System<WizardAttackSystem>,
+                           public entityx::Receiver<WizardAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };
@@ -108,13 +107,26 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
   static const float turretSpeed;
 };
 
-class ChestCollisionSystem : public entityx::System<ChestCollisionSystem>,
-                           public entityx::Receiver<ChestCollisionSystem> {
+class ChestSystem : public entityx::System<ChestSystem>,
+                           public entityx::Receiver<ChestSystem> {
 public:
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  entityx::EventManager *event_manager_;
+};
+
+class LeverSystem : public entityx::System<LeverSystem>,
+                           public entityx::Receiver<LeverSystem> {
+public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+private:
+  entityx::EventManager *event_manager_;
 };
 
 class ShieldSystem : public entityx::System<ShieldSystem>,
@@ -178,6 +190,21 @@ class MenuInputSystem : public entityx::System<MenuInputSystem>,
   bool enter_pressed_;
 };
 
+class PauseInputSystem : public entityx::System<PauseInputSystem>,
+                        public entityx::Receiver<PauseInputSystem> {
+ public:
+  PauseInputSystem();
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  void receive(const engine::events::KeyPressed &key_pressed);
+  void receive(const engine::events::KeyReleased &key_released);
+
+ private:
+  bool up_pressed_;
+  bool down_pressed_;
+  bool enter_pressed_;
+};
+
 class OptionsInputSystem : public entityx::System<OptionsInputSystem>, 
                            public entityx::Receiver<OptionsInputSystem>{
  public:
@@ -200,21 +227,76 @@ class OptionsInputSystem : public entityx::System<OptionsInputSystem>,
   int fx;
 };
 
+class SelectionInputSystem : public entityx::System<OptionsInputSystem>, 
+                             public entityx::Receiver<OptionsInputSystem>{
+
+  public:
+    SelectionInputSystem();
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+    void receive(const engine::events::KeyPressed &key_pressed);
+    void receive(const engine::events::KeyReleased &key_released);
+
+  private:
+    bool selection_right_pressed_;
+    bool selection_left_pressed_;
+    bool selection_enter_pressed_;
+
+
+};
+
+class DeathInputSystem :  public entityx::System<DeathInputSystem>,
+                          public entityx::Receiver<DeathInputSystem> {
+
+  public:
+    DeathInputSystem();
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+    void receive(const engine::events::KeyPressed &key_pressed);
+    void receive(const engine::events::KeyReleased &key_released);
+
+  private:
+    bool selection_enter_pressed_;
+};
+
+class TextInputSystem :  public entityx::System<TextInputSystem>,
+                          public entityx::Receiver<TextInputSystem> {
+
+  public:
+    TextInputSystem();
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+    void receive(const engine::events::KeyPressed &key_pressed);
+    void receive(const engine::events::KeyReleased &key_released);
+
+  private:
+    bool selection_enter_pressed_;
+};
+
 class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
                           public entityx::Receiver<PlayerInputSystem> {
  public:
   PlayerInputSystem();
   void receive(const engine::events::KeyPressed &key_pressed);
   void receive(const engine::events::KeyReleased &key_released);
+  void receive(const BackToGame &resumeGame);
 
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+
+  bool is_paused();
+
+  void set_paused(bool paused);
 
  private:
   static const float kSpeed;
   static const float kAttackDuration;
   float time_passed_since_last_attack_;
   std::unordered_map<int, bool> keys_;
+  bool paused_;
 };
 
 class LancerIaSystem : public entityx::System<LancerIaSystem> {
@@ -240,6 +322,16 @@ class LancerAttackSystem : public entityx::System<LancerAttackSystem>,
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
 };
+
+class GhostAttackSystem : public entityx::System<GhostAttackSystem>,
+                           public entityx::Receiver<GhostAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
 
 
 

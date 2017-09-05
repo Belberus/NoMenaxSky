@@ -5,6 +5,8 @@
 engine::core::AudioManager::AudioManager() {
   sound_engine_fx_ = irrklang::createIrrKlangDevice();
   sound_engine_music_ = irrklang::createIrrKlangDevice();
+  music_mute = false;
+  fx_mute = false;
   if (!sound_engine_fx_) {
     std::cerr << "Error starting up the fx sound engine.\n";
   }
@@ -54,10 +56,18 @@ void engine::core::AudioManager::StopMusic() {
 
 void engine::core::AudioManager::SetVolumeFX(float volume) {
   sound_engine_fx_->setSoundVolume(volume);
+  if(volume == 0.0f){
+    fx_mute = true;
+  }
+  else fx_mute = false;
 }
 
 void engine::core::AudioManager::SetVolumeMusic(float volume) {
   sound_engine_music_->setSoundVolume(volume);
+  if(volume == 0.0f){
+    music_mute = true;
+  }
+  else music_mute = false;
 }
 
 // ONLY FX PLAY IN 3D, NO NEED TO PLAY MUSIC IN 3D FFS
@@ -81,4 +91,12 @@ void engine::core::AudioManager::PlaySound3D(const std::string& sound_filename,
 void engine::core::AudioManager::ResetSounds(){
   sound_engine_fx_->removeAllSoundSources();
   sound_engine_music_->removeAllSoundSources();
+}
+
+bool engine::core::AudioManager::getMusicMute(){
+  return music_mute;
+}
+
+bool engine::core::AudioManager::getFxMute(){
+  return fx_mute;
 }

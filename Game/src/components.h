@@ -58,6 +58,14 @@ struct ArrowOptions {
   ArrowOptions(Option option) : option(option) {}
 };
 
+struct PauseOptions {
+  enum Option { CONTINUAR, SALIR, MUSIC, FX};
+
+  Option option;
+
+  PauseOptions(Option option) : option(option) {}
+};
+
 struct GameOptions {
   enum Modo { TWO_D, THREE_D };
   enum Musica { MUSIC_ON, MUSIC_OFF };
@@ -99,9 +107,10 @@ struct Door {
 
 struct BossDoor {
 	BossDoor(const std::string &next_door, const std::string &pos)
-      : next_door(next_door), pos(pos) {}
+      : next_door(next_door), pos(pos), level("0") {}
 	std::string next_door;
 	std::string pos;
+  std::string level;
 };
 
 struct Shield {
@@ -123,6 +132,15 @@ struct Player {
   Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL) {}
   // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO
 };
+
+struct Characters{
+  enum Role { KNIGHT, WIZARD };
+  Role role;
+
+  Characters(Role role) : role(role) {}
+};
+
+struct Cursor {};
 
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
@@ -182,9 +200,20 @@ struct Manueleth {
   	int hits;
 };
 
+struct Wizard {
+	Wizard() : is_attacking(false) {};
+	bool is_attacking;
+};
+
 struct Chest {
 	Chest(bool key) : key(key) {}
 	bool key;
+};
+
+struct Lever {
+	Lever(int id) : id(id), activated(false) {}
+	int id;
+	bool activated;
 };
 
 struct Trap {
@@ -197,6 +226,11 @@ struct Trap {
 
 struct EnemyProjectile{
 	EnemyProjectile(float damage) : damage(damage){}
+	float damage;
+};
+
+struct WizardProjectile{
+	WizardProjectile(float damage) : damage(damage) {};
 	float damage;
 };
 

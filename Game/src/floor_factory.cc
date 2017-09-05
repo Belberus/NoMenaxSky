@@ -17,7 +17,6 @@
 #include <engine/systems/two_d/tilemap_renderer.h>
 #include <entityx/Entity.h>
 #include <tmxlite/TileLayer.hpp>
-
 #include "components.h"
 #include "entity_factory_2d.h"
 #include "entity_factory_3d.h"
@@ -146,14 +145,14 @@ void FloorFactory::ParseStaticColliders(const tmx::Map &map,
 
 std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
 FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name,
-                         const std::shared_ptr<EntityFactory> &factory) {
+                         const std::shared_ptr<EntityFactory> &factory, const std::string &level) {
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms;
   for (auto &layer : map.getLayers()) {
     if (layer->getType() == tmx::Layer::Type::Object &&
         std::regex_match(layer->getName(), std::regex(layer_name))) {
       auto object_layer = dynamic_cast<tmx::ObjectGroup *>(layer.get());
       auto floor = std::make_unique<Floor::Room>();
-      ParseRoomContents(map, *object_layer, factory, *floor);
+      ParseRoomContents(map, *object_layer, factory, *floor, level);
       rooms.emplace(layer->getName(), std::move(floor));
     }
   }
@@ -162,7 +161,8 @@ FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name,
 
 void FloorFactory::ParseRoomContents(
     const tmx::Map &map, const tmx::ObjectGroup &object_layer,
-    const std::shared_ptr<EntityFactory> &factory, Floor::Room &room) {
+    const std::shared_ptr<EntityFactory> &factory, Floor::Room &room, const std::string &level) {
+
   srand(time(NULL));
   float frecuencias[10] = {250.0f,  500.0f,  750.0f,  1000.0f, 1250.0f,
                            1500.0f, 1750.0f, 2000.0f, 2250.0f, 2500.0f};
@@ -197,6 +197,12 @@ void FloorFactory::ParseRoomContents(
       auto properties = object.getProperties();
       BossDoor bossDoor(properties[0].getStringValue(),
                         properties[1].getStringValue());
+      if (level == "1") {
+        bossDoor.level = "1";
+      } else if (level == "2") {
+        bossDoor.level = "2";
+      } else bossDoor.level = "3";
+
       auto fn_bossDoor =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
         auto id = em.create();
@@ -266,12 +272,38 @@ void FloorFactory::ParseRoomContents(
         return std::vector<entityx::Entity>({id});
       };
       room.entity_creators_.push_back(fn_cofre);
+    } else if (object.getType() == "palanca1") {
+      engine::components::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto fn_palanca =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<engine::components::common::Transform>(position);
+        id.assign<engine::components::two_d::AABBCollider>(collider);
+        id.assign<Lever>(1);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_palanca);
+    } else if (object.getType() == "palanca2") {
+      engine::components::two_d::AABBCollider collider(
+          glm::vec2(0, 0),
+          glm::vec2(object_aabb.width / 2.0f, object_aabb.height / 2.0f), true);
+      auto fn_palanca =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        auto id = em.create();
+        id.assign<engine::components::common::Transform>(position);
+        id.assign<engine::components::two_d::AABBCollider>(collider);
+        id.assign<Lever>(2);
+        return std::vector<entityx::Entity>({id});
+      };
+      room.entity_creators_.push_back(fn_palanca);
     }
   }
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
-    const std::string &file_name, Game *parent_scene) {
+    const std::string &file_name, Game *parent_scene,  const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -279,7 +311,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
   ParseTilemap(tiled_map, *floor);
   ParseTileObjects(tiled_map, *floor);
   ParseStaticColliders(tiled_map, "Colisiones", *floor);
-  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory);
+  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
 
@@ -288,7 +320,64 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
       glm::vec3(1376.0f, 640.0f, 1.0f));
   camera.assign<engine::components::common::Camera>(512.0f, 288.0f, 0.1f,
                                                     1000.0f);
-  factory->MakeKnight(floor->entities, glm::vec3(1376.0f, 640.0f, 0));
+  if (role == "knight") {
+    factory->MakeKnight(floor->entities, glm::vec3(1376.0f, 640.0f, 0));
+  } else {
+    factory->MakeWizard(floor->entities, glm::vec3(1376.0f, 640.0f, 0));
+  }
+  return floor;
+}
+
+std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
+    const std::string &file_name, Game *parent_scene,  const std::string &role) {
+  auto floor = std::make_unique<Floor2D>(parent_scene);
+  std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
+  tmx::Map tiled_map;
+  tiled_map.load(file_name);
+  ParseTilemap(tiled_map, *floor);
+  ParseTileObjects(tiled_map, *floor);
+  ParseStaticColliders(tiled_map, "Colisiones", *floor);
+  floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory, "2");
+  floor->current_room_ = "2.0";
+  floor->rooms_[floor->current_room_]->Load(*floor);
+  std::cerr << "Dentro" << std::endl;
+  auto camera = floor->entities.create();
+  camera.assign<engine::components::common::Transform>(
+      glm::vec3(1006.0f, 2863.0f, 1.0f));
+  camera.assign<engine::components::common::Camera>(512.0f, 288.0f, 0.1f,
+                                                    1000.0f);
+  if (role == "knight") {
+    factory->MakeKnight(floor->entities, glm::vec3(1006.0f, 2863.0f, 0));
+  } else {
+    factory->MakeWizard(floor->entities, glm::vec3(1006.0f, 2863.0f, 0));
+  } 
+  return floor;
+}
+
+std::unique_ptr<Floor> FloorFactory::MakeFloorThree2D(
+    const std::string &file_name, Game *parent_scene,  const std::string &role) {
+  auto floor = std::make_unique<Floor2D>(parent_scene);
+  std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
+  tmx::Map tiled_map;
+  tiled_map.load(file_name);
+  ParseTilemap(tiled_map, *floor);
+  ParseTileObjects(tiled_map, *floor);
+  ParseStaticColliders(tiled_map, "Colisiones", *floor);
+  floor->rooms_ = ParseRooms(tiled_map, "(3\\.\\d*)", factory, "3");
+  floor->current_room_ = "3.0";
+  floor->rooms_[floor->current_room_]->Load(*floor);
+
+  auto camera = floor->entities.create();
+  camera.assign<engine::components::common::Transform>(
+      glm::vec3(288.0f, 3272.0f, 1.0f));
+  camera.assign<engine::components::common::Camera>(512.0f, 288.0f, 0.1f,
+                                                    1000.0f);
+
+  if (role == "knight") {
+    factory->MakeKnight(floor->entities, glm::vec3(288.0f, 3272.0f, 0));
+  } else {
+    factory->MakeWizard(floor->entities, glm::vec3(288.0f, 3272.0f, 0));
+  }
   return floor;
 }
 
@@ -323,7 +412,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   tmx::Map tiled_map;
   tiled_map.load("assets/test/untitled.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
-  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory);
+  floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
   return floor;

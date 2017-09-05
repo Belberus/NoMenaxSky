@@ -10,7 +10,7 @@ add_subdirectory(lib/engine)
 set(TMXLITE_STATIC_LIB ON CACHE BOOL "" FORCE)
 add_subdirectory(lib/tmxlite/tmxlite)
 
-file(GLOB SOURCE_FILES src/* src/*)
+file(GLOB SOURCE_FILES src/* src/* lib/easybmp/*)
 add_executable(${PROJECT_NAME}
   ${SOURCE_FILES}
 )
@@ -22,6 +22,7 @@ target_link_libraries(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
   PRIVATE
     src
+    lib/easybmp
 )
 
 add_custom_command(

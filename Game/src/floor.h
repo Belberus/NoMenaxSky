@@ -12,6 +12,8 @@
 #include <entityx/entityx.h>
 
 #include "game.h"
+#include "events.h"
+#include "systems.h"
 
 class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
  public:
@@ -20,10 +22,22 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   virtual void OnPlayerEnteringDoor(Door entering_door) = 0;
   virtual void OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) = 0;
   virtual void OnPlayerEnteringBossDoorWithoutKey() = 0;
+  virtual void PauseGame(bool pause) = 0;
+  virtual bool GetPaused() = 0;
+  Game* GetParentScene();
+  int GetLevel();
   void receive(const engine::events::Collision &collision);
   void receive(const Health &health);
+  void receive(const StartLevel2 &event);
   void receive(const Energy &energy);
-
+  void receive(const PauseMenuEvent &pm);
+  void receive(const PauseGameEvent& pg);
+  void receive(const UnpauseGameEvent& upg);
+  void receive(const BackToGame &event);
+  void receive(const Player &player);
+  void receive(const Death &death);
+  void receive(const PlayText &pt);
+  void receive(const LevelEvent &le);
  private:
   class Room {
    public:
@@ -33,6 +47,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
         std::function<std::vector<entityx::Entity>(entityx::EntityManager &)>>
         entity_creators_;
     std::vector<entityx::Entity> created_entities_;
+    bool visited = false;
   };
 
   static bool IsEntityTryingToCrossDoor(entityx::Entity crossing_entity,
@@ -41,6 +56,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
                                             entityx::Entity door);
 
   Game *parent_scene_;
+  int level;
   std::string current_room_;
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms_;
   friend class FloorFactory;

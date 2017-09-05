@@ -20,6 +20,11 @@ class Floor2D : public Floor {
   void OnPlayerEnteringDoor(Door entering_door) override;
   void OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) override;
   void OnPlayerEnteringBossDoorWithoutKey() override;
+  void PauseGame(bool pause) override;
+  bool GetPaused()override;
   friend class FloorFactory;
+
+ private:
+ 	bool paused = false;
 };
 #endif  // FLOOR_2D_H_

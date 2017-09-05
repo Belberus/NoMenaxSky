@@ -33,17 +33,17 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
   	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
 
   	entityx::Entity title = entities.create();
-    title.assign<Transform>(glm::vec3(0, 300, 0), menu_canvas_transform,
+    title.assign<Transform>(glm::vec3(0, 360, 0), menu_canvas_transform,
                           glm::vec3(0.3, 0.3, 1));
     auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
         "assets/personajes_menu/personajes.png");
     title.assign<Sprite>(tex);
 
     entityx::Entity cursor = entities.create();
-    cursor.assign<Transform>(glm::vec3(-155, -10, 0), menu_canvas_transform,
+    cursor.assign<Transform>(glm::vec3(-130, -60, 0), menu_canvas_transform,
                           glm::vec3(0.15f));
     tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-        "assets/personajes_menu/dinosaur.png");
+        "assets/personajes_menu/cursor_hand.png");
     cursor.assign<Sprite>(tex);
     cursor.assign<Cursor>();
     cursor.assign<Characters>(Characters::Role::KNIGHT);
@@ -53,19 +53,36 @@ CharacterSelectionMenu::CharacterSelectionMenu(engine::core::Scene *parent_scene
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/personajes_menu/knight.png");
 
-	knight.assign<Transform>(glm::vec3(-150, 125, 0), 
-		menu_canvas_transform, glm::vec3(10.0f));
+	knight.assign<Transform>(glm::vec3(-150, 235, 0), 
+		menu_canvas_transform, glm::vec3(8.0f));
 	knight.assign<Sprite>(tex);
 
+  entityx::Entity knightInfo = entities.create();
+  tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+      "assets/personajes_menu/infok.png");
+
+  knightInfo.assign<Transform>(glm::vec3(-150, 75, 0), 
+    menu_canvas_transform, glm::vec3(10.0f));
+  knightInfo.component<Transform>()->SetLocalScale(glm::vec3(0.8f));
+  knightInfo.assign<Sprite>(tex);
 
 	entityx::Entity wizard = entities.create();
 
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/personajes_menu/wizard.png");
 
-	wizard.assign<Transform>(glm::vec3(150, 125, 0), 
-		menu_canvas_transform, glm::vec3(10.0f));
+	wizard.assign<Transform>(glm::vec3(150, 235, 0), 
+		menu_canvas_transform, glm::vec3(8.0f));
 	wizard.assign<Sprite>(tex);
+
+  entityx::Entity wizardInfo = entities.create();
+  tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+      "assets/personajes_menu/infow.png");
+
+  wizardInfo.assign<Transform>(glm::vec3(150, 75, 0), 
+    menu_canvas_transform, glm::vec3(10.0f));
+  wizardInfo.component<Transform>()->SetLocalScale(glm::vec3(0.8f));
+  wizardInfo.assign<Sprite>(tex);
 
   	systems.add<engine::systems::two_d::SpriteRenderer>();
   	systems.add<SelectionInputSystem>();

@@ -40,7 +40,7 @@ PauseMenu::PauseMenu(Game* parent_scene)
 	entityx::Entity exit_option = entities.create();
 	exit_option.assign<Transform>(glm::vec3(0, 00, 0), menu_canvas_transform);
 	auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	  "assets/menu/volver.png");
+	  "assets/menu/salir.png");
 	exit_option.assign<Sprite>(tex);
 
 	// mute/unmute music option

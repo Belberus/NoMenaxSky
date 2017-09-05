@@ -2284,6 +2284,7 @@ void WizardAttackSystem::receive(const Collision &collision) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
 
+    std::cerr << "Hit a fantasma" << std::endl;
     entityx::Entity proyectil = collision.e0;
     proyectil.destroy();
 
@@ -2295,6 +2296,7 @@ void WizardAttackSystem::receive(const Collision &collision) {
              collision_copy.e0.component<Ghost>()) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
+    std::cerr << "Hit a fantasma" << std::endl;
 
     entityx::Entity proyectil = collision.e1;
     proyectil.destroy();

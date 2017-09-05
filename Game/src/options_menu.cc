@@ -39,7 +39,7 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
   entityx::Entity exit_option = entities.create();
   exit_option.assign<Transform>(glm::vec3(0, 0, 0), menu_canvas_transform);
   auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-      "assets/menu/salir.png");
+      "assets/menu/volver.png");
   exit_option.assign<Sprite>(tex);
 
   entityx::Entity game_mode = entities.create();

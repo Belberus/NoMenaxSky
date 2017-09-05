@@ -152,7 +152,6 @@ void Floor::receive(const engine::events::Collision& collision) {
     }
   }
 }
-
 bool Floor::IsEntityTryingToCrossBossDoor(entityx::Entity crossing_entity,
                                           entityx::Entity bossDoor) {
   Player::Orientation crossing_entity_orientation =

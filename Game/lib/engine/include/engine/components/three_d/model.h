@@ -40,6 +40,8 @@ class Model {
   Model &operator=(Model &&model);
   ~Model();
 
+  void PlayAnimation(const std::string &animation_name, bool loop);
+
  private:
   std::unique_ptr<engine::components::three_d::impl::ModelImpl> pimpl_;
 

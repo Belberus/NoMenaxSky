@@ -22,3 +22,8 @@ engine::components::three_d::Model& engine::components::three_d::Model::
 operator=(Model&& model) = default;
 
 engine::components::three_d::Model::~Model() = default;
+
+void engine::components::three_d::Model::PlayAnimation(
+    const std::string& animation_name, bool loop) {
+  pimpl_->PlayAnimation(animation_name, loop);
+}

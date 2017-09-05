@@ -682,7 +682,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeWizardProjectile(entityx::Enti
       wizardProjectile.assign<Transform>(t);
       wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(4, 4));
       wizardProjectile.assign<Physics>(velocity);
-      wizardProjectile.assign<WizardProjectile>(25.0f);
+      wizardProjectile.assign<WizardProjectile>(30.0f);
     } 
 
     std::vector<engine::utils::Rectangle> shoot;

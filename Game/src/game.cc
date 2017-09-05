@@ -67,7 +67,7 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kDeathMenu:
         scenes_.pop_back(); // Sacamos el floor
         scenes_.pop_back(); // Sacamos la UI
-        scenes_.push_back(std::make_unique<DeathMenu>(this));
+        scenes_.push_back(std::make_unique<DeathMenu>(this, character));
         Engine::GetInstance().Get<AudioManager>().StopMusic();
         break;
       case State::kPauseMenu:
@@ -156,12 +156,15 @@ void Game::Update(entityx::TimeDelta dt) {
 
 void Game::receive(const StartGame& event) { 
   if(level == 1){
+    new_game = true;
     next_state_ = State::kFloor1;
   }
   else if(level == 2){
+    new_game2 = true;
     next_state_ = State::kFloor2;
   }
   else if(level == 3){
+    new_game3 = true;
     next_state_= State::kFloor3;
   }
   else next_state_ = State::kNull; //nunca deberia llegar!
@@ -181,6 +184,7 @@ void Game::receive(const OptionMenu& event) {
 }
 
 void Game::receive(const BackToMainMenu& event) {
+  level = 1;
   next_state_ = State::kMainMenu; }
 
 void Game::receive(const Death& event){

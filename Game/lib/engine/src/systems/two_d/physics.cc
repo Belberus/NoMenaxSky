@@ -316,7 +316,9 @@ bool engine::systems::two_d::Physics::ShouldIgnoreMovingCollision(entityx::Entit
     return true;
   } else if (e1.has_component<WizardProjectile>() && e2.has_component<WizardProjectile>()) {
     return true;
-  }else return false;
+  } else if ((e1.has_component<WizardProjectile>() && e2.has_component<GhostHitBox>()) || (e2.has_component<WizardProjectile>() && e1.has_component<GhostHitBox>())) {
+    return true;
+  } else return false;
 }
 
 void engine::systems::two_d::Physics::DoCollisionResponse(

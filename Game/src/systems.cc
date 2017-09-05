@@ -2537,21 +2537,12 @@ void WizardAttackSystem::receive(const Collision &collision) {
 
     auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
     e0_color_animation->Play();
-  } else if (e1_weapon &&
-             collision_copy.e0.component<GhostHitBox>()) {
-    std::cout << "hit a GhostHitBox" << std::endl;
-  }else if (e0_weapon &&
-             collision_copy.e1.component<GhostHitBox>()) {
-    std::cout << "hit a GhostHitBox" << std::endl;
-  }
-
+  } 
   else {
   	if (e1_weapon) {
-      std::cout << "colision no detectada" << std::endl;
       entityx::Entity proyectil = collision.e1;
       proyectil.destroy();
     } else if (e0_weapon) {
-      std::cout << "colision no detectada" << std::endl;
       entityx::Entity proyectil = collision.e0;
       proyectil.destroy();
     }

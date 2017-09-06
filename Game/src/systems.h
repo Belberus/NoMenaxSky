@@ -296,9 +296,13 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   static const float kAttackDuration;
   static const float kAltAttackDuration;
   static const float kMagicAttackDuration;
+  static const float knightSpeed;
+  static const float wizardSpeed;
   float time_passed_since_last_attack_;
   float time_passed_since_last_alt_attack_;
   float time_passed_since_last_magic_attack_;
+  float knight_speed;
+  float wizard_speed;
   std::unordered_map<int, bool> keys_;
   bool paused_;
 };

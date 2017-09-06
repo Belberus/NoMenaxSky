@@ -873,8 +873,12 @@ const float PlayerInputSystem::kMagicAttackDuration = 400.0f;
 
 const float PlayerInputSystem::kAltAttackDuration = 1000.0f;
 
+const float PlayerInputSystem::knightSpeed = 0.7f;
+
+const float PlayerInputSystem::wizardSpeed = 1.0f;
+
 PlayerInputSystem::PlayerInputSystem()
-    : time_passed_since_last_attack_(kAttackDuration),time_passed_since_last_magic_attack_(kMagicAttackDuration), time_passed_since_last_alt_attack_(kAltAttackDuration), paused_(false){
+    : knight_speed(knightSpeed), wizard_speed(wizardSpeed), time_passed_since_last_attack_(kAttackDuration),time_passed_since_last_magic_attack_(kMagicAttackDuration), time_passed_since_last_alt_attack_(kAltAttackDuration), paused_(false){
   keys_.emplace(GLFW_KEY_W, false);
   keys_.emplace(GLFW_KEY_S, false);
   keys_.emplace(GLFW_KEY_A, false);
@@ -960,19 +964,19 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
 	        player.orientation = Player::Orientation::UP;
-	        new_velocity.y += 1.0f;
+	        new_velocity.y += knight_speed;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
 	        player.orientation = Player::Orientation::DOWN;
-	        new_velocity.y += -1.0f;
+	        new_velocity.y += -knight_speed;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
 	        player.orientation = Player::Orientation::LEFT;
-	        new_velocity.x += -1.0f;
+	        new_velocity.x += -knight_speed;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
 	        player.orientation = Player::Orientation::RIGHT;
-	        new_velocity.x += 1.0f;
+	        new_velocity.x += knight_speed;
 	      }
 	      if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
 	        new_velocity = glm::normalize(new_velocity) * kSpeed;
@@ -1111,19 +1115,19 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
 	        player.orientation = Player::Orientation::UP;
-	        new_velocity.y += 1.0f;
+	        new_velocity.y += wizard_speed;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
 	        player.orientation = Player::Orientation::DOWN;
-	        new_velocity.y += -1.0f;
+	        new_velocity.y += -wizard_speed;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
 	        player.orientation = Player::Orientation::LEFT;
-	        new_velocity.x += -1.0f;
+	        new_velocity.x += -wizard_speed;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
 	        player.orientation = Player::Orientation::RIGHT;
-	        new_velocity.x += 1.0f;
+	        new_velocity.x += wizard_speed;
 	      }
 	      if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
 	        new_velocity = glm::normalize(new_velocity) * kSpeed;

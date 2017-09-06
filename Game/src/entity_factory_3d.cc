@@ -79,6 +79,24 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
 
 std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
     entityx::EntityManager& entities, const glm::vec3& position) {
+
+  std::vector<entityx::Entity> entities_created;
+  auto ghost = entities.create();
+  ghost.assign<engine::components::three_d::Model>(
+      "assets/3d/personajes/fantasma/fantasma.dae");
+  ghost.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
+  ghost.assign<engine::components::common::Transform>(
+      position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  ghost.assign<Player>(Player::Orientation::DOWN);
+  ghost.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 2.0f),
+                                                         glm::vec2(3.0f, 4.0f));
+  ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
+  ghost.assign<Ghost>();
+  entities_created.push_back(ghost);
+
+
+  return entities_created;
+
   return std::vector<entityx::Entity>();
 }
 

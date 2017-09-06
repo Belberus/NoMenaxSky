@@ -341,7 +341,6 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
   floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory, "2");
   floor->current_room_ = "2.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
-  std::cerr << "Dentro" << std::endl;
   auto camera = floor->entities.create();
   camera.assign<engine::components::common::Transform>(
       glm::vec3(1006.0f, 2863.0f, 1.0f));

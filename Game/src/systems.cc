@@ -2011,54 +2011,56 @@ void HealthSystem::update(entityx::EntityManager &es,
       if (entity.component<Manueleth>()) {
         es.each<WizardProjectile>(
           [&](entityx::Entity entity_p, WizardProjectile &w) {
+            std::cout << "destruyo proyectil " << w.damage << std::endl;
             entity_p.destroy();
           });
       	entity.destroy();
       	events.emit<StartLevel2>();
-      } else {
+      } 
+      else {
       	es.each<Legs, ParentLink>(
           [&](entityx::Entity entity_legs, Legs &legs, ParentLink &parent) {
             if (parent.owner == entity) {
               entity_legs.destroy();
             }
           });
-      es.each<TurretLegs, ParentLink>([&](entityx::Entity entity_legs,
+        es.each<TurretLegs, ParentLink>([&](entityx::Entity entity_legs,
                                           TurretLegs &legs,
                                           ParentLink &parent) {
-        if (parent.owner == entity) {
-          entity_legs.destroy();
-        }
-      });
+          if (parent.owner == entity) {
+            entity_legs.destroy();
+          }
+        });
 
-      es.each<LancerLegs, ParentLink>([&](entityx::Entity entity_legs,
+        es.each<LancerLegs, ParentLink>([&](entityx::Entity entity_legs,
                                           LancerLegs &legs,
                                           ParentLink &parent) {
-        if (parent.owner == entity) {
-          entity_legs.destroy();
-        }
-      });
+          if (parent.owner == entity) {
+            entity_legs.destroy();
+          }
+        });
 
-      es.each<LancerHitBox>(
+        es.each<LancerHitBox>(
           [&](entityx::Entity entity_hitbox, LancerHitBox &lancer_hitbox) {
-            if (lancer_hitbox.owner == entity) {
-              entity_hitbox.destroy();
-            }
-          });
+          if (lancer_hitbox.owner == entity) {
+            entity_hitbox.destroy();
+          }
+        });
 
-      es.each<GhostHitBox>(
+        es.each<GhostHitBox>(
           [&](entityx::Entity entity_hitbox, GhostHitBox &ghost_hitbox) {
-            if (ghost_hitbox.owner == entity) {
-              entity_hitbox.destroy();
-            }
-          });
+          if (ghost_hitbox.owner == entity) {
+            entity_hitbox.destroy();
+          }
+        });
       
-      entity.destroy();
+        entity.destroy();
 
-      if (es_player) {
-        events.emit<Death>();
+        if (es_player) {
+          events.emit<Death>();
+        }
       }
     }
-}
   });
 }
 
@@ -2366,7 +2368,6 @@ void GhostAttackSystem::receive(const Collision &collision) {
     e0_color_animation->Play();
   } 
 }
-
 void GhostAttackSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
                                 entityx::TimeDelta dt) {}
@@ -2375,6 +2376,9 @@ void LeverSystem::configure(entityx::EventManager &event_manager) {
   event_manager.subscribe<Collision>(*this);
   event_manager_ = &event_manager;
 }
+
+
+float timerLever = 5.0f;
 
 void LeverSystem::receive(const engine::events::Collision &collision) {
   auto collision_copy = collision;
@@ -2386,36 +2390,44 @@ void LeverSystem::receive(const engine::events::Collision &collision) {
 
   if (e0_player && collision_copy.e1.component<Lever>()) {
     auto lever = collision_copy.e1.component<Lever>();
-    if(!lever->activated){
+    if(timerLever >= 5.0f){
+      timerLever = 0.0f;
+      if(!lever->activated){
       lever->activated = true;
       e0_player->levers_activated++;
       PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
       event_manager_->emit<PlayText>(pt);
-    }
-    else{
-      PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
-      event_manager_->emit<PlayText>(pt);
-    }
-    
+      }
+      else{
+        PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+        event_manager_->emit<PlayText>(pt);
+      }
+    }    
   } else if (e1_player && collision_copy.e0.component<Lever>()) {
     auto lever = collision_copy.e0.component<Lever>();
-    if(!lever->activated){
+    if(timerLever >= 5.0f){
+      timerLever = 0.0f;
+      if(!lever->activated){
       lever->activated = true;
       e0_player->levers_activated++;
       PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
       event_manager_->emit<PlayText>(pt);
+      }
+      else{
+        PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+        event_manager_->emit<PlayText>(pt);
+      }
     }
-    else{
-      PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
-      event_manager_->emit<PlayText>(pt);
-    }
-    
   }
 }
 
 void LeverSystem::update(entityx::EntityManager &es,
                                 entityx::EventManager &events,
-                                entityx::TimeDelta dt) {}
+                                entityx::TimeDelta dt) {
+  if(timerLever <=5.0f){
+    timerLever += dt;
+  }
+}
 
 
 void WizardAttackSystem::configure(entityx::EventManager &event_manager) {

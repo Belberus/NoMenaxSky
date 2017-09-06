@@ -93,6 +93,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<ColliderRenderer>(dt);
     systems.update<ShieldSystem>(dt);
     systems.update<PauseInputSystem>(dt);
+    systems.update<LeverSystem>(dt);
   }
   else{ //is paused
     systems.update<PlayerInputSystem>(0);
@@ -126,6 +127,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<ColliderRenderer>(0);
     systems.update<ShieldSystem>(0);
     systems.update<PauseInputSystem>(dt);
+    systems.update<LeverSystem>(0);
   }
 }
 

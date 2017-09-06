@@ -103,6 +103,7 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
+          std::cout << "antes" << std::endl;
           scenes_.push_back(
               FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this, character));
           scenes_.push_back(std::make_unique<GameUi>(this));
@@ -175,6 +176,7 @@ void Game::receive(const CharSelect& event) {
 
 void Game::receive(const StartLevel2& event) { 
   level = 2;
+  new_game2 = true;
   next_state_ = State::kFloor2; 
 }
 

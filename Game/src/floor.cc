@@ -42,7 +42,6 @@ void Floor::receive(const PauseMenuEvent& pm){
 }
 
 void Floor::receive(const PauseGameEvent& pg){
-  std::cout << "pauso" << std::endl;
   PauseGame(true);
 }
 

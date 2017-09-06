@@ -2084,6 +2084,8 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
     if (chest->key == true) {
       if(once2){
         once2=false;
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/defaults/box_open.wav", false, 0.8f);
         PlayText pt("Has encontrado la llave!\n\nDirigete a la puerta del boss para enfrentarte a el.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
         event_manager_->emit<PlayText>(pt);
       }      
@@ -2091,11 +2093,19 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
         e0_player->key = true;
         check = true;
       } 
-      else {//ya la tiene, no des la turra
-        //TODO: texto de que ya la tienes -__-
+      else {
+        if(once2){
+          once2 = false;
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/defaults/box_open.wav", false, 0.8f);
+          PlayText pt("Ya tienes la llave.\n\nDirigete a la puerta del boss para enfrentarte a el.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+          event_manager_->emit<PlayText>(pt);
+        }
       }
     } else {
         if(once2){
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/defaults/box_open.wav", false, 0.8f);
           once2 = false;
           PlayText pt("La llave no esta en este cofre.\n\nSigue buscando, seguro que la encuentras.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
           event_manager_->emit<PlayText>(pt);
@@ -2103,6 +2113,8 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
     }
   } else if (e1_player && collision_copy.e0.component<Chest>()) {
     auto chest = collision_copy.e0.component<Chest>();
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/defaults/box_open.wav", false, 0.8f);
     if (chest->key == true) {
 
       if(!e1_player->key){
@@ -2112,11 +2124,22 @@ void ChestSystem::receive(const engine::events::Collision &collision) {
         event_manager_->emit<PlayText>(pt);
       }
       else{
-        //TODO: QUE YA LA TIENES!!
+        if(once2){
+          once2 = false;
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/defaults/box_open.wav", false, 0.8f);
+          PlayText pt("Ya tienes la llave.\n\nDirigete a la puerta del boss para enfrentarte a el.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+          event_manager_->emit<PlayText>(pt);
+        }
       }
     } else {
-      PlayText pt("La llave no esta en este cofre.\n\nSigue buscando, seguro que la encuentras.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+        if(once2){
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/defaults/box_open.wav", false, 0.8f);
+          once2 = false;
+          PlayText pt("La llave no esta en este cofre.\n\nSigue buscando, seguro que la encuentras.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
           event_manager_->emit<PlayText>(pt);
+        }  
     }
   }
 }
@@ -2393,10 +2416,12 @@ void LeverSystem::receive(const engine::events::Collision &collision) {
     if(timerLever >= 5.0f){
       timerLever = 0.0f;
       if(!lever->activated){
-      lever->activated = true;
-      e0_player->levers_activated++;
-      PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
-      event_manager_->emit<PlayText>(pt);
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/defaults/lever.wav", false, 0.7f);
+        lever->activated = true;
+        e0_player->levers_activated++;
+        PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+        event_manager_->emit<PlayText>(pt);
       }
       else{
         PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
@@ -2408,10 +2433,12 @@ void LeverSystem::receive(const engine::events::Collision &collision) {
     if(timerLever >= 5.0f){
       timerLever = 0.0f;
       if(!lever->activated){
-      lever->activated = true;
-      e0_player->levers_activated++;
-      PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
-      event_manager_->emit<PlayText>(pt);
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/defaults/lever.wav", false, 0.7f);
+        lever->activated = true;
+        e0_player->levers_activated++;
+        PlayText pt("Palanca activada!\n\nRecuerda que son DOS las palancas que tienes que activar para enfrentarte al boss.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+        event_manager_->emit<PlayText>(pt);
       }
       else{
         PlayText pt("Esta palanca ya esta activada.\n\nRecuerda que son DOS las palancas que tienes que activar.\n\n\n\n\n                    Pulsa [ENTER] para continuar.");

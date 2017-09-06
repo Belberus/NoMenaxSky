@@ -63,14 +63,6 @@ class FloorFactory {
   /// exists but doesnt have a rectangle collider.
   static glm::vec3 ParseCenter(const tmx::Map &map);
 
-  static std::unordered_map<std::string, std::unique_ptr<Floor::Room>> 
-  ParseRooms3D(const tmx::Map &map, const std::string &layer_name,
-             const std::shared_ptr<EntityFactory3D> &factory, const std::string &level);
-
-  static void ParseRoomContents3D(const tmx::Map &map,
-                                const tmx::ObjectGroup &object_layer,
-                                const std::shared_ptr<EntityFactory3D> &factory,
-                                Floor::Room &room, const std::string &level);
-};
+  };
 
 #endif  // FLOOR_FACTORY_H_

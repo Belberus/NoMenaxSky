@@ -292,12 +292,11 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   void set_paused(bool paused);
 
  private:
-  static const float kSpeed;
+  static const float kKnightSpeed;
+  static const float kWizardSpeed;
   static const float kAttackDuration;
   static const float kAltAttackDuration;
   static const float kMagicAttackDuration;
-  static const float knightSpeed;
-  static const float wizardSpeed;
   float time_passed_since_last_attack_;
   float time_passed_since_last_alt_attack_;
   float time_passed_since_last_magic_attack_;

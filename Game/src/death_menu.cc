@@ -20,8 +20,8 @@ using namespace engine::components::common;
 using namespace engine::components::two_d;
 using namespace engine::core;
 
-DeathMenu::DeathMenu(engine::core::Scene *parent_scene)
-  : parent_scene_(parent_scene) {
+DeathMenu::DeathMenu(engine::core::Scene *parent_scene, std::string charac)
+  : parent_scene_(parent_scene), ch(charac) {
 
   	events.subscribe<BackToMainMenu>(*this);
 
@@ -33,7 +33,6 @@ DeathMenu::DeathMenu(engine::core::Scene *parent_scene)
   	menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
   	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
 
-  	entityx::ComponentHandle<Characters> character;
     entityx::ComponentHandle<Cursor> cursor;
 
     entityx::Entity dead = entities.create();
@@ -41,17 +40,10 @@ DeathMenu::DeathMenu(engine::core::Scene *parent_scene)
     auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
           "assets/death_menu/dead_knight.png");
 
-    // NO coge esta entidad
-  	for (entityx::Entity e :
-  			entities.entities_with_components(character, cursor)){
-         std::cout << "dentro death" << std::endl;
-  		if (character->role == Characters::Role::WIZARD){
-         std::cout << "dentro death" << std::endl;
-         tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-          "assets/death_menu/dead_wizard.png");
-  		} 
-  	}
-
+    if(ch == "wizard"){
+      tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+        "assets/death_menu/dead_wizard.png");
+    } 
 
     dead.assign<Transform>(glm::vec3(-30, 80, 0), menu_canvas_transform,
                           glm::vec3(10.0f));
@@ -76,5 +68,6 @@ void DeathMenu::Update(entityx::TimeDelta dt) {
 }
 
 void DeathMenu::receive(const BackToMainMenu &back_to_main) {
-	  parent_scene_->events.emit<BackToMainMenu>(back_to_main);
+  StartGame sg(ch);
+	  parent_scene_->events.emit<StartGame>(sg);
 }

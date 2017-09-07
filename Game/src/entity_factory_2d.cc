@@ -30,7 +30,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeKnight(
   player.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(7, 7));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
-  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(300.0f, 300.0f, "assets/media/fx/gaunt/default/death.wav");
 
 
   std::vector<ColorAnimation::KeyFrame> color_frames;
@@ -560,7 +560,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
-	  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
+	  manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
@@ -661,44 +661,44 @@ std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::Entit
 std::vector<entityx::Entity> EntityFactory2D::MakeWizardProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
 
   std::vector<entityx::Entity> entities_created;
-    entityx::Entity wizardProjectile = entities.create();
-    
-    if (type == "normal") {
-      Transform t(position);
-      glm::quat model_rotation;
-      model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-      t.SetLocalOrientation(model_rotation);
-      wizardProjectile.assign<Transform>(t);
-      wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
-      wizardProjectile.assign<Physics>(velocity);
-      wizardProjectile.assign<WizardProjectile>(10.0f);
+  entityx::Entity wizardProjectile = entities.create();
+  
+  if (type == "normal") {
+    Transform t(position);
+    glm::quat model_rotation;
+    model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    t.SetLocalOrientation(model_rotation);
+    wizardProjectile.assign<Transform>(t);
+    wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+    wizardProjectile.assign<Physics>(velocity);
+    wizardProjectile.assign<WizardProjectile>(10.0f);
 
-    } else if (type == "special") {
-      Transform t(position);
-      glm::quat model_rotation;
-      model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-      t.SetLocalOrientation(model_rotation);
-      t.SetLocalScale(glm::vec3(1,2,2));
-      wizardProjectile.assign<Transform>(t);
-      wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(4, 4));
-      wizardProjectile.assign<Physics>(velocity);
-      wizardProjectile.assign<WizardProjectile>(25.0f);
-    } 
+  } else if (type == "special") {
+    Transform t(position);
+    glm::quat model_rotation;
+    model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    t.SetLocalOrientation(model_rotation);
+    t.SetLocalScale(glm::vec3(1,2,2));
+    wizardProjectile.assign<Transform>(t);
+    wizardProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(4, 4));
+    wizardProjectile.assign<Physics>(velocity);
+    wizardProjectile.assign<WizardProjectile>(30.0f);
+  } 
 
-    std::vector<engine::utils::Rectangle> shoot;
-    shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
-    shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
+  std::vector<engine::utils::Rectangle> shoot;
+  shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
+  shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
 
-    auto texture_atlas =
-      Engine::GetInstance().Get<ResourceManager>().Load<Texture>("assets/spritesheets/mago.png");
+  auto texture_atlas =
+    Engine::GetInstance().Get<ResourceManager>().Load<Texture>("assets/spritesheets/mago.png");
 
-    SpriteAnimation::AnimationClip shooting_anim("shooting", texture_atlas, shoot,
-                                               100.0f);
+  SpriteAnimation::AnimationClip shooting_anim("shooting", texture_atlas, shoot,
+                                             100.0f);
 
-    SpriteAnimation shoot_anim({shooting_anim});
-    wizardProjectile.assign<SpriteAnimation>(shoot_anim);
-    wizardProjectile.assign<Sprite>(texture_atlas);
+  SpriteAnimation shoot_anim({shooting_anim});
+  wizardProjectile.assign<SpriteAnimation>(shoot_anim);
+  wizardProjectile.assign<Sprite>(texture_atlas);
 
-    entities_created.push_back(wizardProjectile);
-    return entities_created;
+  entities_created.push_back(wizardProjectile);
+  return entities_created;
 }

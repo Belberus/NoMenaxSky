@@ -27,7 +27,7 @@ Game::Game()
   outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
   outfile << "1 1 1" << std::endl;
   outfile.close();
-  text_to_play = "Bienvenido.\nEste es Gauntleto, esta furioso porque el malvado Lord Menax le ha robado sus tartas.\nWASD haran que Gauntleto se mueva.\nLas flechas de direccion haran que Gauntleto ataque.\nSi ademas de las flechas pulsas espacio, se defendera.\nCorre a detener al malvado Lord Menax y sus secuaces!\nPulsa [ENTER] para continuar.";
+  text_to_play = "Este es Gauntleto, esta furioso porque el malvado Lord Menax y sus secuaces\nle han robado todas las tartas.\nRecorre el castillo, encuentra a Menax y a sus secuaces y vencelos para\nrecuperar las tartas!\n\nPara poder enfrentarte al boss de este nivel, deberas encontrar la llave.\nBusca en los dos cofres, uno debe contenerla.\n                    Pulsa [ENTER] para continuar.";
   level = 1;
 
   events.subscribe<CharSelect>(*this);
@@ -39,7 +39,6 @@ Game::Game()
   events.subscribe<BackToGame>(*this);
   events.subscribe<StartLevel2>(*this);
   events.subscribe<PlayText>(*this);
-
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -67,7 +66,7 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kDeathMenu:
         scenes_.pop_back(); // Sacamos el floor
         scenes_.pop_back(); // Sacamos la UI
-        scenes_.push_back(std::make_unique<DeathMenu>(this));
+        scenes_.push_back(std::make_unique<DeathMenu>(this, character));
         Engine::GetInstance().Get<AudioManager>().StopMusic();
         break;
       case State::kPauseMenu:
@@ -84,8 +83,9 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-          scenes_.push_back(
-           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));
+          /*scenes_.push_back(
+           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));*/
+          scenes_.push_back(FloorFactory::MakeFloorOne3D("daigual",this, character));
           
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));
@@ -104,10 +104,11 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
+          std::cout << "antes" << std::endl;
           scenes_.push_back(
               FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this, character));
           scenes_.push_back(std::make_unique<GameUi>(this));
-          text_to_play = "Buen trabajo.\nEn este nivel encontraras trampas, anda con cuidado.\nPara enfrentarte al boss debes activar dos palancas escondidas en diferentes puntos del mapa.\nBuena suerte.\nPulsa [ENTER] para continuar.";
+          text_to_play = "Cuidado por donde pisas! Este nivel del castillo esta lleno de trampas.\n\nPara acceder a la habitacion del boss deberas buscar dos palancas por las\n\nhabitaciones y activarlas.\n\n\n                    Pulsa [ENTER] para continuar.";
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido2"));
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(2);
@@ -129,7 +130,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.push_back(
                FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
           scenes_.push_back(std::make_unique<GameUi>(this));
-          text_to_play = "Muy bien.\nHa sido un entrenamiento divertido, verdad?\nAhora tendrás que enfrentarte a un reto de verdad.\nPulsa [ENTER] para continuar.";
+          text_to_play = "El ultimo nivel del castillo, el nivel de Lord Menax.\n\nPreparate para enfrentarte a el, sera un duro combate.\n\n\n\n\n                    Pulsa [ENTER] para continuar.";
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido3"));
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(3);
@@ -156,12 +157,15 @@ void Game::Update(entityx::TimeDelta dt) {
 
 void Game::receive(const StartGame& event) { 
   if(level == 1){
+    new_game = true;
     next_state_ = State::kFloor1;
   }
   else if(level == 2){
+    new_game2 = true;
     next_state_ = State::kFloor2;
   }
   else if(level == 3){
+    new_game3 = true;
     next_state_= State::kFloor3;
   }
   else next_state_ = State::kNull; //nunca deberia llegar!
@@ -173,6 +177,7 @@ void Game::receive(const CharSelect& event) {
 
 void Game::receive(const StartLevel2& event) { 
   level = 2;
+  new_game2 = true;
   next_state_ = State::kFloor2; 
 }
 
@@ -181,6 +186,7 @@ void Game::receive(const OptionMenu& event) {
 }
 
 void Game::receive(const BackToMainMenu& event) {
+  level = 1;
   next_state_ = State::kMainMenu; }
 
 void Game::receive(const Death& event){

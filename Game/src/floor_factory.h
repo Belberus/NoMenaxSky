@@ -13,6 +13,8 @@
 #include <tmxlite/TileLayer.hpp>
 
 #include "entity_factory.h"
+#include "entity_factory_3d.h"
+
 #include "floor_2d.h"
 
 class FloorFactory {
@@ -24,7 +26,7 @@ class FloorFactory {
   static std::unique_ptr<Floor> MakeFloorThree2D(const std::string &file_name,
                                                Game *parent_scene, const std::string &role);
   static std::unique_ptr<Floor> MakeFloorOne3D(const std::string &file_name,
-                                               Game *parent_scene);
+                                               Game *parent_scene, const std::string &role);
 
  private:
   static void ParseTilemap(const tmx::Map &map, Floor &floor);
@@ -60,6 +62,7 @@ class FloorFactory {
   /// @return center of the map; (0,0,0) if the layer doesnt exist or if it
   /// exists but doesnt have a rectangle collider.
   static glm::vec3 ParseCenter(const tmx::Map &map);
-};
+
+  };
 
 #endif  // FLOOR_FACTORY_H_

@@ -214,6 +214,7 @@ void FloorFactory::ParseRoomContents(
       };
       room.entity_creators_.push_back(fn_bossDoor);
     } else if (object.getType() == "fantasma") {
+      std::cout << "pintar fantasma" << std::endl;
       auto fn_ghost =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
         return factory->MakeGhost(em, position);
@@ -409,11 +410,12 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   // create the player
 
   if(role == "knight"){
-    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));    
+    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    //factory->MakeGhost(floor->entities, glm::vec3(0.0f,0.0f,7.0f));    
   }
   else{
-    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
-    //factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    //factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
   }
   
   // create the colliders

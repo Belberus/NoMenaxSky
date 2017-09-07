@@ -14,6 +14,8 @@
 #include <time.h>
 #include <cmath>
 #include "entity_factory_2d.h"
+#include "entity_factory_3d.h"
+
 #include "events.h"
 
 #include <iostream>
@@ -821,9 +823,9 @@ void TextInputSystem::receive(const KeyReleased &key_released) {
   } 
 }
 
-const float PlayerInputSystem::kKnightSpeed = 70.0f;
+const float PlayerInputSystem::kKnightSpeed = 150.0f;
 
-const float PlayerInputSystem::kWizardSpeed = 100.0f;
+const float PlayerInputSystem::kWizardSpeed = 200.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
@@ -831,8 +833,10 @@ const float PlayerInputSystem::kMagicAttackDuration = 400.0f;
 
 const float PlayerInputSystem::kAltAttackDuration = 1000.0f;
 
+bool oncee = true;
+
 PlayerInputSystem::PlayerInputSystem()
-    : knight_speed(kKnightSpeed), wizard_speed(kWizardSpeed), time_passed_since_last_attack_(kAttackDuration),time_passed_since_last_magic_attack_(kMagicAttackDuration), time_passed_since_last_alt_attack_(kAltAttackDuration), paused_(false){
+    : three_d(false), knight_speed(kKnightSpeed), wizard_speed(kWizardSpeed), time_passed_since_last_attack_(kAttackDuration),time_passed_since_last_magic_attack_(kMagicAttackDuration), time_passed_since_last_alt_attack_(kAltAttackDuration), paused_(false){
   keys_.emplace(GLFW_KEY_W, false);
   keys_.emplace(GLFW_KEY_S, false);
   keys_.emplace(GLFW_KEY_A, false);
@@ -846,6 +850,8 @@ PlayerInputSystem::PlayerInputSystem()
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
+  Engine::GetInstance().Get<EventManager>().Subscribe<SetThreeD>(*this); 
+  oncee = true;
 }
 
 bool PlayerInputSystem::is_paused(){
@@ -868,6 +874,11 @@ void PlayerInputSystem::receive(const KeyReleased &key_released) {
   }
 }
 
+void PlayerInputSystem::receive(const SetThreeD &setThreeD){
+  std::cout << "cambiando 3D" << std::endl;
+  three_d = setThreeD.three_d;
+}
+
 void PlayerInputSystem::receive(const BackToGame &resumeGame){
   set_paused(false);
 }
@@ -880,6 +891,14 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   for (auto e : es.entities_with_components<Player>()) {
     player_entity = e;
   }
+  if(oncee){
+    oncee = false;
+    for(auto e : es.entities_with_components<ThreeD>()){
+      std::cout << "tamos en 3D" << std::endl;
+      three_d = true;
+    }
+  }
+  
   if (player_entity.has_component<KnightAttack>()) {
 	  entityx::ComponentHandle<Transform> weapon_transform;
 	  entityx::ComponentHandle<MeleeWeapon> weapon_info;
@@ -1115,7 +1134,12 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 100.0f, 0.0f), "special");
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 100.0f, 0.0f), "special");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 100.0f, 0.0f), "special");
+            }            
             Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/alt.wav", false, 0.5f);
             Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -1136,8 +1160,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -100.0f, 0.0f), "special");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -100.0f, 0.0f), "special");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -100.0f, 0.0f), "special");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/alt.wav", false, 0.5f);
             Engine::GetInstance().Get<AudioManager>().PlaySound(
                   "assets/media/fx/gaunt/default/attack_2.wav", false, 0.6f);
@@ -1157,8 +1186,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(100.0f, 0.0f, 0.0f), "special");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(100.0f, 0.0f, 0.0f), "special");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(100.0f, 0.0f, 0.0f), "special");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/alt.wav", false, 0.5f);
             Engine::GetInstance().Get<AudioManager>().PlaySound(
                   "assets/media/fx/gaunt/default/attack_2.wav", false, 0.6f);
@@ -1178,8 +1212,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-100.0f, 0.0f, 0.0f), "special");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-100.0f, 0.0f, 0.0f), "special");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-100.0f, 0.0f, 0.0f), "special");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/alt.wav", false, 0.5f);
             Engine::GetInstance().Get<AudioManager>().PlaySound(
                   "assets/media/fx/gaunt/default/attack_2.wav", false, 0.6f);
@@ -1283,8 +1322,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/attack.wav", false, 0.5f);
           }
           else if(!keys_[GLFW_KEY_SPACE] && 
@@ -1295,8 +1339,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -170.0f, 0.0f), "normal");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -170.0f, 0.0f), "normal");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -170.0f, 0.0f), "normal");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/attack.wav", false, 0.5f);
           }
           else if(!keys_[GLFW_KEY_SPACE] && 
@@ -1307,8 +1356,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(170.0f, 0.0f, 0.0f), "normal");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(170.0f, 0.0f, 0.0f), "normal");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(170.0f, 0.0f, 0.0f), "normal");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/attack.wav", false, 0.5f);
           }
           else if(!keys_[GLFW_KEY_SPACE] && 
@@ -1319,8 +1373,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-170.0f, 0.0f, 0.0f), "normal");
-            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            if(!three_d){
+              EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-170.0f, 0.0f, 0.0f), "normal");
+            }
+            else{
+              EntityFactory3D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-170.0f, 0.0f, 0.0f), "normal");
+            }            
+                        Engine::GetInstance().Get<AudioManager>().PlaySound(
                 "assets/media/fx/gaunt/mage/attack.wav", false, 0.5f);
           }
           // Diagonales

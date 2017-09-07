@@ -283,6 +283,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   void receive(const engine::events::KeyPressed &key_pressed);
   void receive(const engine::events::KeyReleased &key_released);
   void receive(const BackToGame &resumeGame);
+  void receive(const SetThreeD &setThreeD);
 
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
@@ -304,6 +305,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   float wizard_speed;
   std::unordered_map<int, bool> keys_;
   bool paused_;
+  bool three_d;
 };
 
 class LancerIaSystem : public entityx::System<LancerIaSystem> {

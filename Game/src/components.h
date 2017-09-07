@@ -239,4 +239,8 @@ struct ParentLink {
 	entityx::Entity owner;
 };
 
+struct ThreeD {
+
+};
+
 #endif  // COMPONENTS_H_

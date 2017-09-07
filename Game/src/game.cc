@@ -21,7 +21,7 @@ using namespace engine::core;
 using namespace std;
 
 Game::Game()
-    : new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
+    : three_d(false), new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
   std::string filename = "assets/config/opciones.txt";
   std::ofstream outfile;
   outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
@@ -39,6 +39,7 @@ Game::Game()
   events.subscribe<BackToGame>(*this);
   events.subscribe<StartLevel2>(*this);
   events.subscribe<PlayText>(*this);
+  events.subscribe<SetThreeD>(*this);
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -83,12 +84,17 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-          /*scenes_.push_back(
-           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));*/
-          scenes_.push_back(FloorFactory::MakeFloorOne3D("daigual",this, character));
-          
+          if(!three_d){
+            scenes_.push_back(
+              FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));
+          }
+          else{
+            scenes_.push_back(FloorFactory::MakeFloorOne3D("daigual",this, character));
+          }
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));
+          SetThreeD std(true);
+          //scenes_.front()->events.emit<SetThreeD>(std);
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(1);
           scenes_.front()->events.emit<LevelEvent>(lt);
@@ -203,6 +209,10 @@ void Game::receive(const BackToGame& event) {
 void Game::receive(const PlayText& event){
   text_to_play = event.text;
   next_state_ = State::kText;  
+}
+
+void Game::receive(const SetThreeD& setThreeD){
+  three_d = setThreeD.three_d;  
 }
 
 int Game::getLevel(){

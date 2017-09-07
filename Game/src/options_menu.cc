@@ -14,6 +14,7 @@
 #include "entity_factory.h"
 #include "systems.h"
 #include "components.h"
+#include "events.h"
 
 #include <fstream>
 
@@ -115,11 +116,15 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
       "assets/option_menu/2d_seleccionado.png");
     tex2 = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/3d_noseleccionado.png");
+    SetThreeD std(false);
+    parent_scene_->events.emit<SetThreeD>(std);
   } else {
     tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/2d_noseleccionado.png");
     tex2 = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
       "assets/option_menu/3d_seleccionado.png");
+    SetThreeD std(true);
+    parent_scene_->events.emit<SetThreeD>(std);
   }
 
   option_2d.assign<Sprite>(tex);
@@ -212,7 +217,7 @@ OptionsMenu::OptionsMenu(engine::core::Scene *parent_scene)
 
 }
 
-void OptionsMenu::Update( entityx::TimeDelta dt) {
+void OptionsMenu::Update(entityx::TimeDelta dt) {
   
   entityx::ComponentHandle<GameOptions> options;
 
@@ -241,7 +246,8 @@ void OptionsMenu::Update( entityx::TimeDelta dt) {
                     "assets/option_menu/3d_noseleccionado.png"));
       }
       //std::cout << "swapped" << std::endl;
-
+      SetThreeD std(false);
+      parent_scene_->events.emit<SetThreeD>(std);
       modo = 1;
     }
 
@@ -259,6 +265,8 @@ void OptionsMenu::Update( entityx::TimeDelta dt) {
                     "assets/option_menu/3d_seleccionado.png"));
       }
       //std::cout << "swapped 2" << std::endl;
+      SetThreeD std(true);
+      parent_scene_->events.emit<SetThreeD>(std);
       modo = 0;
     }
 

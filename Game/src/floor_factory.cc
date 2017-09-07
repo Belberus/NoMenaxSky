@@ -214,7 +214,6 @@ void FloorFactory::ParseRoomContents(
       };
       room.entity_creators_.push_back(fn_bossDoor);
     } else if (object.getType() == "fantasma") {
-      std::cout << "pintar fantasma" << std::endl;
       auto fn_ghost =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
         return factory->MakeGhost(em, position);

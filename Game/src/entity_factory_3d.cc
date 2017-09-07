@@ -28,6 +28,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(300.0f, 300.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<ThreeD>();
   entities_created.push_back(player);
 
   // adding sword entity
@@ -76,6 +77,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
   player.assign<Wizard>();
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<ThreeD>();
+
   entities_created.push_back(player);
 
   return entities_created;
@@ -230,13 +233,13 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
     wizardProjectile.assign<WizardProjectile>(10.0f);
   }
   else if(type == "special"){
-    t.SetLocalScale(glm::vec3(1,2,2));
+    t.SetLocalScale(glm::vec3(0.2,0.4,0.4));
     wizardProjectile.assign<Transform>(t);
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
     wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(3.0f, 0.0f),
-                                                           glm::vec2(4.0f, 4.0f));
+                                                           glm::vec2(2.0f, 2.0f));
     wizardProjectile.assign<WizardProjectile>(30.0f);
   }
   entities_created.push_back(wizardProjectile);

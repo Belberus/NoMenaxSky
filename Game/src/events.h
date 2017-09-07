@@ -25,4 +25,8 @@ struct LevelEvent {
 	int level;
 	LevelEvent(int level) : level(level){};
 };
+struct SetThreeD {
+	bool three_d;
+	SetThreeD(bool three_d) : three_d(three_d){};
+};
 #endif // EVENTS_H_

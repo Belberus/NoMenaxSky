@@ -130,7 +130,7 @@ struct Player {
   bool key;
   int levers_activated;
 
-  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL), levers_activated(0) {}
+  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL), levers_activated(2) {}
   // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO Y LEVERS_ACTIVATED A 0
 };
 
@@ -191,6 +191,8 @@ struct TurretLegs{};
 
 struct LancerLegs{};
 
+struct MasiatrixLegs{};
+
 struct LowCollision {};
 
 struct Manueleth {
@@ -198,7 +200,19 @@ struct Manueleth {
 	enum Comportamiento {NORMAL, PUSH, SPECIAL};
 	Comportamiento comportamiento;
 	float time_for_shooting;
-  	int hits;
+  int hits;
+};
+
+struct Masiatrix {
+  enum Orientation {TOP, DOWN, LEFT, RIGHT};
+  Masiatrix(std::string id, glm::vec3 original_position) : id(id), original_position(original_position), orientation(Orientation::DOWN), is_attacking(false), time_passed_attack(0.0f), time_passed_movement(3000.0f) {}
+  Orientation orientation;
+  glm::vec3 original_position;
+  float time_passed_attack;
+  float time_passed_movement;
+  bool is_attacking;
+  bool rand_initialized;
+  std::string id;
 };
 
 struct Wizard {

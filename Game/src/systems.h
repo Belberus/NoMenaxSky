@@ -39,6 +39,24 @@ class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class MasiatrixWalkingSystem : public entityx::System<MasiatrixWalkingSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class MasiatrixAnimationSystem : public entityx::System<MasiatrixAnimationSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+ private:
+  std::string lastAnim;
+  std::string lastOrientation;
+  float timer;
+  float timer2;
+};
+
 class WizardAnimationSystem : public entityx::System<WizardAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -91,6 +109,11 @@ class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
   void receive(const engine::events::Collision &collision);
 };
 
+class MasiatrixIaSystem : public entityx::System<MasiatrixIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
 
 class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
@@ -138,8 +161,8 @@ public:
               entityx::TimeDelta dt) override;
 };
 
-class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
-                           public entityx::Receiver<TurretAttackSystem> {
+class EnemyProjectileSystem : public entityx::System<EnemyProjectileSystem>,
+                           public entityx::Receiver<EnemyProjectileSystem> {
  public:
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
@@ -148,7 +171,7 @@ class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
 };
 
 class EnemyProjectileAnimationSystem
-    : public entityx::System<EnemyProjectile> {
+    : public entityx::System<EnemyProjectileAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;

@@ -303,6 +303,8 @@ bool engine::systems::two_d::Physics::ShouldIgnoreMovingCollision(entityx::Entit
     return true;
   } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<WizardProjectile>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<WizardProjectile>())) {
     return true;
+  } else if ((e1.has_component<EnemyProjectile>() && e2.has_component<Masiatrix>()) || (e2.has_component<EnemyProjectile>() && e1.has_component<Masiatrix>())) {
+    return true;
   } else if ((e1.has_component<WizardProjectile>() && e2.has_component<Player>()) || (e2.has_component<WizardProjectile>() && e1.has_component<Player>())) {
     return true;
   } else if ((e1.has_component<WizardProjectile>() && e2.has_component<LancerHitBox>()) || (e2.has_component<WizardProjectile>() && e1.has_component<LancerHitBox>())) {

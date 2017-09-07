@@ -28,13 +28,16 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<PlayerInputSystem>();
   systems.add<GhostIaSystem>();
   systems.add<GhostAnimationSystem>();
+  systems.add<MasiatrixAnimationSystem>();
   systems.add<ManuelethAnimationSystem>();
   systems.add<TurretIaSystem>();
-  //systems.add<ManuelethIaSystem>();
+  systems.add<ManuelethIaSystem>();
   //systems.add<TrapIaSystem>();
   systems.add<LancerIaSystem>();
+  systems.add<MasiatrixIaSystem>();
   systems.add<TurretWalkingSystem>();
   systems.add<LancerWalkingSystem>();
+  systems.add<MasiatrixWalkingSystem>();
   systems.add<EnemyProjectileAnimationSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<KnightAnimationSystem>();
@@ -47,7 +50,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<SpriteRenderer>();
   systems.add<ColliderRenderer>();
   systems.add<KnightAttackSystem>();
-  systems.add<TurretAttackSystem>();
+  systems.add<EnemyProjectileSystem>();
   systems.add<LancerAttackSystem>();
   //systems.add<GhostAttackSystem>();
   systems.add<ChestSystem>();
@@ -65,13 +68,16 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<PlayerInputSystem>(dt);
     systems.update<GhostIaSystem>(dt);
     systems.update<GhostAnimationSystem>(dt);
+    systems.update<MasiatrixAnimationSystem>(dt);
     systems.update<ManuelethAnimationSystem>(dt);
     //systems.update<TurretIaSystem>(dt);
     //systems.update<LancerIaSystem>(dt);
-    //systems.update<ManuelethIaSystem>(dt);
+    systems.update<ManuelethIaSystem>(dt);
     //systems.update<TrapIaSystem>(dt);
+    systems.update<MasiatrixIaSystem>(dt);
     systems.update<TurretWalkingSystem>(dt);
     systems.update<LancerWalkingSystem>(dt);
+    systems.update<MasiatrixWalkingSystem>(dt);
     systems.update<EnemyProjectileAnimationSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
     systems.update<KnightAnimationSystem>(dt);
@@ -84,7 +90,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     //systems.update<GhostAttackSystem>(dt);
     systems.update<ChestSystem>(dt);
     systems.update<LeverSystem>(dt);
-    systems.update<TurretAttackSystem>(dt);
+    systems.update<EnemyProjectileSystem>(dt);
     systems.update<LancerAttackSystem>(dt);
     systems.update<HealthSystem>(dt);
     systems.update<ColorAnimator>(dt);
@@ -99,13 +105,16 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<PlayerInputSystem>(0);
     systems.update<GhostIaSystem>(0);
     systems.update<GhostAnimationSystem>(0);
+    systems.update<MasiatrixAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);
     //systems.update<TurretIaSystem>(0);
     //systems.update<LancerIaSystem>(0);
-    //systems.update<ManuelethIaSystem>(0);
+    systems.update<ManuelethIaSystem>(0);
     //systems.update<TrapIaSystem>(0);
+    systems.update<MasiatrixIaSystem>(0);
     systems.update<TurretWalkingSystem>(0);
     systems.update<LancerWalkingSystem>(0);
+    systems.update<MasiatrixWalkingSystem>(0);
     systems.update<EnemyProjectileAnimationSystem>(0);
     systems.update<engine::systems::two_d::Physics>(0);
     systems.update<KnightAnimationSystem>(0);
@@ -118,7 +127,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<KnightAttackSystem>(0);
     systems.update<ChestSystem>(0);
     systems.update<LeverSystem>(0);
-    systems.update<TurretAttackSystem>(0);
+    systems.update<EnemyProjectileSystem>(0);
     systems.update<LancerAttackSystem>(0);
     systems.update<HealthSystem>(0);
     systems.update<ColorAnimator>(0);
@@ -230,20 +239,27 @@ void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
       });
 }
 
+bool oneTime1=true;
+bool oneTime2=true;
 void Floor2D::OnPlayerEnteringBossDoorWithoutKey() {
   if(GetLevel() == 1){
-    PlayText pt("Busca la llave situada en uno de los dos baules para poder entrar.\n\n\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
-    GetParentScene()->events.emit<PlayText>(pt);
+    if (oneTime1) {
+      oneTime1 = false;
+      PlayText pt("Busca la llave situada en uno de los dos baules para poder entrar.\n\n\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+      GetParentScene()->events.emit<PlayText>(pt);
+    }   
   }
   else if(GetLevel() == 2){
-    PlayText pt("Activa las dos palancas para poder entrar.\n\n\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
-    GetParentScene()->events.emit<PlayText>(pt);
+    if (oneTime2) {
+      oneTime2 = false;
+      PlayText pt("Activa las dos palancas para poder entrar.\n\n\n\n\n\n\n                    Pulsa [ENTER] para continuar.");
+      GetParentScene()->events.emit<PlayText>(pt);
+    }
   }
   else{
     PlayText pt("Nunca deberia llegarse aqui");
     GetParentScene()->events.emit<PlayText>(pt);
   }
-  
 }
 
 void Floor2D::PauseGame(bool pause){

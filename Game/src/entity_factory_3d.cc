@@ -166,6 +166,11 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   return entities_created;
 }
 
+std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
+    entityx::EntityManager& entities, const glm::vec3& position, const std::string &id) {
+  return std::vector<entityx::Entity>();
+}
+
 std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
     entityx::EntityManager& entities, const glm::vec3& position,
     const float& rotation, const glm::vec3& velocity, const std::string& type) {

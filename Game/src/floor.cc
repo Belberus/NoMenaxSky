@@ -97,7 +97,10 @@ void Floor::receive(const engine::events::Collision& collision) {
   for (auto e : entities.entities_with_components<Manueleth>()) {
     enemies_in_the_room++;
   }
+/////
+  //std::cerr << "En floor.cc eliminar enemies_in_the_room = 0 cuando acabe el testeo" << std::endl;
   enemies_in_the_room = 0;
+/////
   if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
       rooms_[current_room_]->visited = true;
@@ -134,6 +137,8 @@ void Floor::receive(const engine::events::Collision& collision) {
           current_room_ = previous_door.next_door;
           rooms_[current_room_]->Load(*this);
           OnPlayerEnteringBossDoorWithKey(previous_door);
+        } else {
+          OnPlayerEnteringBossDoorWithoutKey();
         }
       }
     } else {

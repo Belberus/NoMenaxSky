@@ -391,7 +391,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorThree2D(
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
-    const std::string &file_name, Game *parent_scene) {
+    const std::string &file_name, Game *parent_scene, const std::string &role) {
   // TODO: move this line somewhere else
   engine::core::Engine::GetInstance().EnableDepthTest(
       engine::core::Engine::DepthTest::kLess);
@@ -411,12 +411,20 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   // create the camera
   auto camera = floor->entities.create();
   camera.assign<engine::components::common::Camera>(glm::radians(75.0f), 160.0f,
-                                                    90.0f, 0.1f, 1000.0f);
+                                                    60.0f, 0.1f, 1000.0f);
   engine::components::common::Transform camera_transform(
       glm::vec3(0.0f, 0.0f, 30.0f));
   camera.assign<engine::components::common::Transform>(camera_transform);
   // create the player
-  factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+
+  if(role == "knight"){
+    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));    
+  }
+  else{
+    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    //factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+  }
+  
   // create the colliders
   tmx::Map tiled_map;
   tiled_map.load("assets/test/untitled.tmx");

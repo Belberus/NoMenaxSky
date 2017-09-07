@@ -21,7 +21,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
                                                          glm::vec2(2.0f, 2.0f));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
-  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(300.0f, 300.0f, "assets/media/fx/gaunt/default/death.wav");
   entities_created.push_back(player);
 
   // adding sword entity
@@ -56,11 +56,47 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
 
 std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
     entityx::EntityManager& entities, const glm::vec3& position) {
+
+  std::vector<entityx::Entity> entities_created;
+  auto player = entities.create();
+  player.assign<engine::components::three_d::Model>(
+      "assets/3d/personajes/mago/mago.dae");
+  player.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
+  player.assign<engine::components::common::Transform>(
+      position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  player.assign<Player>(Player::Orientation::DOWN);
+  player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                                         glm::vec2(2.0f, 2.0f));
+  player.assign<Wizard>();
+  player.assign<Energy>(100.0f, 100.0f);
+  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  entities_created.push_back(player);
+
+  return entities_created;
+
   return std::vector<entityx::Entity>();
 }
 
 std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
     entityx::EntityManager& entities, const glm::vec3& position) {
+
+  std::vector<entityx::Entity> entities_created;
+  auto ghost = entities.create();
+  ghost.assign<engine::components::three_d::Model>(
+      "assets/3d/personajes/fantasma/fantasma.dae");
+  ghost.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
+  ghost.assign<engine::components::common::Transform>(
+      position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  ghost.assign<Player>(Player::Orientation::DOWN);
+  ghost.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 2.0f),
+                                                         glm::vec2(3.0f, 4.0f));
+  ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
+  ghost.assign<Ghost>();
+  entities_created.push_back(ghost);
+
+
+  return entities_created;
+
   return std::vector<entityx::Entity>();
 }
 

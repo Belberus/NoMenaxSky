@@ -50,12 +50,6 @@ void engine::systems::two_d::Physics::update(entityx::EntityManager &es,
                          glm::vec3(info.normal, 0);
       }
     } else {
-      auto pre_transform0 =
-          info.e0.component<engine::components::common::Transform>()
-              ->GetWorldPosition();
-      auto pre_transform1 =
-          info.e1.component<engine::components::common::Transform>()
-              ->GetWorldPosition();
       for (auto e : es.entities_with_components(physics0, transform0)) {
         transform0->SetLocalPosition(transform0->GetLocalPosition() +
                                      physics0->velocity * dt * info.tmin);
@@ -120,22 +114,19 @@ bool engine::systems::two_d::Physics::TestAABBAABB(
   touching = true;
   if (std::fabs(glm::length(md_vertices[0] - origin) +
                 glm::length(origin - md_vertices[1]) -
-                glm::length(md_vertices[0] - md_vertices[1])) <= 0.0001f) {
+                glm::length(md_vertices[0] - md_vertices[1])) <= 0.01f) {
     normal = glm::vec2(-1.0f, 0.0f);
   } else if (std::fabs(glm::length(md_vertices[1] - origin) +
                        glm::length(origin - md_vertices[2]) -
-                       glm::length(md_vertices[1] - md_vertices[2])) <=
-             0.0001f) {
+                       glm::length(md_vertices[1] - md_vertices[2])) <= 0.01f) {
     normal = glm::vec2(0.0f, 1.0f);
   } else if (std::fabs(glm::length(md_vertices[2] - origin) +
                        glm::length(origin - md_vertices[3]) -
-                       glm::length(md_vertices[2] - md_vertices[3])) <=
-             0.0001f) {
+                       glm::length(md_vertices[2] - md_vertices[3])) <= 0.01f) {
     normal = glm::vec2(1.0f, 0.0f);
   } else if (std::fabs(glm::length(md_vertices[3] - origin) +
                        glm::length(origin - md_vertices[0]) -
-                       glm::length(md_vertices[3] - md_vertices[0])) <=
-             0.0001f) {
+                       glm::length(md_vertices[3] - md_vertices[0])) <= 0.01f) {
     normal = glm::vec2(0.0f, -1.0f);
   } else {
     // overlapping
@@ -147,8 +138,10 @@ bool engine::systems::two_d::Physics::TestAABBAABB(
 
 bool engine::systems::two_d::Physics::TestPointAABB(
     const glm::vec2 &p, const engine::components::two_d::AABBCollider &aabb) {
-  return p.x >= aabb.center.x && p.x <= aabb.center.x + aabb.half_size.x &&
-         p.y >= aabb.center.y && p.y <= aabb.center.y + aabb.half_size.y;
+  return p.x >= aabb.center.x - aabb.half_size.x &&
+         p.x <= aabb.center.x + aabb.half_size.x &&
+         p.y >= aabb.center.y - aabb.half_size.y &&
+         p.y <= aabb.center.y + aabb.half_size.y;
 }
 
 bool engine::systems::two_d::Physics::TestMovingAABBAABB(

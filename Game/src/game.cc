@@ -83,8 +83,9 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-          scenes_.push_back(
-           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));
+          /*scenes_.push_back(
+           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));*/
+          scenes_.push_back(FloorFactory::MakeFloorOne3D("daigual",this, character));
           
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));

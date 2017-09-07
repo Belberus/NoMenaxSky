@@ -20,23 +20,23 @@ class TestScene3D : public engine::core::Scene {
     systems.add<ModelRenderer>();
     systems.configure();
     auto camera = entities.create();
-    Transform camera_transform(glm::vec3(10.0f, 0.0f, -10.0f));
-    glm::quat camera_rot =
-        glm::angleAxis(glm::radians(120.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    camera_transform.SetLocalOrientation(camera_rot);
+    Transform camera_transform(glm::vec3(0.0f, 0.0f, 10.0f));
+    // glm::quat camera_rot =
+    //    glm::angleAxis(glm::radians(150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // camera_transform.SetLocalOrientation(camera_rot);
     camera.assign<Transform>(camera_transform);
     camera.assign<Camera>(glm::radians(90.0f), 1600.0f, 900.0f, 0.1f, 1000.0f);
     auto model = entities.create();
     Transform t(glm::vec3(0.0f, 0.0f, 0.0f) /*, nullptr,
                 glm::vec3(2.0f, 2.0f, 2.0f)*/);
     glm::quat rot;
-    rot = glm::rotate(rot, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     t.SetLocalOrientation(rot);
     model.assign<Transform>(t);
-    model.assign<Model>("assets/test/char.dae");
-    entities.each<Model>([&](entityx::Entity &entity, Model &model) {
-      model.PlayAnimation("", false);
-    });
+    model.assign<Model>("assets/3d/personajes/fantasma/fantasma.dae");
+    // entities.each<Model>([&](entityx::Entity &entity, Model &model) {
+    //  model.PlayAnimation("bob|running", true);
+    //});;
   }
   void Update(entityx::TimeDelta dt) {
     systems.update<ModelRenderer>(0.2 * dt);

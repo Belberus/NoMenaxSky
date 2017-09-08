@@ -37,7 +37,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
       glm::vec3(0.0f, 0.0f, 0.0f),
       player.component<engine::components::common::Transform>().get());
   sword_hitbox.assign<engine::components::two_d::AABBCollider>(
-      glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), true);
+      glm::vec2(0.0f, 0.0f), glm::vec2(0.3f, 0.3f), true);
   sword_hitbox.assign<engine::components::common::Physics>(
       glm::vec3(0.0f, 0.0f, 0.0f));
   MeleeWeapon weapon_cmp;
@@ -52,7 +52,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
       glm::vec3(0.0f, -9.0f, 0.0f),
       player.component<engine::components::common::Transform>().get());
   shield.assign<engine::components::two_d::AABBCollider>(
-      glm::vec2(0.0f, 0.0f), glm::vec2(8.0f, 3.0f), true);
+      glm::vec2(0.0f, 0.0f), glm::vec2(2.4f, 0.9f), true);
   shield.assign<engine::components::common::Physics>(
       glm::vec3(0.0f, 0.0f, 0.0f));
   shield.assign<Shield>(player);
@@ -187,7 +187,6 @@ std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
 
   glm::vec3 newPosition = position;
   newPosition.z += 9.0f;
-  std::cout << "enemy projectile z: " << position.z << std::endl;
   
   std::vector<entityx::Entity> entities_created;
   auto enemyProjectile = entities.create();
@@ -235,7 +234,6 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
 
   glm::vec3 newPosition = position;
   newPosition.z += 9.0f;
-  std::cout << "z: " << position.z << std::endl;
 
   std::vector<entityx::Entity> entities_created;
   auto wizardProjectile = entities.create();

@@ -171,6 +171,8 @@ class EnemyProjectileSystem : public entityx::System<EnemyProjectileSystem>,
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d;
 };
 
 class EnemyProjectileAnimationSystem
@@ -199,6 +201,7 @@ class GhostIaSystem : public entityx::System<GhostIaSystem> {
 
  private:
   static const float kSpeed;
+  static const float kThreeDSpeed;
 };
 
 class MenuInputSystem : public entityx::System<MenuInputSystem>,

@@ -2496,17 +2496,20 @@ void LancerAttackSystem::receive(const Collision &collision) {
 
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/default/hit.wav", false, 1);
-    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
-    e1_color_animation->Play();
-
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
   } else if (e1_projectile && collision_copy.e0.component<Player>() && (e1_projectile->owner).component<Lancer>()->is_attacking) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_projectile->damage;
 
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/default/hit.wav", false, 1);
-    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
-    e0_color_animation->Play();
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
   } 
 }
 
@@ -2533,8 +2536,10 @@ void GhostAttackSystem::receive(const Collision &collision) {
 
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/default/hit.wav", false, 1);
-    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
-    e1_color_animation->Play();
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
 
   } else if (e1_projectile && collision_copy.e0.component<Player>()) {
     auto e0_health = collision_copy.e0.component<Health>();
@@ -2542,8 +2547,10 @@ void GhostAttackSystem::receive(const Collision &collision) {
 
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/default/hit.wav", false, 1);
-    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
-    e0_color_animation->Play();
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
   } 
 }
 void GhostAttackSystem::update(entityx::EntityManager &es,

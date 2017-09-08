@@ -1552,7 +1552,6 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         player_position = player_transform.GetWorldPosition();
-        std::cout << "player y: " << player_position.y<< std::endl;
       });
   glm::vec3 manueleth_position;
   es.each<Manueleth, Transform>(
@@ -1575,7 +1574,6 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
               "assets/media/fx/manueleth/default/shockwave.wav", false, 0.6f);
             float throwDistance = 160.0f;
             if(three_d){
-              std::cout << "hi" << std::endl;
               throwDistance = 75.0f;
             }
       			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - throwDistance , manueleth_position.z);
@@ -2068,7 +2066,6 @@ void EnemyProjectileSystem::receive(const Collision &collision) {
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/default/hit.wav", false, 1);
     if(!collision_copy.e1.component<ThreeD>()){
-      std::cout << "noooope" << std::endl;
       auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
       e1_color_animation->Play();
     }    
@@ -2082,7 +2079,6 @@ void EnemyProjectileSystem::receive(const Collision &collision) {
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/gaunt/default/hit.wav", false, 1);
     if(!collision_copy.e0.component<ThreeD>()){
-      std::cout << "noooope" << std::endl;
       auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
       e0_color_animation->Play();
     }    

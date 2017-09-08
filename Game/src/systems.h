@@ -103,6 +103,8 @@ class ManuelethIaSystem : public entityx::System<ManuelethIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {

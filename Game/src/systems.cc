@@ -1541,11 +1541,18 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
                             entityx::TimeDelta dt) {
   entityx::ComponentHandle<Player> p;
   entityx::ComponentHandle<Transform> t;
+  entityx::ComponentHandle<ThreeD> threed;
+
+  bool three_d = false;
+  for (entityx::Entity e1 : es.entities_with_components(threed)) {
+    three_d = true;
+  }
 
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         player_position = player_transform.GetWorldPosition();
+        std::cout << "player y: " << player_position.y<< std::endl;
       });
   glm::vec3 manueleth_position;
   es.each<Manueleth, Transform>(
@@ -1557,13 +1564,21 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
         const float distancia = std::sqrt(
             std::pow(std::abs(player_position.x - manueleth_position.x), 2) +
             std::pow(std::abs(player_position.y - manueleth_position.y), 2));
-
+        float safeDistance = 45.0f;
+        if(three_d){
+          safeDistance = 30.0f;
+        }
       	if (distancia <= 45.0f) {
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
             Engine::GetInstance().Get<AudioManager>().PlaySound(
               "assets/media/fx/manueleth/default/shockwave.wav", false, 0.6f);
-      			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - 160.0f , manueleth_position.z);
+            float throwDistance = 160.0f;
+            if(three_d){
+              std::cout << "hi" << std::endl;
+              throwDistance = 75.0f;
+            }
+      			glm::vec3 new_position(manueleth_position.x, manueleth_position.y - throwDistance , manueleth_position.z);
 
       			 for (entityx::Entity e0 : es.entities_with_components(
            			p, t)) {
@@ -1587,11 +1602,18 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 	            new_velocity = glm::normalize(player_position -
 	                             transform.GetWorldPosition()) *
 	              100.0f;
-	            
-	            EntityFactory2D().MakeEnemyProjectile(
-	                es, manueleth_position, angle_rad, new_velocity, "manueleth");
-	            manueleth.time_for_shooting = 0.0;
 
+	            if(!three_d){
+                EntityFactory2D().MakeEnemyProjectile(
+                  es, manueleth_position, angle_rad, new_velocity, "manueleth");
+                manueleth.time_for_shooting = 0.0;
+              }
+              else{
+                EntityFactory3D().MakeEnemyProjectile(
+                  es, manueleth_position, angle_rad, new_velocity, "manueleth");
+                manueleth.time_for_shooting = 0.0;
+              }
+	            
               Engine::GetInstance().Get<AudioManager>().PlaySound(
               "assets/media/fx/manueleth/default/attack.wav", false, 0.8f);
 	      	}
@@ -1607,9 +1629,9 @@ void TurretIaSystem::update(entityx::EntityManager &es,
 
   entityx::ComponentHandle<ThreeD> threed;
   bool three_d = false;
-    for (entityx::Entity e1 : es.entities_with_components(threed)) {
-      three_d = true;
-    }
+  for (entityx::Entity e1 : es.entities_with_components(threed)) {
+    three_d = true;
+  }
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
@@ -1630,7 +1652,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
     turret.time_passed += (dt * 250.0f);
     float safeDistance = 50.0f;
     if(three_d){
-      safeDistance = 20.0f;
+      safeDistance = 25.0f;
     }
     if (distancia < safeDistance) {
       turret_physics.velocity =

@@ -39,6 +39,24 @@ class KnightWalkingSystem : public entityx::System<KnightWalkingSystem> {
               entityx::TimeDelta dt) override;
 };
 
+class MasiatrixWalkingSystem : public entityx::System<MasiatrixWalkingSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class MasiatrixAnimationSystem : public entityx::System<MasiatrixAnimationSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+ private:
+  std::string lastAnim;
+  std::string lastOrientation;
+  float timer;
+  float timer2;
+};
+
 class WizardAnimationSystem : public entityx::System<WizardAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
@@ -58,6 +76,9 @@ class WizardAttackSystem : public entityx::System<WizardAttackSystem>,
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool once5 = true;
+  bool three_d = false;
 };
 
 class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
@@ -91,6 +112,11 @@ class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
   void receive(const engine::events::Collision &collision);
 };
 
+class MasiatrixIaSystem : public entityx::System<MasiatrixIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
 
 class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
@@ -138,17 +164,19 @@ public:
               entityx::TimeDelta dt) override;
 };
 
-class TurretAttackSystem : public entityx::System<TurretAttackSystem>,
-                           public entityx::Receiver<TurretAttackSystem> {
+class EnemyProjectileSystem : public entityx::System<EnemyProjectileSystem>,
+                           public entityx::Receiver<EnemyProjectileSystem> {
  public:
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d;
 };
 
 class EnemyProjectileAnimationSystem
-    : public entityx::System<EnemyProjectile> {
+    : public entityx::System<EnemyProjectileAnimationSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
@@ -173,6 +201,7 @@ class GhostIaSystem : public entityx::System<GhostIaSystem> {
 
  private:
   static const float kSpeed;
+  static const float kThreeDSpeed;
 };
 
 class MenuInputSystem : public entityx::System<MenuInputSystem>,
@@ -283,6 +312,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   void receive(const engine::events::KeyPressed &key_pressed);
   void receive(const engine::events::KeyReleased &key_released);
   void receive(const BackToGame &resumeGame);
+  void receive(const SetThreeD &setThreeD);
 
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
@@ -304,6 +334,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   float wizard_speed;
   std::unordered_map<int, bool> keys_;
   bool paused_;
+  bool three_d;
 };
 
 class LancerIaSystem : public entityx::System<LancerIaSystem> {

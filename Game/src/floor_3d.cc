@@ -10,44 +10,50 @@
 Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<PlayerInputSystem>();
   systems.add<CameraFollowPlayerSystem>();
-  systems.add<GhostIaSystem>();
+  //systems.add<GhostIaSystem>();
   systems.add<TurretIaSystem>();
+  systems.add<LancerIaSystem>();
   systems.add<TrapIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<engine::systems::two_d::ColliderRenderer>();
   systems.add<engine::systems::three_d::ModelRenderer>();
   systems.add<KnightAttackSystem>();
-  systems.add<TurretAttackSystem>();
+  systems.add<WizardAttackSystem>();
+  systems.add<EnemyProjectileSystem>();
   systems.add<HealthSystem>();
+  systems.add<PauseInputSystem>();
   systems.configure();
 }
 
 void Floor3D::Update(entityx::TimeDelta dt) {
+
   if(!paused){
     systems.update<PlayerInputSystem>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
-    systems.update<GhostIaSystem>(dt);
+    //systems.update<GhostIaSystem>(dt);
     systems.update<TurretIaSystem>(dt);
     systems.update<TrapIaSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
     systems.update<KnightAttackSystem>(dt);
-    systems.update<TurretAttackSystem>(dt);
-    systems.update<HealthSystem>(dt);
+    systems.update<WizardAttackSystem>(dt);
+    systems.update<HealthSystem>(dt);    
+    systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(dt);
   }
   else{
     systems.update<PlayerInputSystem>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
-    systems.update<GhostIaSystem>(0);
+    //systems.update<GhostIaSystem>(0);
     systems.update<TurretIaSystem>(0);
     systems.update<TrapIaSystem>(0);
     systems.update<engine::systems::two_d::Physics>(0);
     systems.update<KnightAttackSystem>(0);
-    systems.update<TurretAttackSystem>(0);
+    systems.update<WizardAttackSystem>(0);
     systems.update<HealthSystem>(0);
+    systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(0);
   }
-  }
+}
 
 void Floor3D::OnPlayerEnteringDoor(Door entering_door) {
   glm::vec3 next_position_player;

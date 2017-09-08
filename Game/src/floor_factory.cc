@@ -299,7 +299,16 @@ void FloorFactory::ParseRoomContents(
         return std::vector<entityx::Entity>({id});
       };
       room.entity_creators_.push_back(fn_palanca);
-    }
+    } else if (object.getType() == "masiatrix") {
+      auto properties = object.getProperties();
+      std::string id = properties[0].getStringValue();
+      std::cerr << "Las creo" << std::endl;
+      auto fn_masiatrix =
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        return factory->MakeMasiatrix(em, position, id);
+      };
+      room.entity_creators_.push_back(fn_masiatrix);
+    } 
   }
 }
 
@@ -409,16 +418,17 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   // create the player
 
   if(role == "knight"){
-    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));    
+    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    //factory->MakeGhost(floor->entities, glm::vec3(0.0f,0.0f,7.0f));    
   }
   else{
-    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
-    //factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    //factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
   }
   
   // create the colliders
   tmx::Map tiled_map;
-  tiled_map.load("assets/test/untitled.tmx");
+  tiled_map.load("assets/test/nivel1.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
   floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";

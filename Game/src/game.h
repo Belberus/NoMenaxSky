@@ -35,6 +35,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void receive(const PauseMenuEvent &event);
   void receive(const BackToGame &event);
   void receive(const PlayText &event);
+  void receive(const SetThreeD &setThreeD);
   int getLevel();
  private:
   State current_state_;
@@ -46,5 +47,6 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   bool new_game3;
   std::string text_to_play;
   int level;
+  bool three_d;
 };
 #endif  // GAME_H_

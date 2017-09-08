@@ -547,7 +547,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
  }
 
  std::vector<entityx::Entity> EntityFactory2D::MakeManueleth(
-      entityx::EntityManager &entities, const glm::vec3 &position){
+    entityx::EntityManager &entities, const glm::vec3 &position){
 
  	  std::vector<entityx::Entity> entities_created;
 	  entityx::Entity manueleth = entities.create();
@@ -597,7 +597,117 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  return entities_created;
  }
 
+ std::vector<entityx::Entity> EntityFactory2D::MakeMasiatrix(
+    entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id){
 
+    std::vector<entityx::Entity> entities_created;
+    entityx::Entity masiatrix = entities.create();
+
+    masiatrix.assign<Transform>(position);
+    masiatrix.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(6, 8));
+    masiatrix.assign<Physics>(glm::vec3(0, 0, 0));
+    std::vector<ColorAnimation::KeyFrame> color_frames;
+    color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+    color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+    masiatrix.assign<ColorAnimation>(std::move(color_frames));
+    masiatrix.assign<Masiatrix>(id, position);
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+     
+    std::vector<engine::utils::Rectangle> moving_top;
+    moving_top.emplace_back(glm::vec2(26, 88), glm::vec2(19, 19));
+    
+    std::vector<engine::utils::Rectangle> moving_bottom;
+    moving_bottom.emplace_back(glm::vec2(3, 88), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> moving_left;
+    moving_left.emplace_back(glm::vec2(72, 88), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> moving_right;
+    moving_right.emplace_back(glm::vec2(49, 88), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> attacking_top;
+    attacking_top.emplace_back(glm::vec2(26, 65), glm::vec2(19, 19));
+    attacking_top.emplace_back(glm::vec2(26, 65), glm::vec2(19, 19));
+    attacking_top.emplace_back(glm::vec2(26, 65), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> attacking_bottom;
+    attacking_bottom.emplace_back(glm::vec2(3, 65), glm::vec2(19, 19));
+    attacking_bottom.emplace_back(glm::vec2(3, 65), glm::vec2(19, 19));
+    attacking_bottom.emplace_back(glm::vec2(3, 65), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> attacking_left;
+    attacking_left.emplace_back(glm::vec2(72, 65), glm::vec2(19, 19));
+    attacking_left.emplace_back(glm::vec2(72, 65), glm::vec2(19, 19));
+    attacking_left.emplace_back(glm::vec2(72, 65), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> attacking_right;
+    attacking_right.emplace_back(glm::vec2(49, 65), glm::vec2(19, 19));
+    attacking_right.emplace_back(glm::vec2(49, 65), glm::vec2(19, 19));
+    attacking_right.emplace_back(glm::vec2(49, 65), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> death;
+    death.emplace_back(glm::vec2(3, 19), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> walking;
+    walking.emplace_back(glm::vec2(3, 42), glm::vec2(19, 19));
+    walking.emplace_back(glm::vec2(26, 42), glm::vec2(19, 19));
+    walking.emplace_back(glm::vec2(49, 42), glm::vec2(19, 19));
+
+    std::vector<engine::utils::Rectangle> stand;
+    stand.emplace_back(glm::vec2(3, 42), glm::vec2(19, 19));
+
+
+    auto texture_atlas =
+        Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+            "assets/spritesheets/masiatrix.png");
+      
+    SpriteAnimation::AnimationClip moving_top_anim(
+        "moving_top", texture_atlas, moving_top, 100.0f);
+    SpriteAnimation::AnimationClip moving_bottom_anim(
+        "moving_bottom", texture_atlas, moving_bottom, 100.0f);
+    SpriteAnimation::AnimationClip moving_left_anim(
+        "moving_left", texture_atlas, moving_left, 100.0f);
+    SpriteAnimation::AnimationClip moving_right_anim(
+        "moving_right", texture_atlas, moving_right, 100.0f);
+
+    SpriteAnimation::AnimationClip attacking_top_anim(
+        "attacking_top", texture_atlas, attacking_top, 100.0f);
+    SpriteAnimation::AnimationClip attacking_bottom_anim(
+        "attacking_bottom", texture_atlas, attacking_bottom, 100.0f);
+    SpriteAnimation::AnimationClip attacking_left_anim(
+        "attacking_left", texture_atlas, attacking_left, 100.0f);
+    SpriteAnimation::AnimationClip attacking_right_anim(
+        "attacking_right", texture_atlas, attacking_right, 100.0f);
+
+    SpriteAnimation::AnimationClip walking_anim(
+        "walking", texture_atlas, walking, 100.0f);
+    SpriteAnimation::AnimationClip death_anim(
+        "death", texture_atlas, death, 100.0f);
+    SpriteAnimation::AnimationClip stand_anim(
+        "stand", texture_atlas, stand, 100.0f);
+
+    SpriteAnimation masiatrix_anim({moving_top_anim, moving_bottom_anim, moving_left_anim, moving_right_anim, attacking_top_anim,
+                                    attacking_bottom_anim, attacking_left_anim, attacking_right_anim, death_anim});
+    masiatrix.assign<SpriteAnimation>(masiatrix_anim); 
+    masiatrix.assign<Sprite>(texture_atlas);
+    entities_created.push_back(masiatrix);
+
+    entityx::Entity legs = entities.create();
+    legs.assign<Physics>(glm::vec3(0, 0, 0));
+    legs.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                           masiatrix.component<Transform>().get());
+    SpriteAnimation legs_anim({walking_anim, stand_anim});
+    legs.assign<SpriteAnimation>(legs_anim);
+    legs.assign<MasiatrixLegs>();
+    legs.assign<Sprite>(texture_atlas);
+    ParentLink parentLink;
+    parentLink.owner = masiatrix;
+    legs.assign<ParentLink>(parentLink);
+    entities_created.push_back(legs);
+          std::cerr << "Las creo del todo todo" << std::endl;
+
+    return entities_created;
+ }
 
 std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::EntityManager &entities, const glm::vec3 &position, const float &rotation, const glm::vec3 &velocity, const std::string &type) {
 
@@ -614,7 +724,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::Entit
     enemyProjectile.assign<Transform>(t);
 
     if (type == "torreta") {
-	  	enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
+	  	enemyProjectile.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(2, 2));
 	  	enemyProjectile.assign<Physics>(velocity);
 	  	enemyProjectile.assign<EnemyProjectile>(15.0f);
 
@@ -622,27 +732,33 @@ std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::Entit
 
 	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
 	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
-
 	  } else if (type == "trampa") {
-		enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
-		enemyProjectile.assign<Physics>(velocity);
-		enemyProjectile.assign<EnemyProjectile>(20.0f);
+  		enemyProjectile.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(2, 2));
+  		enemyProjectile.assign<Physics>(velocity);
+  		enemyProjectile.assign<EnemyProjectile>(20.0f);
 
-		loadTexture = "assets/spritesheets/proyectil_trampa.png";
+  		loadTexture = "assets/spritesheets/proyectil_trampa.png";
 
 	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(12, 5));
-	  	shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));
-	  
+	  	shoot.emplace_back(glm::vec2(19, 3), glm::vec2(12, 5));	  
 	  } else if (type == "manueleth") {
-	  	enemyProjectile.assign<AABBCollider>(glm::vec2(3, 0), glm::vec2(2, 2));
-		enemyProjectile.assign<Physics>(velocity);
-		enemyProjectile.assign<EnemyProjectile>(20.0f);
+	  	enemyProjectile.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(2, 2));
+  		enemyProjectile.assign<Physics>(velocity);
+  		enemyProjectile.assign<EnemyProjectile>(20.0f);
 
-		loadTexture = "assets/spritesheets/manueleth.png";
+  		loadTexture = "assets/spritesheets/manueleth.png";
 
 	  	shoot.emplace_back(glm::vec2(3, 3), glm::vec2(15, 7));
 	  	shoot.emplace_back(glm::vec2(22, 3), glm::vec2(15, 7));
-	  }
+	  } else if (type == "masiatrix") {
+      enemyProjectile.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(2, 2));
+      enemyProjectile.assign<Physics>(velocity);
+      enemyProjectile.assign<EnemyProjectile>(20.0f);
+
+      loadTexture = "assets/spritesheets/masiatrix.png";
+
+      shoot.emplace_back(glm::vec2(3, 3), glm::vec2(10, 11));
+    }
 
     auto texture_atlas =
       Engine::GetInstance().Get<ResourceManager>().Load<Texture>(loadTexture);

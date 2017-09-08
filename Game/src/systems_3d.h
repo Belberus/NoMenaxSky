@@ -5,6 +5,8 @@
 
 #include "components.h"
 
+#include "events.h"
+
 class CameraFollowPlayerSystem
     : public entityx::System<CameraFollowPlayerSystem> {
  public:

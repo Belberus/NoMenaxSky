@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2017.07.25" orientation="orthogonal" renderorder="right-down" width="250" height="250" tilewidth="16" tileheight="16" nextobjectid="508">
+<map version="1.0" tiledversion="2017.07.25" orientation="orthogonal" renderorder="right-down" width="250" height="250" tilewidth="16" tileheight="16" nextobjectid="537">
  <tileset firstgid="1" source="NoMenaxSky.tsx"/>
  <layer name="Fondo" width="250" height="250">
   <data encoding="csv">
@@ -1563,8 +1563,8 @@
   <object id="309" type="low" x="412.299" y="239.987" width="34.6211" height="17.4329"/>
   <object id="313" type="low" x="320.214" y="288.015" width="126.803" height="49.4606"/>
   <object id="314" type="low" x="273.999" y="222.994" width="62.9961" height="113.451"/>
-  <object id="315" type="low" x="606.805" y="337.51" width="126.803" height="49.4606" rotation="180"/>
-  <object id="316" type="low" x="655.02" y="337.48" width="62.9961" height="113.451" rotation="180"/>
+  <object id="315" type="low" x="480.013" y="287.979" width="126.803" height="49.4606"/>
+  <object id="316" type="low" x="591.999" y="223.99" width="62.9961" height="113.451"/>
   <object id="317" type="low" x="511.995" y="175.971" width="63.0117" height="17.4329"/>
   <object id="318" type="low" x="512.003" y="224.002" width="63.0117" height="33.2454"/>
   <object id="319" type="low" x="479.991" y="240.001" width="63.0117" height="17.2454"/>
@@ -1789,15 +1789,199 @@
   </object>
  </objectgroup>
  <objectgroup name="2.8">
-  <object id="478" type="masiatrix" x="999" y="478.333" width="14.6667" height="14.6667"/>
-  <object id="479" type="masiatrix" x="890" y="561.667" width="14.6667" height="14.6667"/>
-  <object id="480" type="masiatrix" x="1105.67" y="559" width="14.6667" height="14.6667"/>
-  <object id="481" type="masiatrix" x="998" y="557.333" width="14.6667" height="14.6667"/>
+  <object id="478" type="masiatrix" x="1000.88" y="480.875" width="14.6667" height="14.6667">
+   <properties>
+    <property name="id" value="A"/>
+   </properties>
+  </object>
+  <object id="479" type="masiatrix" x="896.466" y="560.235" width="14.6667" height="14.6667">
+   <properties>
+    <property name="id" value="B"/>
+   </properties>
+  </object>
+  <object id="480" type="masiatrix" x="1104.17" y="560.375" width="14.6667" height="14.6667">
+   <properties>
+    <property name="id" value="D"/>
+   </properties>
+  </object>
+  <object id="481" type="masiatrix" x="1000.75" y="560.291" width="14.6667" height="14.6667">
+   <properties>
+    <property name="id" value="C"/>
+   </properties>
+  </object>
   <object id="502" type="bossDoor" x="995.472" y="677.575" width="26.2727" height="5.54545">
    <properties>
     <property name="next" value="2.1"/>
     <property name="pos" value="bottom"/>
     <property name="trigger" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="508" type="pathPoint" x="1006" y="532" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="C"/>
+    <property name="state" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="510" type="pathPoint" x="957.333" y="565.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="C"/>
+    <property name="state" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="511" type="pathPoint" x="1005" y="598.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="C"/>
+    <property name="state" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="512" type="pathPoint" x="1052.67" y="564.833" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="C"/>
+    <property name="state" type="int" value="4"/>
+   </properties>
+  </object>
+  <object id="513" type="pathPoint" x="840" y="565.167" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="514" type="pathPoint" x="842" y="509.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="515" type="pathPoint" x="866" y="481.167" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="516" type="pathPoint" x="835" y="509.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="4"/>
+   </properties>
+  </object>
+  <object id="517" type="pathPoint" x="833.333" y="565.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="5"/>
+   </properties>
+  </object>
+  <object id="518" type="pathPoint" x="832" y="628.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="519" type="pathPoint" x="862.667" y="655.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="7"/>
+   </properties>
+  </object>
+  <object id="520" type="pathPoint" x="838.667" y="628.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="B"/>
+    <property name="state" type="int" value="8"/>
+   </properties>
+  </object>
+  <object id="521" type="pathPoint" x="1168.11" y="623.368" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="522" type="pathPoint" x="1147.97" y="477.294" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="7"/>
+   </properties>
+  </object>
+  <object id="523" type="pathPoint" x="1144.01" y="651.614" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="524" type="pathPoint" x="1175.11" y="623.393" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="4"/>
+   </properties>
+  </object>
+  <object id="525" type="pathPoint" x="1170.31" y="567.709" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="526" type="pathPoint" x="1178.54" y="504.405" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="527" type="pathPoint" x="1176.98" y="567.4" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="5"/>
+   </properties>
+  </object>
+  <object id="528" type="pathPoint" x="1171.88" y="504.381" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="D"/>
+    <property name="state" type="int" value="8"/>
+   </properties>
+  </object>
+  <object id="529" type="pathPoint" x="933.667" y="483.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="530" type="pathPoint" x="900.667" y="530.833" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="531" type="pathPoint" x="901.667" y="613.833" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="4"/>
+   </properties>
+  </object>
+  <object id="532" type="pathPoint" x="950.333" y="659.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="5"/>
+   </properties>
+  </object>
+  <object id="533" type="pathPoint" x="1066.67" y="659.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="534" type="pathPoint" x="1109" y="613.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="7"/>
+   </properties>
+  </object>
+  <object id="535" type="pathPoint" x="1110" y="532.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="8"/>
+   </properties>
+  </object>
+  <object id="536" type="pathPoint" x="1075" y="482.5" width="5.33333" height="5">
+   <properties>
+    <property name="id" value="A"/>
+    <property name="state" type="int" value="9"/>
    </properties>
   </object>
  </objectgroup>

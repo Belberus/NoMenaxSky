@@ -102,8 +102,6 @@ class ModelImpl {
     GLuint vertex_buf;
     GLuint bones_buf;
     GLsizei num_indices;
-    int id_counter;
-    bool has_skeleton;
     std::vector<glm::mat4> bone_transforms;
     std::vector<glm::mat4> bone_offsets;
     std::unordered_map<std::string, int> name_id_map;
@@ -119,7 +117,7 @@ class ModelImpl {
   /// relationships between meshes that exsit.
   /// @param transforms the transforms of the nodes that have been visited.
   /// @param node tree node to traverse.
-  void LoadModelAux(std::vector<aiMatrix4x4> transforms, aiNode *node);
+  void LoadModelAux(aiMatrix4x4 acc_transform, aiNode *node);
   /// Copies the meshes that there can be in a node inside our data structure
   /// meshes_.
   /// @param transform the final transform of that node; final because its the
@@ -156,6 +154,13 @@ class ModelImpl {
   aiAnimation *FindAnimation(const std::string &name);
   aiNodeAnim *FindChannel(const aiAnimation &animation,
                           const std::string &name);
+  glm::vec3 CalcInterpolatedScale(float time_passed_ticks,
+                                  const aiNodeAnim &channel);
+  glm::vec3 CalcInterpolatedPosition(float time_passed_ticks,
+                                     const aiNodeAnim &channel);
+  glm::quat CalcInterpolatedRotation(float time_passed_ticks,
+                                     const aiNodeAnim &channel);
+
   float time_passed_;
   const aiAnimation *playing_animation_;
   bool loop_;

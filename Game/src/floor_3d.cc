@@ -10,7 +10,7 @@
 Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<PlayerInputSystem>();
   systems.add<CameraFollowPlayerSystem>();
-  systems.add<GhostIaSystem>();
+  //systems.add<GhostIaSystem>();
   systems.add<TurretIaSystem>();
   systems.add<TrapIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
@@ -30,7 +30,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
   if(!paused){
     systems.update<PlayerInputSystem>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
-    systems.update<GhostIaSystem>(dt);
+    //systems.update<GhostIaSystem>(dt);
     systems.update<TurretIaSystem>(dt);
     systems.update<TrapIaSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
@@ -44,7 +44,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
   else{
     systems.update<PlayerInputSystem>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
-    systems.update<GhostIaSystem>(0);
+    //systems.update<GhostIaSystem>(0);
     systems.update<TurretIaSystem>(0);
     systems.update<TrapIaSystem>(0);
     systems.update<engine::systems::two_d::Physics>(0);

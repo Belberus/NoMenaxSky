@@ -76,6 +76,9 @@ class WizardAttackSystem : public entityx::System<WizardAttackSystem>,
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool once5 = true;
+  bool three_d = false;
 };
 
 class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {

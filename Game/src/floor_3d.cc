@@ -22,6 +22,7 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<EnemyProjectileSystem>();
   systems.add<HealthSystem>();
   systems.add<PauseInputSystem>();
+  systems.add<RotatePlayerSystem>();
   systems.configure();
 }
 
@@ -29,11 +30,12 @@ void Floor3D::Update(entityx::TimeDelta dt) {
 
   if(!paused){
     systems.update<PlayerInputSystem>(dt);
-    systems.update<CameraFollowPlayerSystem>(dt);
     //systems.update<GhostIaSystem>(dt);
     systems.update<TurretIaSystem>(dt);
     systems.update<TrapIaSystem>(dt);
+    systems.update<RotatePlayerSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
+    systems.update<CameraFollowPlayerSystem>(dt);
     systems.update<KnightAttackSystem>(dt);
     systems.update<WizardAttackSystem>(dt);
     systems.update<HealthSystem>(dt);    

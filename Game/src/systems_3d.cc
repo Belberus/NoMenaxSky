@@ -3,8 +3,11 @@
 #include <engine/components/common/camera.h>
 #include <engine/components/common/physics.h>
 #include <engine/components/common/transform.h>
+#include <glm/glm.hpp>
 
 #include "components.h"
+
+const float CameraFollowPlayerSystem::kCameraSpeed = 4.0f;
 
 void CameraFollowPlayerSystem::update(entityx::EntityManager &es,
                                       entityx::EventManager &events,
@@ -19,9 +22,30 @@ void CameraFollowPlayerSystem::update(entityx::EntityManager &es,
       [&](entityx::Entity entity,
           engine::components::common::Transform &transform,
           engine::components::common::Camera &camera) {
-        auto camera_pos = transform.GetLocalPosition();
-        camera_pos.x = player_pos.x;
-        camera_pos.y = player_pos.y;
-        transform.SetLocalPosition(camera_pos);
+        auto old_camera_pos = transform.GetLocalPosition();
+        auto new_camera_pos =
+            glm::mix(old_camera_pos, player_pos, dt * kCameraSpeed);
+        new_camera_pos.z = old_camera_pos.z;
+        transform.SetLocalPosition(new_camera_pos);
+      });
+}
+
+void RotatePlayerSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {
+  es.each<engine::components::common::Transform, Player>(
+      [&](entityx::Entity entity,
+          engine::components::common::Transform &transform, Player &player) {
+        glm::quat rotation;
+        switch (player.orientation) {
+          case Player::Orientation::DOWN:
+            break;
+          case Player::Orientation::UP:
+            break;
+          case Player::Orientation::LEFT:
+            break;
+          case Player::Orientation::RIGHT:
+            break;
+        }
       });
 }

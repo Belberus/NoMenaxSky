@@ -158,7 +158,6 @@ void engine::components::three_d::impl::ModelImpl::LoadModelAux(
     aiMatrix4x4 acc_transform, aiNode *node) {
   acc_transform = acc_transform * node->mTransformation;
   if (node->mNumMeshes > 0) {
-    aiMatrix4x4 acc_transform;
     LoadMeshes(*node, acc_transform);
   }
   for (int i = 0; i < node->mNumChildren; ++i) {

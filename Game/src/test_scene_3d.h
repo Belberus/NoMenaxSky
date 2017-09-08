@@ -3,6 +3,7 @@
 #include <engine/components/common/camera.h>
 #include <engine/components/common/transform.h>
 #include <engine/components/three_d/model.h>
+#include <engine/core/engine.h>
 #include <engine/core/scene.h>
 #include <engine/systems/three_d/model_renderer.h>
 #include <glm/gtc/quaternion.hpp>
@@ -18,8 +19,7 @@ using namespace engine::components::common;
 class TestScene3D : public engine::core::Scene {
  public:
   TestScene3D() {
-    engine::core::Engine::GetInstance().EnableDepthTest(
-        engine::core::Engine::DepthTest::kLess);
+    Engine::GetInstance().EnableDepthTest(Engine::DepthTest::kLess);
     systems.add<ModelRenderer>();
     systems.add<CameraFollowPlayerSystem>();
     systems.configure();

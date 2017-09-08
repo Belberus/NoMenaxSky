@@ -162,8 +162,11 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   manueleth.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/manueleth/manueleth.dae");
   manueleth.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  manueleth.assign<engine::components::common::Transform>(
-      newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  Transform t (newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  glm::quat rot;
+  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+  t.SetLocalOrientation(rot);
+  manueleth.assign<engine::components::common::Transform>(t);
   manueleth.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(1.5f, 3.0f));
   manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");

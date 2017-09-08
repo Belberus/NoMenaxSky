@@ -428,7 +428,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   
   // create the colliders
   tmx::Map tiled_map;
-  tiled_map.load("assets/test/untitled.tmx");
+  tiled_map.load("assets/test/nivel1.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
   floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";

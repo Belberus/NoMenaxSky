@@ -24,7 +24,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(2.0f, 2.0f));
+                                                         glm::vec2(0.6f, 0.6f));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(300.0f, 300.0f, "assets/media/fx/gaunt/default/death.wav");
@@ -71,9 +71,9 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
   player.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
   player.assign<engine::components::common::Transform>(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
-  player.assign<Player>(Player::Orientation::DOWN);
+  player.assign<Player>(Player::Orientation::LEFT);
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(2.0f, 2.0f));
+                                                         glm::vec2(0.6f, 0.6f));
   player.assign<Wizard>();
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
@@ -96,8 +96,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
   ghost.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
   ghost.assign<engine::components::common::Transform>(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
-  ghost.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 2.0f),
-                                                         glm::vec2(3.0f, 4.0f));
+  ghost.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.6f),
+                                                         glm::vec2(0.9f, 1.2f));
   ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
   ghost.assign<Ghost>();
   entities_created.push_back(ghost);
@@ -109,6 +109,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTurret(
     entityx::EntityManager& entities, const glm::vec3& position,
     const float frecuencia) {
 
+  std::cout << "entramos al menos" << std::endl;
+
   std::vector<entityx::Entity> entities_created;
   auto turret = entities.create();
   turret.assign<engine::components::three_d::Model>(
@@ -117,7 +119,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTurret(
   turret.assign<engine::components::common::Transform>(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   turret.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(5.0f, 10.0f));
+                                                         glm::vec2(1.5f, 3.0f));
   turret.assign<Health>(40.0f, 40.0f, "assets/media/fx/turret/default/death.wav");
   turret.assign<Turret>(frecuencia);
   entities_created.push_back(turret);
@@ -158,7 +160,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   manueleth.assign<engine::components::common::Transform>(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   manueleth.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(5.0f, 10.0f));
+                                                         glm::vec2(1.5f, 3.0f));
   manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
   manueleth.assign<Manueleth>();
   entities_created.push_back(manueleth);
@@ -189,24 +191,24 @@ std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
     enemyProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_torreta.dae");
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(3.0f, 0.0f),
-                                                           glm::vec2(2.0f, 2.0f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+                                                           glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(15.0f);
   }
   else if(type == "trampa"){
     enemyProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_trampa.dae");
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(3.0f, 0.0f),
-                                                           glm::vec2(2.0f, 2.0f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+                                                           glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(20.0f);
   }
   else if(type == "manueleth"){
     enemyProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae"); //hacer algo para diferenciar
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(3.0f, 0.0f),
-                                                           glm::vec2(2.0f, 2.0f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+                                                           glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(20.0f);
   }
   
@@ -233,8 +235,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
-    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(3.0f, 0.0f),
-                                                           glm::vec2(2.0f, 2.0f));
+    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+                                                           glm::vec2(0.6f, 0.6f));
     wizardProjectile.assign<WizardProjectile>(10.0f);
   }
   else if(type == "special"){
@@ -243,8 +245,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
-    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(3.0f, 0.0f),
-                                                           glm::vec2(2.0f, 2.0f));
+    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+                                                           glm::vec2(0.6f, 0.6f));
     wizardProjectile.assign<WizardProjectile>(30.0f);
   }
   entities_created.push_back(wizardProjectile);
@@ -263,7 +265,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeLancer(
   lancer.assign<engine::components::common::Transform>(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   lancer.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(7.0f, 7.0f));
+                                                         glm::vec2(2.0f, 2.1f));
   lancer.assign<Health>(30.0f, 30.0f, "assets/media/fx/lanc/default/death.wav");
   lancer.assign<Lancer>();
   entities_created.push_back(lancer);

@@ -21,6 +21,7 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   //systems.add<TurretAttackSystem>();
   systems.add<EnemyProjectileSystem>();
   systems.add<HealthSystem>();
+  systems.add<PauseInputSystem>();
   systems.configure();
 }
 
@@ -36,7 +37,8 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<KnightAttackSystem>(dt);
     systems.update<WizardAttackSystem>(dt);
     //systems.update<TurretAttackSystem>(dt);
-    systems.update<HealthSystem>(dt);
+    systems.update<HealthSystem>(dt);    
+    systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(dt);
   }
   else{
@@ -50,6 +52,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<WizardAttackSystem>(0);
     //systems.update<TurretAttackSystem>(0);
     systems.update<HealthSystem>(0);
+    systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(0);
   }
 }

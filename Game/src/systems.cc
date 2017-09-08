@@ -920,6 +920,8 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
     oncee = false;
     for(auto e : es.entities_with_components<ThreeD>()){
       std::cout << "tamos en 3D" << std::endl;
+      knight_speed *= 0.5;
+      wizard_speed *= 0.5;
       three_d = true;
     }
   }
@@ -1712,7 +1714,8 @@ void EnemyProjectileAnimationSystem::update(entityx::EntityManager &es,
   }
 }
 
-const float GhostIaSystem::kSpeed = 50.0f;
+// Anterior valor: 50 (muy rapido para 3D, pensar algo!)
+const float GhostIaSystem::kSpeed = 10.0f;
 float timerGhost;
 
 void GhostIaSystem::update(entityx::EntityManager &es,
@@ -1729,7 +1732,6 @@ void GhostIaSystem::update(entityx::EntityManager &es,
                                          Transform &transform,
                                          Physics &physics) {
     ghost.time_passed += dt * 1000.0f;
-
     switch (ghost.comportamiento) {
       case Ghost::Comportamiento::DAMAGE_TOP:
         if (ghost.time_passed >= ghost.kHitDuration) {
@@ -2554,11 +2556,13 @@ void WizardAttackSystem::receive(const Collision &collision) {
 
   if (e0_weapon &&
       collision_copy.e1.component<Ghost>()) {
+    std::cout << "hit a fantasma" << std::endl;
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
 
     entityx::Entity proyectil = collision.e0;
     proyectil.destroy();
+    std::cout << "destroy proyectil" << std::endl;
 
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/ghost/default/hit.wav", false, 0.7f);
@@ -2566,17 +2570,19 @@ void WizardAttackSystem::receive(const Collision &collision) {
     e1_color_animation->Play();
   } else if (e1_weapon &&
              collision_copy.e0.component<Ghost>()) {
+        std::cout << "hit a fantasma" << std::endl;
+
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
 
     entityx::Entity proyectil = collision.e1;
     proyectil.destroy();
-
+    std::cout << "destroy proyectil" << std::endl;
+    
     Engine::GetInstance().Get<AudioManager>().PlaySound(
         "assets/media/fx/ghost/default/hit.wav", false, 0.7f);
-
-    auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
-    e0_color_animation->Play();
+    auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+    e1_color_animation->Play();
     // Torreta
   } else if (e0_weapon &&
              collision_copy.e1.component<Turret>()) {

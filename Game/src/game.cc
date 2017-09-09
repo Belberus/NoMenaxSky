@@ -130,8 +130,13 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-          scenes_.push_back(
+          if(!three_d){
+            scenes_.push_back(
               FloorFactory::MakeFloorTwo2D("assets/castle/floor2.tmx", this, character));
+          }
+          else{
+            scenes_.push_back(FloorFactory::MakeFloorTwo3D("daigual",this, character));
+          }
           scenes_.push_back(std::make_unique<GameUi>(this));
           text_to_play = "Cuidado por donde pisas! Este nivel del castillo esta lleno de trampas.\n\nPara acceder a la habitacion del boss deberas buscar dos palancas por las\n\nhabitaciones y activarlas.\n\n\n                    Pulsa [ENTER] para continuar.";
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido2"));
@@ -151,9 +156,13 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
            PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
           scenes_.clear();
-           // scenes_.push_back(FloorFactory3D::MakeFloor1(this));
-          scenes_.push_back(
+          if(three_d){
+            scenes_.push_back(
                FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
+          }
+          else{
+            scenes_.push_back(FloorFactory::MakeFloorThree3D("daigual",this, character));
+          }
           scenes_.push_back(std::make_unique<GameUi>(this));
           text_to_play = "El ultimo nivel del castillo, el nivel de Lord Menax.\n\nPreparate para enfrentarte a el, sera un duro combate.\n\n\n\n\n                    Pulsa [ENTER] para continuar.";
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido3"));
@@ -218,7 +227,8 @@ void Game::receive(const OptionMenu& event) {
 
 void Game::receive(const BackToMainMenu& event) {
   level = 1;
-  next_state_ = State::kMainMenu; }
+  next_state_ = State::kMainMenu;
+}
 
 void Game::receive(const Death& event){
   next_state_ = State::kDeathMenu; }

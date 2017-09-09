@@ -477,7 +477,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo3D(
 
   // create the colliders
   tmx::Map tiled_map;
-  tiled_map.load("assets/3d/castillo/planta2/planta2.tmx");
+  tiled_map.load("assets/3d/castillo/planta2/nivel2.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
   floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory, "2");
   floor->current_room_ = "2.0";
@@ -520,7 +520,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorThree3D(
 
   // create the colliders
   tmx::Map tiled_map;
-  tiled_map.load("assets/3d/castillo/planta3/planta3.tmx");
+  tiled_map.load("assets/3d/castillo/planta3/nivel3.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
   floor->rooms_ = ParseRooms(tiled_map, "(3\\.\\d*)", factory, "3");
   floor->current_room_ = "3.0";

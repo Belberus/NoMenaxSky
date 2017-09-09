@@ -2932,7 +2932,6 @@ void LancerIaSystem::update(entityx::EntityManager &es,
   if(once6){
     once6 = false;
     for(auto e : es.entities_with_components<ThreeD>()){
-      std::cout << "lancer 3D" << std::endl;
       three_d = true;
     }
   }

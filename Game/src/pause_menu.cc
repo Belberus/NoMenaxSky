@@ -38,7 +38,6 @@ PauseMenu::PauseMenu(Game* parent_scene, bool three_d)
 
 	if(three_d){
 		// arrow en 3D
-		std::cout << "cargando indice" << std::endl;
 		entityx::Entity menuArrow = entities.create();
 		Transform menuArrow_transform (glm::vec3(-90, 210, 0), menu_canvas_transform, glm::vec3(2, 2, 1));
 		menuArrow.assign<Transform>(menuArrow_transform);
@@ -103,7 +102,6 @@ PauseMenu::PauseMenu(Game* parent_scene, bool three_d)
 
 	if(!three_d){
 		// arrow en 2d
-		std::cout << "cargando indice" << std::endl;
 		entityx::Entity menuArrow = entities.create();
 		Transform menuArrow_transform (glm::vec3(-90, 210, 0), menu_canvas_transform, glm::vec3(2, 2, 1));
 		menuArrow.assign<Transform>(menuArrow_transform);
@@ -127,7 +125,6 @@ void PauseMenu::Update(entityx::TimeDelta dt) {
 }
 
 void PauseMenu::receive(const BackToMainMenu& event) {
-	std::cout << "pause menu" << std::endl;
 	engine::core::Engine::GetInstance().EnableDepthTest(
       engine::core::Engine::DepthTest::kAlways);
 	Engine::GetInstance().Get<AudioManager>().StopAllSounds();

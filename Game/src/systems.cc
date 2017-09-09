@@ -1085,8 +1085,14 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	      	    shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::UP;
-	  	        shield_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
-	  	        shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
+              if(three_d){
+                shield_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
+              }else{
+                shield_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(6.0f, 3.0f);
+              }
+	  	        
 	  	      } else if (keys_[GLFW_KEY_DOWN]) {
               if(three_d){
                 glm::quat rot;
@@ -1107,8 +1113,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::DOWN;
-	  	        shield_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
-	  	        shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
+	  	        if(three_d){
+                shield_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
+              }else{
+                shield_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(6.0f, 3.0f);
+              }
 	  	      } else if (keys_[GLFW_KEY_LEFT]) {
               if(three_d){
                 glm::quat rot;
@@ -1129,8 +1140,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::LEFT;
-	  	        shield_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
-	  	        shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
+	  	        if(three_d){
+                shield_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
+              }else{
+                shield_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(3.0f, 6.0f);
+              }
 	  	      } else if (keys_[GLFW_KEY_RIGHT]) {
               if(three_d){
                 glm::quat rot;
@@ -1151,8 +1167,13 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::RIGHT;
-	  	        shield_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
-	  	        shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
+	  	        if(three_d){
+                shield_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
+              }else{
+                shield_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+                shield_collider->half_size  = glm::vec2(3.0f, 6.0f);
+              }
 	  	      } else {
 	  	        shield_info->active = false;
 	  	        weapon_info->drawn = false;
@@ -1206,9 +1227,15 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                     }
                   t.SetLocalOrientation(rot);
                   } 
-	  	      		attack.orientation = KnightAttack::Orientation::UP;	
-	  		        weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
-	  		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+	  	      		attack.orientation = KnightAttack::Orientation::UP;
+                if(three_d){
+                  weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+                }
+                else{
+                  weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(0.0f, 9.0f, 0.0f));
+                }
 	  	      	}       
 	  	      } else if (keys_[GLFW_KEY_DOWN]) {
 	  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
@@ -1237,8 +1264,14 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::DOWN;
-	  		        weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
-	  		        weapon_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+	  		        if(three_d){
+                  weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+                }
+                else{
+                  weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(0.0f, -9.0f, 0.0f));
+                }
 	  	      	}  
 	  	      } else if (keys_[GLFW_KEY_LEFT]) {
 	  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
@@ -1267,8 +1300,14 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::LEFT;
-	  		        weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
-	  		        weapon_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+	  		        if(three_d){
+                  weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+                }
+                else{
+                  weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
+                }
 	  	      	}   
 	  	      } else if (keys_[GLFW_KEY_RIGHT]) {
 	  	      	if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
@@ -1297,8 +1336,14 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::RIGHT;
-	  		        weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
-	  		        weapon_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
+	  		        if(three_d){
+                  weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
+                }
+                else{
+                  weapon_collider->half_size = glm::vec2(6.0f, 6.0f);
+                  weapon_transform->SetLocalPosition(glm::vec3(9.0f, 0.0f, 0.0f));
+                }
 	  	      	}	        
 	  	      } else {
 	  	        attack.is_attacking = false;

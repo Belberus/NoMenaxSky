@@ -20,17 +20,23 @@
 class FloorFactory {
  public:
   static std::unique_ptr<Floor> MakeFloorOne2D(const std::string &file_name,
-                                               Game *parent_scene, const std::string &role);
+                                               Game *parent_scene,
+                                               const std::string &role);
   static std::unique_ptr<Floor> MakeFloorTwo2D(const std::string &file_name,
-                                               Game *parent_scene, const std::string &role);
+                                               Game *parent_scene,
+                                               const std::string &role);
   static std::unique_ptr<Floor> MakeFloorThree2D(const std::string &file_name,
-                                               Game *parent_scene, const std::string &role);
+                                                 Game *parent_scene,
+                                                 const std::string &role);
   static std::unique_ptr<Floor> MakeFloorOne3D(const std::string &file_name,
-                                               Game *parent_scene, const std::string &role);
+                                               Game *parent_scene,
+                                               const std::string &role);
   static std::unique_ptr<Floor> MakeFloorTwo3D(const std::string &file_name,
-                                               Game *parent_scene, const std::string &role);
+                                               Game *parent_scene,
+                                               const std::string &role);
   static std::unique_ptr<Floor> MakeFloorThree3D(const std::string &file_name,
-                                               Game *parent_scene, const std::string &role);
+                                                 Game *parent_scene,
+                                                 const std::string &role);
 
  private:
   static void ParseTilemap(const tmx::Map &map, Floor &floor);
@@ -45,7 +51,8 @@ class FloorFactory {
 
   static std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
   ParseRooms(const tmx::Map &map, const std::string &layer_name,
-             const std::shared_ptr<EntityFactory> &factory, const std::string &level);
+             const std::shared_ptr<EntityFactory> &factory,
+             const std::string &level);
 
   static void ParseRoomContents(const tmx::Map &map,
                                 const tmx::ObjectGroup &object_layer,
@@ -66,7 +73,6 @@ class FloorFactory {
   /// @return center of the map; (0,0,0) if the layer doesnt exist or if it
   /// exists but doesnt have a rectangle collider.
   static glm::vec3 ParseCenter(const tmx::Map &map);
-
-  };
+};
 
 #endif  // FLOOR_FACTORY_H_

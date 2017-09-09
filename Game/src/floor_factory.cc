@@ -485,6 +485,49 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo3D(
   return floor;
 }
 
+std::unique_ptr<Floor> FloorFactory::MakeFloorThree3D(
+    const std::string &file_name, Game *parent_scene, const std::string &role) {
+  // TODO: move this line somewhere else
+  engine::core::Engine::GetInstance().EnableDepthTest(
+      engine::core::Engine::DepthTest::kLess);
+  std::unique_ptr<Floor> floor(std::make_unique<Floor3D>(parent_scene));
+  std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory3D>());
+  // create the floor model
+  auto floor_model = floor->entities.create();
+  floor_model.assign<engine::components::three_d::Model>(
+      "assets/3d/castillo/planta3/planta3.dae");
+  engine::components::common::Transform floor_transform(
+      glm::vec3(0.0f, 0.0f, 0.0f));
+  glm::quat floor_model_rotation;
+  floor_model_rotation = glm::rotate(floor_model_rotation, glm::radians(180.0f),
+                                     glm::vec3(0.0f, 0.0f, 1.0f));
+  floor_transform.SetLocalOrientation(floor_model_rotation);
+  floor_model.assign<engine::components::common::Transform>(floor_transform);
+  // create the camera
+  auto camera = floor->entities.create();
+  camera.assign<engine::components::common::Camera>(glm::radians(30.0f), 160.0f,
+                                                    60.0f, 0.1f, 1000.0f);
+  engine::components::common::Transform camera_transform(
+      glm::vec3(0.0f, 0.0f, 70.0f));
+  camera.assign<engine::components::common::Transform>(camera_transform);
+  // create the player
+
+  if (role == "knight") {
+    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+  } else {
+    factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+  }
+
+  // create the colliders
+  tmx::Map tiled_map;
+  tiled_map.load("assets/3d/castillo/planta3/planta3.tmx");
+  ParseStaticColliders(tiled_map, "StaticColliders", *floor);
+  floor->rooms_ = ParseRooms(tiled_map, "(3\\.\\d*)", factory, "3");
+  floor->current_room_ = "3.0";
+  floor->rooms_[floor->current_room_]->Load(*floor);
+  return floor;
+}
+
 glm::vec3 FloorFactory::ParseCenter(const tmx::Map &map) {
   glm::vec3 center;
   for (auto &layer : map.getLayers()) {

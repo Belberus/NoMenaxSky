@@ -5,20 +5,20 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.78.0 commit date:2017-02-24, commit time:14:33, hash:e92f235283</authoring_tool>
     </contributor>
-    <created>2017-09-09T22:03:59</created>
-    <modified>2017-09-09T22:03:59</modified>
+    <created>2017-09-10T00:30:48</created>
+    <modified>2017-09-10T00:30:48</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
+    <image id="boss3_png" name="boss3_png">
+      <init_from>boss3.png</init_from>
+    </image>
     <image id="hab3_1_png" name="hab3_1_png">
       <init_from>hab3.1.png</init_from>
     </image>
     <image id="hab3_0_png" name="hab3_0_png">
       <init_from>hab3.0.png</init_from>
-    </image>
-    <image id="boss3_png" name="boss3_png">
-      <init_from>boss3.png</init_from>
     </image>
   </library_images>
   <library_effects>
@@ -58,88 +58,10 @@
         </technique>
       </profile_COMMON>
     </effect>
-    <effect id="palette_001-effect">
-      <profile_COMMON>
-        <newparam sid="hab3_0_png-surface">
-          <surface type="2D">
-            <init_from>hab3_0_png</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="hab3_0_png-sampler">
-          <sampler2D>
-            <source>hab3_0_png-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="hab3_0_png-sampler" texcoord="UVMap"/>
-            </diffuse>
-            <specular>
-              <color sid="specular">0 0 0 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="palette_002-effect">
-      <profile_COMMON>
-        <newparam sid="boss3_png-surface">
-          <surface type="2D">
-            <init_from>boss3_png</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="boss3_png-sampler">
-          <sampler2D>
-            <source>boss3_png-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="boss3_png-sampler" texcoord="UVMap"/>
-            </diffuse>
-            <specular>
-              <color sid="specular">0 0 0 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
   </library_effects>
   <library_materials>
     <material id="palette-material" name="palette">
       <instance_effect url="#palette-effect"/>
-    </material>
-    <material id="palette_001-material" name="palette_001">
-      <instance_effect url="#palette_001-effect"/>
-    </material>
-    <material id="palette_002-material" name="palette_002">
-      <instance_effect url="#palette_002-effect"/>
     </material>
   </library_materials>
   <library_geometries>
@@ -220,7 +142,7 @@
         <vertices id="hab3_0-mesh-vertices">
           <input semantic="POSITION" source="#hab3_0-mesh-positions"/>
         </vertices>
-        <polylist material="palette_001-material" count="744">
+        <polylist material="palette-material" count="744">
           <input semantic="VERTEX" source="#hab3_0-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#hab3_0-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#hab3_0-mesh-map-0" offset="2" set="0"/>
@@ -263,7 +185,7 @@
         <vertices id="boss3-mesh-vertices">
           <input semantic="POSITION" source="#boss3-mesh-positions"/>
         </vertices>
-        <polylist material="palette_002-material" count="7808">
+        <polylist material="palette-material" count="7808">
           <input semantic="VERTEX" source="#boss3-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#boss3-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#boss3-mesh-map-0" offset="2" set="0"/>
@@ -293,7 +215,7 @@
         <instance_geometry url="#hab3_0-mesh" name="hab3_0">
           <bind_material>
             <technique_common>
-              <instance_material symbol="palette_001-material" target="#palette_001-material">
+              <instance_material symbol="palette-material" target="#palette-material">
                 <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
@@ -305,7 +227,7 @@
         <instance_geometry url="#boss3-mesh" name="boss3">
           <bind_material>
             <technique_common>
-              <instance_material symbol="palette_002-material" target="#palette_002-material">
+              <instance_material symbol="palette-material" target="#palette-material">
                 <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>

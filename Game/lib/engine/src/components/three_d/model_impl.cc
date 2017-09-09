@@ -12,7 +12,7 @@
 engine::components::three_d::impl::ModelImpl::Mesh::Mesh(
     const std::string &path, const aiScene &scene, unsigned int mesh_index,
     const aiMatrix4x4 &transform)
-    : id_counter(0), bone_transforms(100, glm::mat4(1.0f)) {
+    : bone_transforms(100, glm::mat4(1.0f)) {
   texture = LoadTexture(path, scene, mesh_index);
   auto vertices = LoadVertexInfo(scene, mesh_index, transform);
   auto indices = LoadIndices(scene, mesh_index);
@@ -53,21 +53,19 @@ engine::components::three_d::impl::ModelImpl::Mesh::LoadBoneInfo(
     const aiScene &scene, unsigned int mesh_index) {
   auto mesh = scene.mMeshes[mesh_index];
   if (mesh->mNumBones == 0) {
-    has_skeleton = false;
     BoneInfo info;
     info.AddBoneInfo(0, 1.0f);
     return std::vector<BoneInfo>(mesh->mNumVertices, info);
   }
-  has_skeleton = true;
   std::vector<Mesh::BoneInfo> bone_info(mesh->mNumVertices);
   for (int i = 0; i < mesh->mNumBones; ++i) {
     auto bone = mesh->mBones[i];
     bone_offsets.push_back(ConvertToGlmMatrix(bone->mOffsetMatrix));
-    name_id_map.emplace(bone->mName.data, id_counter++);
+    name_id_map.emplace(bone->mName.data, i);
     for (int j = 0; j < bone->mNumWeights; ++j) {
       auto weight_info = bone->mWeights[j];
-      BoneInfo &bone_inf = bone_info[weight_info.mVertexId];
-      bone_inf.AddBoneInfo(id_counter - 1, weight_info.mWeight);
+      auto &bone_inf = bone_info[weight_info.mVertexId];
+      bone_inf.AddBoneInfo(i, weight_info.mWeight);
     }
   }
   return bone_info;
@@ -153,21 +151,17 @@ void engine::components::three_d::impl::ModelImpl::LoadModel(
   }
   // for some reason the root node transformation is not an identity matrix
   scene_->mRootNode->mTransformation = aiMatrix4x4();
-  LoadModelAux({aiMatrix4x4()}, scene_->mRootNode);
+  LoadModelAux(aiMatrix4x4(), scene_->mRootNode);
 }
 
 void engine::components::three_d::impl::ModelImpl::LoadModelAux(
-    std::vector<aiMatrix4x4> transforms, aiNode *node) {
-  transforms.push_back(node->mTransformation);
+    aiMatrix4x4 acc_transform, aiNode *node) {
+  acc_transform = acc_transform * node->mTransformation;
   if (node->mNumMeshes > 0) {
-    aiMatrix4x4 acc_transform;
-    for (int i = transforms.size() - 1; i >= 0; --i) {
-      acc_transform = transforms[i] * acc_transform;
-    }
     LoadMeshes(*node, acc_transform);
   }
   for (int i = 0; i < node->mNumChildren; ++i) {
-    LoadModelAux(transforms, node->mChildren[i]);
+    LoadModelAux(acc_transform, node->mChildren[i]);
   }
 }
 
@@ -235,8 +229,8 @@ void engine::components::three_d::impl::ModelImpl::Animate(float dt) {
   }
 }
 
-glm::vec3 CalcInterpolatedScale(float time_passed_ticks,
-                                const aiNodeAnim &channel) {
+glm::vec3 engine::components::three_d::impl::ModelImpl::CalcInterpolatedScale(
+    float time_passed_ticks, const aiNodeAnim &channel) {
   if (channel.mNumScalingKeys == 1) {
     glm::vec3 scale;
     scale.x = channel.mScalingKeys[0].mValue.x;
@@ -266,8 +260,9 @@ glm::vec3 CalcInterpolatedScale(float time_passed_ticks,
   return glm::mix(starting_scale, ending_scale, factor);
 }
 
-glm::vec3 CalcInterpolatedPosition(float time_passed_ticks,
-                                   const aiNodeAnim &channel) {
+glm::vec3
+engine::components::three_d::impl::ModelImpl::CalcInterpolatedPosition(
+    float time_passed_ticks, const aiNodeAnim &channel) {
   if (channel.mNumPositionKeys == 1) {
     glm::vec3 pos;
     pos.x = channel.mPositionKeys[0].mValue.x;
@@ -297,8 +292,9 @@ glm::vec3 CalcInterpolatedPosition(float time_passed_ticks,
   return glm::mix(starting_pos, ending_pos, factor);
 }
 
-glm::quat CalcInterpolatedRotation(float time_passed_ticks,
-                                   const aiNodeAnim &channel) {
+glm::quat
+engine::components::three_d::impl::ModelImpl::CalcInterpolatedRotation(
+    float time_passed_ticks, const aiNodeAnim &channel) {
   if (channel.mNumRotationKeys == 1) {
     glm::quat rotation;
     rotation.w = channel.mRotationKeys[0].mValue.w;

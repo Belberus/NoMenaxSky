@@ -76,6 +76,9 @@ class WizardAttackSystem : public entityx::System<WizardAttackSystem>,
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool once5 = true;
+  bool three_d = false;
 };
 
 class TurretWalkingSystem : public entityx::System<TurretWalkingSystem> {
@@ -100,6 +103,8 @@ class ManuelethIaSystem : public entityx::System<ManuelethIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class ManuelethAttackSystem : public entityx::System<ManuelethAttackSystem> {
@@ -128,6 +133,8 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
 
  private:
   static const float turretSpeed;
+  static const float turretThreeDSpeed;
+  bool three_d = false;
 };
 
 class ChestSystem : public entityx::System<ChestSystem>,
@@ -168,6 +175,8 @@ class EnemyProjectileSystem : public entityx::System<EnemyProjectileSystem>,
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d;
 };
 
 class EnemyProjectileAnimationSystem
@@ -196,6 +205,7 @@ class GhostIaSystem : public entityx::System<GhostIaSystem> {
 
  private:
   static const float kSpeed;
+  static const float kThreeDSpeed;
 };
 
 class MenuInputSystem : public entityx::System<MenuInputSystem>,
@@ -338,6 +348,9 @@ class LancerIaSystem : public entityx::System<LancerIaSystem> {
 
  private:
   static const float lancerSpeed;
+  static const float lancerThreeDSpeed;
+  bool three_d = false;
+
 };
 
 class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {

@@ -2632,6 +2632,7 @@ void ShieldSystem::update(entityx::EntityManager &es,
 }
 
 float lastPlayerHP;
+int times_masiatrix_died = 0;
 
 void HealthSystem::update(entityx::EntityManager &es,
                           entityx::EventManager &events,
@@ -2657,7 +2658,32 @@ void HealthSystem::update(entityx::EntityManager &es,
           });
       	entity.destroy();
       	events.emit<StartLevel2>();
-      } 
+      } else if (entity.component<Masiatrix>()) {
+        if (entity.component<Masiatrix>()->real){
+          es.each<MasiatrixLegs, ParentLink>(
+          [&](entityx::Entity entity_legs, MasiatrixLegs &legs, ParentLink &parent) {
+              entity_legs.destroy();
+          });
+          es.each<Masiatrix>(
+          [&](entityx::Entity entity, Masiatrix &masiatrix) {
+              entity.destroy();
+          });
+          times_masiatrix_died++;
+          if (times_masiatrix_died >= 3) {
+            events.emit<StartLevel3>();
+          } else {
+            events.emit<MasiatrixNextPhase>(times_masiatrix_died);
+          }
+        } else {
+          es.each<MasiatrixLegs, ParentLink>(
+          [&](entityx::Entity entity_legs, MasiatrixLegs &legs, ParentLink &parent) {
+            if (parent.owner == entity) {
+              entity_legs.destroy();
+            }
+          });
+          entity.destroy();
+        }
+      }
       else {
       	es.each<Legs, ParentLink>(
           [&](entityx::Entity entity_legs, Legs &legs, ParentLink &parent) {
@@ -2694,7 +2720,7 @@ void HealthSystem::update(entityx::EntityManager &es,
             entity_hitbox.destroy();
           }
         });
-      
+        
         entity.destroy();
 
         if (es_player) {
@@ -3427,6 +3453,8 @@ void MasiatrixAnimationSystem::update(entityx::EntityManager &es,
   }
 }
 
+MasiatrixInfo masiatrixInfo;
+
 void MasiatrixIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
@@ -3448,6 +3476,15 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
         if (!masiatrix.rand_initialized) {
           srand(time(0));
           masiatrix.rand_initialized = true;
+          if (masiatrix.id == "A") {
+            masiatrixInfo.positionA = masiatrix.original_position;
+          } else if (masiatrix.id == "B") {
+            masiatrixInfo.positionB = masiatrix.original_position;
+          } else if (masiatrix.id == "C") {
+            masiatrixInfo.positionC = masiatrix.original_position;
+          } else if (masiatrix.id == "D") {
+            masiatrixInfo.positionD = masiatrix.original_position;
+          }
         }
 
         masiatrix.time_passed_attack += (dt * 1000.0f);
@@ -3472,7 +3509,12 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
           physics.velocity = next_velocity;
         }
 
-        if (masiatrix.time_passed_attack >= 1000.0f) {
+        const float distancia = std::sqrt(
+            std::pow(std::abs(player_position.x - masiatrix_position.x), 2) +
+            std::pow(std::abs(player_position.y - masiatrix_position.y), 2));
+        
+        if (distancia >= 45.0f) {
+          if (masiatrix.time_passed_attack >= 1000.0f) {
             masiatrix.time_passed_attack = 0.0f;
 
             glm::vec3 vector_player_masiatrix(player_position.x - masiatrix_position.x,
@@ -3487,12 +3529,53 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
             projectile_velocity = glm::normalize(player_position -
                                       masiatrix_position) *
                        115.0f;
-
-           // EntityFactory2D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
-            //                                   projectile_velocity, "masiatrix");
+            EntityFactory2D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
+                                               projectile_velocity, "masiatrix");
         }
+      }    
   });
 }
-        
+
+void MasiatrixBossFight::update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) {}
+
+void MasiatrixBossFight::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<MasiatrixNextPhase>(*this);
+}
+
+void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
+  actual_phase = nextPhase.phase;
+  glm::vec3 positioning;
+
+  switch (actual_phase) {
+    case 1 :
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+
+      positioning = masiatrixInfo.positionC;
+      em->each<Player, Transform>(
+      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
+        glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
+        player_transform.SetLocalPosition(new_position);       
+      });
+    break;
+    case 2 :
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", true);
+      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", false);
+
+      positioning = masiatrixInfo.positionC;
+      em->each<Player, Transform>(
+      [&](entityx::Entity entity, Player &player, Transform &player_transform) {
+        glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
+        player_transform.SetLocalPosition(new_position);
+      });
+
+    break;
+  }
+}
 
         

@@ -180,7 +180,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
 }
 
 std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
-    entityx::EntityManager& entities, const glm::vec3& position, const std::string &id) {
+  entityx::EntityManager& entities, const glm::vec3& position, const std::string &id, const bool &real) {
   glm::vec3 newPosition = position;
   newPosition.z += 7.0f;
   return std::vector<entityx::Entity>();

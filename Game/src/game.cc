@@ -22,13 +22,8 @@ using namespace std;
 
 Game::Game()
     : three_d(false), new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
-  std::string filename = "assets/config/opciones.txt";
-  std::ofstream outfile;
-  outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
-  outfile << "1 1 1" << std::endl;
-  outfile.close();
   text_to_play = "Este es Gauntleto, esta furioso porque el malvado Lord Menax y sus secuaces\nle han robado todas las tartas.\nRecorre el castillo, encuentra a Menax y a sus secuaces y vencelos para\nrecuperar las tartas!\n\nPara poder enfrentarte al boss de este nivel, deberas encontrar la llave.\nBusca en los dos cofres, uno debe contenerla.\n                    Pulsa [ENTER] para continuar.";
-  level = 1;
+  level = 2;
 
   events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
@@ -38,6 +33,7 @@ Game::Game()
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
   events.subscribe<StartLevel2>(*this);
+  events.subscribe<StartLevel3>(*this);
   events.subscribe<PlayText>(*this);
   events.subscribe<SetThreeD>(*this);
   scenes_.emplace_back(new MainMenuBackground());
@@ -77,7 +73,7 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
         scenes_.front()->events.emit<PauseGameEvent>();
         break;
-      case State::kFloor1:
+      case State::kFloor2:
         if (new_game){
           new_game = false;
           Engine::GetInstance().Get<AudioManager>().StopAllSounds();
@@ -103,7 +99,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.front()->events.emit<BackToGame>();
         }
         break;
-      case State::kFloor2:
+      case State::kFloor1:
         if(new_game2){
           new_game2 = false;
           Engine::GetInstance().Get<AudioManager>().StopMusic();
@@ -184,6 +180,12 @@ void Game::receive(const StartLevel2& event) {
   level = 2;
   new_game2 = true;
   next_state_ = State::kFloor2; 
+}
+
+void Game::receive(const StartLevel3& event) {
+  level = 3;
+  new_game3 = true;
+  next_state_ = State::kFloor3;
 }
 
 void Game::receive(const OptionMenu& event) {

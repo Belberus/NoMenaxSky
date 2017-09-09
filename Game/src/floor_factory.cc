@@ -302,11 +302,16 @@ void FloorFactory::ParseRoomContents(
     } else if (object.getType() == "masiatrix") {
       auto properties = object.getProperties();
       std::string id = properties[0].getStringValue();
-      std::cerr << "Las creo" << std::endl;
+      bool is_real;
+      if (id == "A") {
+          is_real = true;
+      } else {
+          is_real = false;
+      }
       auto fn_masiatrix =
-          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
-        return factory->MakeMasiatrix(em, position, id);
-      };
+            [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+          return factory->MakeMasiatrix(em, position, id, is_real);
+        };
       room.entity_creators_.push_back(fn_masiatrix);
     } 
   }

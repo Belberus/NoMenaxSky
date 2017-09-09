@@ -59,6 +59,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<ColorAnimator>();
   systems.add<ShieldSystem>();
   systems.add<PauseInputSystem>();
+  systems.add<MasiatrixBossFight>(&entities);
   systems.configure();
 }
 
@@ -93,6 +94,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<EnemyProjectileSystem>(dt);
     systems.update<LancerAttackSystem>(dt);
     systems.update<HealthSystem>(dt);
+    systems.update<MasiatrixBossFight>(dt);
     systems.update<ColorAnimator>(dt);
     systems.update<TilemapRenderer>(dt);
     systems.update<SpriteRenderer>(dt);
@@ -130,6 +132,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<EnemyProjectileSystem>(0);
     systems.update<LancerAttackSystem>(0);
     systems.update<HealthSystem>(0);
+    systems.update<MasiatrixBossFight>(0);
     systems.update<ColorAnimator>(0);
     systems.update<TilemapRenderer>(0);
     systems.update<SpriteRenderer>(0);

@@ -598,7 +598,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
  }
 
  std::vector<entityx::Entity> EntityFactory2D::MakeMasiatrix(
-    entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id){
+    entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id, const bool &real){
 
     std::vector<entityx::Entity> entities_created;
     entityx::Entity masiatrix = entities.create();
@@ -610,7 +610,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
     color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
     color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     masiatrix.assign<ColorAnimation>(std::move(color_frames));
-    masiatrix.assign<Masiatrix>(id, position);
+    masiatrix.assign<Masiatrix>(id, position, real);
     masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
      
     std::vector<engine::utils::Rectangle> moving_top;
@@ -704,8 +704,6 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
     parentLink.owner = masiatrix;
     legs.assign<ParentLink>(parentLink);
     entities_created.push_back(legs);
-          std::cerr << "Las creo del todo todo" << std::endl;
-
     return entities_created;
  }
 

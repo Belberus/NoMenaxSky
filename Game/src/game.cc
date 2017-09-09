@@ -22,13 +22,31 @@ using namespace std;
 
 Game::Game()
     : three_d(false), new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
-  std::string filename = "assets/config/opciones.txt";
-  std::ofstream outfile;
-  outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
-  outfile << "1 1 1" << std::endl;
-  outfile.close();
   text_to_play = "Este es Gauntleto, esta furioso porque el malvado Lord Menax y sus secuaces\nle han robado todas las tartas.\nRecorre el castillo, encuentra a Menax y a sus secuaces y vencelos para\nrecuperar las tartas!\n\nPara poder enfrentarte al boss de este nivel, deberas encontrar la llave.\nBusca en los dos cofres, uno debe contenerla.\n                    Pulsa [ENTER] para continuar.";
-  level = 2;
+  level = 1;
+
+  std::string filename = "assets/config/opciones.txt";
+
+  std::fstream file(filename.c_str(), std::ios_base::in);
+
+  int modo, musica, efectos;
+
+  file >> modo >> musica >> efectos;
+  file.close();
+
+  if (!modo) {
+    three_d = true;
+  }
+
+  if (!musica){
+    Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(0.0f);
+  } 
+  else Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
+
+  if (!efectos){
+    Engine::GetInstance().Get<AudioManager>().SetVolumeFX(0.0f);
+  } 
+  else Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
 
   events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
@@ -51,6 +69,7 @@ void Game::Update(entityx::TimeDelta dt) {
   if (next_state_ != State::kNull) {
     switch (next_state_) {
       case State::kMainMenu:
+        scenes_.clear();
         new_game = true;
         scenes_.emplace_back(new MainMenuBackground());
         scenes_.emplace_back(new MainMenu(this));
@@ -72,13 +91,13 @@ void Game::Update(entityx::TimeDelta dt) {
         Engine::GetInstance().Get<AudioManager>().StopMusic();
         break;
       case State::kPauseMenu:
-        scenes_.push_back(std::make_unique<PauseMenu>(this));
+        scenes_.push_back(std::make_unique<PauseMenu>(this,three_d));
         break;
       case State::kText:
         scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
         scenes_.front()->events.emit<PauseGameEvent>();
         break;
-      case State::kFloor2:
+      case State::kFloor1:
         if (new_game){
           new_game = false;
           Engine::GetInstance().Get<AudioManager>().StopAllSounds();
@@ -104,7 +123,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.front()->events.emit<BackToGame>();
         }
         break;
-      case State::kFloor1:
+      case State::kFloor2:
         if(new_game2){
           new_game2 = false;
           Engine::GetInstance().Get<AudioManager>().StopMusic();

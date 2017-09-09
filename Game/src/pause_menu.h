@@ -10,7 +10,7 @@
 class PauseMenu : public engine::core::Scene,
 				  public entityx::Receiver<PauseMenu>{
  public:
-  PauseMenu(Game *parent_scene);
+  PauseMenu(Game *parent_scene, bool three_d);
   void Update(entityx::TimeDelta dt) override;
 
   void receive(const BackToMainMenu &event);

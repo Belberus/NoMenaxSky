@@ -26,6 +26,8 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<engine::systems::two_d::ColliderRenderer>();
   systems.add<engine::systems::three_d::ModelRenderer>();
   systems.add<KnightAttackSystem>();
+  systems.add<ShieldSystem>(); //Alias energy system
+  systems.add<ChestSystem>(); //Alias key system
   systems.add<WizardAttackSystem>();
   systems.add<EnemyProjectileSystem>();
   systems.add<HealthSystem>();
@@ -48,6 +50,8 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<CameraFollowPlayerSystem>(dt);
     systems.update<KnightAttackSystem>(dt);
     systems.update<WizardAttackSystem>(dt);
+    systems.update<ShieldSystem>(dt);
+    systems.update<ChestSystem>(dt);
     //systems.update<TurretAttackSystem>(dt);
     systems.update<HealthSystem>(dt);    
     systems.update<PauseInputSystem>(dt);
@@ -65,6 +69,8 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<engine::systems::two_d::Physics>(0);
     systems.update<KnightAttackSystem>(0);
     systems.update<WizardAttackSystem>(0);
+    systems.update<ShieldSystem>(0);
+    systems.update<ChestSystem>(0);
     systems.update<HealthSystem>(0);
     systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(0);

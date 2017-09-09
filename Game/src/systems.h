@@ -233,6 +233,7 @@ class PauseInputSystem : public entityx::System<PauseInputSystem>,
   void receive(const engine::events::KeyReleased &key_released);
 
  private:
+  bool three_d;
   bool up_pressed_;
   bool down_pressed_;
   bool enter_pressed_;

@@ -17,7 +17,7 @@ using namespace engine::events;
 Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<PlayerInputSystem>();
   systems.add<CameraFollowPlayerSystem>();
-  //systems.add<GhostIaSystem>();
+  systems.add<GhostIaSystem>();
   systems.add<TurretIaSystem>();
   systems.add<LancerIaSystem>();
   systems.add<ManuelethIaSystem>();
@@ -38,7 +38,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
 
   if(!paused){
     systems.update<PlayerInputSystem>(dt);
-    //systems.update<GhostIaSystem>(dt);
+    systems.update<GhostIaSystem>(dt);
     systems.update<TurretIaSystem>(dt);
     systems.update<LancerIaSystem>(dt);
     systems.update<ManuelethIaSystem>(dt);
@@ -56,7 +56,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
   else{
     systems.update<PlayerInputSystem>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
-    //systems.update<GhostIaSystem>(0);
+    systems.update<GhostIaSystem>(0);
     systems.update<TurretIaSystem>(0);
     systems.update<LancerIaSystem>(0);
     systems.update<ManuelethIaSystem>(0);

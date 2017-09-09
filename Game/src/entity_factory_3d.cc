@@ -94,8 +94,11 @@ std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
   ghost.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/fantasma/fantasma.dae");
   ghost.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  ghost.assign<engine::components::common::Transform>(
-      newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  glm::quat rot;
+  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  t.SetLocalOrientation(rot);
+  ghost.assign<engine::components::common::Transform>(t);
   ghost.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.6f),
                                                          glm::vec2(0.9f, 1.2f));
   ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
@@ -116,8 +119,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTurret(
   turret.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/torreta/torreta.dae");
   turret.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  turret.assign<engine::components::common::Transform>(
-      newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  turret.assign<engine::components::common::Transform>(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   turret.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.6f),
                                                          glm::vec2(1.5f, 3.0f));
   turret.assign<Health>(40.0f, 40.0f, "assets/media/fx/turret/default/death.wav");
@@ -282,8 +284,12 @@ std::vector<entityx::Entity> EntityFactory3D::MakeLancer(
   lancer.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/lancero/lancero.dae");
   lancer.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  lancer.assign<engine::components::common::Transform>(
-      newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  glm::quat rot;
+  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  t.SetLocalOrientation(rot);
+
+  lancer.assign<engine::components::common::Transform>(t);
   lancer.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(2.0f, 2.1f));
   lancer.assign<Health>(30.0f, 30.0f, "assets/media/fx/lanc/default/death.wav");

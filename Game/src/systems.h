@@ -133,6 +133,8 @@ class TurretIaSystem : public entityx::System<TurretIaSystem> {
 
  private:
   static const float turretSpeed;
+  static const float turretThreeDSpeed;
+  bool three_d = false;
 };
 
 class ChestSystem : public entityx::System<ChestSystem>,
@@ -346,6 +348,9 @@ class LancerIaSystem : public entityx::System<LancerIaSystem> {
 
  private:
   static const float lancerSpeed;
+  static const float lancerThreeDSpeed;
+  bool three_d = false;
+
 };
 
 class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {

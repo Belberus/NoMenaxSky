@@ -1613,23 +1613,27 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
               }
 	            
               Engine::GetInstance().Get<AudioManager>().PlaySound(
-              "assets/media/fx/manueleth/default/attack.wav", false, 0.8f);
+              "assets/media/fx/manueleth/default/attack.wav", false, 0.5f);
 	      	}
       	}
    });
 }
 
 const float TurretIaSystem::turretSpeed = 10.0f;
-
+const float TurretIaSystem::turretThreeDSpeed = 4.0f;
+bool once7=true;
 void TurretIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
 
   entityx::ComponentHandle<ThreeD> threed;
-  bool three_d = false;
-  for (entityx::Entity e1 : es.entities_with_components(threed)) {
+  if(once7){
+    once7=false;
+    for (entityx::Entity e1 : es.entities_with_components(threed)) {
     three_d = true;
+    }
   }
+  
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
@@ -1643,7 +1647,23 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                           Turret &turret,
                                           Transform &turret_transform,
                                           Physics &turret_physics) {
+
     turret_position = turret_transform.GetWorldPosition();
+
+    glm::vec3 vector_player_turret(player_position.x - turret_position.x,
+                                       player_position.y - turret_position.y,
+                                       0.0f);
+    glm::vec3 vector_turret_v(0.0f, 1.0f, 0.0f);
+
+    float angle_rad =
+        std::atan2(vector_player_turret.y - vector_turret_v.y,
+                   vector_player_turret.x - vector_turret_v.x);
+    if(three_d){
+      glm::quat rot;
+      rot = glm::rotate(rot, angle_rad, glm::vec3(0.0f, 0.0f, 1.0f));
+      turret_transform.SetLocalOrientation(rot);
+    }
+
     const float distancia =
         std::sqrt(std::pow(std::abs(player_position.x - turret_position.x), 2) +
                   std::pow(std::abs(player_position.y - turret_position.y), 2));
@@ -1665,6 +1685,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/turret/default/attack.wav", false, 1);
 
+/*
         glm::vec3 vector_player_turret(player_position.x - turret_position.x,
                                        player_position.y - turret_position.y,
                                        0.0f);
@@ -1672,20 +1693,20 @@ void TurretIaSystem::update(entityx::EntityManager &es,
 
         float angle_rad =
             std::atan2(vector_player_turret.y - vector_turret_v.y,
-                       vector_player_turret.x - vector_turret_v.x);
-
-        glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-        new_velocity = glm::normalize(player_position -
-                                      turret_transform.GetWorldPosition()) *
-                       100.0f;
-        
+                       vector_player_turret.x - vector_turret_v.x);*/        
         if(!three_d){
+          glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+          new_velocity = glm::normalize(player_position -
+                                      turret_transform.GetWorldPosition()) * 100.0f;
           EntityFactory2D().MakeEnemyProjectile(es, turret_position, angle_rad,
                                                new_velocity, "torreta");
         }
         else{
+          glm::vec3 new_velocity_threed(0.0f,0.0f,0.0f);
+          new_velocity_threed = glm::normalize(player_position -
+                                      turret_transform.GetWorldPosition()) * 50.0f;
           EntityFactory3D().MakeEnemyProjectile(es, turret_position, angle_rad,
-                                               new_velocity, "torreta");
+                                               new_velocity_threed, "torreta");
         }
         
         turret.time_passed = 0.0;
@@ -1772,6 +1793,23 @@ void GhostIaSystem::update(entityx::EntityManager &es,
   es.each<Ghost, Transform, Physics>([&](entityx::Entity entity, Ghost &ghost,
                                          Transform &transform,
                                          Physics &physics) {
+    glm::vec3 ghost_position;
+    ghost_position = transform.GetWorldPosition();
+
+    glm::vec3 vector_player_ghost(player_position.x - ghost_position.x,
+                                       player_position.y - ghost_position.y,
+                                       0.0f);
+    glm::vec3 vector_ghost_v(0.0f, 1.0f, 0.0f);
+
+    float angle_rad =
+        std::atan2(vector_player_ghost.y - vector_ghost_v.y,
+                   vector_player_ghost.x - vector_ghost_v.x);
+    if(three_d){
+      glm::quat rot;
+      rot = glm::rotate(rot, angle_rad, glm::vec3(0.0f, 0.0f, 1.0f));
+      transform.SetLocalOrientation(rot);
+    }
+
     ghost.time_passed += dt * 1000.0f;
     switch (ghost.comportamiento) {
       case Ghost::Comportamiento::DAMAGE_TOP:
@@ -2373,10 +2411,20 @@ void LancerWalkingSystem::update(entityx::EntityManager &es,
 }
 
 const float LancerIaSystem::lancerSpeed = 70.0f;
-
+const float LancerIaSystem::lancerThreeDSpeed = 30.0f;
+bool once6=true;
 void LancerIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
+
+  if(once6){
+    once6 = false;
+    for(auto e : es.entities_with_components<ThreeD>()){
+      std::cout << "lancer 3D" << std::endl;
+      three_d = true;
+    }
+  }
+
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
@@ -2391,7 +2439,34 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         const float distancia = std::sqrt(
             std::pow(std::abs(player_position.x - lancer_position.x), 2) +
             std::pow(std::abs(player_position.y - lancer_position.y), 2));
+
+        
+        if(three_d){
+          glm::vec3 vector_player_lancer(player_position.x - lancer_position.x,
+                                           player_position.y - lancer_position.y,
+                                           0.0f);
+          glm::vec3 vector_lancer_v(0.0f, 1.0f, 0.0f);
+
+          float angle_rad =
+              std::atan2(vector_player_lancer.y - vector_lancer_v.y,
+                         vector_player_lancer.x - vector_lancer_v.x);
+          glm::quat rot;
+          rot = glm::rotate(rot, angle_rad, glm::vec3(0.0f, 0.0f, 1.0f));
+          lancer_transform.SetLocalOrientation(rot);
+        }
+
         lancer.time_passed += (dt * 1000.0f);
+
+        float safeDistance = 30.0f;
+        float followDistance = 35.0f;
+        float keepDistance = 10.0f;
+        float speed = lancerSpeed;
+        if(three_d){
+          safeDistance = 12.0f;
+          followDistance = 17.0f;
+          keepDistance = 4.0f;
+          speed = lancerThreeDSpeed;
+        }
 
         if (lancer.time_passed >= 5000.0f) {
         	lancer.is_attacking = true;
@@ -2405,20 +2480,19 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         		lancer.orientation = Lancer::LancerOrientation::LEFT;
         	} else if (lancer_position.x < player_position.x) {
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
-        	}*/
-
-        	if (distancia < 30.0f) { 
+        	}*/ 
+        	if (distancia < safeDistance) { 
         		lancer_physics.velocity =
 	              -1.0f *
 	              glm::normalize(player_position -
 	                             lancer_transform.GetWorldPosition()) *
-	              lancerSpeed;
-        	} else if (distancia > 35.0f) {
+	              speed;
+        	} else if (distancia > followDistance) {
         		lancer_physics.velocity =
 	              1.0f *
 	              glm::normalize(player_position -
 	                             lancer_transform.GetWorldPosition()) *
-	              lancerSpeed;
+	              speed;
         	} else {
         		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         	}
@@ -2429,18 +2503,18 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         	}
         } else {
         	lancer.is_attacking = false;
-        	if (distancia < 30.0f) {
+        	if (distancia < safeDistance) {
         		lancer_physics.velocity =
 	              -1.0f *
 	              glm::normalize(player_position -
 	                             lancer_transform.GetWorldPosition()) *
-	              10.0f;
-        	} else if (distancia > 35.0f) {
+	              keepDistance;
+        	} else if (distancia > followDistance) {
         		lancer_physics.velocity =
 	              1.0f *
 	              glm::normalize(player_position -
 	                             lancer_transform.GetWorldPosition()) *
-	              10.0f;
+	              keepDistance;
         	} else {
         		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
         	}   	

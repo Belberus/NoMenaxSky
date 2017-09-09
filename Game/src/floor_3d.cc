@@ -51,6 +51,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<HealthSystem>(dt);    
     systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(dt);
+    systems.update<engine::systems::two_d::ColliderRenderer>(dt);
   }
   else{
     systems.update<PlayerInputSystem>(dt);

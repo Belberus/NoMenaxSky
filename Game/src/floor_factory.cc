@@ -410,10 +410,10 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   floor_model.assign<engine::components::common::Transform>(floor_transform);
   // create the camera
   auto camera = floor->entities.create();
-  camera.assign<engine::components::common::Camera>(glm::radians(75.0f), 160.0f,
+  camera.assign<engine::components::common::Camera>(glm::radians(30.0f), 160.0f,
                                                     60.0f, 0.1f, 1000.0f);
   engine::components::common::Transform camera_transform(
-      glm::vec3(0.0f, 0.0f, 30.0f));
+      glm::vec3(0.0f, 0.0f, 70.0f));
   camera.assign<engine::components::common::Transform>(camera_transform);
   // create the player
 
@@ -428,7 +428,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   
   // create the colliders
   tmx::Map tiled_map;
-  tiled_map.load("assets/test/nivel1.tmx");
+  tiled_map.load("assets/3d/castillo/planta1/planta1.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
   floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";

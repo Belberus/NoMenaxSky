@@ -22,11 +22,6 @@ using namespace std;
 
 Game::Game()
     : three_d(false), new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
-  std::string filename = "assets/config/opciones.txt";
-  std::ofstream outfile;
-  outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
-  outfile << "1 1 1" << std::endl;
-  outfile.close();
   text_to_play = "Este es Gauntleto, esta furioso porque el malvado Lord Menax y sus secuaces\nle han robado todas las tartas.\nRecorre el castillo, encuentra a Menax y a sus secuaces y vencelos para\nrecuperar las tartas!\n\nPara poder enfrentarte al boss de este nivel, deberas encontrar la llave.\nBusca en los dos cofres, uno debe contenerla.\n                    Pulsa [ENTER] para continuar.";
   level = 1;
 

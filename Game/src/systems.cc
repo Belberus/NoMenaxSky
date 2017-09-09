@@ -1317,23 +1317,91 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  // }
 
 	  if(!is_paused()){
-	    es.each<Player, Physics, Wizard>([&](entityx::Entity entity,
+	    es.each<Player, Physics, Wizard, Transform>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
-	                                               Wizard &wizard) {
+	                                               Wizard &wizard, Transform &t) {
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
+          if(three_d){
+            glm::quat rot;
+            switch(player.orientation){
+              case Player::Orientation::DOWN:
+                rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::LEFT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::RIGHT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                break;
+              default:
+                break;
+            }
+            t.SetLocalOrientation(rot);
+          }
 	        player.orientation = Player::Orientation::UP;
 	        new_velocity.y += 1.0f;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
+          if(three_d){
+            glm::quat rot;
+            switch(player.orientation){
+              case Player::Orientation::DOWN:
+                rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::LEFT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::RIGHT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                break;
+              default:
+                break;
+            }
+            t.SetLocalOrientation(rot);
+          }
 	        player.orientation = Player::Orientation::DOWN;
 	        new_velocity.y += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
+          if(three_d){
+            glm::quat rot;
+            switch(player.orientation){
+              case Player::Orientation::DOWN:
+                rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::LEFT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::RIGHT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                break;
+              default:
+                break;
+            }
+            t.SetLocalOrientation(rot);
+          }
 	        player.orientation = Player::Orientation::LEFT;
 	        new_velocity.x += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
+          if(three_d){
+            glm::quat rot;
+            switch(player.orientation){
+              case Player::Orientation::DOWN:
+                rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::LEFT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                break;
+              case Player::Orientation::RIGHT:
+                rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                break;
+              default:
+                break;
+            }
+            t.SetLocalOrientation(rot);
+          }
 	        player.orientation = Player::Orientation::RIGHT;
 	        new_velocity.x += 1.0f;
 	      }
@@ -1355,12 +1423,32 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 
 	      if (time_passed_since_last_alt_attack_ >= PlayerInputSystem::kAltAttackDuration) {
           //First, Alt attack
+          //Alt up
           if(keys_[GLFW_KEY_SPACE] && 
             keys_[GLFW_KEY_UP] && 
             !keys_[GLFW_KEY_DOWN] &&
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1381,12 +1469,32 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             }
             else player_entity.component<Energy>()->energy -= 30.0f;
           }
+          //Alt Down
           else if(keys_[GLFW_KEY_SPACE] && 
             !keys_[GLFW_KEY_UP] && 
             keys_[GLFW_KEY_DOWN] &&
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::UP:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1407,12 +1515,32 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             }
             else player_entity.component<Energy>()->energy -= 30.0f;
           }
+          //Alt Right
           else if(keys_[GLFW_KEY_SPACE] && 
             !keys_[GLFW_KEY_UP] && 
             !keys_[GLFW_KEY_DOWN] &&
             keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::UP:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1433,12 +1561,32 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             }
             else player_entity.component<Energy>()->energy -= 30.0f;
           }
+          //Alt left
           else if(keys_[GLFW_KEY_SPACE] && 
             !keys_[GLFW_KEY_UP] && 
             !keys_[GLFW_KEY_DOWN] &&
             !keys_[GLFW_KEY_RIGHT] &&
             keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                case Player::Orientation::UP:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1544,11 +1692,31 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
         }
         if(time_passed_since_last_magic_attack_ >= PlayerInputSystem::kMagicAttackDuration){         
           //Normal attack now
+          //Normal Up
           if(!keys_[GLFW_KEY_SPACE] && 
             keys_[GLFW_KEY_UP] && 
             !keys_[GLFW_KEY_DOWN] &&
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1566,6 +1734,25 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             keys_[GLFW_KEY_DOWN] &&
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1583,6 +1770,25 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_DOWN] &&
             keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
@@ -1600,6 +1806,25 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_DOWN] &&
             !keys_[GLFW_KEY_RIGHT] &&
             keys_[GLFW_KEY_LEFT]){
+
+            if(three_d){
+              glm::quat rot;
+              switch(player.orientation){
+                case Player::Orientation::DOWN:
+                  rot = glm::rotate(rot, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::LEFT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                  break;
+                case Player::Orientation::RIGHT:
+                  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+                  break;
+                default:
+                  break;
+              }
+              t.SetLocalOrientation(rot);
+            }
+            
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;

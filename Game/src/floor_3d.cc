@@ -48,6 +48,7 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<CameraFollowPlayerSystem>(dt);
     systems.update<KnightAttackSystem>(dt);
     systems.update<WizardAttackSystem>(dt);
+    //systems.update<TurretAttackSystem>(dt);
     systems.update<HealthSystem>(dt);    
     systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(dt);

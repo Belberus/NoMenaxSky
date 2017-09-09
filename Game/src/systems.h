@@ -377,6 +377,20 @@ class GhostAttackSystem : public entityx::System<GhostAttackSystem>,
               entityx::TimeDelta dt) override;
 };
 
+class MasiatrixBossFight : public entityx::System<MasiatrixBossFight>, 
+                            public entityx::Receiver<MasiatrixBossFight> {
+  public:
+
+    MasiatrixBossFight(entityx::EntityManager *em) : em(em) {}
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const MasiatrixNextPhase &nextPhase);
+
+  int actual_phase;
+  entityx::EntityManager *em;
+};
+
 
 
 

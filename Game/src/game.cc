@@ -25,6 +25,29 @@ Game::Game()
   text_to_play = "Este es Gauntleto, esta furioso porque el malvado Lord Menax y sus secuaces\nle han robado todas las tartas.\nRecorre el castillo, encuentra a Menax y a sus secuaces y vencelos para\nrecuperar las tartas!\n\nPara poder enfrentarte al boss de este nivel, deberas encontrar la llave.\nBusca en los dos cofres, uno debe contenerla.\n                    Pulsa [ENTER] para continuar.";
   level = 2;
 
+  std::string filename = "assets/config/opciones.txt";
+
+  std::fstream file(filename.c_str(), std::ios_base::in);
+
+  int modo, musica, efectos;
+
+  file >> modo >> musica >> efectos;
+  file.close();
+
+  if (!modo) {
+    three_d = true;
+  }
+
+  if (!musica){
+    Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(0.0f);
+  } 
+  else Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
+
+  if (!efectos){
+    Engine::GetInstance().Get<AudioManager>().SetVolumeFX(0.0f);
+  } 
+  else Engine::GetInstance().Get<AudioManager>().SetVolumeMusic(1);
+
   events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
   events.subscribe<BackToMainMenu>(*this);

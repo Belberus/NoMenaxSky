@@ -205,14 +205,22 @@ struct Manueleth {
 
 struct Masiatrix {
   enum Orientation {TOP, DOWN, LEFT, RIGHT};
-  Masiatrix(std::string id, glm::vec3 original_position) : id(id), original_position(original_position), orientation(Orientation::DOWN), is_attacking(false), time_passed_attack(0.0f), time_passed_movement(3000.0f) {}
+  Masiatrix(std::string id, glm::vec3 original_position, bool real) : id(id), original_position(original_position), real(real), orientation(Orientation::DOWN), is_attacking(false), time_passed_attack(0.0f), time_passed_movement(3000.0f) {}
   Orientation orientation;
   glm::vec3 original_position;
   float time_passed_attack;
   float time_passed_movement;
   bool is_attacking;
   bool rand_initialized;
+  bool real;
   std::string id;
+};
+
+struct MasiatrixInfo { 
+  glm::vec3 positionA;
+  glm::vec3 positionB;
+  glm::vec3 positionC;
+  glm::vec3 positionD;
 };
 
 struct Wizard {
@@ -251,6 +259,10 @@ struct WizardProjectile{
 
 struct ParentLink {
 	entityx::Entity owner;
+};
+
+struct ThreeD {
+
 };
 
 #endif  // COMPONENTS_H_

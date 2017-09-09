@@ -21,14 +21,14 @@ using namespace engine::core;
 using namespace std;
 
 Game::Game()
-    : new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
+    : three_d(false), new_game(true), new_game2(true), new_game3(true), current_state_(State::kMainMenu), next_state_(State::kNull), scenes_() {
   std::string filename = "assets/config/opciones.txt";
   std::ofstream outfile;
   outfile.open(filename, std::ofstream::out | std::ofstream::trunc);
   outfile << "1 1 1" << std::endl;
   outfile.close();
   text_to_play = "Este es Gauntleto, esta furioso porque el malvado Lord Menax y sus secuaces\nle han robado todas las tartas.\nRecorre el castillo, encuentra a Menax y a sus secuaces y vencelos para\nrecuperar las tartas!\n\nPara poder enfrentarte al boss de este nivel, deberas encontrar la llave.\nBusca en los dos cofres, uno debe contenerla.\n                    Pulsa [ENTER] para continuar.";
-  level = 1;
+  level = 2;
 
   events.subscribe<CharSelect>(*this);
   events.subscribe<OptionMenu>(*this);
@@ -38,7 +38,9 @@ Game::Game()
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
   events.subscribe<StartLevel2>(*this);
+  events.subscribe<StartLevel3>(*this);
   events.subscribe<PlayText>(*this);
+  events.subscribe<SetThreeD>(*this);
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -76,19 +78,24 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
         scenes_.front()->events.emit<PauseGameEvent>();
         break;
-      case State::kFloor1:
+      case State::kFloor2:
         if (new_game){
           new_game = false;
           Engine::GetInstance().Get<AudioManager>().StopAllSounds();
           Engine::GetInstance().Get<AudioManager>().
             PlaySound("assets/media/music/level_one_v2.wav",true, 0.3f);
           scenes_.clear();
-          /*scenes_.push_back(
-           FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));*/
-          scenes_.push_back(FloorFactory::MakeFloorOne3D("daigual",this, character));
-          
+          if(!three_d){
+            scenes_.push_back(
+              FloorFactory::MakeFloorOne2D("assets/castle/floor1.tmx", this, character));
+          }
+          else{
+            scenes_.push_back(FloorFactory::MakeFloorOne3D("daigual",this, character));
+          }
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));
+          SetThreeD std(true);
+          //scenes_.front()->events.emit<SetThreeD>(std);
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(1);
           scenes_.front()->events.emit<LevelEvent>(lt);
@@ -97,7 +104,7 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.front()->events.emit<BackToGame>();
         }
         break;
-      case State::kFloor2:
+      case State::kFloor1:
         if(new_game2){
           new_game2 = false;
           Engine::GetInstance().Get<AudioManager>().StopMusic();
@@ -180,6 +187,12 @@ void Game::receive(const StartLevel2& event) {
   next_state_ = State::kFloor2; 
 }
 
+void Game::receive(const StartLevel3& event) {
+  level = 3;
+  new_game3 = true;
+  next_state_ = State::kFloor3;
+}
+
 void Game::receive(const OptionMenu& event) {
   next_state_ = State::kOptionsMenu;
 }
@@ -202,6 +215,10 @@ void Game::receive(const BackToGame& event) {
 void Game::receive(const PlayText& event){
   text_to_play = event.text;
   next_state_ = State::kText;  
+}
+
+void Game::receive(const SetThreeD& setThreeD){
+  three_d = setThreeD.three_d;  
 }
 
 int Game::getLevel(){

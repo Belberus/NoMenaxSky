@@ -29,6 +29,7 @@ class Floor : public engine::core::Scene, public entityx::Receiver<Floor> {
   void receive(const engine::events::Collision &collision);
   void receive(const Health &health);
   void receive(const StartLevel2 &event);
+  void receive(const StartLevel3 &event);
   void receive(const Energy &energy);
   void receive(const PauseMenuEvent &pm);
   void receive(const PauseGameEvent& pg);

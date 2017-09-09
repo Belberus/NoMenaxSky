@@ -27,7 +27,7 @@ struct EntityFactory {
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
   virtual std::vector<entityx::Entity> MakeMasiatrix(
-      entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id) = 0;
+      entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id, const bool &real) = 0;
 
   virtual std::vector<entityx::Entity> MakeLancer(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;

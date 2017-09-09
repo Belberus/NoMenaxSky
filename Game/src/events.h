@@ -6,6 +6,7 @@ struct StartGame {
 	StartGame(std::string text) : text(text) {};
 };
 struct StartLevel2 {};
+struct StartLevel3 {};
 struct OptionMenu {};
 struct BackToMainMenu {};
 struct CharSelect {};
@@ -21,8 +22,16 @@ struct PlayText{
 	std::string text;
 	PlayText(std::string text) : text(text){};
 };
+struct MasiatrixNextPhase {
+	int phase;
+	MasiatrixNextPhase(int phase) : phase(phase) {};
+};
 struct LevelEvent {
 	int level;
 	LevelEvent(int level) : level(level){};
+};
+struct SetThreeD {
+	bool three_d;
+	SetThreeD(bool three_d) : three_d(three_d){};
 };
 #endif // EVENTS_H_

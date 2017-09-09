@@ -27,7 +27,7 @@ struct EntityFactory2D : public EntityFactory {
       entityx::EntityManager &entities, const glm::vec3 &position) override;
 
   std::vector<entityx::Entity> MakeMasiatrix(
-      entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id) override;
+      entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id, const bool &real) override;
 
   std::vector<entityx::Entity> MakeWizardProjectile(
       entityx::EntityManager &entities, const glm::vec3 &position,

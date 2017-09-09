@@ -306,6 +306,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   void receive(const engine::events::KeyPressed &key_pressed);
   void receive(const engine::events::KeyReleased &key_released);
   void receive(const BackToGame &resumeGame);
+  void receive(const SetThreeD &setThreeD);
 
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
@@ -327,6 +328,7 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   float wizard_speed;
   std::unordered_map<int, bool> keys_;
   bool paused_;
+  bool three_d;
 };
 
 class LancerIaSystem : public entityx::System<LancerIaSystem> {
@@ -360,6 +362,20 @@ class GhostAttackSystem : public entityx::System<GhostAttackSystem>,
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+};
+
+class MasiatrixBossFight : public entityx::System<MasiatrixBossFight>, 
+                            public entityx::Receiver<MasiatrixBossFight> {
+  public:
+
+    MasiatrixBossFight(entityx::EntityManager *em) : em(em) {}
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const MasiatrixNextPhase &nextPhase);
+
+  int actual_phase;
+  entityx::EntityManager *em;
 };
 
 

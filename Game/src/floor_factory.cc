@@ -145,7 +145,8 @@ void FloorFactory::ParseStaticColliders(const tmx::Map &map,
 
 std::unordered_map<std::string, std::unique_ptr<Floor::Room>>
 FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name,
-                         const std::shared_ptr<EntityFactory> &factory, const std::string &level) {
+                         const std::shared_ptr<EntityFactory> &factory,
+                         const std::string &level) {
   std::unordered_map<std::string, std::unique_ptr<Floor::Room>> rooms;
   for (auto &layer : map.getLayers()) {
     if (layer->getType() == tmx::Layer::Type::Object &&
@@ -161,8 +162,8 @@ FloorFactory::ParseRooms(const tmx::Map &map, const std::string &layer_name,
 
 void FloorFactory::ParseRoomContents(
     const tmx::Map &map, const tmx::ObjectGroup &object_layer,
-    const std::shared_ptr<EntityFactory> &factory, Floor::Room &room, const std::string &level) {
-
+    const std::shared_ptr<EntityFactory> &factory, Floor::Room &room,
+    const std::string &level) {
   srand(time(NULL));
   float frecuencias[10] = {250.0f,  500.0f,  750.0f,  1000.0f, 1250.0f,
                            1500.0f, 1750.0f, 2000.0f, 2250.0f, 2500.0f};
@@ -202,7 +203,8 @@ void FloorFactory::ParseRoomContents(
         bossDoor.level = "1";
       } else if (level == "2") {
         bossDoor.level = "2";
-      } else bossDoor.level = "3";
+      } else
+        bossDoor.level = "3";
 
       auto fn_bossDoor =
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
@@ -304,21 +306,21 @@ void FloorFactory::ParseRoomContents(
       std::string id = properties[0].getStringValue();
       bool is_real;
       if (id == "A") {
-          is_real = true;
+        is_real = true;
       } else {
-          is_real = false;
+        is_real = false;
       }
       auto fn_masiatrix =
-            [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
-          return factory->MakeMasiatrix(em, position, id, is_real);
-        };
+          [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+        return factory->MakeMasiatrix(em, position, id, is_real);
+      };
       room.entity_creators_.push_back(fn_masiatrix);
-    } 
+    }
   }
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
-    const std::string &file_name, Game *parent_scene,  const std::string &role) {
+    const std::string &file_name, Game *parent_scene, const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -344,7 +346,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne2D(
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
-    const std::string &file_name, Game *parent_scene,  const std::string &role) {
+    const std::string &file_name, Game *parent_scene, const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -364,12 +366,12 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorTwo2D(
     factory->MakeKnight(floor->entities, glm::vec3(1006.0f, 2863.0f, 0));
   } else {
     factory->MakeWizard(floor->entities, glm::vec3(1006.0f, 2863.0f, 0));
-  } 
+  }
   return floor;
 }
 
 std::unique_ptr<Floor> FloorFactory::MakeFloorThree2D(
-    const std::string &file_name, Game *parent_scene,  const std::string &role) {
+    const std::string &file_name, Game *parent_scene, const std::string &role) {
   auto floor = std::make_unique<Floor2D>(parent_scene);
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory2D>());
   tmx::Map tiled_map;
@@ -422,21 +424,63 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   camera.assign<engine::components::common::Transform>(camera_transform);
   // create the player
 
-  if(role == "knight"){
+  if (role == "knight") {
     factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
-    //factory->MakeGhost(floor->entities, glm::vec3(0.0f,0.0f,7.0f));    
-  }
-  else{
-    //factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+    // factory->MakeGhost(floor->entities, glm::vec3(0.0f,0.0f,7.0f));
+  } else {
+    // factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
     factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
   }
-  
+
   // create the colliders
   tmx::Map tiled_map;
   tiled_map.load("assets/3d/castillo/planta1/planta1.tmx");
   ParseStaticColliders(tiled_map, "StaticColliders", *floor);
   floor->rooms_ = ParseRooms(tiled_map, "(1\\.\\d*)", factory, "1");
   floor->current_room_ = "1.0";
+  floor->rooms_[floor->current_room_]->Load(*floor);
+  return floor;
+}
+
+std::unique_ptr<Floor> FloorFactory::MakeFloorTwo3D(
+    const std::string &file_name, Game *parent_scene, const std::string &role) {
+  // TODO: move this line somewhere else
+  engine::core::Engine::GetInstance().EnableDepthTest(
+      engine::core::Engine::DepthTest::kLess);
+  std::unique_ptr<Floor> floor(std::make_unique<Floor3D>(parent_scene));
+  std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory3D>());
+  // create the floor model
+  auto floor_model = floor->entities.create();
+  floor_model.assign<engine::components::three_d::Model>(
+      "assets/3d/castillo/planta2/planta2.dae");
+  engine::components::common::Transform floor_transform(
+      glm::vec3(0.0f, 0.0f, 0.0f));
+  glm::quat floor_model_rotation;
+  floor_model_rotation = glm::rotate(floor_model_rotation, glm::radians(180.0f),
+                                     glm::vec3(0.0f, 0.0f, 1.0f));
+  floor_transform.SetLocalOrientation(floor_model_rotation);
+  floor_model.assign<engine::components::common::Transform>(floor_transform);
+  // create the camera
+  auto camera = floor->entities.create();
+  camera.assign<engine::components::common::Camera>(glm::radians(30.0f), 160.0f,
+                                                    60.0f, 0.1f, 1000.0f);
+  engine::components::common::Transform camera_transform(
+      glm::vec3(0.0f, 0.0f, 70.0f));
+  camera.assign<engine::components::common::Transform>(camera_transform);
+  // create the player
+
+  if (role == "knight") {
+    factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+  } else {
+    factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
+  }
+
+  // create the colliders
+  tmx::Map tiled_map;
+  tiled_map.load("assets/3d/castillo/planta2/planta2.tmx");
+  ParseStaticColliders(tiled_map, "StaticColliders", *floor);
+  floor->rooms_ = ParseRooms(tiled_map, "(2\\.\\d*)", factory, "2");
+  floor->current_room_ = "2.0";
   floor->rooms_[floor->current_room_]->Load(*floor);
   return floor;
 }

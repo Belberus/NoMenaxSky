@@ -5,12 +5,15 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.78.0 commit date:2017-02-24, commit time:14:33, hash:e92f235283</authoring_tool>
     </contributor>
-    <created>2017-09-09T21:03:05</created>
-    <modified>2017-09-09T21:03:05</modified>
+    <created>2017-09-10T00:03:11</created>
+    <modified>2017-09-10T00:03:11</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
+    <image id="boss2_png" name="boss2_png">
+      <init_from>boss2.png</init_from>
+    </image>
     <image id="hab2_0_png" name="hab2_0_png">
       <init_from>hab2.0.png</init_from>
     </image>
@@ -34,9 +37,6 @@
     </image>
     <image id="hab2_4_png" name="hab2_4_png">
       <init_from>hab2.4.png</init_from>
-    </image>
-    <image id="boss2_png" name="boss2_png">
-      <init_from>boss2.png</init_from>
     </image>
     <image id="palanca_png" name="palanca_png">
       <init_from>palanca.png</init_from>

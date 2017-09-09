@@ -340,17 +340,27 @@ void MenuInputSystem::receive(const KeyReleased &key_released) {
 }
 
 PauseInputSystem::PauseInputSystem()
-    : up_pressed_(false), down_pressed_(false), enter_pressed_(false) {
+    :three_d(false), up_pressed_(false), down_pressed_(false), enter_pressed_(false) {
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
 }
 
 float timerEnter = 0.0f;
+
 void PauseInputSystem::update(entityx::EntityManager &es,
                              entityx::EventManager &events,
                              entityx::TimeDelta dt) {
-  entityx::ComponentHandle<PauseOptions> arrow_menu;
   entityx::ComponentHandle<Transform> transform;
+  entityx::ComponentHandle<PauseOptions> arrow_menu;
+  entityx::ComponentHandle<ThreeD> threed;
+  for(auto e : es.entities_with_components(threed)){
+    three_d = true;
+  }
+
+  int displacement = 70;
+  if(three_d){
+    displacement =  70;
+  }
   for (entityx::Entity entity :
        es.entities_with_components(arrow_menu, transform)) {
     auto new_position = transform->GetLocalPosition();
@@ -360,15 +370,15 @@ void PauseInputSystem::update(entityx::EntityManager &es,
         case PauseOptions::Option::CONTINUAR:
           break;
         case PauseOptions::Option::FX:
-          new_position.y += 70;
+          new_position.y += displacement;
           arrow_menu->option = PauseOptions::Option::CONTINUAR;
         break;
         case PauseOptions::Option::MUSIC:
-          new_position.y += 70;
+          new_position.y += displacement;
           arrow_menu->option = PauseOptions::Option::FX;
         break;       
         case PauseOptions::Option::SALIR:
-          new_position.y += 70;
+          new_position.y += displacement;
           arrow_menu->option = PauseOptions::Option::MUSIC;
         break;  
       }
@@ -377,15 +387,15 @@ void PauseInputSystem::update(entityx::EntityManager &es,
       down_pressed_ = false;
       switch (arrow_menu->option) {
         case PauseOptions::Option::CONTINUAR:
-          new_position.y -= 70;
+          new_position.y -= displacement;
           arrow_menu->option = PauseOptions::Option::FX;
           break;
         case PauseOptions::Option::FX:
-          new_position.y -= 70;
+          new_position.y -= displacement;
           arrow_menu->option = PauseOptions::Option::MUSIC;
           break;
         case PauseOptions::Option::MUSIC:
-          new_position.y -= 70;
+          new_position.y -= displacement;
           arrow_menu->option = PauseOptions::Option::SALIR;
           break;  
         case PauseOptions::Option::SALIR:
@@ -404,7 +414,7 @@ void PauseInputSystem::update(entityx::EntityManager &es,
             events.emit<MuteMusic>();  
           break;  
         case PauseOptions::Option::SALIR:
-          events.emit<BackToMainMenu>();
+            events.emit<BackToMainMenu>();
           break;
       }
       enter_pressed_ = false;
@@ -2201,7 +2211,7 @@ void EnemyProjectileAnimationSystem::update(entityx::EntityManager &es,
 
 // Anterior valor: 50 (muy rapido para 3D, pensar algo!)
 const float GhostIaSystem::kSpeed = 50.0f;
-const float GhostIaSystem::kThreeDSpeed = 10.0f;
+const float GhostIaSystem::kThreeDSpeed = 20.0f;
 
 float timerGhost;
 
@@ -2316,10 +2326,11 @@ void GhostIaSystem::update(entityx::EntityManager &es,
           if(!three_d){
             physics.velocity =
               glm::normalize(player_position - transform.GetWorldPosition()) *
-              kSpeed;          }
+              kSpeed;          
+            }
           else{
-            glm::vec3 newVelocity(player_position.x - transform.GetWorldPosition().x,player_position.y - transform.GetWorldPosition().y,
-                transform.GetWorldPosition().z);
+            glm::vec3 newVelocity((player_position.x - transform.GetWorldPosition().x),
+              (player_position.y - transform.GetWorldPosition().y), 0);
             physics.velocity = glm::normalize(newVelocity) * kThreeDSpeed;
           }
         

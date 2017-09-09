@@ -12,6 +12,7 @@ class Floor3D : public Floor {
   void OnPlayerEnteringBossDoorWithoutKey() override;
   void PauseGame(bool pause) override;
   bool GetPaused() override;
+  friend class FloorFactory; 
 
  private:
  	bool paused;

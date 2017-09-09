@@ -351,6 +351,7 @@ void OptionsMenu::Update(entityx::TimeDelta dt) {
 
 
 void OptionsMenu::receive(const BackToMainMenu& back_to_main) {
+  std::cout << "options menu" << std::endl;
   parent_scene_->events.emit<BackToMainMenu>(back_to_main);
 }
 

@@ -124,6 +124,8 @@ class TrapIaSystem : public entityx::System<TrapIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class TurretIaSystem : public entityx::System<TurretIaSystem> {
@@ -328,7 +330,9 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
 
  private:
   static const float kKnightSpeed;
+  static const float kKnightThreeDSpeed;
   static const float kWizardSpeed;
+  static const float kWizardThreeDSpeed;
   static const float kAttackDuration;
   static const float kAltAttackDuration;
   static const float kMagicAttackDuration;
@@ -336,7 +340,9 @@ class PlayerInputSystem : public entityx::System<PlayerInputSystem>,
   float time_passed_since_last_alt_attack_;
   float time_passed_since_last_magic_attack_;
   float knight_speed;
+  float knight_threed_speed;
   float wizard_speed;
+  float wizard_threed_speed;
   std::unordered_map<int, bool> keys_;
   bool paused_;
   bool three_d;

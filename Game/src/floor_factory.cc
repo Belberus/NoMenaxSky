@@ -223,7 +223,7 @@ void FloorFactory::ParseRoomContents(
       room.entity_creators_.push_back(fn_ghost);
     } else if (object.getType() == "torreta") {
       float frecuencia = frecuencias[(rand() % 3)];
-      auto fn_turret =
+      auto fn_turret = 
           [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
         return factory->MakeTurret(em, position, frecuencia);
       };

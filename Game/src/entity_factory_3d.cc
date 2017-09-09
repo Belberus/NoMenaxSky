@@ -140,6 +140,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTrap(
   auto trap = entities.create();
   trap.assign<engine::components::common::Transform>(
       newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  trap.assign<ThreeD>();
   if (orient == "abajo") {
       trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
     } else if (orient == "arriba") {
@@ -171,7 +172,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   manueleth.assign<engine::components::common::Transform>(t);
   manueleth.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(1.5f, 3.0f));
-  manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
+  manueleth.assign<Health>(10.0f, 10.0f, "assets/media/fx/manueleth/default/death.wav");
   manueleth.assign<Manueleth>();
   manueleth.assign<ThreeD>();
   entities_created.push_back(manueleth);
@@ -183,6 +184,24 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   entityx::EntityManager& entities, const glm::vec3& position, const std::string &id, const bool &real) {
   glm::vec3 newPosition = position;
   newPosition.z += 7.0f;
+  std::vector<entityx::Entity> entities_created;
+  auto masiatrix = entities.create();
+  masiatrix.assign<engine::components::three_d::Model>(
+      "assets/3d/personajes/masiatrix/masiatrix.dae");
+  masiatrix.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
+  Transform t (newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  glm::quat rot;
+  rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+  t.SetLocalOrientation(rot);
+  masiatrix.assign<engine::components::common::Transform>(t);
+  masiatrix.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                                         glm::vec2(2.0f, 2.5f));
+  masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+  masiatrix.assign<Masiatrix>(id,position,real);
+  masiatrix.assign<ThreeD>();
+  entities_created.push_back(masiatrix);
+
+  return entities_created;
   return std::vector<entityx::Entity>();
 }
 
@@ -191,12 +210,12 @@ std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
     const float& rotation, const glm::vec3& velocity, const std::string& type) {
 
   glm::vec3 newPosition = position;
-  newPosition.z += 9.0f;
+  newPosition.z += 3.0f;
   
   std::vector<entityx::Entity> entities_created;
   auto enemyProjectile = entities.create();
 
-  engine::components::common::Transform t(position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  engine::components::common::Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   //enemyProjectile.assign<Transform>(position);
   glm::quat model_rotation;
   model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -222,6 +241,14 @@ std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
   else if(type == "manueleth"){
     enemyProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae"); //hacer algo para diferenciar
+    enemyProjectile.assign<engine::components::common::Physics>(velocity);
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+                                                           glm::vec2(0.6f, 0.6f));
+    enemyProjectile.assign<EnemyProjectile>(20.0f);
+  }
+  else if(type == "masiatrix"){
+    enemyProjectile.assign<engine::components::three_d::Model>(
+        "assets/3d/proyectiles/proyectil_trampa.dae"); //hacer algo para diferenciar
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
     enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
                                                            glm::vec2(0.6f, 0.6f));
@@ -254,7 +281,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
-    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
+    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                            glm::vec2(0.6f, 0.6f));
     wizardProjectile.assign<WizardProjectile>(10.0f);
   }
@@ -264,8 +291,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
-    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.9f, 0.0f),
-                                                           glm::vec2(0.6f, 0.6f));
+    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                                           glm::vec2(0.5f, 0.5f));
     wizardProjectile.assign<WizardProjectile>(30.0f);
   }
   entities_created.push_back(wizardProjectile);

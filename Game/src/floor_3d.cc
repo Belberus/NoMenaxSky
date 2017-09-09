@@ -21,6 +21,8 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<TurretIaSystem>();
   systems.add<LancerIaSystem>();
   systems.add<ManuelethIaSystem>();
+  systems.add<MasiatrixIaSystem>();
+  systems.add<MasiatrixBossFight>(&entities);
   systems.add<TrapIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<engine::systems::two_d::ColliderRenderer>();
@@ -44,6 +46,8 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<TurretIaSystem>(dt);
     systems.update<LancerIaSystem>(dt);
     systems.update<ManuelethIaSystem>(dt);
+    systems.update<MasiatrixIaSystem>(dt);
+    systems.update<MasiatrixBossFight>(dt);
     systems.update<TrapIaSystem>(dt);
     systems.update<RotatePlayerSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
@@ -65,6 +69,8 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<TurretIaSystem>(0);
     systems.update<LancerIaSystem>(0);
     systems.update<ManuelethIaSystem>(0);
+    systems.update<MasiatrixIaSystem>(0);
+    systems.update<MasiatrixBossFight>(0);
     systems.update<TrapIaSystem>(0);
     systems.update<engine::systems::two_d::Physics>(0);
     systems.update<KnightAttackSystem>(0);

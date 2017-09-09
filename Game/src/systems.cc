@@ -860,7 +860,11 @@ void TextInputSystem::receive(const KeyReleased &key_released) {
 
 const float PlayerInputSystem::kKnightSpeed = 150.0f;
 
+const float PlayerInputSystem::kKnightThreeDSpeed = 60.0f;
+
 const float PlayerInputSystem::kWizardSpeed = 200.0f;
+
+const float PlayerInputSystem::kWizardThreeDSpeed = 80.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
@@ -871,7 +875,7 @@ const float PlayerInputSystem::kAltAttackDuration = 1000.0f;
 bool oncee = true;
 
 PlayerInputSystem::PlayerInputSystem()
-    : three_d(false), knight_speed(kKnightSpeed), wizard_speed(kWizardSpeed), time_passed_since_last_attack_(kAttackDuration),time_passed_since_last_magic_attack_(kMagicAttackDuration), time_passed_since_last_alt_attack_(kAltAttackDuration), paused_(false){
+    : three_d(false), knight_threed_speed(kKnightThreeDSpeed), wizard_threed_speed(kWizardThreeDSpeed), knight_speed(kKnightSpeed), wizard_speed(kWizardSpeed), time_passed_since_last_attack_(kAttackDuration),time_passed_since_last_magic_attack_(kMagicAttackDuration), time_passed_since_last_alt_attack_(kAltAttackDuration), paused_(false){
   keys_.emplace(GLFW_KEY_W, false);
   keys_.emplace(GLFW_KEY_S, false);
   keys_.emplace(GLFW_KEY_A, false);
@@ -924,14 +928,6 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
   entityx::Entity player_entity;
   for (auto e : es.entities_with_components<Player>()) {
     player_entity = e;
-  }
-  if(oncee){
-    oncee = false;
-    for(auto e : es.entities_with_components<ThreeD>()){
-      knight_speed *= 0.5;
-      wizard_speed *= 0.5;
-      three_d = true;
-    }
   }
   
   if (player_entity.has_component<KnightAttack>()) {
@@ -1055,7 +1051,12 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.x += 1.0f;
 	      }
 	      if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
-	        new_velocity = glm::normalize(new_velocity) * knight_speed;
+          if(entity.component<ThreeD>()){
+            new_velocity = glm::normalize(new_velocity) * knight_threed_speed;
+          }
+          else{
+            new_velocity = glm::normalize(new_velocity) * knight_speed;
+          }
           Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
 	        // play sound
@@ -1461,7 +1462,12 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.x += 1.0f;
 	      }
 	      if (new_velocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
-	        new_velocity = glm::normalize(new_velocity) * wizard_speed;
+          if(entity.component<ThreeD>()){
+            new_velocity = glm::normalize(new_velocity) * wizard_threed_speed;
+          }
+          else{
+            new_velocity = glm::normalize(new_velocity) * wizard_speed;
+          }
 	        // play sound
           Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/gaunt/default/mov.wav", false, 0.6f);
@@ -2216,22 +2222,47 @@ void TrapIaSystem::update(entityx::EntityManager &es,
       glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
       switch (trap.orientation) {
         case Trap::Orientation::UP:
-          EntityFactory2D().MakeEnemyProjectile(
-              es, trap_position, 1.57, glm::vec3(0.0f, 100.0f, 0.0f), "trampa");
-          break;
+          if(!entity.component<ThreeD>()){
+            EntityFactory2D().MakeEnemyProjectile(
+                es, trap_position, 1.57, glm::vec3(0.0f, 100.0f, 0.0f), "trampa");
+          }
+          else{
+            EntityFactory3D().MakeEnemyProjectile(
+                es, trap_position, 1.57, glm::vec3(0.0f, 100.0f, 0.0f), "trampa");
+          }
+        break;
         case Trap::Orientation::DOWN:
-          EntityFactory2D().MakeEnemyProjectile(es, trap_position, -1.57,
-                                                 glm::vec3(0.0f, -100.0f, 0.0f),
-                                                 "trampa");
+          if(!entity.component<ThreeD>()){
+            EntityFactory2D().MakeEnemyProjectile(es, trap_position, -1.57,
+                                                   glm::vec3(0.0f, -100.0f, 0.0f),
+                                                   "trampa");          }
+          else{
+            EntityFactory3D().MakeEnemyProjectile(es, trap_position, -1.57,
+                                                   glm::vec3(0.0f, -100.0f, 0.0f),
+                                                   "trampa");
+          }
           break;
         case Trap::Orientation::LEFT:
-          EntityFactory2D().MakeEnemyProjectile(es, trap_position, -3.14,
-                                                 glm::vec3(-100.0f, 0.0f, 0.0f),
-                                                 "trampa");
+          if(!entity.component<ThreeD>()){
+            EntityFactory2D().MakeEnemyProjectile(es, trap_position, -3.14,
+                                                   glm::vec3(-100.0f, 0.0f, 0.0f),
+                                                   "trampa");
+          }
+          else{
+            EntityFactory3D().MakeEnemyProjectile(es, trap_position, -3.14,
+                                                   glm::vec3(-100.0f, 0.0f, 0.0f),
+                                                   "trampa");
+          }
           break;
         case Trap::Orientation::RIGHT:
-          EntityFactory2D().MakeEnemyProjectile(
-              es, trap_position, 0.0, glm::vec3(100.0f, 0.0f, 0.0f), "trampa");
+          if(!entity.component<ThreeD>()){
+            EntityFactory2D().MakeEnemyProjectile(
+                es, trap_position, 0.0, glm::vec3(100.0f, 0.0f, 0.0f), "trampa");
+          }
+          else{
+            EntityFactory3D().MakeEnemyProjectile(
+                es, trap_position, 0.0, glm::vec3(100.0f, 0.0f, 0.0f), "trampa");
+          }
           break;
       }
       trap.time_passed = 0.0;
@@ -2728,7 +2759,8 @@ void HealthSystem::update(entityx::EntityManager &es,
           if (times_masiatrix_died >= 3) {
             events.emit<StartLevel3>();
           } else {
-            events.emit<MasiatrixNextPhase>(times_masiatrix_died);
+            MasiatrixNextPhase mnp(times_masiatrix_died, entity.component<ThreeD>());
+            events.emit<MasiatrixNextPhase>(mnp);
           }
         } else {
           es.each<MasiatrixLegs, ParentLink>(
@@ -3551,15 +3583,22 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
 
           direction = rand() % 8 + 1;
 
+          float velocityOne = 75.0f;
+          float velocityTwo = 50.0f;
+          if(entity.component<ThreeD>()){
+            float velocityOne = 30.0f;
+            float velocityTwo = 17.0f;
+          }
+
           switch (direction) {
-            case 1 : next_velocity = glm::vec3(0.0f, 75.0f, 0.0f); break;
-            case 2 : next_velocity = glm::vec3(50.0f, 50.0f, 0.0f); break;
-            case 3 : next_velocity = glm::vec3(75.0f, 0.0f, 0.0f); break;
-            case 4 : next_velocity = glm::vec3(50.0f, -50.0f, 0.0f); break;
-            case 5 : next_velocity = glm::vec3(0.0f, -75.0f, 0.0f); break;
-            case 6 : next_velocity = glm::vec3(-50.0f, -50.0f, 0.0f); break;
-            case 7 : next_velocity = glm::vec3(-75.0f, 0.0f, 0.0f); break;
-            case 8 : next_velocity = glm::vec3(-50.0f, 50.0f, 0.0f); break;
+            case 1 : next_velocity = glm::vec3(0.0f, velocityOne, 0.0f); break;
+            case 2 : next_velocity = glm::vec3(velocityTwo, velocityTwo, 0.0f); break;
+            case 3 : next_velocity = glm::vec3(velocityOne, 0.0f, 0.0f); break;
+            case 4 : next_velocity = glm::vec3(velocityTwo, -velocityTwo, 0.0f); break;
+            case 5 : next_velocity = glm::vec3(0.0f, -velocityTwo, 0.0f); break;
+            case 6 : next_velocity = glm::vec3(-velocityTwo, -velocityTwo, 0.0f); break;
+            case 7 : next_velocity = glm::vec3(-velocityOne, 0.0f, 0.0f); break;
+            case 8 : next_velocity = glm::vec3(-velocityTwo, velocityTwo, 0.0f); break;
           }
           physics.velocity = next_velocity;
         }
@@ -3567,8 +3606,13 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
         const float distancia = std::sqrt(
             std::pow(std::abs(player_position.x - masiatrix_position.x), 2) +
             std::pow(std::abs(player_position.y - masiatrix_position.y), 2));
-        
-        if (distancia >= 45.0f) {
+
+        float safeDistance = 45.0f;
+        if(entity.component<ThreeD>()){
+          safeDistance = 17.0f;
+        }
+
+        if (distancia >= safeDistance) {
           if (masiatrix.time_passed_attack >= 1000.0f) {
             masiatrix.time_passed_attack = 0.0f;
 
@@ -3584,8 +3628,14 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
             projectile_velocity = glm::normalize(player_position -
                                       masiatrix_position) *
                        115.0f;
-            EntityFactory2D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
+            if(!entity.component<ThreeD>()){
+              EntityFactory2D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
                                                projectile_velocity, "masiatrix");
+            }
+            else{
+              EntityFactory3D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
+                                               projectile_velocity, "masiatrix");
+            }           
         }
       }    
   });
@@ -3604,10 +3654,18 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
 
   switch (actual_phase) {
     case 1 :
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+      if(!nextPhase.three_d){
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+      }
+      else{
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+      }
 
       positioning = masiatrixInfo.positionC;
       em->each<Player, Transform>(
@@ -3617,10 +3675,18 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
       });
     break;
     case 2 :
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", true);
-      EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", false);
+      if(!nextPhase.three_d){
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", true);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", false);
+      }
+      else{
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", true);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", false);
+      }
 
       positioning = masiatrixInfo.positionC;
       em->each<Player, Transform>(

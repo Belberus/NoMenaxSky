@@ -71,7 +71,7 @@ void GameUi::Update(entityx::TimeDelta dt) {
 }
 
 void GameUi::receive(const Energy &energy){
-  /*entities.each<Transform, D2Mode>(
+  entities.each<Transform, D2Mode>(
     [&](entityx::Entity stamina_bar, Transform &transform,
       D2Mode &d2){
       auto scale = transform.GetLocalScale();
@@ -90,12 +90,11 @@ void GameUi::receive(const Energy &energy){
       transform.SetLocalScale(scale);
       float newpos = init_pos_nrg - (170 - ((170*(energy.energy / energy.init_nrg))))/2.0f;
       transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
-    });*/
-  std::cout << "energy: " << energy.energy << std::endl;
+    });
 }
 
 void GameUi::receive(const Health& health) {
-  /*entities.each<Transform, D3Mode>(
+  entities.each<Transform, D3Mode>(
     [&](entityx::Entity health_bar, Transform &transform,
       D3Mode &wo){
       auto scale = transform.GetLocalScale();
@@ -114,8 +113,7 @@ void GameUi::receive(const Health& health) {
       transform.SetLocalScale(scale);
       float newpos = init_pos - (170 - ((170*(health.hp / health.init_hp))))/2.0f;
       transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
-    });*/
-  std::cout << "health: " << health.hp << std::endl;
+    });
 }
 
 

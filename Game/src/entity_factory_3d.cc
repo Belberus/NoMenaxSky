@@ -180,6 +180,12 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   return entities_created;
 }
 
+std::vector<entityx::Entity> EntityFactory3D::MakeMenax(
+    entityx::EntityManager& entities, const glm::vec3& position) {}
+
+std::vector<entityx::Entity> EntityFactory3D::MakeSpawn(
+    entityx::EntityManager& entities, const glm::vec3& position) {}
+
 std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   entityx::EntityManager& entities, const glm::vec3& position, const std::string &id, const bool &real) {
   glm::vec3 newPosition = position;

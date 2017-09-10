@@ -14,6 +14,9 @@ struct EntityFactory2D : public EntityFactory {
   std::vector<entityx::Entity> MakeGhost(entityx::EntityManager &entities,
                                          const glm::vec3 &position) override;
 
+  std::vector<entityx::Entity> MakeSpawn(entityx::EntityManager &entities,
+                                         const glm::vec3 &position) override;
+
   std::vector<entityx::Entity> MakeTurret(entityx::EntityManager &entities,
                                           const glm::vec3 &position,
                                           const float frecuencia) override;
@@ -24,6 +27,9 @@ struct EntityFactory2D : public EntityFactory {
                                         const float frecuencia) override;
 
   std::vector<entityx::Entity> MakeManueleth(
+      entityx::EntityManager &entities, const glm::vec3 &position) override;
+
+  std::vector<entityx::Entity> MakeMenax(
       entityx::EntityManager &entities, const glm::vec3 &position) override;
 
   std::vector<entityx::Entity> MakeMasiatrix(

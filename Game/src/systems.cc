@@ -886,6 +886,14 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_RIGHT, false);
   keys_.emplace(GLFW_KEY_SPACE, false);
   keys_.emplace(GLFW_KEY_ESCAPE, false);
+  keys_.emplace(GLFW_KEY_O, false); // Mantener para acceder a los shortcuts (es una o)
+  keys_.emplace(GLFW_KEY_1, false); // Iniciar nivel 1
+  keys_.emplace(GLFW_KEY_2, false); // Iniciar nivel 2
+  keys_.emplace(GLFW_KEY_3, false); // Iniciar nivel 3
+  keys_.emplace(GLFW_KEY_4, false); // Da llave al jugador
+  keys_.emplace(GLFW_KEY_5, false); // Activa ambas palancas
+  keys_.emplace(GLFW_KEY_6, false); // Restaura la vida
+  keys_.emplace(GLFW_KEY_7, false); // Elimina todos lo enemigos (fantasmas, torretas y lanceros) cargados
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
@@ -962,9 +970,46 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  // }
 
 	  if(!is_paused()){
-	    es.each<Player, Physics, KnightAttack, Transform>([&](entityx::Entity entity,
+	    es.each<Player, Physics, KnightAttack, Health, Transform>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
-	                                               KnightAttack &attack, Transform &t) {
+	                                               KnightAttack &attack, Health &health, Transform &t) {
+        // ShortCuts
+        if (keys_[GLFW_KEY_O]) {
+          if (keys_[GLFW_KEY_1]) {
+          events.emit<StartLevel1>();
+          }
+          if (keys_[GLFW_KEY_2]) {
+            events.emit<StartLevel2>();
+          }
+          if (keys_[GLFW_KEY_3]) {
+            events.emit<StartLevel3>();
+          } 
+          if (keys_[GLFW_KEY_4]) {
+            player.key = true;
+          }
+          if (keys_[GLFW_KEY_5]) {
+            player.levers_activated = 2;
+          }
+          if (keys_[GLFW_KEY_6]) {
+            health.hp = health.init_hp;
+          }
+          if (keys_[GLFW_KEY_7]) {
+            es.each<Ghost, Health>([&](entityx::Entity entity,
+                                Ghost &ghost, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Turret, Health>([&](entityx::Entity entity,
+                                Turret &turret, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Lancer, Health>([&](entityx::Entity entity,
+                                Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+        }
+        
+        // Normal keys
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
           if(entity.component<ThreeD>()){
@@ -2174,15 +2219,6 @@ void TurretIaSystem::update(entityx::EntityManager &es,
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/turret/default/attack.wav", false, 1);
 
-/*
-        glm::vec3 vector_player_turret(player_position.x - turret_position.x,
-                                       player_position.y - turret_position.y,
-                                       0.0f);
-        glm::vec3 vector_turret_v(0.0f, 1.0f, 0.0f);
-
-        float angle_rad =
-            std::atan2(vector_player_turret.y - vector_turret_v.y,
-                       vector_player_turret.x - vector_turret_v.x);*/        
         if(!three_d){
           glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
           new_velocity = glm::normalize(player_position -
@@ -2590,6 +2626,33 @@ void KnightAttackSystem::receive(const Collision &collision) {
       auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
       e0_color_animation->Play();
     }
+    // Menax
+  } else if (e0_weapon && e0_weapon->drawn &&
+             e0_weapon->owner.component<Player>() &&
+             collision_copy.e1.component<Menax>()) {
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+    auto e1_menax = collision_copy.e1.component<Menax>();
+    e1_menax->hits++;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/menax/default/hit.wav", false, 0.5f);
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
+  } else if (e1_weapon && e1_weapon->drawn &&
+             e1_weapon->owner.component<Player>() &&
+             collision_copy.e0.component<Menax>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+    auto e0_menax = collision_copy.e0.component<Menax>();
+    e0_menax->hits++;
+
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
   }
 }
 
@@ -2770,6 +2833,15 @@ void HealthSystem::update(entityx::EntityManager &es,
           });
           entity.destroy();
         }
+      } else if (entity.component<Menax>()) {
+        es.each<MenaxHitBox>(
+          [&](entityx::Entity entity_legs, MenaxHitBox &menaxHit) {
+            if (menaxHit.owner == entity) {
+              entity_legs.destroy();
+            }
+          });
+        entity.destroy();
+        //Enviar evento para pantalla final o whatever
       }
       else {
       	es.each<Legs, ParentLink>(
@@ -3417,6 +3489,40 @@ void WizardAttackSystem::receive(const Collision &collision) {
       auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
       e0_color_animation->Play();
     }
+    // Menax
+  } else if (e0_weapon &&
+             collision_copy.e1.component<Menax>()) {
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+
+    entityx::Entity proyectil = collision.e0;
+    proyectil.destroy();
+
+    auto e1_menax = collision_copy.e1.component<Menax>();
+    e1_menax->hits++;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/menax/default/hit.wav", false, 0.5f);
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
+  } else if (e1_weapon &&
+             collision_copy.e0.component<Menax>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+
+    entityx::Entity proyectil = collision.e1;
+    proyectil.destroy();
+
+    auto e0_menax = collision_copy.e0.component<Menax>();
+    e0_menax->hits++;
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/menax/default/hit.wav", false, 0.5f);
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
   } else {
   	if (e1_weapon) {
       entityx::Entity proyectil = collision.e1;
@@ -3696,18 +3802,193 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
       em->each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         if(nextPhase.three_d){
-          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 10.0f,7.);
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 10.0f,7);
           player_transform.SetLocalPosition(new_position);
         }
         else{
-          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 60.0f,positioning.z);
           player_transform.SetLocalPosition(new_position);
         }
-        
+      });
+    break;
+  } 
+}
+
+int enemies_alive = 0;
+void MenaxIaSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+  enemies_alive = 0;
+  glm::vec3 player_position;
+  es.each<Player, Transform>(
+      [&](entityx::Entity entity, Player &player, Transform &transform) {
+        player_position = transform.GetWorldPosition();
       });
 
-    break;
+  es.each<Ghost>(
+      [&](entityx::Entity entity, Ghost &ghost) {
+        enemies_alive++;
+      });
+  es.each<Turret>(
+      [&](entityx::Entity entity, Turret &turret) {
+        enemies_alive++;
+      });
+
+  glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+  es.each<Menax, Transform, Physics>([&](entityx::Entity entity, Menax &menax, Transform &menax_transform, Physics &physics) {
+    glm::vec3 menax_position;
+
+    if (menax.comportamiento == Menax::Comportamiento::WAIT) {
+      physics.velocity = glm::vec3(0.0f,0.0f,0.0f);
+      if (enemies_alive == 0 && menax.spawn_enemies == false) {
+        es.each<Player, Transform>(
+          [&](entityx::Entity entity, Player &player, Transform &transform) {
+            transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 175.0f ,menax.original_position.z));
+          });
+        menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 75.0f,menax.original_position.z));
+        menax.hits = 0;
+        menax.comportamiento = Menax::Comportamiento::ATTACK;
+        menax.timer = 0.0f;
+      }
+    } else {
+      if (menax.hits >= 10) {
+        menax_transform.SetLocalPosition(menax.original_position);
+        menax.spawn_enemies = true;
+        menax.hits = 0;
+        menax.comportamiento = Menax::Comportamiento::WAIT;
+      } else {
+        // Movernos hacia Player y provocar animacion
+        glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+        new_velocity = glm::normalize(player_position -
+                                      menax_transform.GetWorldPosition()) * 60.0f;
+        physics.velocity = new_velocity;
+      }
+    }
+  });
+}
+
+int total_spawned = 0;
+bool have_to_spawn = false;
+void SpawnSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+  es.each<Menax>(
+      [&](entityx::Entity entity, Menax &menax) {
+        have_to_spawn = menax.spawn_enemies;
+      });
+
+  es.each<Spawn, Transform>(
+      [&](entityx::Entity entity, Spawn &spawn, Transform &transform) {     
+        if (have_to_spawn) {
+          spawn.timer += (dt * 500.0f);
+          if (spawn.timer >= 500.0f) {
+            if (spawn.spawned == 4) {
+              spawn.timer = 0.0f;
+              EntityFactory2D().MakeTurret(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z), 500.0f);
+              spawn.spawned++;
+              total_spawned++;
+            } else {
+              spawn.timer = 0.0f;
+              EntityFactory2D().MakeGhost(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z));
+              spawn.spawned++;
+              total_spawned++;
+            }      
+          }
+          if (spawn.spawned == 5 && total_spawned == 10) {
+            have_to_spawn = false;
+            spawn.timer = 0.0f;
+            spawn.spawned=0;
+            total_spawned = 0;
+            es.each<Menax>(
+              [&](entityx::Entity entity, Menax &menax) {
+                menax.spawn_enemies = false;
+            }); 
+          }
+        }
+  });
+}
+
+bool finished = false;
+void MenaxAnimationSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+  entityx::ComponentHandle<Menax> menax;
+  entityx::ComponentHandle<Transform> transform;
+  entityx::ComponentHandle<Physics> physics;
+  entityx::ComponentHandle<SpriteAnimation> animation;
+  
+  std::string animToPlay;
+  std::string animToPlayHit;
+
+  for (entityx::Entity e0 : es.entities_with_components(
+           menax, transform, physics, animation)) {
+    
+    if (menax->comportamiento == Menax::Comportamiento::WAIT) {
+        animToPlay = "waiting";
+        animation->Play(animToPlay);
+        animToPlayHit = "dontDoDamage";
+        menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+    } else{
+      if (physics->velocity.y < 0 || physics->velocity.y > 0 || physics->velocity.x > 0 || physics->velocity.x < 0) {
+        menax->timer += (dt*175.0f);
+        animToPlay = "moving_bottom";
+        animation->Play(animToPlay);
+        animToPlayHit = "dontDoDamage";
+        menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+        if (menax->timer >= 350.0f) {
+          menax->hitBox.component<MenaxHitBox>()->stomp = true;
+          animToPlayHit = "doDamage";
+          menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+          if (menax->timer >= 525.0f) {
+            menax->timer = 0.0f;
+            menax->hitBox.component<MenaxHitBox>()->stomp = false;
+            menax->hitBox.component<MenaxHitBox>()->damaged = false;
+            animToPlayHit = "dontDoDamage";
+            menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+          }   
+        }
+      } 
+    } 
   }
 }
 
-        
+void MenaxAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void MenaxAttackSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<MenaxHitBox>();
+  auto e1_projectile = collision_copy.e1.component<MenaxHitBox>();
+
+  if (e0_projectile && e0_projectile->stomp && !e0_projectile->damaged && collision_copy.e1.component<Player>()){
+    e0_projectile->damaged = true;
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
+
+  } else if (e1_projectile && e1_projectile->stomp && !e1_projectile->damaged && collision_copy.e0.component<Player>()) {
+    e1_projectile->damaged = true;
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
+  } 
+}
+void MenaxAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}

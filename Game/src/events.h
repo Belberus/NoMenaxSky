@@ -5,6 +5,7 @@ struct StartGame {
 	std::string text;
 	StartGame(std::string text) : text(text) {};
 };
+struct StartLevel1 {};
 struct StartLevel2 {};
 struct StartLevel3 {};
 struct OptionMenu {};

@@ -315,7 +315,19 @@ void FloorFactory::ParseRoomContents(
         return factory->MakeMasiatrix(em, position, id, is_real);
       };
       room.entity_creators_.push_back(fn_masiatrix);
-    }
+    } else if (object.getType() == "menax") {
+      auto fn_menax =
+            [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+          return factory->MakeMenax(em, position);
+        };
+      room.entity_creators_.push_back(fn_menax);
+    } else if (object.getType() == "enemySpawn") {
+      auto fn_spawn =
+            [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+          return factory->MakeSpawn(em, position);
+        };
+      room.entity_creators_.push_back(fn_spawn);
+    } 
   }
 }
 

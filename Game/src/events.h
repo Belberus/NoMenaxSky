@@ -9,6 +9,7 @@ struct StartLevel1 {};
 struct StartLevel2 {};
 struct StartLevel3 {};
 struct OptionMenu {};
+struct EndScreenEvent{};
 struct BackToMainMenu {};
 struct CharSelect {};
 struct Death {};

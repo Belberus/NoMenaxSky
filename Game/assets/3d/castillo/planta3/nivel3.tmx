@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" nextobjectid="106">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" nextobjectid="108">
  <tileset firstgid="1" source="planta3.tsx"/>
  <layer name="Tile Layer 1" width="100" height="100">
   <data encoding="csv">
@@ -234,6 +234,7 @@
   <object id="105" type="enemySpawn" x="435.656" y="260.5" width="4.6875" height="2.5"/>
   <object id="92" type="menax" x="403.781" y="251.25" width="3.1875" height="4.25"/>
   <object id="104" type="enemySpawn" x="373.156" y="260.375" width="4.6875" height="2.5"/>
+  <object id="106" x="382.727" y="259.727" width="48.4545" height="2.54545"/>
  </objectgroup>
  <objectgroup name="Center">
   <object id="1" type="jugador" x="405" y="436" width="1" height="0.996094"/>

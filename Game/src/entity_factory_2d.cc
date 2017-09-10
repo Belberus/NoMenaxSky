@@ -757,7 +757,12 @@ std::vector<entityx::Entity> EntityFactory2D::MakeSpawn(entityx::EntityManager &
     color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     masiatrix.assign<ColorAnimation>(std::move(color_frames));
     masiatrix.assign<Masiatrix>(id, position, real);
-    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+    if(real){
+      masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+    }
+    else{
+      masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+    }
      
     std::vector<engine::utils::Rectangle> moving_top;
     moving_top.emplace_back(glm::vec2(26, 88), glm::vec2(19, 19));

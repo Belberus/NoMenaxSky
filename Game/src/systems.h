@@ -363,12 +363,16 @@ class MenaxIaSystem : public entityx::System<MenaxIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class SpawnSystem : public entityx::System<SpawnSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class MenaxAnimationSystem : public entityx::System<MenaxAnimationSystem> {

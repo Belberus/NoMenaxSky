@@ -210,9 +210,10 @@ struct Manueleth {
 };
 
 struct Menax {
-  Menax(glm::vec3 original_position, entityx::Entity &hitBox) : original_position(original_position), hitBox(hitBox), timer(0.0f),comportamiento(Comportamiento::WAIT), spawn_enemies(false), hits(0) {}
+  Menax(glm::vec3 original_position, entityx::Entity &hitBox) : original_position(original_position), hitBox(hitBox),timer_attacking(0.0f), timer(0.0f),comportamiento(Comportamiento::WAIT), spawn_enemies(false), hits(0) {}
   enum Comportamiento {WAIT, ATTACK};
   Comportamiento comportamiento;
+  float timer_attacking;
   float timer; 
   bool spawn_enemies;
   glm::vec3 original_position;

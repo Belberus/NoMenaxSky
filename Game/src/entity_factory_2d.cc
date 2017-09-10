@@ -456,7 +456,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeGhost(
 
   // adding hitbox as a second entity
   auto attack_hitbox = entities.create();
-  attack_hitbox.assign<GhostHitBox>(5.0f, ghost);
+  attack_hitbox.assign<GhostHitBox>(2.0f, ghost);
   attack_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                   ghost.component<Transform>().get());
   attack_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 2.0f),

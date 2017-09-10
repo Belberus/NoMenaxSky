@@ -1418,9 +1418,47 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  // }
 
 	  if(!is_paused()){
-	    es.each<Player, Physics, Wizard, Transform>([&](entityx::Entity entity,
+	    es.each<Player, Physics, Wizard, Health, Transform>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
-	                                               Wizard &wizard, Transform &t) {
+	                                               Wizard &wizard, Health &health, Transform &t) {
+        // ShortCuts
+        if (keys_[GLFW_KEY_O]) {
+          if (keys_[GLFW_KEY_1]) {
+          events.emit<StartLevel1>();
+          }
+          if (keys_[GLFW_KEY_2]) {
+            events.emit<StartLevel2>();
+          }
+          if (keys_[GLFW_KEY_3]) {
+            events.emit<StartLevel3>();
+          } 
+          if (keys_[GLFW_KEY_4]) {
+            player.key = true;
+          }
+          if (keys_[GLFW_KEY_5]) {
+            player.levers_activated = 2;
+          }
+          if (keys_[GLFW_KEY_6]) {
+            health.hp = health.init_hp;
+          }
+          if (keys_[GLFW_KEY_7]) {
+            es.each<Ghost, Health>([&](entityx::Entity entity,
+                                Ghost &ghost, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Turret, Health>([&](entityx::Entity entity,
+                                Turret &turret, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Lancer, Health>([&](entityx::Entity entity,
+                                Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+        }
+
+
+        // Normal keys
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
           if(three_d){

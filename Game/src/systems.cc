@@ -894,6 +894,9 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_5, false); // Activa ambas palancas
   keys_.emplace(GLFW_KEY_6, false); // Restaura la vida
   keys_.emplace(GLFW_KEY_7, false); // Elimina todos lo enemigos (fantasmas, torretas y lanceros) cargados
+  keys_.emplace(GLFW_KEY_8, false); // Elimina a Manueleth
+  keys_.emplace(GLFW_KEY_9, false); // Elimina a las Masiatrix
+  keys_.emplace(GLFW_KEY_0, false); // Elimina a Menax
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
@@ -1004,6 +1007,24 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             });
             es.each<Lancer, Health>([&](entityx::Entity entity,
                                 Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_8]) {
+            es.each<Manueleth, Health>([&](entityx::Entity entity,
+                                Manueleth &manueleth, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_9]) {
+            es.each<Masiatrix, Health>([&](entityx::Entity entity,
+                                Masiatrix &masiatrix, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_0]) {
+            es.each<Menax, Health>([&](entityx::Entity entity,
+                                Menax &menax, Health &health) {
               health.hp = 0.0f;
             });
           }
@@ -1447,6 +1468,24 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             });
             es.each<Lancer, Health>([&](entityx::Entity entity,
                                 Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_8]) {
+            es.each<Manueleth, Health>([&](entityx::Entity entity,
+                                Manueleth &manueleth, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_9]) {
+            es.each<Masiatrix, Health>([&](entityx::Entity entity,
+                                Masiatrix &masiatrix, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_0]) {
+            es.each<Menax, Health>([&](entityx::Entity entity,
+                                Menax &menax, Health &health) {
               health.hp = 0.0f;
             });
           }
@@ -2875,7 +2914,6 @@ void HealthSystem::update(entityx::EntityManager &es,
             }
           });
         entity.destroy();
-        //Enviar evento para pantalla final o whatever
       }
       else {
       	es.each<Legs, ParentLink>(

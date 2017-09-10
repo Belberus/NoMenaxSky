@@ -22,7 +22,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
     kFloor2,
     kFloor3,
     kExit,
-    kNull
+    kNull,
   };
   Game();
   void Update(entityx::TimeDelta dt) override;

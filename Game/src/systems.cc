@@ -2195,9 +2195,9 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
    });
 }
 
-const float TurretIaSystem::turretSpeed = 10.0f;
+const float TurretIaSystem::turretSpeed = 20.0f;
 const float TurretIaSystem::turretThreeDSpeed = 4.0f;
-FANN::neural_net net("keep_enemy_away.net");
+FANN::neural_net net("assets/config/keep_enemy_away.net");
 void TurretIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
@@ -2249,7 +2249,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
     turret.time_passed += (dt * 250.0f);
     float safeDistance = 50.0f;
     if(three_d){
-      safeDistance = 25.0f;
+      safeDistance = 10.0f;
     }
     if (distancia < safeDistance) {
       std::array<fann_type, 4> input;
@@ -2262,7 +2262,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
       float vel_x = roundf(output[0]);
       float vel_y = roundf(output[1]);
 
-      turret_physics.velocity = glm::vec3(vel_x, vel_y, 0.0f);
+      turret_physics.velocity = glm::vec3(turretSpeed*(vel_x), turretSpeed*(vel_y), 0.0f);
     } else {
       // Meter la red neuronal
       turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -2283,7 +2283,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
           new_velocity_threed = glm::normalize(player_position -
                                       turret_transform.GetWorldPosition()) * 50.0f;
           EntityFactory3D().MakeEnemyProjectile(es, turret_position, angle_rad,
-                                               new_velocity_threed, "torreta");
+                                              new_velocity_threed, "torreta");
         }
         
         turret.time_passed = 0.0;

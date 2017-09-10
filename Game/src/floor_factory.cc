@@ -430,13 +430,14 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   floor_model.assign<engine::components::common::Transform>(floor_transform);
   // create the camera
   auto camera = floor->entities.create();
-  camera.assign<engine::components::common::Camera>(glm::radians(50.0f), 160.0f,
+  //camera.assign<engine::components::common::Camera>(glm::radians(50.0f), 160.0f,
+  camera.assign<engine::components::common::Camera>(160.0f,
                                                     80.0f, 0.1f, 1000.0f);
   engine::components::common::Transform camera_transform(
       glm::vec3(0.0f, 0.0f, 70.0f));
   glm::quat rot;
   rot = glm::rotate(rot, glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-  camera_transform.SetLocalOrientation(rot);
+  //camera_transform.SetLocalOrientation(rot);
   glm::vec3 s(camera_transform.GetLocalPosition());
   camera_transform.SetLocalPosition(glm::vec3(s.x-40,s.y,s.z));
   camera.assign<engine::components::common::Transform>(camera_transform);

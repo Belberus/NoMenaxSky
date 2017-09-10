@@ -3295,7 +3295,11 @@ void LancerAnimationSystem::update(entityx::EntityManager &es,
 
 
 void LancerAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager_ = &event_manager;
   event_manager.subscribe<Collision>(*this);
+}
+LancerAttackSystem::~LancerAttackSystem(){
+  event_manager_->unsubscribe<Collision>(*this);
 }
 
 void LancerAttackSystem::receive(const Collision &collision) {

@@ -399,10 +399,13 @@ class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {
 class LancerAttackSystem : public entityx::System<LancerAttackSystem>,
                            public entityx::Receiver<LancerAttackSystem> {
  public:
+  ~LancerAttackSystem();
   void configure(entityx::EventManager &event_manager) override;
   void receive(const engine::events::Collision &collision);
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  entityx::EventManager *event_manager_;
 };
 
 class GhostAttackSystem : public entityx::System<GhostAttackSystem>,

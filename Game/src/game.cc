@@ -170,11 +170,11 @@ void Game::Update(entityx::TimeDelta dt) {
           LevelEvent lt(3);
           scenes_.front()->events.emit<LevelEvent>(lt);
         }
-        else{
+        else{ 
           scenes_.pop_back(); 
           scenes_.front()->events.emit<BackToGame>();
         }
-        break;
+        break; 
       case State::kExit:
         break;
       case State::kNull:

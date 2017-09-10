@@ -20,6 +20,7 @@ struct MuteMusic {};
 struct MuteFx {};
 struct PauseGameEvent {};
 struct UnpauseGameEvent {};
+struct Victory {};
 struct PlayText{
 	std::string text;
 	PlayText(std::string text) : text(text){};

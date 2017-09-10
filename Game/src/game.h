@@ -17,6 +17,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
     kPauseMenu,
     kCharSelMenu,
     kDeathMenu,
+    kVictoryMenu,
     kText,
     kFloor1,
     kFloor2,
@@ -38,6 +39,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   void receive(const BackToGame &event);
   void receive(const PlayText &event);
   void receive(const SetThreeD &setThreeD);
+  void receive(const Victory &victory);
   int getLevel();
  private:
   State current_state_;

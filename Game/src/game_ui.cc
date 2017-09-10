@@ -28,7 +28,7 @@ GameUi::GameUi(Game* parent_scene)
   camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1.0f));
   camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
   auto health_bar = entities.create();
-  health_bar.assign<WhatOption>(1);
+  health_bar.assign<D3Mode>();
   health_bar.assign<Transform>(glm::vec3(100.0f, 520.0f, 0.0f), nullptr,
                                glm::vec3(17.0f, 17.0f, 1.0f));
   health_bar.assign<Sprite>(
@@ -65,9 +65,9 @@ void GameUi::Update(entityx::TimeDelta dt) {
 }
 
 void GameUi::receive(const Energy &energy){
-  entities.each<Transform, D2Mode>(
+  /*entities.each<Transform, D2Mode>(
     [&](entityx::Entity stamina_bar, Transform &transform,
-      D2Mode d2){
+      D2Mode &d2){
       auto scale = transform.GetLocalScale();
       auto position = transform.GetLocalPosition();
       if(init_x_nrg == 0){
@@ -84,13 +84,14 @@ void GameUi::receive(const Energy &energy){
       transform.SetLocalScale(scale);
       float newpos = init_pos_nrg - (170 - ((170*(energy.energy / energy.init_nrg))))/2.0f;
       transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
-    });
+    });*/
+  std::cout << "energy: " << energy.energy << std::endl;
 }
 
 void GameUi::receive(const Health& health) {
-  entities.each<Transform, WhatOption>(
+  /*entities.each<Transform, D3Mode>(
     [&](entityx::Entity health_bar, Transform &transform,
-      WhatOption &wo){
+      D3Mode &wo){
       auto scale = transform.GetLocalScale();
       auto position = transform.GetLocalPosition();
       if(init_x == 0){
@@ -107,7 +108,8 @@ void GameUi::receive(const Health& health) {
       transform.SetLocalScale(scale);
       float newpos = init_pos - (170 - ((170*(health.hp / health.init_hp))))/2.0f;
       transform.SetLocalPosition(glm::vec3(newpos,position.y,position.z));
-    });
+    });*/
+  std::cout << "health: " << health.hp << std::endl;
 }
 
 

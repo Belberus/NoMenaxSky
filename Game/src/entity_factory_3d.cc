@@ -196,13 +196,13 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   masiatrix.assign<engine::components::common::Transform>(t);
   masiatrix.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(2.0f, 2.5f));
-  masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+  //masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+  masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/death.wav");
   masiatrix.assign<Masiatrix>(id,position,real);
   masiatrix.assign<ThreeD>();
   entities_created.push_back(masiatrix);
 
   return entities_created;
-  return std::vector<entityx::Entity>();
 }
 
 std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(

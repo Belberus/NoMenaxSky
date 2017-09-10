@@ -860,11 +860,11 @@ void TextInputSystem::receive(const KeyReleased &key_released) {
 
 const float PlayerInputSystem::kKnightSpeed = 150.0f;
 
-const float PlayerInputSystem::kKnightThreeDSpeed = 60.0f;
+const float PlayerInputSystem::kKnightThreeDSpeed = 40.0f;
 
 const float PlayerInputSystem::kWizardSpeed = 200.0f;
 
-const float PlayerInputSystem::kWizardThreeDSpeed = 80.0f;
+const float PlayerInputSystem::kWizardThreeDSpeed = 60.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
@@ -967,7 +967,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	                                               KnightAttack &attack, Transform &t) {
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -988,7 +988,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += 1.0f;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1009,7 +1009,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1030,7 +1030,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.x += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1067,7 +1067,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	      time_passed_since_last_attack_ += (dt * 1000.0f);
 	      if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
 	      	if (keys_[GLFW_KEY_UP]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1086,7 +1086,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	      	    shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::UP;
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
               }else{
@@ -1095,7 +1095,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	        
 	  	      } else if (keys_[GLFW_KEY_DOWN]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1114,7 +1114,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::DOWN;
-	  	        if(three_d){
+	  	        if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
               }else{
@@ -1122,7 +1122,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                 shield_collider->half_size  = glm::vec2(6.0f, 3.0f);
               }
 	  	      } else if (keys_[GLFW_KEY_LEFT]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1141,7 +1141,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::LEFT;
-	  	        if(three_d){
+	  	        if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
               }else{
@@ -1149,7 +1149,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                 shield_collider->half_size  = glm::vec2(3.0f, 6.0f);
               }
 	  	      } else if (keys_[GLFW_KEY_RIGHT]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1168,7 +1168,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::RIGHT;
-	  	        if(three_d){
+	  	        if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
               }else{
@@ -1210,8 +1210,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  		        shield_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
 	  		        shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
 	  	      	} else {
-                  if(three_d){
-                    std::cout << "attacking top" << std::endl;
+                  if(entity.component<ThreeD>()){
                     glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1229,7 +1228,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                   } 
 	  	      		attack.orientation = KnightAttack::Orientation::UP;
-                if(three_d){
+                if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                 }
@@ -1247,7 +1246,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  	        	shield_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
 	  	        	shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
 	  	      	} else {
-                  if(three_d){
+                  if(entity.component<ThreeD>()){
                     glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1265,7 +1264,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::DOWN;
-	  		        if(three_d){
+	  		        if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
                 }
@@ -1283,7 +1282,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  	        	shield_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
 	  	        	shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
 	  	      	} else {
-                  if(three_d){
+                  if(entity.component<ThreeD>()){
                     glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1301,7 +1300,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::LEFT;
-	  		        if(three_d){
+	  		        if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
                 }
@@ -1319,7 +1318,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  	        	shield_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
 	  	        	shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
 	  	      	} else {
-                if(three_d){
+                if(entity.component<ThreeD>()){
                   glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1337,7 +1336,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::RIGHT;
-	  		        if(three_d){
+	  		        if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
                 }
@@ -1378,7 +1377,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	                                               Wizard &wizard, Transform &t) {
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1399,7 +1398,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += 1.0f;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1420,7 +1419,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1441,7 +1440,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.x += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1492,7 +1491,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1513,7 +1512,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 100.0f, 0.0f), "special");
             }
             else{
@@ -1538,7 +1537,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::UP:
@@ -1559,7 +1558,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -100.0f, 0.0f), "special");
             }
             else{
@@ -1584,7 +1583,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1605,7 +1604,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(100.0f, 0.0f, 0.0f), "special");
             }
             else{
@@ -1630,7 +1629,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1651,7 +1650,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-100.0f, 0.0f, 0.0f), "special");
             }
             else{
@@ -1760,7 +1759,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1781,10 +1780,11 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
             }
             else{
+
               EntityFactory3D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
             }            
                         Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -1796,7 +1796,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1817,7 +1817,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -170.0f, 0.0f), "normal");
             }
             else{
@@ -1832,7 +1832,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1853,7 +1853,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(170.0f, 0.0f, 0.0f), "normal");
             }
             else{
@@ -1868,7 +1868,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_RIGHT] &&
             keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1889,7 +1889,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-170.0f, 0.0f, 0.0f), "normal");
             }
             else{
@@ -2058,7 +2058,7 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
         if(three_d){
           safeDistance = 30.0f;
         }
-      	if (distancia <= 45.0f) {
+      	if (distancia <= safeDistance) {
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
             Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -2088,16 +2088,19 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 	            float angle_rad = std::atan2(vector_player_manueleth.y - vector_manueleth_v.y, vector_player_manueleth.x - vector_manueleth_v.x);
 
 	            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-	            new_velocity = glm::normalize(player_position -
-	                             transform.GetWorldPosition()) *
-	              100.0f;
+	            
 
 	            if(!three_d){
+                new_velocity = glm::normalize(player_position -
+                               transform.GetWorldPosition()) * 100.0f;
                 EntityFactory2D().MakeEnemyProjectile(
                   es, manueleth_position, angle_rad, new_velocity, "manueleth");
                 manueleth.time_for_shooting = 0.0;
               }
               else{
+                std::cout << "manueleth disparando 3D" << std::endl;
+                new_velocity = glm::normalize(player_position -
+                               transform.GetWorldPosition()) * 40.0f;
                 EntityFactory3D().MakeEnemyProjectile(
                   es, manueleth_position, angle_rad, new_velocity, "manueleth");
                 manueleth.time_for_shooting = 0.0;
@@ -2112,17 +2115,13 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 
 const float TurretIaSystem::turretSpeed = 10.0f;
 const float TurretIaSystem::turretThreeDSpeed = 4.0f;
-bool once7=true;
 void TurretIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
 
   entityx::ComponentHandle<ThreeD> threed;
-  if(once7){
-    once7=false;
-    for (entityx::Entity e1 : es.entities_with_components(threed)) {
-    three_d = true;
-    }
+  for (entityx::Entity e1 : es.entities_with_components(threed)) {
+  three_d = true;
   }
   
   glm::vec3 player_position;
@@ -2193,6 +2192,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                                new_velocity, "torreta");
         }
         else{
+          std::cout << "turret lanza 3D" << std::endl;
           glm::vec3 new_velocity_threed(0.0f,0.0f,0.0f);
           new_velocity_threed = glm::normalize(player_position -
                                       turret_transform.GetWorldPosition()) * 50.0f;
@@ -2746,6 +2746,7 @@ void HealthSystem::update(entityx::EntityManager &es,
       	entity.destroy();
       	events.emit<StartLevel2>();
       } else if (entity.component<Masiatrix>()) {
+        bool three_d = entity.component<ThreeD>();
         if (entity.component<Masiatrix>()->real){
           es.each<MasiatrixLegs, ParentLink>(
           [&](entityx::Entity entity_legs, MasiatrixLegs &legs, ParentLink &parent) {
@@ -2759,7 +2760,7 @@ void HealthSystem::update(entityx::EntityManager &es,
           if (times_masiatrix_died >= 3) {
             events.emit<StartLevel3>();
           } else {
-            MasiatrixNextPhase mnp(times_masiatrix_died, entity.component<ThreeD>());
+            MasiatrixNextPhase mnp(times_masiatrix_died, three_d);    
             events.emit<MasiatrixNextPhase>(mnp);
           }
         } else {
@@ -2956,16 +2957,13 @@ void LancerWalkingSystem::update(entityx::EntityManager &es,
 
 const float LancerIaSystem::lancerSpeed = 70.0f;
 const float LancerIaSystem::lancerThreeDSpeed = 30.0f;
-bool once6=true;
 void LancerIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
 
-  if(once6){
-    once6 = false;
-    for(auto e : es.entities_with_components<ThreeD>()){
-      three_d = true;
-    }
+
+  for(auto e : es.entities_with_components<ThreeD>()){
+    three_d = true;
   }
 
   glm::vec3 player_position;
@@ -3586,8 +3584,8 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
           float velocityOne = 75.0f;
           float velocityTwo = 50.0f;
           if(entity.component<ThreeD>()){
-            float velocityOne = 30.0f;
-            float velocityTwo = 17.0f;
+            float velocityOne = 20.0f;
+            float velocityTwo = 12.0f;
           }
 
           switch (direction) {
@@ -3625,14 +3623,16 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
             std::atan2(vector_player_masiatrix.y - vector_masiatrix_v.y,
                        vector_player_masiatrix.x - vector_masiatrix_v.x);
 
-            projectile_velocity = glm::normalize(player_position -
-                                      masiatrix_position) *
-                       115.0f;
+            
             if(!entity.component<ThreeD>()){
+              projectile_velocity = glm::normalize(player_position -
+                                      masiatrix_position) * 115.0f;
               EntityFactory2D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
                                                projectile_velocity, "masiatrix");
             }
             else{
+              projectile_velocity = glm::normalize(player_position -
+                                      masiatrix_position) * 40.0f;
               EntityFactory3D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
                                                projectile_velocity, "masiatrix");
             }           
@@ -3670,8 +3670,14 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
       positioning = masiatrixInfo.positionC;
       em->each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
-        glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
-        player_transform.SetLocalPosition(new_position);       
+        if(nextPhase.three_d){
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 10.0f,7);
+          player_transform.SetLocalPosition(new_position);
+        }
+        else{
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
+          player_transform.SetLocalPosition(new_position);       
+        }        
       });
     break;
     case 2 :
@@ -3691,8 +3697,15 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
       positioning = masiatrixInfo.positionC;
       em->each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
-        glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
-        player_transform.SetLocalPosition(new_position);
+        if(nextPhase.three_d){
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 10.0f,7.);
+          player_transform.SetLocalPosition(new_position);
+        }
+        else{
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
+          player_transform.SetLocalPosition(new_position);
+        }
+        
       });
 
     break;

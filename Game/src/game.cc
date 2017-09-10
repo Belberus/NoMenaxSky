@@ -156,7 +156,7 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
            PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
           scenes_.clear();
-          if(three_d){
+          if(!three_d){
             scenes_.push_back(
                FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
           }

@@ -357,7 +357,33 @@ class LancerIaSystem : public entityx::System<LancerIaSystem> {
   static const float lancerSpeed;
   static const float lancerThreeDSpeed;
   bool three_d = false;
+};
 
+class MenaxIaSystem : public entityx::System<MenaxIaSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class SpawnSystem : public entityx::System<SpawnSystem> {
+ public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class MenaxAnimationSystem : public entityx::System<MenaxAnimationSystem> {
+  public:
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+};
+
+class MenaxAttackSystem : public entityx::System<MenaxAttackSystem>,
+                           public entityx::Receiver<MenaxAttackSystem> {
+ public:
+  void configure(entityx::EventManager &event_manager) override;
+  void receive(const engine::events::Collision &collision);
+  void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
 };
 
 class LancerAnimationSystem : public entityx::System<LancerAnimationSystem> {

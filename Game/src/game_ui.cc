@@ -28,7 +28,7 @@ GameUi::GameUi(Game* parent_scene)
   camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1.0f));
   camera.assign<Camera>(960.0f, 540.0f, 0.1f, 1000.0f);
   auto health_bar = entities.create();
-  health_bar.assign<WhatOption>(1);
+  health_bar.assign<D3Mode>();
   health_bar.assign<Transform>(glm::vec3(100.0f, 520.0f, 0.0f), nullptr,
                                glm::vec3(17.0f, 17.0f, 1.0f));
   health_bar.assign<Sprite>(
@@ -60,6 +60,12 @@ GameUi::GameUi(Game* parent_scene)
   systems.configure();
 }
 
+GameUi::~GameUi() {
+  parent_scene_->events.unsubscribe<Health>(*this);
+  parent_scene_->events.unsubscribe<Energy>(*this);
+  parent_scene_->events.unsubscribe<Player>(*this);
+}
+
 void GameUi::Update(entityx::TimeDelta dt) {
   systems.update<SpriteRenderer>(dt);
 }
@@ -67,7 +73,7 @@ void GameUi::Update(entityx::TimeDelta dt) {
 void GameUi::receive(const Energy &energy){
   entities.each<Transform, D2Mode>(
     [&](entityx::Entity stamina_bar, Transform &transform,
-      D2Mode d2){
+      D2Mode &d2){
       auto scale = transform.GetLocalScale();
       auto position = transform.GetLocalPosition();
       if(init_x_nrg == 0){
@@ -88,9 +94,9 @@ void GameUi::receive(const Energy &energy){
 }
 
 void GameUi::receive(const Health& health) {
-  entities.each<Transform, WhatOption>(
+  entities.each<Transform, D3Mode>(
     [&](entityx::Entity health_bar, Transform &transform,
-      WhatOption &wo){
+      D3Mode &wo){
       auto scale = transform.GetLocalScale();
       auto position = transform.GetLocalPosition();
       if(init_x == 0){

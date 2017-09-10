@@ -456,7 +456,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeGhost(
 
   // adding hitbox as a second entity
   auto attack_hitbox = entities.create();
-  attack_hitbox.assign<GhostHitBox>(5.0f, ghost);
+  attack_hitbox.assign<GhostHitBox>(2.0f, ghost);
   attack_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                   ghost.component<Transform>().get());
   attack_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 2.0f),
@@ -560,7 +560,8 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
-	  manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
+	  //manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
+    manueleth.assign<Health>(10.0f, 10.0f, "assets/media/fx/manueleth/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
@@ -595,6 +596,152 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  manueleth.assign<Sprite>(texture_atlas);
 	  entities_created.push_back(manueleth);
 	  return entities_created;
+ }
+
+std::vector<entityx::Entity> EntityFactory2D::MakeSpawn(entityx::EntityManager &entities,
+                                         const glm::vec3 &position) {
+  std::vector<entityx::Entity> entities_created;
+  entityx::Entity spawn = entities.create();
+  spawn.assign<Transform>(position);
+  spawn.assign<Spawn>();
+  entities_created.push_back(spawn);
+  return entities_created;
+}
+
+ std::vector<entityx::Entity> EntityFactory2D::MakeMenax(
+    entityx::EntityManager &entities, const glm::vec3 &position){
+
+    std::vector<entityx::Entity> entities_created;
+
+    entityx::Entity menax = entities.create();
+    entityx::Entity menaxHitBox = entities.create();
+
+    std::vector<engine::utils::Rectangle> waiting;
+    waiting.emplace_back(glm::vec2(3, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(3, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(3, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(35, 251), glm::vec2(28, 120));    
+    waiting.emplace_back(glm::vec2(35, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(35, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(67, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(67, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(67, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(99, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(99, 251), glm::vec2(28, 120));
+    waiting.emplace_back(glm::vec2(99, 251), glm::vec2(28, 120));
+    
+    std::vector<engine::utils::Rectangle> moving_top;
+    moving_top.emplace_back(glm::vec2(3, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(35, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(67, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(99, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(67, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(35, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(3, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(3, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(3, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(3, 3), glm::vec2(28, 120));
+    moving_top.emplace_back(glm::vec2(3, 3), glm::vec2(28, 120));
+
+    std::vector<engine::utils::Rectangle> moving_bottom;
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(35, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(67, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(99, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(67, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(35, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+    moving_bottom.emplace_back(glm::vec2(3, 127), glm::vec2(28, 120));
+
+    std::vector<engine::utils::Rectangle> doDamage;
+    doDamage.emplace_back(glm::vec2(3, 114), glm::vec2(47, 33));
+    doDamage.emplace_back(glm::vec2(3, 77), glm::vec2(47, 33));
+    doDamage.emplace_back(glm::vec2(3, 40), glm::vec2(47, 33));
+    doDamage.emplace_back(glm::vec2(3, 3), glm::vec2(47, 33));
+
+    std::vector<engine::utils::Rectangle> dontDoDamage;
+    dontDoDamage.emplace_back(glm::vec2(3, 3), glm::vec2(47, 33));
+
+    auto texture_atlas =
+        Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+            "assets/spritesheets/menax.png");
+      
+    SpriteAnimation::AnimationClip waiting_anim(
+        "waiting", texture_atlas, waiting, 100.0f);
+    SpriteAnimation::AnimationClip moving_top_anim(
+        "moving_top", texture_atlas, moving_top, 100.0f);
+    SpriteAnimation::AnimationClip moving_bottom_anim(
+        "moving_bottom", texture_atlas, moving_bottom, 100.0f);
+
+    menax.assign<Health>(600.0f, 600.0f, "assets/media/fx/menax/default/death.wav");
+    menax.assign<Transform>(position);
+    menax.assign<Physics>(glm::vec3(0, 0, 0));
+    menax.assign<Menax>(position, menaxHitBox);
+    menax.assign<AABBCollider>(glm::vec2(0, +7.5), glm::vec2(14, 7.5));
+
+    std::vector<ColorAnimation::KeyFrame> color_frames;
+    color_frames.emplace_back(glm::vec3(1.0f, -0.3f, 0.0f), 0.2f);
+    color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+    menax.assign<ColorAnimation>(std::move(color_frames));
+        
+    SpriteAnimation menax_anim({waiting_anim, moving_top_anim, moving_bottom_anim});
+    menax.assign<SpriteAnimation>(menax_anim); 
+    menax.assign<Sprite>(texture_atlas);
+    
+    texture_atlas =
+        Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+            "assets/spritesheets/menax_stomp.png");
+    SpriteAnimation::AnimationClip doDamage_anim(
+        "doDamage", texture_atlas, doDamage, 100.0f);
+    SpriteAnimation::AnimationClip dontDoDamage_anim(
+        "dontDoDamage", texture_atlas, dontDoDamage, 100.0f);
+    
+    SpriteAnimation damage_anim({doDamage_anim, dontDoDamage_anim});
+    
+    menaxHitBox.assign<MenaxHitBox>(75.0f, menax);
+    menaxHitBox.assign<Transform>(glm::vec3(0.0f, +7.5f , 0.0f),
+                                  menax.component<Transform>().get());
+    menaxHitBox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                     glm::vec2(23.5f, 16.5f),true);
+    menaxHitBox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+
+    menaxHitBox.assign<SpriteAnimation>(damage_anim); 
+    menaxHitBox.assign<Sprite>(texture_atlas);
+
+    entities_created.push_back(menax);
+
+    entities_created.push_back(menaxHitBox);
+      
+    return entities_created;
  }
 
  std::vector<entityx::Entity> EntityFactory2D::MakeMasiatrix(

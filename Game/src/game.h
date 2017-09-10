@@ -27,6 +27,7 @@ class Game : public engine::core::Scene, public entityx::Receiver<Game> {
   Game();
   void Update(entityx::TimeDelta dt) override;
   void receive(const StartGame &event);
+  void receive(const StartLevel1 &event);
   void receive(const StartLevel2 &event);
   void receive(const StartLevel3 &event);
   void receive(const OptionMenu &event);

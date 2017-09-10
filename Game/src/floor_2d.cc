@@ -32,9 +32,10 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<ManuelethAnimationSystem>();
   //systems.add<TurretIaSystem>();
   systems.add<ManuelethIaSystem>();
-  //systems.add<TrapIaSystem>();
+  systems.add<TrapIaSystem>();
   systems.add<LancerIaSystem>();
   systems.add<MasiatrixIaSystem>();
+  systems.add<MenaxIaSystem>();
   systems.add<TurretWalkingSystem>();
   systems.add<LancerWalkingSystem>();
   systems.add<MasiatrixWalkingSystem>();
@@ -52,7 +53,8 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<KnightAttackSystem>();
   systems.add<EnemyProjectileSystem>();
   systems.add<LancerAttackSystem>();
-  //systems.add<GhostAttackSystem>();
+  systems.add<GhostAttackSystem>();
+  systems.add<MenaxAttackSystem>();
   systems.add<ChestSystem>();
   systems.add<LeverSystem>();
   systems.add<HealthSystem>();
@@ -60,6 +62,8 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<ShieldSystem>();
   systems.add<PauseInputSystem>();
   systems.add<MasiatrixBossFight>(&entities);
+  systems.add<SpawnSystem>();
+  systems.add<MenaxAnimationSystem>();
   systems.configure();
 }
 
@@ -72,10 +76,14 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<MasiatrixAnimationSystem>(dt);
     systems.update<ManuelethAnimationSystem>(dt);
     //systems.update<TurretIaSystem>(dt);
+    systems.update<MenaxAnimationSystem>(dt);
+    systems.update<TurretIaSystem>(dt);
     systems.update<LancerIaSystem>(dt);
     systems.update<ManuelethIaSystem>(dt);
-    //systems.update<TrapIaSystem>(dt);
+    systems.update<TrapIaSystem>(dt);
     systems.update<MasiatrixIaSystem>(dt);
+    systems.update<MenaxIaSystem>(dt);
+    systems.update<SpawnSystem>(dt);
     systems.update<TurretWalkingSystem>(dt);
     systems.update<LancerWalkingSystem>(dt);
     systems.update<MasiatrixWalkingSystem>(dt);
@@ -88,7 +96,8 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<KnightWalkingSystem>(dt);
     systems.update<SpriteAnimator>(dt);
     systems.update<KnightAttackSystem>(dt);
-    //systems.update<GhostAttackSystem>(dt);
+    systems.update<GhostAttackSystem>(dt);
+    systems.update<MenaxAttackSystem>(dt);
     systems.update<ChestSystem>(dt);
     systems.update<LeverSystem>(dt);
     systems.update<EnemyProjectileSystem>(dt);
@@ -110,10 +119,14 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<MasiatrixAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);
     //systems.update<TurretIaSystem>(0);
+    systems.update<MenaxAnimationSystem>(0);
+    systems.update<TurretIaSystem>(0);
     systems.update<LancerIaSystem>(0);
     systems.update<ManuelethIaSystem>(0);
-    //systems.update<TrapIaSystem>(0);
+    systems.update<TrapIaSystem>(0);
     systems.update<MasiatrixIaSystem>(0);
+    systems.update<MenaxIaSystem>(0);
+    systems.update<SpawnSystem>(0);
     systems.update<TurretWalkingSystem>(0);
     systems.update<LancerWalkingSystem>(0);
     systems.update<MasiatrixWalkingSystem>(0);
@@ -124,7 +137,8 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<WizardAttackSystem>(0);
     systems.update<LancerAnimationSystem>(0);
     systems.update<KnightWalkingSystem>(0);
-    //systems.update<GhostAttackSystem>(0);
+    systems.update<GhostAttackSystem>(0);
+    systems.update<MenaxAttackSystem>(0);
     systems.update<SpriteAnimator>(0);
     systems.update<KnightAttackSystem>(0);
     systems.update<ChestSystem>(0);

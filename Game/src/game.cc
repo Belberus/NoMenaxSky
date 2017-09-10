@@ -55,6 +55,7 @@ Game::Game()
   events.subscribe<Death>(*this);
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
+  events.subscribe<StartLevel1>(*this);
   events.subscribe<StartLevel2>(*this);
   events.subscribe<StartLevel3>(*this);
   events.subscribe<PlayText>(*this);
@@ -67,6 +68,7 @@ Game::Game()
 
 void Game::Update(entityx::TimeDelta dt) {
   if (next_state_ != State::kNull) {
+    current_state_ = next_state_;
     switch (next_state_) {
       case State::kMainMenu:
         scenes_.clear();
@@ -114,7 +116,6 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.push_back(std::make_unique<GameUi>(this));
           scenes_.push_back(std::make_unique<Text>(this,text_to_play,"bienvenido"));
           SetThreeD std(true);
-          //scenes_.front()->events.emit<SetThreeD>(std);
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(1);
           scenes_.front()->events.emit<LevelEvent>(lt);
@@ -156,7 +157,7 @@ void Game::Update(entityx::TimeDelta dt) {
           Engine::GetInstance().Get<AudioManager>().
            PlaySound("assets/media/music/level_one_v2.wav",true, 0.3);
           scenes_.clear();
-          if(three_d){
+          if(!three_d){
             scenes_.push_back(
                FloorFactory::MakeFloorThree2D("assets/castle/floor3.tmx", this, character));
           }
@@ -169,12 +170,12 @@ void Game::Update(entityx::TimeDelta dt) {
           scenes_.front()->events.emit<PauseGameEvent>();
           LevelEvent lt(3);
           scenes_.front()->events.emit<LevelEvent>(lt);
-        }
-        else{
+        } 
+        else{ 
           scenes_.pop_back(); 
           scenes_.front()->events.emit<BackToGame>();
         }
-        break;
+        break; 
       case State::kExit:
         break;
       case State::kNull:
@@ -208,6 +209,12 @@ void Game::receive(const StartGame& event) {
   
 void Game::receive(const CharSelect& event) { 
   next_state_ = State::kCharSelMenu; }
+
+void Game::receive(const StartLevel1& event) { 
+  level = 1;
+  new_game = true;
+  next_state_ = State::kFloor1; 
+}
 
 void Game::receive(const StartLevel2& event) { 
   level = 2;

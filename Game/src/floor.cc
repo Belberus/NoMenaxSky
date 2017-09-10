@@ -10,6 +10,7 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<Energy>(*this);
   events.subscribe<PauseMenuEvent>(*this);
   events.subscribe<BackToGame>(*this);
+  events.subscribe<StartLevel1>(*this);
   events.subscribe<StartLevel2>(*this);
   events.subscribe<StartLevel3>(*this);
   events.subscribe<Player>(*this);
@@ -54,6 +55,10 @@ void Floor::receive(const UnpauseGameEvent& upg){
 void Floor::receive(const BackToGame& event){
   PauseGame(false);
   parent_scene_->events.emit<BackToGame>(event);
+}
+
+void Floor::receive(const StartLevel1& event) {
+  parent_scene_->events.emit<StartLevel1>();
 }
 
 void Floor::receive(const StartLevel2& event) {
@@ -102,10 +107,10 @@ void Floor::receive(const engine::events::Collision& collision) {
   for (auto e : entities.entities_with_components<Manueleth>()) {
     enemies_in_the_room++;
   }
-/////
-  //std::cerr << "En floor.cc eliminar enemies_in_the_room = 0 cuando acabe el testeo" << std::endl;
-  enemies_in_the_room = 0;
-/////
+  for (auto e : entities.entities_with_components<Masiatrix>()) {
+    enemies_in_the_room++;
+  }
+
   if (door && player && enemies_in_the_room == 0) {
     if (IsEntityTryingToCrossDoor(collision_copy.e0, collision_copy.e1)) {
       rooms_[current_room_]->visited = true;

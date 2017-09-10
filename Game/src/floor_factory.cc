@@ -198,7 +198,6 @@ void FloorFactory::ParseRoomContents(
       auto properties = object.getProperties();
       BossDoor bossDoor(properties[0].getStringValue(),
                         properties[1].getStringValue());
-      std::cerr << level << std::endl;
       if (level == "1") {
         bossDoor.level = "1";
       } else if (level == "2") {
@@ -430,8 +429,8 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   floor_model.assign<engine::components::common::Transform>(floor_transform);
   // create the camera
   auto camera = floor->entities.create();
-  //camera.assign<engine::components::common::Camera>(glm::radians(50.0f), 160.0f,
-  camera.assign<engine::components::common::Camera>(160.0f,
+  camera.assign<engine::components::common::Camera>(glm::radians(50.0f), 160.0f,
+  //camera.assign<engine::components::common::Camera>(160.0f,
                                                     80.0f, 0.1f, 1000.0f);
   engine::components::common::Transform camera_transform(
       glm::vec3(0.0f, 0.0f, 70.0f));

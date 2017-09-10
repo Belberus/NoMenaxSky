@@ -24,6 +24,9 @@
 #include <iostream>
 #include <unistd.h>
 
+#include <fann.h>
+#include <fann_cpp.h>
+
 #include <GLFW/glfw3.h>
 
 using namespace engine::core;
@@ -2198,9 +2201,12 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 
 const float TurretIaSystem::turretSpeed = 10.0f;
 const float TurretIaSystem::turretThreeDSpeed = 4.0f;
+FANN::neural_net net("keep_enemy_away.net");
 void TurretIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
+
+  float turret_x, turret_y, player_x, player_y;
 
   entityx::ComponentHandle<ThreeD> threed;
   for (entityx::Entity e1 : es.entities_with_components(threed)) {
@@ -2211,6 +2217,8 @@ void TurretIaSystem::update(entityx::EntityManager &es,
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         player_position = player_transform.GetWorldPosition();
+        player_x = player_position.x;
+        player_y = player_position.y;
       });
 
   // Comprobamos la distancia a la que esta, si esta a menos de X distancia se
@@ -2222,6 +2230,8 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                           Physics &turret_physics) {
 
     turret_position = turret_transform.GetWorldPosition();
+    turret_x = turret_position.x;
+    turret_y = turret_position.y;
 
     glm::vec3 vector_player_turret(player_position.x - turret_position.x,
                                        player_position.y - turret_position.y,
@@ -2246,12 +2256,19 @@ void TurretIaSystem::update(entityx::EntityManager &es,
       safeDistance = 25.0f;
     }
     if (distancia < safeDistance) {
-      turret_physics.velocity =
-          -1.0f *
-          glm::normalize(player_position -
-                         turret_transform.GetWorldPosition()) *
-          turretSpeed;
+      std::array<fann_type, 4> input;
+      input[0] = turret_x;
+      input[1] = turret_y;
+      input[2] = player_x;
+      input[3] = player_y;
+      fann_type* output = net.run(input.data());
+
+      float vel_x = roundf(output[0]);
+      float vel_y = roundf(output[1]);
+
+      turret_physics.velocity = glm::vec3(vel_x, vel_y, 0.0f);
     } else {
+      // Meter la red neuronal
       turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
       if (turret.time_passed >= turret.frecuencia) {

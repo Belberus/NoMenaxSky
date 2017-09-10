@@ -19,3 +19,6 @@
 [submodule "engine/lib/assimp"]
 	path = Game/lib/engine/lib/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "Game/lib/fann"]
+	path = Game/lib/fann
+	url = https://github.com/libfann/fann.git

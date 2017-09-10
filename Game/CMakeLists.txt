@@ -10,6 +10,10 @@ add_subdirectory(lib/engine)
 set(TMXLITE_STATIC_LIB ON CACHE BOOL "" FORCE)
 add_subdirectory(lib/tmxlite/tmxlite)
 
+#FANN
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+add_subdirectory(lib/fann)
+
 file(GLOB SOURCE_FILES src/* src/* lib/easybmp/*)
 add_executable(${PROJECT_NAME}
   ${SOURCE_FILES}
@@ -18,6 +22,7 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE
     engine
     tmxlite
+    fann
 )
 target_include_directories(${PROJECT_NAME}
   PRIVATE

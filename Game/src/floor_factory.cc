@@ -315,7 +315,19 @@ void FloorFactory::ParseRoomContents(
         return factory->MakeMasiatrix(em, position, id, is_real);
       };
       room.entity_creators_.push_back(fn_masiatrix);
-    }
+    } else if (object.getType() == "menax") {
+      auto fn_menax =
+            [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+          return factory->MakeMenax(em, position);
+        };
+      room.entity_creators_.push_back(fn_menax);
+    } else if (object.getType() == "enemySpawn") {
+      auto fn_spawn =
+            [=](entityx::EntityManager &em) -> std::vector<entityx::Entity> {
+          return factory->MakeSpawn(em, position);
+        };
+      room.entity_creators_.push_back(fn_spawn);
+    } 
   }
 }
 
@@ -402,6 +414,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   // TODO: move this line somewhere else
   engine::core::Engine::GetInstance().EnableDepthTest(
       engine::core::Engine::DepthTest::kLess);
+
   std::unique_ptr<Floor> floor(std::make_unique<Floor3D>(parent_scene));
   std::shared_ptr<EntityFactory> factory(std::make_shared<EntityFactory3D>());
   // create the floor model
@@ -417,8 +430,12 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
   floor_model.assign<engine::components::common::Transform>(floor_transform);
   // create the camera
   auto camera = floor->entities.create();
-  camera.assign<engine::components::common::Camera>(glm::radians(30.0f), 160.0f,
-                                                    60.0f, 0.1f, 1000.0f);
+  //camera.assign<engine::components::common::Camera>(glm::radians(30.0f), 160.0f,
+  //                                                  60.0f, 0.1f, 1000.0f);
+
+  camera.assign<engine::components::common::Camera>(glm::radians(50.0f), 160.0f,
+                                                    100.0f, 0.1f, 1000.0f);
+
   engine::components::common::Transform camera_transform(
       glm::vec3(0.0f, 0.0f, 70.0f));
   camera.assign<engine::components::common::Transform>(camera_transform);

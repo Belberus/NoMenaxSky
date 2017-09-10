@@ -15,6 +15,9 @@ struct EntityFactory {
   virtual std::vector<entityx::Entity> MakeGhost(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
+  virtual std::vector<entityx::Entity> MakeSpawn(
+      entityx::EntityManager &entities, const glm::vec3 &position) = 0;
+
   virtual std::vector<entityx::Entity> MakeTurret(
       entityx::EntityManager &entities, const glm::vec3 &position,
       const float frecuencia) = 0;
@@ -28,6 +31,9 @@ struct EntityFactory {
 
   virtual std::vector<entityx::Entity> MakeMasiatrix(
       entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id, const bool &real) = 0;
+
+  virtual std::vector<entityx::Entity> MakeMenax(
+      entityx::EntityManager &entities, const glm::vec3 &position) = 0;
 
   virtual std::vector<entityx::Entity> MakeLancer(
       entityx::EntityManager &entities, const glm::vec3 &position) = 0;

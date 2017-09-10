@@ -130,8 +130,7 @@ struct Player {
   bool key;
   int levers_activated;
 
-  Player(Orientation orientation) : orientation(orientation), key(true), state(State::NORMAL), levers_activated(2) {}
-  // PONER KEY A FALSE CUANDO LANCEMOS EL JUEGO Y LEVERS_ACTIVATED A 0
+  Player(Orientation orientation) : orientation(orientation), key(false), state(State::NORMAL), levers_activated(0) {}
 };
 
 struct Characters{
@@ -146,13 +145,14 @@ struct Cursor {};
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
  
+  bool is_resting;
   bool is_attacking;
   float time_passed;
 
   LancerOrientation orientation;
 
   Lancer()
-      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
+      : is_attacking(false), is_resting(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
 };
 
 struct LancerHitBox {
@@ -195,12 +195,38 @@ struct MasiatrixLegs{};
 
 struct LowCollision {};
 
+struct Spawn {
+  Spawn() : spawned(0), timer(0.0f) {}
+  int spawned;
+  float timer;
+};
+
 struct Manueleth {
 	Manueleth() : comportamiento(Comportamiento::NORMAL), time_for_shooting(0.0), hits(0) {}
 	enum Comportamiento {NORMAL, PUSH, SPECIAL};
 	Comportamiento comportamiento;
 	float time_for_shooting;
   int hits;
+};
+
+struct Menax {
+  Menax(glm::vec3 original_position, entityx::Entity &hitBox) : original_position(original_position), hitBox(hitBox),timer_attacking(0.0f), timer(0.0f),comportamiento(Comportamiento::WAIT), spawn_enemies(false), hits(0) {}
+  enum Comportamiento {WAIT, ATTACK};
+  Comportamiento comportamiento;
+  float timer_attacking;
+  float timer; 
+  bool spawn_enemies;
+  glm::vec3 original_position;
+  entityx::Entity hitBox;
+  int hits;
+};
+
+struct MenaxHitBox{
+  MenaxHitBox(float damage, entityx::Entity owner) : damage(damage), owner(owner), stomp(false), damaged(false) {}
+  entityx::Entity owner;
+  float damage;
+  bool stomp;
+  bool damaged;
 };
 
 struct Masiatrix {

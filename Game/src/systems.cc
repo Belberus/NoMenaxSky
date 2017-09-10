@@ -22,6 +22,10 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <unistd.h>
+
+#include <fann.h>
+#include <fann_cpp.h>
 
 #include <GLFW/glfw3.h>
 
@@ -860,11 +864,11 @@ void TextInputSystem::receive(const KeyReleased &key_released) {
 
 const float PlayerInputSystem::kKnightSpeed = 150.0f;
 
-const float PlayerInputSystem::kKnightThreeDSpeed = 60.0f;
+const float PlayerInputSystem::kKnightThreeDSpeed = 40.0f;
 
 const float PlayerInputSystem::kWizardSpeed = 200.0f;
 
-const float PlayerInputSystem::kWizardThreeDSpeed = 80.0f;
+const float PlayerInputSystem::kWizardThreeDSpeed = 60.0f;
 
 const float PlayerInputSystem::kAttackDuration = 250.0f;
 
@@ -886,6 +890,14 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_RIGHT, false);
   keys_.emplace(GLFW_KEY_SPACE, false);
   keys_.emplace(GLFW_KEY_ESCAPE, false);
+  keys_.emplace(GLFW_KEY_O, false); // Mantener para acceder a los shortcuts (es una o)
+  keys_.emplace(GLFW_KEY_1, false); // Iniciar nivel 1
+  keys_.emplace(GLFW_KEY_2, false); // Iniciar nivel 2
+  keys_.emplace(GLFW_KEY_3, false); // Iniciar nivel 3
+  keys_.emplace(GLFW_KEY_4, false); // Da llave al jugador
+  keys_.emplace(GLFW_KEY_5, false); // Activa ambas palancas
+  keys_.emplace(GLFW_KEY_6, false); // Restaura la vida
+  keys_.emplace(GLFW_KEY_7, false); // Elimina todos lo enemigos (fantasmas, torretas y lanceros) cargados
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
@@ -962,12 +974,49 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  // }
 
 	  if(!is_paused()){
-	    es.each<Player, Physics, KnightAttack, Transform>([&](entityx::Entity entity,
+	    es.each<Player, Physics, KnightAttack, Health, Transform>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
-	                                               KnightAttack &attack, Transform &t) {
+	                                               KnightAttack &attack, Health &health, Transform &t) {
+        // ShortCuts
+        if (keys_[GLFW_KEY_O]) {
+          if (keys_[GLFW_KEY_1]) {
+          events.emit<StartLevel1>();
+          }
+          if (keys_[GLFW_KEY_2]) {
+            events.emit<StartLevel2>();
+          }
+          if (keys_[GLFW_KEY_3]) {
+            events.emit<StartLevel3>();
+          } 
+          if (keys_[GLFW_KEY_4]) {
+            player.key = true;
+          }
+          if (keys_[GLFW_KEY_5]) {
+            player.levers_activated = 2;
+          }
+          if (keys_[GLFW_KEY_6]) {
+            health.hp = health.init_hp;
+          }
+          if (keys_[GLFW_KEY_7]) {
+            es.each<Ghost, Health>([&](entityx::Entity entity,
+                                Ghost &ghost, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Turret, Health>([&](entityx::Entity entity,
+                                Turret &turret, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Lancer, Health>([&](entityx::Entity entity,
+                                Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+        }
+        
+        // Normal keys
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -988,7 +1037,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += 1.0f;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1009,7 +1058,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1030,7 +1079,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.x += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1067,7 +1116,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	      time_passed_since_last_attack_ += (dt * 1000.0f);
 	      if (keys_[GLFW_KEY_SPACE] && ((shield_info->owner.component<Energy>()->energy > 0.0f))) {
 	      	if (keys_[GLFW_KEY_UP]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1086,7 +1135,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	      	    shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::UP;
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
               }else{
@@ -1095,7 +1144,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	        
 	  	      } else if (keys_[GLFW_KEY_DOWN]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1114,7 +1163,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::DOWN;
-	  	        if(three_d){
+	  	        if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
               }else{
@@ -1122,7 +1171,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                 shield_collider->half_size  = glm::vec2(6.0f, 3.0f);
               }
 	  	      } else if (keys_[GLFW_KEY_LEFT]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1141,7 +1190,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::LEFT;
-	  	        if(three_d){
+	  	        if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
               }else{
@@ -1149,7 +1198,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                 shield_collider->half_size  = glm::vec2(3.0f, 6.0f);
               }
 	  	      } else if (keys_[GLFW_KEY_RIGHT]) {
-              if(three_d){
+              if(entity.component<ThreeD>()){
                 glm::quat rot;
                 switch(shield_info->orientation){
                   case Shield::Orientation::DOWN:
@@ -1168,7 +1217,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
               }
 	  	      	shield_info->active = true;
 	  	        shield_info->orientation = Shield::Orientation::RIGHT;
-	  	        if(three_d){
+	  	        if(entity.component<ThreeD>()){
                 shield_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
                 shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
               }else{
@@ -1210,8 +1259,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  		        shield_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
 	  		        shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
 	  	      	} else {
-                  if(three_d){
-                    std::cout << "attacking top" << std::endl;
+                  if(entity.component<ThreeD>()){
                     glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1229,7 +1277,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                   } 
 	  	      		attack.orientation = KnightAttack::Orientation::UP;
-                if(three_d){
+                if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(0.0f, 3.0f, 0.0f));
                 }
@@ -1247,7 +1295,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  	        	shield_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
 	  	        	shield_collider->half_size  = glm::vec2(2.5f, 1.0f);
 	  	      	} else {
-                  if(three_d){
+                  if(entity.component<ThreeD>()){
                     glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1265,7 +1313,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::DOWN;
-	  		        if(three_d){
+	  		        if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(0.0f, -3.0f, 0.0f));
                 }
@@ -1283,7 +1331,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  	        	shield_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
 	  	        	shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
 	  	      	} else {
-                  if(three_d){
+                  if(entity.component<ThreeD>()){
                     glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1301,7 +1349,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::LEFT;
-	  		        if(three_d){
+	  		        if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
                 }
@@ -1319,7 +1367,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	  	        	shield_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
 	  	        	shield_collider->half_size  = glm::vec2(1.0f, 2.5f);
 	  	      	} else {
-                if(three_d){
+                if(entity.component<ThreeD>()){
                   glm::quat rot;
                     switch(attack.orientation){
                       case KnightAttack::Orientation::DOWN:
@@ -1337,7 +1385,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
                   t.SetLocalOrientation(rot);
                 }
 	  	      		attack.orientation = KnightAttack::Orientation::RIGHT;
-	  		        if(three_d){
+	  		        if(entity.component<ThreeD>()){
                   weapon_collider->half_size = glm::vec2(2.0f, 2.0f);
                   weapon_transform->SetLocalPosition(glm::vec3(3.0f, 0.0f, 0.0f));
                 }
@@ -1367,18 +1415,52 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	    set_paused(true);
 	    events.emit<PauseMenuEvent>();
 	  }
-	  // if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
-	  //   pausedM = false;
-	  //   events.emit<BackToGame>();
-	  // }
 
 	  if(!is_paused()){
-	    es.each<Player, Physics, Wizard, Transform>([&](entityx::Entity entity,
+	    es.each<Player, Physics, Wizard, Health, Transform>([&](entityx::Entity entity,
 	                                               Player &player, Physics &physics,
-	                                               Wizard &wizard, Transform &t) {
+	                                               Wizard &wizard, Health &health, Transform &t) {
+        // ShortCuts
+        if (keys_[GLFW_KEY_O]) {
+          if (keys_[GLFW_KEY_1]) {
+          events.emit<StartLevel1>();
+          }
+          if (keys_[GLFW_KEY_2]) {
+            events.emit<StartLevel2>();
+          }
+          if (keys_[GLFW_KEY_3]) {
+            events.emit<StartLevel3>();
+          } 
+          if (keys_[GLFW_KEY_4]) {
+            player.key = true;
+          }
+          if (keys_[GLFW_KEY_5]) {
+            player.levers_activated = 2;
+          }
+          if (keys_[GLFW_KEY_6]) {
+            health.hp = health.init_hp;
+          }
+          if (keys_[GLFW_KEY_7]) {
+            es.each<Ghost, Health>([&](entityx::Entity entity,
+                                Ghost &ghost, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Turret, Health>([&](entityx::Entity entity,
+                                Turret &turret, Health &health) {
+              health.hp = 0.0f;
+            });
+            es.each<Lancer, Health>([&](entityx::Entity entity,
+                                Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+        }
+
+
+        // Normal keys
 	      glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
 	      if (keys_[GLFW_KEY_W]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1399,7 +1481,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += 1.0f;
 	      }
 	      if (keys_[GLFW_KEY_S]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1420,7 +1502,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.y += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_A]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1441,7 +1523,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	        new_velocity.x += -1.0f;
 	      }
 	      if (keys_[GLFW_KEY_D]) {
-          if(three_d){
+          if(entity.component<ThreeD>()){
             glm::quat rot;
             switch(player.orientation){
               case Player::Orientation::DOWN:
@@ -1492,7 +1574,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1513,7 +1595,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 100.0f, 0.0f), "special");
             }
             else{
@@ -1538,7 +1620,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::UP:
@@ -1559,7 +1641,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -100.0f, 0.0f), "special");
             }
             else{
@@ -1584,7 +1666,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1605,7 +1687,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(100.0f, 0.0f, 0.0f), "special");
             }
             else{
@@ -1630,7 +1712,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             keys_[GLFW_KEY_LEFT] &&
             (actual_energy > 0.0f)){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1651,7 +1733,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_alt_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-100.0f, 0.0f, 0.0f), "special");
             }
             else{
@@ -1760,7 +1842,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1781,10 +1863,11 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::UP;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
             }
             else{
+
               EntityFactory3D().MakeWizardProjectile(es, player_position, 1.57,glm::vec3(0.0f, 170.0f, 0.0f), "normal");
             }            
                         Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -1796,7 +1879,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1817,7 +1900,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::DOWN;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -1.57,glm::vec3(0.0f, -170.0f, 0.0f), "normal");
             }
             else{
@@ -1832,7 +1915,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             keys_[GLFW_KEY_RIGHT] &&
             !keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1853,7 +1936,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::RIGHT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, 0.0,glm::vec3(170.0f, 0.0f, 0.0f), "normal");
             }
             else{
@@ -1868,7 +1951,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             !keys_[GLFW_KEY_RIGHT] &&
             keys_[GLFW_KEY_LEFT]){
 
-            if(three_d){
+            if(entity.component<ThreeD>()){
               glm::quat rot;
               switch(player.orientation){
                 case Player::Orientation::DOWN:
@@ -1889,7 +1972,7 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             player.orientation = Player::Orientation::LEFT;
             time_passed_since_last_magic_attack_ = 0.0f;
             wizard.is_attacking = true;
-            if(!three_d){
+            if(!entity.component<ThreeD>()){
               EntityFactory2D().MakeWizardProjectile(es, player_position, -3.14,glm::vec3(-170.0f, 0.0f, 0.0f), "normal");
             }
             else{
@@ -2058,7 +2141,7 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
         if(three_d){
           safeDistance = 30.0f;
         }
-      	if (distancia <= 45.0f) {
+      	if (distancia <= safeDistance) {
       		if (manueleth.hits >= 3) {
       			manueleth.comportamiento = Manueleth::Comportamiento::PUSH;
             Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -2088,16 +2171,18 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
 	            float angle_rad = std::atan2(vector_player_manueleth.y - vector_manueleth_v.y, vector_player_manueleth.x - vector_manueleth_v.x);
 
 	            glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-	            new_velocity = glm::normalize(player_position -
-	                             transform.GetWorldPosition()) *
-	              100.0f;
+	            
 
 	            if(!three_d){
+                new_velocity = glm::normalize(player_position -
+                               transform.GetWorldPosition()) * 100.0f;
                 EntityFactory2D().MakeEnemyProjectile(
                   es, manueleth_position, angle_rad, new_velocity, "manueleth");
                 manueleth.time_for_shooting = 0.0;
               }
               else{
+                new_velocity = glm::normalize(player_position -
+                               transform.GetWorldPosition()) * 40.0f;
                 EntityFactory3D().MakeEnemyProjectile(
                   es, manueleth_position, angle_rad, new_velocity, "manueleth");
                 manueleth.time_for_shooting = 0.0;
@@ -2110,25 +2195,26 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
    });
 }
 
-const float TurretIaSystem::turretSpeed = 10.0f;
+const float TurretIaSystem::turretSpeed = 20.0f;
 const float TurretIaSystem::turretThreeDSpeed = 4.0f;
-bool once7=true;
+FANN::neural_net net("assets/config/keep_enemy_away.net");
 void TurretIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
 
+  float turret_x, turret_y, player_x, player_y;
+
   entityx::ComponentHandle<ThreeD> threed;
-  if(once7){
-    once7=false;
-    for (entityx::Entity e1 : es.entities_with_components(threed)) {
-    three_d = true;
-    }
+  for (entityx::Entity e1 : es.entities_with_components(threed)) {
+  three_d = true;
   }
   
   glm::vec3 player_position;
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         player_position = player_transform.GetWorldPosition();
+        player_x = player_position.x;
+        player_y = player_position.y;
       });
 
   // Comprobamos la distancia a la que esta, si esta a menos de X distancia se
@@ -2140,6 +2226,8 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                           Physics &turret_physics) {
 
     turret_position = turret_transform.GetWorldPosition();
+    turret_x = turret_position.x;
+    turret_y = turret_position.y;
 
     glm::vec3 vector_player_turret(player_position.x - turret_position.x,
                                        player_position.y - turret_position.y,
@@ -2161,30 +2249,28 @@ void TurretIaSystem::update(entityx::EntityManager &es,
     turret.time_passed += (dt * 250.0f);
     float safeDistance = 50.0f;
     if(three_d){
-      safeDistance = 25.0f;
+      safeDistance = 10.0f;
     }
     if (distancia < safeDistance) {
-      turret_physics.velocity =
-          -1.0f *
-          glm::normalize(player_position -
-                         turret_transform.GetWorldPosition()) *
-          turretSpeed;
+      std::array<fann_type, 4> input;
+      input[0] = turret_x;
+      input[1] = turret_y;
+      input[2] = player_x;
+      input[3] = player_y;
+      fann_type* output = net.run(input.data());
+
+      float vel_x = roundf(output[0]);
+      float vel_y = roundf(output[1]);
+
+      turret_physics.velocity = glm::vec3(turretSpeed*(vel_x), turretSpeed*(vel_y), 0.0f);
     } else {
+      // Meter la red neuronal
       turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
       if (turret.time_passed >= turret.frecuencia) {
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/turret/default/attack.wav", false, 1);
 
-/*
-        glm::vec3 vector_player_turret(player_position.x - turret_position.x,
-                                       player_position.y - turret_position.y,
-                                       0.0f);
-        glm::vec3 vector_turret_v(0.0f, 1.0f, 0.0f);
-
-        float angle_rad =
-            std::atan2(vector_player_turret.y - vector_turret_v.y,
-                       vector_player_turret.x - vector_turret_v.x);*/        
         if(!three_d){
           glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
           new_velocity = glm::normalize(player_position -
@@ -2197,7 +2283,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
           new_velocity_threed = glm::normalize(player_position -
                                       turret_transform.GetWorldPosition()) * 50.0f;
           EntityFactory3D().MakeEnemyProjectile(es, turret_position, angle_rad,
-                                               new_velocity_threed, "torreta");
+                                              new_velocity_threed, "torreta");
         }
         
         turret.time_passed = 0.0;
@@ -2283,11 +2369,11 @@ void EnemyProjectileAnimationSystem::update(entityx::EntityManager &es,
     animToPlay = "shooting";
     animation->Play(animToPlay);
   }
-}
+} 
 
 // Anterior valor: 50 (muy rapido para 3D, pensar algo!)
 const float GhostIaSystem::kSpeed = 50.0f;
-const float GhostIaSystem::kThreeDSpeed = 20.0f;
+const float GhostIaSystem::kThreeDSpeed = 15.0f;
 
 float timerGhost;
 
@@ -2592,6 +2678,33 @@ void KnightAttackSystem::receive(const Collision &collision) {
       auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
       e0_color_animation->Play();
     }
+    // Menax
+  } else if (e0_weapon && e0_weapon->drawn &&
+             e0_weapon->owner.component<Player>() &&
+             collision_copy.e1.component<Menax>()) {
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+    auto e1_menax = collision_copy.e1.component<Menax>();
+    e1_menax->hits++;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/menax/default/hit.wav", false, 0.5f);
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
+  } else if (e1_weapon && e1_weapon->drawn &&
+             e1_weapon->owner.component<Player>() &&
+             collision_copy.e0.component<Menax>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+    auto e0_menax = collision_copy.e0.component<Menax>();
+    e0_menax->hits++;
+
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
   }
 }
 
@@ -2746,6 +2859,7 @@ void HealthSystem::update(entityx::EntityManager &es,
       	entity.destroy();
       	events.emit<StartLevel2>();
       } else if (entity.component<Masiatrix>()) {
+        bool three_d = entity.component<ThreeD>();
         if (entity.component<Masiatrix>()->real){
           es.each<MasiatrixLegs, ParentLink>(
           [&](entityx::Entity entity_legs, MasiatrixLegs &legs, ParentLink &parent) {
@@ -2759,7 +2873,7 @@ void HealthSystem::update(entityx::EntityManager &es,
           if (times_masiatrix_died >= 3) {
             events.emit<StartLevel3>();
           } else {
-            MasiatrixNextPhase mnp(times_masiatrix_died, entity.component<ThreeD>());
+            MasiatrixNextPhase mnp(times_masiatrix_died, three_d);    
             events.emit<MasiatrixNextPhase>(mnp);
           }
         } else {
@@ -2771,6 +2885,15 @@ void HealthSystem::update(entityx::EntityManager &es,
           });
           entity.destroy();
         }
+      } else if (entity.component<Menax>()) {
+        es.each<MenaxHitBox>(
+          [&](entityx::Entity entity_legs, MenaxHitBox &menaxHit) {
+            if (menaxHit.owner == entity) {
+              entity_legs.destroy();
+            }
+          });
+        entity.destroy();
+        //Enviar evento para pantalla final o whatever
       }
       else {
       	es.each<Legs, ParentLink>(
@@ -2949,23 +3072,20 @@ void LancerWalkingSystem::update(entityx::EntityManager &es,
     animation->Play(animToPlay);
   }
   timerLancer += dt;
-  if (timerLancer >= 0.22) {
-    timerLancer = 0.0;
-  }
+  //if (timerLancer >= 0.22) {
+  //  timerLancer = 0.0;
+  //}
 }
 
 const float LancerIaSystem::lancerSpeed = 70.0f;
 const float LancerIaSystem::lancerThreeDSpeed = 30.0f;
-bool once6=true;
 void LancerIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
 
-  if(once6){
-    once6 = false;
-    for(auto e : es.entities_with_components<ThreeD>()){
-      three_d = true;
-    }
+
+  for(auto e : es.entities_with_components<ThreeD>()){
+    three_d = true;
   }
 
   glm::vec3 player_position;
@@ -3000,15 +3120,16 @@ void LancerIaSystem::update(entityx::EntityManager &es,
 
         lancer.time_passed += (dt * 1000.0f);
 
+
+        float speed = lancerSpeed;
         float safeDistance = 30.0f;
         float followDistance = 35.0f;
         float keepDistance = 10.0f;
-        float speed = lancerSpeed;
         if(three_d){
+          speed = lancerThreeDSpeed;
           safeDistance = 12.0f;
           followDistance = 17.0f;
           keepDistance = 4.0f;
-          speed = lancerThreeDSpeed;
         }
 
         if (lancer.time_passed >= 5000.0f) {
@@ -3024,43 +3145,61 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         	} else if (lancer_position.x < player_position.x) {
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
         	}*/ 
-        	if (distancia < safeDistance) { 
-        		lancer_physics.velocity =
-	              -1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              speed;
-        	} else if (distancia > followDistance) {
-        		lancer_physics.velocity =
-	              1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              speed;
-        	} else {
-        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        	}
 
-        	if (lancer.time_passed >= 10000.0f ) {
-        		lancer.time_passed = 0.0f;
+          lancer_physics.velocity =
+                1.0f *
+                glm::normalize(player_position -
+                               lancer_transform.GetWorldPosition()) *
+                speed;
+        	// if (distancia < safeDistance) { 
+        	// 	lancer_physics.velocity =
+	        //       -1.0f *
+	        //       glm::normalize(player_position -
+	        //                      lancer_transform.GetWorldPosition()) *
+	        //       speed;
+        	// } else if (distancia > followDistance) {
+        	// 	lancer_physics.velocity =
+	        //       1.0f *
+	        //       glm::normalize(player_position -
+	        //                      lancer_transform.GetWorldPosition()) *
+	        //       speed;
+        	// } else {
+        	// 	lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        	// }
+
+        	if (lancer.time_passed >= 8000.0f ) {
+        	//	lancer.is_resting = true;
         		lancer.is_attacking = false;
+            lancer.time_passed = 0.0f;
         	}
         } else {
-        	lancer.is_attacking = false;
-        	if (distancia < safeDistance) {
-        		lancer_physics.velocity =
-	              -1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              keepDistance;
-        	} else if (distancia > followDistance) {
-        		lancer_physics.velocity =
-	              1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              keepDistance;
-        	} else {
-        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        	}   	
+          // Se queda quieto un tiempo
+          lancer.is_attacking = false;
+          //if (lancer.time_passed >= 8000.0f){
+            //speed = 10.0f;
+            //lancer.is_resting = false;
+            
+            lancer_physics.velocity =
+                   1.0f *
+                   glm::normalize(player_position -
+                                  lancer_transform.GetWorldPosition()) *
+                   30.0f;
+            // if (distancia < safeDistance) {
+            //   lancer_physics.velocity =
+            //       -1.0f *
+            //       glm::normalize(player_position -
+            //                      lancer_transform.GetWorldPosition()) *
+            //       keepDistance;
+            // } else if (distancia > followDistance) {
+            //   lancer_physics.velocity =
+            //       1.0f *
+            //       glm::normalize(player_position -
+            //                      lancer_transform.GetWorldPosition()) *
+            //       keepDistance;
+            // } else {
+            //   lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+            // }     
+          //}    	
         }
     });
 }
@@ -3421,6 +3560,40 @@ void WizardAttackSystem::receive(const Collision &collision) {
       auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
       e0_color_animation->Play();
     }
+    // Menax
+  } else if (e0_weapon &&
+             collision_copy.e1.component<Menax>()) {
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_weapon->damage;
+
+    entityx::Entity proyectil = collision.e0;
+    proyectil.destroy();
+
+    auto e1_menax = collision_copy.e1.component<Menax>();
+    e1_menax->hits++;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/menax/default/hit.wav", false, 0.5f);
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
+  } else if (e1_weapon &&
+             collision_copy.e0.component<Menax>()) {
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_weapon->damage;
+
+    entityx::Entity proyectil = collision.e1;
+    proyectil.destroy();
+
+    auto e0_menax = collision_copy.e0.component<Menax>();
+    e0_menax->hits++;
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/menax/default/hit.wav", false, 0.5f);
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
   } else {
   	if (e1_weapon) {
       entityx::Entity proyectil = collision.e1;
@@ -3586,8 +3759,8 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
           float velocityOne = 75.0f;
           float velocityTwo = 50.0f;
           if(entity.component<ThreeD>()){
-            float velocityOne = 30.0f;
-            float velocityTwo = 17.0f;
+            float velocityOne = 20.0f;
+            float velocityTwo = 12.0f;
           }
 
           switch (direction) {
@@ -3625,14 +3798,16 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
             std::atan2(vector_player_masiatrix.y - vector_masiatrix_v.y,
                        vector_player_masiatrix.x - vector_masiatrix_v.x);
 
-            projectile_velocity = glm::normalize(player_position -
-                                      masiatrix_position) *
-                       115.0f;
+            
             if(!entity.component<ThreeD>()){
+              projectile_velocity = glm::normalize(player_position -
+                                      masiatrix_position) * 115.0f;
               EntityFactory2D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
                                                projectile_velocity, "masiatrix");
             }
             else{
+              projectile_velocity = glm::normalize(player_position -
+                                      masiatrix_position) * 40.0f;
               EntityFactory3D().MakeEnemyProjectile(es, masiatrix_position, angle_rad,
                                                projectile_velocity, "masiatrix");
             }           
@@ -3670,8 +3845,14 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
       positioning = masiatrixInfo.positionC;
       em->each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
-        glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
-        player_transform.SetLocalPosition(new_position);       
+        if(nextPhase.three_d){
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 10.0f,7);
+          player_transform.SetLocalPosition(new_position);
+        }
+        else{
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
+          player_transform.SetLocalPosition(new_position);       
+        }        
       });
     break;
     case 2 :
@@ -3691,12 +3872,196 @@ void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
       positioning = masiatrixInfo.positionC;
       em->each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
-        glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 25.0f,positioning.z);
-        player_transform.SetLocalPosition(new_position);
+        if(nextPhase.three_d){
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 10.0f,7);
+          player_transform.SetLocalPosition(new_position);
+        }
+        else{
+          glm::vec3 new_position = glm::vec3(positioning.x,positioning.y - 60.0f,positioning.z);
+          player_transform.SetLocalPosition(new_position);
+        }
+      });
+    break;
+  } 
+}
+
+int enemies_alive = 0;
+void MenaxIaSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+  enemies_alive = 0;
+  glm::vec3 player_position;
+  es.each<Player, Transform>(
+      [&](entityx::Entity entity, Player &player, Transform &transform) {
+        player_position = transform.GetWorldPosition();
       });
 
-    break;
+  es.each<Ghost>(
+      [&](entityx::Entity entity, Ghost &ghost) {
+        enemies_alive++;
+      });
+  es.each<Turret>(
+      [&](entityx::Entity entity, Turret &turret) {
+        enemies_alive++;
+      });
+
+  glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+  es.each<Menax, Transform, Physics>([&](entityx::Entity entity, Menax &menax, Transform &menax_transform, Physics &physics) {
+    glm::vec3 menax_position;
+
+    if (menax.comportamiento == Menax::Comportamiento::WAIT) {
+       menax.timer_attacking = 0.0f;
+      physics.velocity = glm::vec3(0.0f,0.0f,0.0f);
+      if (enemies_alive == 0 && menax.spawn_enemies == false) {
+        es.each<Player, Transform>(
+          [&](entityx::Entity entity, Player &player, Transform &transform) {
+            transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 175.0f ,menax.original_position.z));
+          });
+        menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 75.0f,menax.original_position.z));
+        menax.hits = 0;
+        menax.comportamiento = Menax::Comportamiento::ATTACK;
+        menax.timer = 0.0f;
+      }
+    } else {
+      if (menax.hits >= 10 || menax.timer_attacking >= 2000.0f) {
+        menax_transform.SetLocalPosition(menax.original_position);
+        menax.spawn_enemies = true;
+        menax.hits = 0;
+        menax.comportamiento = Menax::Comportamiento::WAIT;
+      } else {
+        menax.timer_attacking += (dt * 100.0f);
+        // Movernos hacia Player y provocar animacion
+        glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
+        new_velocity = glm::normalize(player_position -
+                                      menax_transform.GetWorldPosition()) * 60.0f;
+        physics.velocity = new_velocity;
+      }
+    }
+  });
+}
+
+int total_spawned = 0;
+bool have_to_spawn = false;
+void SpawnSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+  es.each<Menax>(
+      [&](entityx::Entity entity, Menax &menax) {
+        have_to_spawn = menax.spawn_enemies;
+      });
+
+  es.each<Spawn, Transform>(
+      [&](entityx::Entity entity, Spawn &spawn, Transform &transform) {     
+        if (have_to_spawn) {
+          spawn.timer += (dt * 500.0f);
+          if (spawn.timer >= 500.0f) {
+            if (spawn.spawned == 4) {
+              spawn.timer = 0.0f;
+              EntityFactory2D().MakeTurret(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z), 500.0f);
+              spawn.spawned++;
+              total_spawned++;
+            } else {
+              spawn.timer = 0.0f;
+              EntityFactory2D().MakeGhost(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z));
+              spawn.spawned++;
+              total_spawned++;
+            }      
+          }
+          if (spawn.spawned == 5 && total_spawned == 10) {
+            have_to_spawn = false;
+            spawn.timer = 0.0f;
+            spawn.spawned=0;
+            total_spawned = 0;
+            es.each<Menax>(
+              [&](entityx::Entity entity, Menax &menax) {
+                menax.spawn_enemies = false;
+            }); 
+          }
+        }
+  });
+}
+
+bool finished = false;
+void MenaxAnimationSystem::update(entityx::EntityManager &es,
+                           entityx::EventManager &events,
+                           entityx::TimeDelta dt) {
+  entityx::ComponentHandle<Menax> menax;
+  entityx::ComponentHandle<Transform> transform;
+  entityx::ComponentHandle<Physics> physics;
+  entityx::ComponentHandle<SpriteAnimation> animation;
+  
+  std::string animToPlay;
+  std::string animToPlayHit;
+
+  for (entityx::Entity e0 : es.entities_with_components(
+           menax, transform, physics, animation)) {
+    
+    if (menax->comportamiento == Menax::Comportamiento::WAIT) {
+        animToPlay = "waiting";
+        animation->Play(animToPlay);
+        animToPlayHit = "dontDoDamage";
+        menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+    } else{
+      if (physics->velocity.y < 0 || physics->velocity.y > 0 || physics->velocity.x > 0 || physics->velocity.x < 0) {
+        menax->timer += (dt*100.0f);
+        animToPlay = "moving_bottom";
+        animation->Play(animToPlay);
+        animToPlayHit = "dontDoDamage";
+        menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+        if (menax->timer >= 200.0f) {
+          menax->hitBox.component<MenaxHitBox>()->stomp = true;
+          animToPlayHit = "doDamage";
+          menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+          if (menax->timer >= 300.0f) {
+            menax->timer = 0.0f;
+            menax->hitBox.component<MenaxHitBox>()->stomp = false;
+            menax->hitBox.component<MenaxHitBox>()->damaged = false;
+            animToPlayHit = "dontDoDamage";
+            menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+          }   
+        }
+      } 
+    } 
   }
 }
 
-        
+void MenaxAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager.subscribe<Collision>(*this);
+}
+
+void MenaxAttackSystem::receive(const Collision &collision) {
+  auto collision_copy = collision;
+  if (!collision_copy.e0.valid() || !collision_copy.e1.valid()) {
+    return;
+  }
+  auto e0_projectile = collision_copy.e0.component<MenaxHitBox>();
+  auto e1_projectile = collision_copy.e1.component<MenaxHitBox>();
+
+  if (e0_projectile && e0_projectile->stomp && !e0_projectile->damaged && collision_copy.e1.component<Player>()){
+    e0_projectile->damaged = true;
+    auto e1_health = collision_copy.e1.component<Health>();
+    e1_health->hp -= e0_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    if(!collision_copy.e1.component<ThreeD>()){
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
+    }
+
+  } else if (e1_projectile && e1_projectile->stomp && !e1_projectile->damaged && collision_copy.e0.component<Player>()) {
+    e1_projectile->damaged = true;
+    auto e0_health = collision_copy.e0.component<Health>();
+    e0_health->hp -= e1_projectile->damage;
+
+    Engine::GetInstance().Get<AudioManager>().PlaySound(
+        "assets/media/fx/gaunt/default/hit.wav", false, 1);
+    if(!collision_copy.e0.component<ThreeD>()){
+      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
+      e0_color_animation->Play();
+    }
+  } 
+}
+void MenaxAttackSystem::update(entityx::EntityManager &es,
+                                entityx::EventManager &events,
+                                entityx::TimeDelta dt) {}

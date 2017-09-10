@@ -13,6 +13,9 @@ struct EntityFactory3D : public EntityFactory {
   std::vector<entityx::Entity> MakeGhost(entityx::EntityManager &entities,
                                          const glm::vec3 &position) override;
 
+  std::vector<entityx::Entity> MakeSpawn(entityx::EntityManager &entities,
+                                         const glm::vec3 &position) override;
+
   std::vector<entityx::Entity> MakeTurret(entityx::EntityManager &entities,
                                           const glm::vec3 &position,
                                           const float frecuencia) override;
@@ -27,6 +30,9 @@ struct EntityFactory3D : public EntityFactory {
 
   std::vector<entityx::Entity> MakeMasiatrix(
       entityx::EntityManager &entities, const glm::vec3 &position, const std::string &id, const bool &real) override;
+
+  std::vector<entityx::Entity> MakeMenax(
+      entityx::EntityManager &entities, const glm::vec3 &position) override;
 
   std::vector<entityx::Entity> MakeWizardProjectile(
       entityx::EntityManager &entities, const glm::vec3 &position,

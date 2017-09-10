@@ -737,10 +737,9 @@ std::vector<entityx::Entity> EntityFactory2D::MakeSpawn(entityx::EntityManager &
     menaxHitBox.assign<SpriteAnimation>(damage_anim); 
     menaxHitBox.assign<Sprite>(texture_atlas);
 
+    entities_created.push_back(menaxHitBox);
     entities_created.push_back(menax);
 
-    entities_created.push_back(menaxHitBox);
-      
     return entities_created;
  }
 

@@ -75,6 +75,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<GhostAnimationSystem>(dt);
     systems.update<MasiatrixAnimationSystem>(dt);
     systems.update<ManuelethAnimationSystem>(dt);
+    systems.update<TurretIaSystem>(dt);
     systems.update<MenaxAnimationSystem>(dt);
     systems.update<TurretIaSystem>(dt);
     systems.update<LancerIaSystem>(dt);
@@ -117,6 +118,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<GhostAnimationSystem>(0);
     systems.update<MasiatrixAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);
+    systems.update<TurretIaSystem>(0);
     systems.update<MenaxAnimationSystem>(0);
     systems.update<TurretIaSystem>(0);
     systems.update<LancerIaSystem>(0);

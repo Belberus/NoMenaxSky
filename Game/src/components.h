@@ -145,13 +145,14 @@ struct Cursor {};
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
  
+  bool is_resting;
   bool is_attacking;
   float time_passed;
 
   LancerOrientation orientation;
 
   Lancer()
-      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
+      : is_attacking(false), is_resting(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
 };
 
 struct LancerHitBox {
@@ -209,9 +210,10 @@ struct Manueleth {
 };
 
 struct Menax {
-  Menax(glm::vec3 original_position, entityx::Entity &hitBox) : original_position(original_position), hitBox(hitBox), timer(0.0f),comportamiento(Comportamiento::WAIT), spawn_enemies(false), hits(0) {}
+  Menax(glm::vec3 original_position, entityx::Entity &hitBox) : original_position(original_position), hitBox(hitBox),timer_attacking(0.0f), timer(0.0f),comportamiento(Comportamiento::WAIT), spawn_enemies(false), hits(0) {}
   enum Comportamiento {WAIT, ATTACK};
   Comportamiento comportamiento;
+  float timer_attacking;
   float timer; 
   bool spawn_enemies;
   glm::vec3 original_position;

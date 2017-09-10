@@ -22,6 +22,10 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <unistd.h>
+
+#include <fann.h>
+#include <fann_cpp.h>
 
 #include <GLFW/glfw3.h>
 
@@ -1411,10 +1415,6 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	    set_paused(true);
 	    events.emit<PauseMenuEvent>();
 	  }
-	  // if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
-	  //   pausedM = false;
-	  //   events.emit<BackToGame>();
-	  // }
 
 	  if(!is_paused()){
 	    es.each<Player, Physics, Wizard, Health, Transform>([&](entityx::Entity entity,
@@ -2195,11 +2195,14 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
    });
 }
 
-const float TurretIaSystem::turretSpeed = 10.0f;
+const float TurretIaSystem::turretSpeed = 20.0f;
 const float TurretIaSystem::turretThreeDSpeed = 4.0f;
+FANN::neural_net net("assets/config/keep_enemy_away.net");
 void TurretIaSystem::update(entityx::EntityManager &es,
                             entityx::EventManager &events,
                             entityx::TimeDelta dt) {
+
+  float turret_x, turret_y, player_x, player_y;
 
   entityx::ComponentHandle<ThreeD> threed;
   for (entityx::Entity e1 : es.entities_with_components(threed)) {
@@ -2210,6 +2213,8 @@ void TurretIaSystem::update(entityx::EntityManager &es,
   es.each<Player, Transform>(
       [&](entityx::Entity entity, Player &player, Transform &player_transform) {
         player_position = player_transform.GetWorldPosition();
+        player_x = player_position.x;
+        player_y = player_position.y;
       });
 
   // Comprobamos la distancia a la que esta, si esta a menos de X distancia se
@@ -2221,6 +2226,8 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                           Physics &turret_physics) {
 
     turret_position = turret_transform.GetWorldPosition();
+    turret_x = turret_position.x;
+    turret_y = turret_position.y;
 
     glm::vec3 vector_player_turret(player_position.x - turret_position.x,
                                        player_position.y - turret_position.y,
@@ -2242,19 +2249,26 @@ void TurretIaSystem::update(entityx::EntityManager &es,
     turret.time_passed += (dt * 250.0f);
     float safeDistance = 50.0f;
     if(three_d){
-      safeDistance = 25.0f;
+      safeDistance = 10.0f;
     }
     if (distancia < safeDistance) {
       if(three_d){
         Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/turret/default/mov.wav", false, 0.7f);
       }
-      turret_physics.velocity =
-          -1.0f *
-          glm::normalize(player_position -
-                         turret_transform.GetWorldPosition()) *
-          turretSpeed;
+      std::array<fann_type, 4> input;
+      input[0] = turret_x;
+      input[1] = turret_y;
+      input[2] = player_x;
+      input[3] = player_y;
+      fann_type* output = net.run(input.data());
+
+      float vel_x = roundf(output[0]);
+      float vel_y = roundf(output[1]);
+
+      turret_physics.velocity = glm::vec3(turretSpeed*(vel_x), turretSpeed*(vel_y), 0.0f);
     } else {
+      // Meter la red neuronal
       turret_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
       if (turret.time_passed >= turret.frecuencia) {
@@ -2273,7 +2287,7 @@ void TurretIaSystem::update(entityx::EntityManager &es,
           new_velocity_threed = glm::normalize(player_position -
                                       turret_transform.GetWorldPosition()) * 50.0f;
           EntityFactory3D().MakeEnemyProjectile(es, turret_position, angle_rad,
-                                               new_velocity_threed, "torreta");
+                                              new_velocity_threed, "torreta");
         }
         
         turret.time_passed = 0.0;
@@ -3062,9 +3076,9 @@ void LancerWalkingSystem::update(entityx::EntityManager &es,
     animation->Play(animToPlay);
   }
   timerLancer += dt;
-  if (timerLancer >= 0.22) {
-    timerLancer = 0.0;
-  }
+  //if (timerLancer >= 0.22) {
+  //  timerLancer = 0.0;
+  //}
 }
 
 const float LancerIaSystem::lancerSpeed = 70.0f;
@@ -3110,15 +3124,16 @@ void LancerIaSystem::update(entityx::EntityManager &es,
 
         lancer.time_passed += (dt * 1000.0f);
 
+
+        float speed = lancerSpeed;
         float safeDistance = 30.0f;
         float followDistance = 35.0f;
         float keepDistance = 10.0f;
-        float speed = lancerSpeed;
         if(three_d){
+          speed = lancerThreeDSpeed;
           safeDistance = 12.0f;
           followDistance = 17.0f;
           keepDistance = 4.0f;
-          speed = lancerThreeDSpeed;
         }
 
         if (lancer.time_passed >= 5000.0f) {
@@ -3134,43 +3149,61 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         	} else if (lancer_position.x < player_position.x) {
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
         	}*/ 
-        	if (distancia < safeDistance) { 
-        		lancer_physics.velocity =
-	              -1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              speed;
-        	} else if (distancia > followDistance) {
-        		lancer_physics.velocity =
-	              1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              speed;
-        	} else {
-        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        	}
 
-        	if (lancer.time_passed >= 10000.0f ) {
-        		lancer.time_passed = 0.0f;
+          lancer_physics.velocity =
+                1.0f *
+                glm::normalize(player_position -
+                               lancer_transform.GetWorldPosition()) *
+                speed;
+        	// if (distancia < safeDistance) { 
+        	// 	lancer_physics.velocity =
+	        //       -1.0f *
+	        //       glm::normalize(player_position -
+	        //                      lancer_transform.GetWorldPosition()) *
+	        //       speed;
+        	// } else if (distancia > followDistance) {
+        	// 	lancer_physics.velocity =
+	        //       1.0f *
+	        //       glm::normalize(player_position -
+	        //                      lancer_transform.GetWorldPosition()) *
+	        //       speed;
+        	// } else {
+        	// 	lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        	// }
+
+        	if (lancer.time_passed >= 8000.0f ) {
+        	//	lancer.is_resting = true;
         		lancer.is_attacking = false;
+            lancer.time_passed = 0.0f;
         	}
         } else {
-        	lancer.is_attacking = false;
-        	if (distancia < safeDistance) {
-        		lancer_physics.velocity =
-	              -1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              keepDistance;
-        	} else if (distancia > followDistance) {
-        		lancer_physics.velocity =
-	              1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              keepDistance;
-        	} else {
-        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        	}   	
+          // Se queda quieto un tiempo
+          lancer.is_attacking = false;
+          //if (lancer.time_passed >= 8000.0f){
+            //speed = 10.0f;
+            //lancer.is_resting = false;
+            
+            lancer_physics.velocity =
+                   1.0f *
+                   glm::normalize(player_position -
+                                  lancer_transform.GetWorldPosition()) *
+                   30.0f;
+            // if (distancia < safeDistance) {
+            //   lancer_physics.velocity =
+            //       -1.0f *
+            //       glm::normalize(player_position -
+            //                      lancer_transform.GetWorldPosition()) *
+            //       keepDistance;
+            // } else if (distancia > followDistance) {
+            //   lancer_physics.velocity =
+            //       1.0f *
+            //       glm::normalize(player_position -
+            //                      lancer_transform.GetWorldPosition()) *
+            //       keepDistance;
+            // } else {
+            //   lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+            // }     
+          //}    	
         }
     });
 }
@@ -3901,6 +3934,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
     
 
     if (menax.comportamiento == Menax::Comportamiento::WAIT) {
+       menax.timer_attacking = 0.0f;
       physics.velocity = glm::vec3(0.0f,0.0f,0.0f);
       if (enemies_alive == 0 && menax.spawn_enemies == false) {
         es.each<Player, Transform>(
@@ -3919,12 +3953,13 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
         menax.timer = 0.0f;
       }
     } else {
-      if (menax.hits >= 10) {
+      if (menax.hits >= 10 || menax.timer_attacking >= 2000.0f) {
         menax_transform.SetLocalPosition(menax.original_position);
         menax.spawn_enemies = true;
         menax.hits = 0;
         menax.comportamiento = Menax::Comportamiento::WAIT;
       } else {
+        menax.timer_attacking += (dt * 100.0f);
         // Movernos hacia Player y provocar animacion
         glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
         if(three_d){
@@ -4012,18 +4047,18 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
         menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
     } else{
       if (physics->velocity.y < 0 || physics->velocity.y > 0 || physics->velocity.x > 0 || physics->velocity.x < 0) {
-        menax->timer += (dt*175.0f);
+        menax->timer += (dt*100.0f);
         animToPlay = "moving_bottom";
         animation->Play(animToPlay);
         animToPlayHit = "dontDoDamage";
         menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
-        if (menax->timer >= 350.0f) {
+        if (menax->timer >= 200.0f) {
           Engine::GetInstance().Get<AudioManager>().PlaySound(
             "assets/media/fx/menax/default/mov.wav", false, 1);
           menax->hitBox.component<MenaxHitBox>()->stomp = true;
           animToPlayHit = "doDamage";
           menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
-          if (menax->timer >= 525.0f) {
+          if (menax->timer >= 300.0f) {
             menax->timer = 0.0f;
             menax->hitBox.component<MenaxHitBox>()->stomp = false;
             menax->hitBox.component<MenaxHitBox>()->damaged = false;

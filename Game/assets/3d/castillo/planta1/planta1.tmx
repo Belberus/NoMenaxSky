@@ -343,25 +343,6 @@
   <object id="197" type="low" x="402.125" y="277.125" width="63.375" height="16.625"/>
   <object id="198" type="low" x="465" y="252" width="15.625" height="15.75"/>
   <object id="199" type="low" x="465.375" y="304.25" width="15.25" height="15.375"/>
-  <object id="202" x="381" y="238.091" width="2.90909" height="2.63636"/>
-  <object id="203" x="389" y="238" width="2.81818" height="2.81818"/>
-  <object id="204" x="397.091" y="238.091" width="2.72727" height="2.72727"/>
-  <object id="205" x="405.091" y="238" width="2.81818" height="2.72727"/>
-  <object id="206" x="413.091" y="238" width="2.90909" height="2.90909"/>
-  <object id="207" x="421" y="238" width="2.81818" height="2.90909"/>
-  <object id="208" x="444" y="238.091" width="3.09091" height="2.90909"/>
-  <object id="209" x="451.909" y="238" width="2.90909" height="2.81818"/>
-  <object id="210" x="460" y="238" width="2.90909" height="2.81818"/>
-  <object id="211" x="468" y="238" width="3" height="2.90909"/>
-  <object id="212" x="475.909" y="238" width="3" height="2.81818"/>
-  <object id="213" x="484" y="238" width="2.90909" height="2.81818"/>
-  <object id="214" x="490.909" y="247.909" width="3" height="2.90909"/>
-  <object id="215" x="491" y="256" width="2.81818" height="2.81818"/>
-  <object id="216" x="491" y="264" width="2.90909" height="2.90909"/>
-  <object id="217" x="491.091" y="272" width="2.81818" height="2.90909"/>
-  <object id="218" x="491.091" y="280" width="2.72727" height="2.90909"/>
-  <object id="219" x="490.818" y="288" width="3.09091" height="2.81818"/>
-  <object id="220" x="491.091" y="296.091" width="2.81818" height="2.81818"/>
   <object id="221" x="424.125" y="310.125" width="1.625" height="1.625"/>
   <object id="222" x="442.125" y="310.25" width="1.75" height="1.75"/>
   <object id="223" x="424.125" y="258.875" width="1.75" height="2"/>
@@ -369,17 +350,6 @@
   <object id="225" x="494.375" y="234.875" width="2.375" height="100.25"/>
   <object id="227" x="369.5" y="235" width="128.625" height="1.875"/>
   <object id="228" x="370.125" y="233.625" width="2.875" height="102.125"/>
-  <object id="229" x="374" y="243.875" width="2.875" height="2.875"/>
-  <object id="230" x="374" y="252" width="2.75" height="3"/>
-  <object id="231" x="374.125" y="259.875" width="2.875" height="3"/>
-  <object id="232" x="374.125" y="268" width="2.75" height="2.875"/>
-  <object id="233" x="373.875" y="275.875" width="3" height="2.75"/>
-  <object id="235" x="373.875" y="283.75" width="3" height="3"/>
-  <object id="236" x="374" y="292" width="2.75" height="2.875"/>
-  <object id="237" x="374" y="300.125" width="2.875" height="2.75"/>
-  <object id="238" x="374.125" y="308" width="2.75" height="2.875"/>
-  <object id="239" x="374.125" y="316" width="2.75" height="2.875"/>
-  <object id="240" x="374.25" y="323.875" width="2.625" height="3"/>
   <object id="241" x="501.909" y="339.091" width="2.27273" height="63.0909"/>
   <object id="243" x="409" y="489.938" width="18.875" height="2.0625"/>
   <object id="245" x="368.938" y="468.813" width="126" height="2.3125"/>
@@ -401,9 +371,6 @@
   <object id="264" x="420.938" y="401" width="25.6719" height="2"/>
   <object id="265" x="421.565" y="341.391" width="23.9565" height="5.52174"/>
   <object id="266" x="372.867" y="333" width="124.126" height="2.13333"/>
-  <object id="267" x="490.938" y="304" width="3" height="2.9375"/>
-  <object id="268" x="491" y="312" width="3" height="2.9375"/>
-  <object id="269" x="491" y="319.938" width="2.875" height="2.9375"/>
   <object id="270" x="425" y="329.313" width="17.9375" height="5.1875"/>
   <object id="272" x="646.813" y="328" width="114.469" height="2.28125"/>
   <object id="273" x="759.031" y="265.781" width="2.59375" height="63.7188"/>
@@ -413,7 +380,7 @@
   <object id="277" x="633.609" y="406.391" width="126.043" height="2.56522"/>
   <object id="278" x="632.87" y="407.739" width="3" height="61.8696"/>
  </objectgroup>
- <objectgroup name="1.0" visible="0">
+ <objectgroup name="1.0">
   <object id="67" type="door" x="430.813" y="480.594" width="5.375" height="0.78125">
    <properties>
     <property name="next" value="1.1"/>
@@ -422,7 +389,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="1.1" visible="0">
+ <objectgroup name="1.1">
   <object id="281" type="door" x="429.406" y="468.406" width="6.09375" height="1.40625">
    <properties>
     <property name="next" value="1.0"/>
@@ -458,7 +425,7 @@
   <object id="318" type="fantasma" x="460.75" y="423.125" width="3.5" height="3.75"/>
   <object id="319" type="fantasma" x="460.5" y="452.375" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.2" visible="0">
+ <objectgroup name="1.2">
   <object id="286" type="door" x="430.499" y="400.388" width="6.09375" height="1.40625">
    <properties>
     <property name="next" value="1.1"/>
@@ -474,7 +441,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="1.3" visible="0">
+ <objectgroup name="1.3">
   <object id="291" type="door" x="360.558" y="437.512" width="1.57201" height="6.1019">
    <properties>
     <property name="next" value="1.1"/>
@@ -605,7 +572,7 @@
   <object id="399" type="lancero" x="533.75" y="389.875" width="3.5" height="3.75"/>
   <object id="398" type="lancero" x="509.75" y="372.875" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.8" visible="0">
+ <objectgroup name="1.8">
   <object id="302" type="door" x="635.39" y="435.506" width="1.03868" height="6.06371">
    <properties>
     <property name="next" value="1.4"/>
@@ -634,7 +601,7 @@
   <object id="381" type="lancero" x="681" y="457.875" width="3.5" height="3.75"/>
   <object id="382" type="fantasma" x="741" y="426.875" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.9" visible="0">
+ <objectgroup name="1.9">
   <object id="305" type="door" x="694.653" y="399.562" width="5.69493" height="0.75121">
    <properties>
     <property name="next" value="1.8"/>
@@ -698,8 +665,173 @@
    </properties>
   </object>
   <object id="347" type="manueleth" x="432.5" y="243.625" width="3.5" height="3.75"/>
+  <object id="212" type="trampa" x="475.909" y="238" width="3" height="2.81818">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="239" type="trampa" x="374.125" y="316" width="2.75" height="2.875">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="214" type="trampa" x="490.909" y="247.909" width="3" height="2.90909">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="219" type="trampa" x="490.818" y="288" width="3.09091" height="2.81818">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="231" type="trampa" x="374.125" y="259.875" width="2.875" height="3">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="211" type="trampa" x="468" y="238" width="3" height="2.90909">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="205" type="trampa" x="405.091" y="238" width="2.81818" height="2.72727">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="215" type="trampa" x="491" y="256" width="2.81818" height="2.81818">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="230" type="trampa" x="374" y="252" width="2.75" height="3">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="220" type="trampa" x="491.091" y="296.091" width="2.81818" height="2.81818">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="208" type="trampa" x="444" y="238.091" width="3.09091" height="2.90909">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="209" type="trampa" x="451.909" y="238" width="2.90909" height="2.81818">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="203" type="trampa" x="389" y="238" width="2.81818" height="2.81818">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="210" type="trampa" x="460" y="238" width="2.90909" height="2.81818">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="213" type="trampa" x="484" y="238" width="2.90909" height="2.81818">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="238" type="trampa" x="374.125" y="308" width="2.75" height="2.875">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="268" type="trampa" x="491" y="312" width="3" height="2.9375">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="218" type="trampa" x="491.091" y="280" width="2.72727" height="2.90909">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="204" type="trampa" x="397.091" y="238.091" width="2.72727" height="2.72727">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="232" type="trampa" x="374.125" y="268" width="2.75" height="2.875">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="237" type="trampa" x="374" y="300.125" width="2.875" height="2.75">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="229" type="trampa" x="374" y="243.875" width="2.875" height="2.875">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="267" type="trampa" x="490.938" y="304" width="3" height="2.9375">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="206" type="trampa" x="413.091" y="238" width="2.90909" height="2.90909">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="207" type="trampa" x="421" y="238" width="2.81818" height="2.90909">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="240" type="trampa" x="374.25" y="323.875" width="2.625" height="3">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="233" type="trampa" x="373.875" y="275.875" width="3" height="2.75">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="216" type="trampa" x="491" y="264" width="2.90909" height="2.90909">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="235" type="trampa" x="373.875" y="283.75" width="3" height="3">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="217" type="trampa" x="491.091" y="272" width="2.81818" height="2.90909">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
+  <object id="236" type="trampa" x="374" y="292" width="2.75" height="2.875">
+   <properties>
+    <property name="direccion" value="derecha"/>
+   </properties>
+  </object>
+  <object id="202" type="trampa" x="381" y="238.091" width="2.90909" height="2.63636">
+   <properties>
+    <property name="direccion" value="abajo"/>
+   </properties>
+  </object>
+  <object id="269" type="trampa" x="491" y="319.938" width="2.875" height="2.9375">
+   <properties>
+    <property name="direccion" value="izquierda"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup name="Center" visible="0">
+ <objectgroup name="Center">
   <object id="38" x="433.2" y="486.5" width="1" height="1"/>
  </objectgroup>
 </map>

@@ -1,6 +1,9 @@
 #include "floor.h"
 
 #include <engine/events/collision.h>
+#include <engine/core/audio_manager.h>
+#include <engine/core/engine.h>
+
 
 Floor::~Floor() = default;
 
@@ -39,11 +42,13 @@ void Floor::receive(const Player& player) {
 }
 
 void Floor::receive(const PauseMenuEvent& pm){
+  engine::core::Engine::GetInstance().Get<engine::core::AudioManager>().StopFx();
   PauseGame(true);
   parent_scene_->events.emit<PauseMenuEvent>(pm);
 }
 
 void Floor::receive(const PauseGameEvent& pg){
+  engine::core::Engine::GetInstance().Get<engine::core::AudioManager>().StopFx();
   PauseGame(true);
 }
 

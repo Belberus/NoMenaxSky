@@ -1411,10 +1411,6 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
 	    set_paused(true);
 	    events.emit<PauseMenuEvent>();
 	  }
-	  // if(keys_[GLFW_KEY_ESCAPE] && keys_[GLFW_KEY_SPACE] && pausedM){
-	  //   pausedM = false;
-	  //   events.emit<BackToGame>();
-	  // }
 
 	  if(!is_paused()){
 	    es.each<Player, Physics, Wizard, Health, Transform>([&](entityx::Entity entity,
@@ -3877,6 +3873,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
     glm::vec3 menax_position;
 
     if (menax.comportamiento == Menax::Comportamiento::WAIT) {
+       menax.timer_attacking = 0.0f;
       physics.velocity = glm::vec3(0.0f,0.0f,0.0f);
       if (enemies_alive == 0 && menax.spawn_enemies == false) {
         es.each<Player, Transform>(
@@ -3889,12 +3886,13 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
         menax.timer = 0.0f;
       }
     } else {
-      if (menax.hits >= 10) {
+      if (menax.hits >= 10 || menax.timer_attacking >= 2000.0f) {
         menax_transform.SetLocalPosition(menax.original_position);
         menax.spawn_enemies = true;
         menax.hits = 0;
         menax.comportamiento = Menax::Comportamiento::WAIT;
       } else {
+        menax.timer_attacking += (dt * 100.0f);
         // Movernos hacia Player y provocar animacion
         glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
         new_velocity = glm::normalize(player_position -
@@ -3968,16 +3966,16 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
         menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
     } else{
       if (physics->velocity.y < 0 || physics->velocity.y > 0 || physics->velocity.x > 0 || physics->velocity.x < 0) {
-        menax->timer += (dt*175.0f);
+        menax->timer += (dt*100.0f);
         animToPlay = "moving_bottom";
         animation->Play(animToPlay);
         animToPlayHit = "dontDoDamage";
         menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
-        if (menax->timer >= 350.0f) {
+        if (menax->timer >= 200.0f) {
           menax->hitBox.component<MenaxHitBox>()->stomp = true;
           animToPlayHit = "doDamage";
           menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
-          if (menax->timer >= 525.0f) {
+          if (menax->timer >= 300.0f) {
             menax->timer = 0.0f;
             menax->hitBox.component<MenaxHitBox>()->stomp = false;
             menax->hitBox.component<MenaxHitBox>()->damaged = false;

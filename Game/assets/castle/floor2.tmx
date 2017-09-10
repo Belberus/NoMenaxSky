@@ -1378,13 +1378,13 @@
   <object id="109" x="1732.05" y="196.975" width="7.99609" height="8.7454"/>
   <object id="110" x="1732.05" y="244.975" width="7.99609" height="8.7454"/>
   <object id="111" x="1683.91" y="245.019" width="7.99609" height="8.7454"/>
-  <object id="112" type="low" x="1488.01" y="176.022" width="47.038" height="33.7171"/>
-  <object id="113" type="low" x="1568.11" y="175.992" width="47.038" height="81.9557"/>
+  <object id="112" type="low" x="1488.01" y="160.147" width="47.038" height="49.5921"/>
+  <object id="113" type="low" x="1568.11" y="160.242" width="47.038" height="97.7057"/>
   <object id="114" type="low" x="1360" y="239.986" width="175.019" height="18.2057"/>
   <object id="115" type="low" x="1567.99" y="288.022" width="175.019" height="18.2057"/>
-  <object id="116" type="low" x="1568" y="335.997" width="47.038" height="17.8475"/>
+  <object id="116" type="low" x="1568" y="335.997" width="47.038" height="37.8475"/>
   <object id="117" type="low" x="1439.98" y="288.076" width="94.9599" height="27.891"/>
-  <object id="118" type="low" x="1440.02" y="338.964" width="94.9599" height="28.6301"/>
+  <object id="118" type="low" x="1440.02" y="338.964" width="94.9599" height="34.8801"/>
   <object id="119" type="low" x="1491" y="305.869" width="43.9457" height="32.9739"/>
   <object id="120" type="low" x="1439.99" y="305.96" width="27.9912" height="32.9739"/>
   <object id="121" x="1255.02" y="448.346" width="8.99609" height="239.624"/>
@@ -1506,15 +1506,15 @@
   <object id="243" x="1076.03" y="855.996" width="7.99609" height="8.56391"/>
   <object id="244" x="1076.03" y="820.001" width="7.99609" height="8.71947"/>
   <object id="245" x="1172.03" y="819.979" width="7.99609" height="8.56391"/>
-  <object id="246" type="low" x="640.022" y="464.033" width="30.9239" height="191.854"/>
+  <object id="246" type="low" x="640.022" y="448.783" width="30.9239" height="212.854"/>
   <object id="247" type="low" x="575.913" y="495.99" width="46.9864" height="129.945"/>
   <object id="248" type="low" x="543.976" y="607.996" width="32.017" height="17.9602"/>
   <object id="249" type="low" x="399.998" y="496.02" width="222.944" height="33.5966"/>
-  <object id="250" type="low" x="400.003" y="463.974" width="46.9801" height="113.795"/>
-  <object id="251" type="low" x="304.021" y="464.014" width="30.9673" height="113.795"/>
+  <object id="250" type="low" x="400.003" y="448.474" width="46.9801" height="129.295"/>
+  <object id="251" type="low" x="304.021" y="448.764" width="30.9673" height="129.045"/>
   <object id="252" type="low" x="352.001" y="480.016" width="30.9673" height="127.92"/>
   <object id="253" type="low" x="255.997" y="480.012" width="30.9673" height="127.92"/>
-  <object id="254" type="low" x="479.995" y="608" width="30.9736" height="47.9375"/>
+  <object id="254" type="low" x="479.995" y="608" width="30.9736" height="54.1875"/>
   <object id="255" type="low" x="256" y="608.016" width="254.969" height="17.625"/>
   <object id="256" x="207.991" y="947.016" width="27.9911" height="28.9887"/>
   <object id="257" x="207.991" y="736.236" width="24.9969" height="210.794"/>
@@ -1559,13 +1559,13 @@
   <object id="304" x="227.995" y="899.001" width="7.99609" height="8.3672"/>
   <object id="305" x="644.039" y="901.977" width="51.2638" height="48.1137"/>
   <object id="306" x="267.856" y="918.004" width="318.121" height="31.9922"/>
-  <object id="307" type="low" x="352.009" y="176.01" width="62.9961" height="81.2454"/>
+  <object id="307" type="low" x="352.009" y="160.677" width="62.9961" height="96.5787"/>
   <object id="309" type="low" x="412.299" y="239.987" width="34.6211" height="17.4329"/>
   <object id="313" type="low" x="320.214" y="288.015" width="126.803" height="49.4606"/>
   <object id="314" type="low" x="273.999" y="222.994" width="62.9961" height="113.451"/>
   <object id="315" type="low" x="480.013" y="287.979" width="126.803" height="49.4606"/>
   <object id="316" type="low" x="591.999" y="223.99" width="62.9961" height="113.451"/>
-  <object id="317" type="low" x="511.995" y="175.971" width="63.0117" height="17.4329"/>
+  <object id="317" type="low" x="511.995" y="160.304" width="63.0117" height="33.0996"/>
   <object id="318" type="low" x="512.003" y="224.002" width="63.0117" height="33.2454"/>
   <object id="319" type="low" x="479.991" y="240.001" width="63.0117" height="17.2454"/>
   <object id="390" x="756.007" y="674.994" width="7.99609" height="8.7454"/>

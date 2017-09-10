@@ -2098,7 +2098,6 @@ void ManuelethIaSystem::update(entityx::EntityManager &es,
                 manueleth.time_for_shooting = 0.0;
               }
               else{
-                std::cout << "manueleth disparando 3D" << std::endl;
                 new_velocity = glm::normalize(player_position -
                                transform.GetWorldPosition()) * 40.0f;
                 EntityFactory3D().MakeEnemyProjectile(
@@ -2192,7 +2191,6 @@ void TurretIaSystem::update(entityx::EntityManager &es,
                                                new_velocity, "torreta");
         }
         else{
-          std::cout << "turret lanza 3D" << std::endl;
           glm::vec3 new_velocity_threed(0.0f,0.0f,0.0f);
           new_velocity_threed = glm::normalize(player_position -
                                       turret_transform.GetWorldPosition()) * 50.0f;
@@ -2283,11 +2281,11 @@ void EnemyProjectileAnimationSystem::update(entityx::EntityManager &es,
     animToPlay = "shooting";
     animation->Play(animToPlay);
   }
-}
+} 
 
 // Anterior valor: 50 (muy rapido para 3D, pensar algo!)
 const float GhostIaSystem::kSpeed = 50.0f;
-const float GhostIaSystem::kThreeDSpeed = 20.0f;
+const float GhostIaSystem::kThreeDSpeed = 15.0f;
 
 float timerGhost;
 

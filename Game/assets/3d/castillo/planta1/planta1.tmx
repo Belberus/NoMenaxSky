@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="300" height="200" tilewidth="16" tileheight="16" nextobjectid="412">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="300" height="200" tilewidth="16" tileheight="16" nextobjectid="415">
  <tileset firstgid="1" source="untitled.tsx"/>
  <layer name="Tile Layer 1" width="300" height="200">
   <data encoding="csv">
@@ -499,7 +499,7 @@
   <object id="369" type="torreta" x="265" y="436.625" width="3.5" height="3.75"/>
   <object id="367" type="torreta" x="249.5" y="415.125" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.4" visible="0">
+ <objectgroup name="1.4">
   <object id="293" type="door" x="502.85" y="435.495" width="1.57201" height="6.1019">
    <properties>
     <property name="next" value="1.1"/>
@@ -531,7 +531,7 @@
   <object id="353" type="torreta" x="563.75" y="414.625" width="3.5" height="3.75"/>
   <object id="350" type="torreta" x="585.75" y="462.375" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.5" visible="0">
+ <objectgroup name="1.5">
   <object id="296" type="door" x="298.456" y="401.514" width="5.96331" height="0.971465">
    <properties>
     <property name="next" value="1.3"/>
@@ -552,7 +552,7 @@
   <object id="362" type="torreta" x="320.25" y="349.625" width="3.5" height="3.75"/>
   <object id="363" type="torreta" x="277.25" y="350.375" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.6" visible="0">
+ <objectgroup name="1.6">
   <object id="298" type="door" x="229.492" y="369.606" width="1.05706" height="6.09647">
    <properties>
     <property name="next" value="1.5"/>
@@ -572,6 +572,7 @@
   <object id="406" type="lancero" x="166" y="375.125" width="3.5" height="3.75"/>
   <object id="346" type="fantasma" x="129.5" y="384.375" width="3.5" height="3.75"/>
   <object id="341" type="fantasma" x="177" y="355.625" width="3.5" height="3.75"/>
+  <object id="412" type="cofre1" x="108.938" y="370" width="3.0625" height="4.875"/>
  </objectgroup>
  <objectgroup name="1.7">
   <object id="299" type="door" x="562.388" y="399.671" width="6.03868" height="0.657456">
@@ -667,7 +668,7 @@
   <object id="355" type="torreta" x="638.5" y="394.125" width="3.5" height="3.75"/>
   <object id="357" type="torreta" x="695.5" y="347.875" width="3.5" height="3.75"/>
  </objectgroup>
- <objectgroup name="1.10" visible="0">
+ <objectgroup name="1.10">
   <object id="310" type="door" x="694.059" y="327.624" width="6.13243" height="0.75121">
    <properties>
     <property name="next" value="1.9"/>
@@ -686,8 +687,9 @@
   <object id="387" type="lancero" x="673.25" y="314.625" width="3.5" height="3.75"/>
   <object id="392" type="lancero" x="747.25" y="304.125" width="3.5" height="3.75"/>
   <object id="389" type="lancero" x="667.25" y="287.875" width="3.5" height="3.75"/>
+  <object id="414" type="cofre2" x="746" y="271" width="4.90909" height="2.81818"/>
  </objectgroup>
- <objectgroup name="1.11" visible="0">
+ <objectgroup name="1.11">
   <object id="311" type="bossDoor" x="427.277" y="328.695" width="14.446" height="1.17329">
    <properties>
     <property name="next" value="1.2"/>

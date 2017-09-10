@@ -24,8 +24,9 @@ struct PlayText{
 	PlayText(std::string text) : text(text){};
 };
 struct MasiatrixNextPhase {
+	bool three_d;
 	int phase;
-	MasiatrixNextPhase(int phase) : phase(phase) {};
+	MasiatrixNextPhase(int phase, bool three_d) : phase(phase), three_d(three_d) {};
 };
 struct LevelEvent {
 	int level;

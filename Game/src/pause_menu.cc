@@ -19,7 +19,7 @@ using namespace engine::components::common;
 using namespace engine::components::two_d;
 using namespace engine::core;
 
-PauseMenu::PauseMenu(Game* parent_scene) 
+PauseMenu::PauseMenu(Game* parent_scene, bool three_d) 
 	: parent_scene_(parent_scene) {
 
 	events.subscribe<BackToMainMenu>(*this);
@@ -35,6 +35,17 @@ PauseMenu::PauseMenu(Game* parent_scene)
 	auto menu_canvas = entities.create();
 	menu_canvas.assign<Transform>(glm::vec3(960.0f / 2.0f, 100.0f, 0.0f));
 	auto menu_canvas_transform = &(*menu_canvas.component<Transform>());
+
+	if(three_d){
+		// arrow en 3D
+		entityx::Entity menuArrow = entities.create();
+		Transform menuArrow_transform (glm::vec3(-90, 210, 0), menu_canvas_transform, glm::vec3(2, 2, 1));
+		menuArrow.assign<Transform>(menuArrow_transform);
+		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+		  "assets/menu/ppc_front.png");
+		menuArrow.assign<Sprite>(tex);
+		menuArrow.assign<PauseOptions>(PauseOptions::Option::CONTINUAR);
+	}
 
 	// exit option
 	entityx::Entity exit_option = entities.create();
@@ -77,23 +88,28 @@ PauseMenu::PauseMenu(Game* parent_scene)
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	  "assets/menu/continuar.png");
 	play_option.assign<Sprite>(tex);
+	if(three_d){
+		play_option.assign<ThreeD>();
+	}
 
 	// Cambiar por juego pausado
 	entityx::Entity title = entities.create();
-	title.assign<Transform>(glm::vec3(0, 320, 0), menu_canvas_transform,
-	                      glm::vec3(0.3, 0.3, 1));
+	Transform title_transform (glm::vec3(0, 320, 0), menu_canvas_transform, glm::vec3(0.3, 0.3, 1));
+	title.assign<Transform>(title_transform);
 	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
 	  "assets/menu/pausa.png");
 	title.assign<Sprite>(tex);
 
-	// arrow
-	entityx::Entity menuArrow = entities.create();
-	menuArrow.assign<Transform>(glm::vec3(-90, 210, 0), menu_canvas_transform,
-	                          glm::vec3(2, 2, 1));
-	tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
-	  "assets/menu/ppc_front.png");
-	menuArrow.assign<Sprite>(tex);
-	menuArrow.assign<PauseOptions>(PauseOptions::Option::CONTINUAR);
+	if(!three_d){
+		// arrow en 2d
+		entityx::Entity menuArrow = entities.create();
+		Transform menuArrow_transform (glm::vec3(-90, 210, 0), menu_canvas_transform, glm::vec3(2, 2, 1));
+		menuArrow.assign<Transform>(menuArrow_transform);
+		auto tex = Engine::GetInstance().Get<ResourceManager>().Load<Texture>(
+		  "assets/menu/ppc_front.png");
+		menuArrow.assign<Sprite>(tex);
+		menuArrow.assign<PauseOptions>(PauseOptions::Option::CONTINUAR);
+	}
 
 	// adding systems
 	systems.add<engine::systems::two_d::SpriteRenderer>();
@@ -109,6 +125,8 @@ void PauseMenu::Update(entityx::TimeDelta dt) {
 }
 
 void PauseMenu::receive(const BackToMainMenu& event) {
+	engine::core::Engine::GetInstance().EnableDepthTest(
+      engine::core::Engine::DepthTest::kAlways);
 	Engine::GetInstance().Get<AudioManager>().StopAllSounds();
 	parent_scene_->events.emit<BackToMainMenu>(event);
 }

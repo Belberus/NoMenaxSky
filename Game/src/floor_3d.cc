@@ -21,11 +21,15 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<TurretIaSystem>();
   systems.add<LancerIaSystem>();
   systems.add<ManuelethIaSystem>();
+  systems.add<MasiatrixIaSystem>();
+  systems.add<MasiatrixBossFight>(&entities);
   systems.add<TrapIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
   systems.add<engine::systems::two_d::ColliderRenderer>();
   systems.add<engine::systems::three_d::ModelRenderer>();
   systems.add<KnightAttackSystem>();
+  systems.add<ShieldSystem>(); //Alias energy system
+  systems.add<ChestSystem>(); //Alias key system
   systems.add<WizardAttackSystem>();
   systems.add<EnemyProjectileSystem>();
   systems.add<HealthSystem>();
@@ -42,12 +46,16 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<TurretIaSystem>(dt);
     systems.update<LancerIaSystem>(dt);
     systems.update<ManuelethIaSystem>(dt);
+    systems.update<MasiatrixIaSystem>(dt);
+    systems.update<MasiatrixBossFight>(dt);
     systems.update<TrapIaSystem>(dt);
     systems.update<RotatePlayerSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
     systems.update<KnightAttackSystem>(dt);
     systems.update<WizardAttackSystem>(dt);
+    systems.update<ShieldSystem>(dt);
+    systems.update<ChestSystem>(dt);
     //systems.update<TurretAttackSystem>(dt);
     systems.update<HealthSystem>(dt);    
     systems.update<PauseInputSystem>(dt);
@@ -61,10 +69,14 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<TurretIaSystem>(0);
     systems.update<LancerIaSystem>(0);
     systems.update<ManuelethIaSystem>(0);
+    systems.update<MasiatrixIaSystem>(0);
+    systems.update<MasiatrixBossFight>(0);
     systems.update<TrapIaSystem>(0);
     systems.update<engine::systems::two_d::Physics>(0);
     systems.update<KnightAttackSystem>(0);
     systems.update<WizardAttackSystem>(0);
+    systems.update<ShieldSystem>(0);
+    systems.update<ChestSystem>(0);
     systems.update<HealthSystem>(0);
     systems.update<PauseInputSystem>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(0);

@@ -444,9 +444,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
 
   if (role == "knight") {
     factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
-    // factory->MakeGhost(floor->entities, glm::vec3(0.0f,0.0f,7.0f));
   } else {
-    // factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
     factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
   }
 

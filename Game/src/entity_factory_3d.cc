@@ -172,7 +172,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   manueleth.assign<engine::components::common::Transform>(t);
   manueleth.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(1.5f, 1.5f));
-  manueleth.assign<Health>(10.0f, 10.0f, "assets/media/fx/manueleth/default/death.wav");
+  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
   manueleth.assign<Manueleth>();
   manueleth.assign<ThreeD>();
   entities_created.push_back(manueleth);
@@ -245,12 +245,11 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   masiatrix.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(2.2f, 2.2f));
   //masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
-  std::cout << "real: " << real << std::endl;
   if(real){
-    masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/death.wav");
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
   }
   else{
-    masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
   }
   masiatrix.assign<Masiatrix>(id,position,real);
   masiatrix.assign<ThreeD>();

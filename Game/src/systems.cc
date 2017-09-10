@@ -3894,9 +3894,9 @@ int enemies_alive = 0;
 void MenaxIaSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
                            entityx::TimeDelta dt) {
-  three_d = false;
-  for(auto e : es.entities_with_components<ThreeD>()){
-    three_d = true;
+  three_dd = false;
+  for(auto e : es.entities_with_components<Menax, ThreeD>()){
+    three_dd = true;
   }
   enemies_alive = 0;
   glm::vec3 player_position;
@@ -3917,7 +3917,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
   glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
   es.each<Menax, Transform, Physics>([&](entityx::Entity entity, Menax &menax, Transform &menax_transform, Physics &physics) {
     glm::vec3 menax_position;
-    if(three_d){
+    if(three_dd){
       menax_position = menax_transform.GetWorldPosition();
 
       glm::vec3 vector_player_menax(player_position.x - menax_position.x,
@@ -3945,7 +3945,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
             }
             else transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 175.0f ,menax.original_position.z));
           });
-        if(three_d){
+        if(three_dd){
           menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 30.0f,menax.original_position.z));
         }
         else menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 75.0f,menax.original_position.z));
@@ -3963,7 +3963,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
         menax.timer_attacking += (dt * 100.0f);
         // Movernos hacia Player y provocar animacion
         glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-        if(three_d){
+        if(three_dd){
           new_velocity = glm::normalize(player_position -
                                       menax_transform.GetWorldPosition()) * 22.0f;
         }
@@ -3983,7 +3983,9 @@ void SpawnSystem::update(entityx::EntityManager &es,
   three_d = false;
   es.each<Menax>(
       [&](entityx::Entity entity, Menax &menax) {
-        three_d = true;
+        if(entity.component<ThreeD>()){
+          three_d = true;
+        }
         have_to_spawn = menax.spawn_enemies;
       });
 
@@ -4032,6 +4034,7 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Transform> transform;
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<SpriteAnimation> animation;
+  entityx::ComponentHandle<ThreeD> threed;
   
   std::string animToPlay;
   std::string animToPlayHit;
@@ -4065,6 +4068,28 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
             menax->hitBox.component<MenaxHitBox>()->damaged = false;
             animToPlayHit = "dontDoDamage";
             menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+          }   
+        }
+      } 
+    } 
+  }
+  for (entityx::Entity e0 : es.entities_with_components(
+           menax, transform, physics, threed)) {
+    
+    if (menax->comportamiento == Menax::Comportamiento::WAIT) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/laugh.wav", false, 0.5f);
+    } else{
+      if (physics->velocity.y < 0 || physics->velocity.y > 0 || physics->velocity.x > 0 || physics->velocity.x < 0) {
+        menax->timer += (dt*100.0f);
+        if (menax->timer >= 200.0f) {
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/mov.wav", false, 1);
+          menax->hitBox.component<MenaxHitBox>()->stomp = true;
+          if (menax->timer >= 300.0f) {
+            menax->timer = 0.0f;
+            menax->hitBox.component<MenaxHitBox>()->stomp = false;
+            menax->hitBox.component<MenaxHitBox>()->damaged = false;
           }   
         }
       } 

@@ -7,6 +7,7 @@ namespace engine {
 namespace core {
 class Scene : public entityx::EntityX {
  public:
+  virtual ~Scene(){};
   virtual void Update(entityx::TimeDelta dt) = 0;
 };
 

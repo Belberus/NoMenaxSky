@@ -60,6 +60,12 @@ GameUi::GameUi(Game* parent_scene)
   systems.configure();
 }
 
+GameUi::~GameUi() {
+  parent_scene_->events.unsubscribe<Health>(*this);
+  parent_scene_->events.unsubscribe<Energy>(*this);
+  parent_scene_->events.unsubscribe<Player>(*this);
+}
+
 void GameUi::Update(entityx::TimeDelta dt) {
   systems.update<SpriteRenderer>(dt);
 }

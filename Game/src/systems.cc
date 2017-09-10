@@ -834,6 +834,35 @@ void DeathInputSystem::receive(const KeyReleased &key_released) {
   } 
 }
 
+
+VictoryInputSystem::VictoryInputSystem() :
+    selection_enter_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void VictoryInputSystem::update(entityx::EntityManager &es, 
+  entityx::EventManager &events, entityx::TimeDelta dt){
+
+  if (selection_enter_pressed_){
+    selection_enter_pressed_ = false;
+    events.emit<BackToMainMenu>();
+  }
+}
+
+void VictoryInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } 
+}
+
+void VictoryInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } 
+}
+
 TextInputSystem::TextInputSystem() :
     selection_enter_pressed_(false) {
 

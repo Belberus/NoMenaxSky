@@ -67,6 +67,7 @@ Game::Game()
 
 void Game::Update(entityx::TimeDelta dt) {
   if (next_state_ != State::kNull) {
+    current_state_ = next_state_;
     switch (next_state_) {
       case State::kMainMenu:
         scenes_.clear();

@@ -11,6 +11,7 @@ class GameUi : public engine::core::Scene,public entityx::Receiver<GameUi> {
 
    public:
     GameUi(Game *parent_scene);
+    ~GameUi();
     void Update(entityx::TimeDelta dt) override;
     void receive(const Health &health);
     void receive(const Energy &energy);

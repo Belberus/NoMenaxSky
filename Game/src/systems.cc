@@ -834,6 +834,35 @@ void DeathInputSystem::receive(const KeyReleased &key_released) {
   } 
 }
 
+
+VictoryInputSystem::VictoryInputSystem() :
+    selection_enter_pressed_(false) {
+
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
+    Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
+}
+
+void VictoryInputSystem::update(entityx::EntityManager &es, 
+  entityx::EventManager &events, entityx::TimeDelta dt){
+
+  if (selection_enter_pressed_){
+    selection_enter_pressed_ = false;
+    events.emit<BackToMainMenu>();
+  }
+}
+
+void VictoryInputSystem::receive(const KeyPressed &key_pressed) {
+  if (key_pressed.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = true;
+  } 
+}
+
+void VictoryInputSystem::receive(const KeyReleased &key_released) {
+  if (key_released.key == GLFW_KEY_ENTER) {
+    selection_enter_pressed_ = false;
+  } 
+}
+
 TextInputSystem::TextInputSystem() :
     selection_enter_pressed_(false) {
 
@@ -898,6 +927,9 @@ PlayerInputSystem::PlayerInputSystem()
   keys_.emplace(GLFW_KEY_5, false); // Activa ambas palancas
   keys_.emplace(GLFW_KEY_6, false); // Restaura la vida
   keys_.emplace(GLFW_KEY_7, false); // Elimina todos lo enemigos (fantasmas, torretas y lanceros) cargados
+  keys_.emplace(GLFW_KEY_8, false); // Elimina a Manueleth
+  keys_.emplace(GLFW_KEY_9, false); // Elimina a las Masiatrix
+  keys_.emplace(GLFW_KEY_0, false); // Elimina a Menax
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyPressed>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<KeyReleased>(*this);
   Engine::GetInstance().Get<EventManager>().Subscribe<BackToGame>(*this); 
@@ -1008,6 +1040,24 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             });
             es.each<Lancer, Health>([&](entityx::Entity entity,
                                 Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_8]) {
+            es.each<Manueleth, Health>([&](entityx::Entity entity,
+                                Manueleth &manueleth, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_9]) {
+            es.each<Masiatrix, Health>([&](entityx::Entity entity,
+                                Masiatrix &masiatrix, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_0]) {
+            es.each<Menax, Health>([&](entityx::Entity entity,
+                                Menax &menax, Health &health) {
               health.hp = 0.0f;
             });
           }
@@ -1451,6 +1501,24 @@ void PlayerInputSystem::update(entityx::EntityManager &es,
             });
             es.each<Lancer, Health>([&](entityx::Entity entity,
                                 Lancer &lancer, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_8]) {
+            es.each<Manueleth, Health>([&](entityx::Entity entity,
+                                Manueleth &manueleth, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_9]) {
+            es.each<Masiatrix, Health>([&](entityx::Entity entity,
+                                Masiatrix &masiatrix, Health &health) {
+              health.hp = 0.0f;
+            });
+          }
+          if (keys_[GLFW_KEY_0]) {
+            es.each<Menax, Health>([&](entityx::Entity entity,
+                                Menax &menax, Health &health) {
               health.hp = 0.0f;
             });
           }
@@ -2252,6 +2320,10 @@ void TurretIaSystem::update(entityx::EntityManager &es,
       safeDistance = 10.0f;
     }
     if (distancia < safeDistance) {
+      if(three_d){
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/turret/default/mov.wav", false, 0.7f);
+      }
       std::array<fann_type, 4> input;
       input[0] = turret_x;
       input[1] = turret_y;
@@ -2873,7 +2945,7 @@ void HealthSystem::update(entityx::EntityManager &es,
           if (times_masiatrix_died >= 3) {
             events.emit<StartLevel3>();
           } else {
-            MasiatrixNextPhase mnp(times_masiatrix_died, three_d);    
+            MasiatrixNextPhase mnp(times_masiatrix_died, three_d);
             events.emit<MasiatrixNextPhase>(mnp);
           }
         } else {
@@ -2893,7 +2965,7 @@ void HealthSystem::update(entityx::EntityManager &es,
             }
           });
         entity.destroy();
-        //Enviar evento para pantalla final o whatever
+        events.emit<Victory>();
       }
       else {
       	es.each<Legs, ParentLink>(
@@ -3798,7 +3870,8 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
             std::atan2(vector_player_masiatrix.y - vector_masiatrix_v.y,
                        vector_player_masiatrix.x - vector_masiatrix_v.x);
 
-            
+            Engine::GetInstance().Get<AudioManager>().PlaySound(
+              "assets/media/fx/masiatrix/default/attack.wav", false, 0.2f);
             if(!entity.component<ThreeD>()){
               projectile_velocity = glm::normalize(player_position -
                                       masiatrix_position) * 115.0f;
@@ -3826,20 +3899,20 @@ void MasiatrixBossFight::configure(entityx::EventManager &event_manager) {
 void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
   actual_phase = nextPhase.phase;
   glm::vec3 positioning;
-
+  bool everda = true;
   switch (actual_phase) {
     case 1 :
       if(!nextPhase.three_d){
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", !everda);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", !everda);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", !everda);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", everda);
       }
       else{
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", !everda);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", !everda);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", !everda);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", everda);
       }
 
       positioning = masiatrixInfo.positionC;
@@ -3889,6 +3962,10 @@ int enemies_alive = 0;
 void MenaxIaSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
                            entityx::TimeDelta dt) {
+  three_d = false;
+  for(auto e : es.entities_with_components<ThreeD>()){
+    three_d = true;
+  }
   enemies_alive = 0;
   glm::vec3 player_position;
   es.each<Player, Transform>(
@@ -3908,6 +3985,22 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
   glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
   es.each<Menax, Transform, Physics>([&](entityx::Entity entity, Menax &menax, Transform &menax_transform, Physics &physics) {
     glm::vec3 menax_position;
+    if(three_d){
+      menax_position = menax_transform.GetWorldPosition();
+
+      glm::vec3 vector_player_menax(player_position.x - menax_position.x,
+                                         player_position.y - menax_position.y,
+                                         0.0f);
+      glm::vec3 vector_menax_v(0.0f, 1.0f, 0.0f);
+
+      float angle_rad =
+          std::atan2(vector_player_menax.y - vector_menax_v.y,
+                     vector_player_menax.x - vector_menax_v.x);
+      glm::quat rot;
+      rot = glm::rotate(rot, angle_rad, glm::vec3(0.0f, 0.0f, 1.0f));
+      menax_transform.SetLocalOrientation(rot);
+    }
+    
 
     if (menax.comportamiento == Menax::Comportamiento::WAIT) {
        menax.timer_attacking = 0.0f;
@@ -3915,9 +4008,15 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
       if (enemies_alive == 0 && menax.spawn_enemies == false) {
         es.each<Player, Transform>(
           [&](entityx::Entity entity, Player &player, Transform &transform) {
-            transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 175.0f ,menax.original_position.z));
+            if(entity.component<ThreeD>()){
+              transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 60.0f ,menax.original_position.z));
+            }
+            else transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 175.0f ,menax.original_position.z));
           });
-        menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 75.0f,menax.original_position.z));
+        if(three_d){
+          menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 30.0f,menax.original_position.z));
+        }
+        else menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 75.0f,menax.original_position.z));
         menax.hits = 0;
         menax.comportamiento = Menax::Comportamiento::ATTACK;
         menax.timer = 0.0f;
@@ -3932,7 +4031,11 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
         menax.timer_attacking += (dt * 100.0f);
         // Movernos hacia Player y provocar animacion
         glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-        new_velocity = glm::normalize(player_position -
+        if(three_d){
+          new_velocity = glm::normalize(player_position -
+                                      menax_transform.GetWorldPosition()) * 22.0f;
+        }
+        else new_velocity = glm::normalize(player_position -
                                       menax_transform.GetWorldPosition()) * 60.0f;
         physics.velocity = new_velocity;
       }
@@ -3945,8 +4048,10 @@ bool have_to_spawn = false;
 void SpawnSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
                            entityx::TimeDelta dt) {
+  three_d = false;
   es.each<Menax>(
       [&](entityx::Entity entity, Menax &menax) {
+        three_d = true;
         have_to_spawn = menax.spawn_enemies;
       });
 
@@ -3957,12 +4062,18 @@ void SpawnSystem::update(entityx::EntityManager &es,
           if (spawn.timer >= 500.0f) {
             if (spawn.spawned == 4) {
               spawn.timer = 0.0f;
-              EntityFactory2D().MakeTurret(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z), 500.0f);
+              if(three_d){
+                EntityFactory3D().MakeTurret(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 4.0f,0.0f), 180.0f);
+              }
+              else EntityFactory2D().MakeTurret(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z), 500.0f);
               spawn.spawned++;
               total_spawned++;
             } else {
               spawn.timer = 0.0f;
-              EntityFactory2D().MakeGhost(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z));
+              if(three_d){
+                EntityFactory3D().MakeGhost(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 4.0f,transform.GetWorldPosition().z));
+              }
+              else EntityFactory2D().MakeGhost(es,glm::vec3(transform.GetWorldPosition().x,transform.GetWorldPosition().y - 10.0f,transform.GetWorldPosition().z));
               spawn.spawned++;
               total_spawned++;
             }      
@@ -3997,6 +4108,8 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
            menax, transform, physics, animation)) {
     
     if (menax->comportamiento == Menax::Comportamiento::WAIT) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/laugh.wav", false, 0.5f);
         animToPlay = "waiting";
         animation->Play(animToPlay);
         animToPlayHit = "dontDoDamage";
@@ -4009,6 +4122,8 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
         animToPlayHit = "dontDoDamage";
         menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
         if (menax->timer >= 200.0f) {
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/mov.wav", false, 1);
           menax->hitBox.component<MenaxHitBox>()->stomp = true;
           animToPlayHit = "doDamage";
           menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);

@@ -9,6 +9,7 @@ struct StartLevel1 {};
 struct StartLevel2 {};
 struct StartLevel3 {};
 struct OptionMenu {};
+struct EndScreenEvent{};
 struct BackToMainMenu {};
 struct CharSelect {};
 struct Death {};
@@ -19,6 +20,7 @@ struct MuteMusic {};
 struct MuteFx {};
 struct PauseGameEvent {};
 struct UnpauseGameEvent {};
+struct Victory {};
 struct PlayText{
 	std::string text;
 	PlayText(std::string text) : text(text){};

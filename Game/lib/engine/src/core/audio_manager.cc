@@ -54,6 +54,10 @@ void engine::core::AudioManager::StopMusic() {
   sound_engine_music_->stopAllSounds();
 }
 
+void engine::core::AudioManager::StopFx() {
+  sound_engine_fx_->stopAllSounds();
+}
+
 void engine::core::AudioManager::SetVolumeFX(float volume) {
   sound_engine_fx_->setSoundVolume(volume);
   if(volume == 0.0f){

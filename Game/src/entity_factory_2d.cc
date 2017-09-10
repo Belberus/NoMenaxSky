@@ -456,7 +456,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeGhost(
 
   // adding hitbox as a second entity
   auto attack_hitbox = entities.create();
-  attack_hitbox.assign<GhostHitBox>(2.0f, ghost);
+  attack_hitbox.assign<GhostHitBox>(1.0f, ghost);
   attack_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                   ghost.component<Transform>().get());
   attack_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 2.0f),
@@ -561,7 +561,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeTurret(
 	  manueleth.assign<ColorAnimation>(std::move(color_frames));
 	  manueleth.assign<Manueleth>();
 	  //manueleth.assign<Health>(300.0f, 300.0f, "assets/media/fx/manueleth/default/death.wav");
-    manueleth.assign<Health>(10.0f, 10.0f, "assets/media/fx/manueleth/default/death.wav");
+    manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
 	    
 	  std::vector<engine::utils::Rectangle> talking;
 	  talking.emplace_back(glm::vec2(3, 83), glm::vec2(19, 19));
@@ -757,7 +757,12 @@ std::vector<entityx::Entity> EntityFactory2D::MakeSpawn(entityx::EntityManager &
     color_frames.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     masiatrix.assign<ColorAnimation>(std::move(color_frames));
     masiatrix.assign<Masiatrix>(id, position, real);
-    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+    if(real){
+      masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+    }
+    else{
+      masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+    }
      
     std::vector<engine::utils::Rectangle> moving_top;
     moving_top.emplace_back(glm::vec2(26, 88), glm::vec2(19, 19));

@@ -297,6 +297,21 @@ class DeathInputSystem :  public entityx::System<DeathInputSystem>,
     bool selection_enter_pressed_;
 };
 
+class VictoryInputSystem :  public entityx::System<VictoryInputSystem>,
+                          public entityx::Receiver<VictoryInputSystem> {
+
+  public:
+    VictoryInputSystem();
+    void update(entityx::EntityManager &es, entityx::EventManager &events,
+              entityx::TimeDelta dt) override;
+
+    void receive(const engine::events::KeyPressed &key_pressed);
+    void receive(const engine::events::KeyReleased &key_released);
+
+  private:
+    bool selection_enter_pressed_;
+};
+
 class TextInputSystem :  public entityx::System<TextInputSystem>,
                           public entityx::Receiver<TextInputSystem> {
 
@@ -363,12 +378,16 @@ class MenaxIaSystem : public entityx::System<MenaxIaSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class SpawnSystem : public entityx::System<SpawnSystem> {
  public:
   void update(entityx::EntityManager &es, entityx::EventManager &events,
               entityx::TimeDelta dt) override;
+private:
+  bool three_d = false;
 };
 
 class MenaxAnimationSystem : public entityx::System<MenaxAnimationSystem> {

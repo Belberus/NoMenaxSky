@@ -22,6 +22,7 @@ Floor::Floor(Game* parent_scene) : parent_scene_(parent_scene) {
   events.subscribe<UnpauseGameEvent>(*this);
   events.subscribe<PlayText>(*this);
   events.subscribe<LevelEvent>(*this);
+  events.subscribe<Victory>(*this);
 
 }
 
@@ -60,6 +61,10 @@ void Floor::receive(const UnpauseGameEvent& upg){
 void Floor::receive(const BackToGame& event){
   PauseGame(false);
   parent_scene_->events.emit<BackToGame>(event);
+}
+
+void Floor::receive(const Victory& event){
+  parent_scene_->events.emit<Victory>(event);
 }
 
 void Floor::receive(const StartLevel1& event) {

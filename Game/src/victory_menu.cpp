@@ -16,8 +16,6 @@ using namespace engine::core;
 using namespace engine::components::common;
 using namespace engine::components::two_d;
 
-
-
 VictoryMenu::VictoryMenu(engine::core::Scene *parent_scene)
 	: parent_scene_(parent_scene) {
 

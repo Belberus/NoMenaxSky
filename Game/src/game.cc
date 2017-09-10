@@ -11,6 +11,7 @@
 #include "components.h"
 #include "text.h"
 #include "text_factory.h"
+#include "victory_menu.h"
 
 #include "floor_factory.h"
 
@@ -60,6 +61,7 @@ Game::Game()
   events.subscribe<StartLevel3>(*this);
   events.subscribe<PlayText>(*this);
   events.subscribe<SetThreeD>(*this);
+  events.subscribe<Victory>(*this);
   scenes_.emplace_back(new MainMenuBackground());
   scenes_.emplace_back(new MainMenu(this));
   Engine::GetInstance().Get<AudioManager>().PlaySound(
@@ -95,6 +97,9 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kPauseMenu:
         scenes_.push_back(std::make_unique<PauseMenu>(this,three_d));
         break;
+      case State::kVictoryMenu:
+        scenes_.clear();
+        scenes_.push_back(std::make_unique<VictoryMenu>(this));
       case State::kText:
         scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
         scenes_.front()->events.emit<PauseGameEvent>();
@@ -255,6 +260,10 @@ void Game::receive(const PlayText& event){
 
 void Game::receive(const SetThreeD& setThreeD){
   three_d = setThreeD.three_d;  
+}
+
+void Game::receive(const Victory& victory){
+  next_state_ = State::kVictoryMenu;
 }
 
 int Game::getLevel(){

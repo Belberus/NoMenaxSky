@@ -2965,6 +2965,7 @@ void HealthSystem::update(entityx::EntityManager &es,
             }
           });
         entity.destroy();
+        events.emit<Victory>();
       }
       else {
       	es.each<Legs, ParentLink>(

@@ -3962,6 +3962,8 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
            menax, transform, physics, animation)) {
     
     if (menax->comportamiento == Menax::Comportamiento::WAIT) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/laugh.wav", false, 0.5f);
         animToPlay = "waiting";
         animation->Play(animToPlay);
         animToPlayHit = "dontDoDamage";
@@ -3974,6 +3976,8 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
         animToPlayHit = "dontDoDamage";
         menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
         if (menax->timer >= 350.0f) {
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/mov.wav", false, 1);
           menax->hitBox.component<MenaxHitBox>()->stomp = true;
           animToPlayHit = "doDamage";
           menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);

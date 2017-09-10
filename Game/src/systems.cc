@@ -2877,7 +2877,7 @@ void HealthSystem::update(entityx::EntityManager &es,
           if (times_masiatrix_died >= 3) {
             events.emit<StartLevel3>();
           } else {
-            MasiatrixNextPhase mnp(times_masiatrix_died, three_d);    
+            MasiatrixNextPhase mnp(times_masiatrix_died, three_d);
             events.emit<MasiatrixNextPhase>(mnp);
           }
         } else {
@@ -3802,7 +3802,8 @@ void MasiatrixIaSystem::update(entityx::EntityManager &es,
             std::atan2(vector_player_masiatrix.y - vector_masiatrix_v.y,
                        vector_player_masiatrix.x - vector_masiatrix_v.x);
 
-            
+            Engine::GetInstance().Get<AudioManager>().PlaySound(
+              "assets/media/fx/masiatrix/default/attack.wav", false, 0.2f);
             if(!entity.component<ThreeD>()){
               projectile_velocity = glm::normalize(player_position -
                                       masiatrix_position) * 115.0f;
@@ -3830,20 +3831,20 @@ void MasiatrixBossFight::configure(entityx::EventManager &event_manager) {
 void MasiatrixBossFight::receive(const MasiatrixNextPhase &nextPhase) {
   actual_phase = nextPhase.phase;
   glm::vec3 positioning;
-
+  bool everda = true;
   switch (actual_phase) {
     case 1 :
       if(!nextPhase.three_d){
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
-        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", !everda);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", !everda);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", !everda);
+        EntityFactory2D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", everda);
       }
       else{
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", false);
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", false);
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", false);
-        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", true);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionA, "A", !everda);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionB, "B", !everda);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionC, "C", !everda);
+        EntityFactory3D().MakeMasiatrix(*em, masiatrixInfo.positionD, "D", everda);
       }
 
       positioning = masiatrixInfo.positionC;

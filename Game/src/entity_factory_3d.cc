@@ -245,7 +245,13 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   masiatrix.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(2.2f, 2.2f));
   //masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
-  masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/death.wav");
+  std::cout << "real: " << real << std::endl;
+  if(real){
+    masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/death.wav");
+  }
+  else{
+    masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+  }
   masiatrix.assign<Masiatrix>(id,position,real);
   masiatrix.assign<ThreeD>();
   entities_created.push_back(masiatrix);

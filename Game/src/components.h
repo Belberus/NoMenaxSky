@@ -146,13 +146,14 @@ struct Cursor {};
 struct Lancer {
   enum LancerOrientation { UP, DOWN, RIGHT, LEFT};
  
+  bool is_resting;
   bool is_attacking;
   float time_passed;
 
   LancerOrientation orientation;
 
   Lancer()
-      : is_attacking(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
+      : is_attacking(false), is_resting(false), orientation(LancerOrientation::DOWN), time_passed(4000.0f) {}
 };
 
 struct LancerHitBox {

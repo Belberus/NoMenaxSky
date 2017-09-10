@@ -30,7 +30,7 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<GhostAnimationSystem>();
   systems.add<MasiatrixAnimationSystem>();
   systems.add<ManuelethAnimationSystem>();
-  systems.add<TurretIaSystem>();
+  //systems.add<TurretIaSystem>();
   systems.add<ManuelethIaSystem>();
   //systems.add<TrapIaSystem>();
   systems.add<LancerIaSystem>();
@@ -72,7 +72,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<MasiatrixAnimationSystem>(dt);
     systems.update<ManuelethAnimationSystem>(dt);
     //systems.update<TurretIaSystem>(dt);
-    //systems.update<LancerIaSystem>(dt);
+    systems.update<LancerIaSystem>(dt);
     systems.update<ManuelethIaSystem>(dt);
     //systems.update<TrapIaSystem>(dt);
     systems.update<MasiatrixIaSystem>(dt);
@@ -110,7 +110,7 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<MasiatrixAnimationSystem>(0);
     systems.update<ManuelethAnimationSystem>(0);
     //systems.update<TurretIaSystem>(0);
-    //systems.update<LancerIaSystem>(0);
+    systems.update<LancerIaSystem>(0);
     systems.update<ManuelethIaSystem>(0);
     //systems.update<TrapIaSystem>(0);
     systems.update<MasiatrixIaSystem>(0);

@@ -22,6 +22,7 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <unistd.h>
 
 #include <GLFW/glfw3.h>
 
@@ -2949,9 +2950,9 @@ void LancerWalkingSystem::update(entityx::EntityManager &es,
     animation->Play(animToPlay);
   }
   timerLancer += dt;
-  if (timerLancer >= 0.22) {
-    timerLancer = 0.0;
-  }
+  //if (timerLancer >= 0.22) {
+  //  timerLancer = 0.0;
+  //}
 }
 
 const float LancerIaSystem::lancerSpeed = 70.0f;
@@ -3000,15 +3001,16 @@ void LancerIaSystem::update(entityx::EntityManager &es,
 
         lancer.time_passed += (dt * 1000.0f);
 
+
+        float speed = lancerSpeed;
         float safeDistance = 30.0f;
         float followDistance = 35.0f;
         float keepDistance = 10.0f;
-        float speed = lancerSpeed;
         if(three_d){
+          speed = lancerThreeDSpeed;
           safeDistance = 12.0f;
           followDistance = 17.0f;
           keepDistance = 4.0f;
-          speed = lancerThreeDSpeed;
         }
 
         if (lancer.time_passed >= 5000.0f) {
@@ -3024,43 +3026,61 @@ void LancerIaSystem::update(entityx::EntityManager &es,
         	} else if (lancer_position.x < player_position.x) {
         		lancer.orientation = Lancer::LancerOrientation::RIGHT;
         	}*/ 
-        	if (distancia < safeDistance) { 
-        		lancer_physics.velocity =
-	              -1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              speed;
-        	} else if (distancia > followDistance) {
-        		lancer_physics.velocity =
-	              1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              speed;
-        	} else {
-        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        	}
 
-        	if (lancer.time_passed >= 10000.0f ) {
-        		lancer.time_passed = 0.0f;
+          lancer_physics.velocity =
+                1.0f *
+                glm::normalize(player_position -
+                               lancer_transform.GetWorldPosition()) *
+                speed;
+        	// if (distancia < safeDistance) { 
+        	// 	lancer_physics.velocity =
+	        //       -1.0f *
+	        //       glm::normalize(player_position -
+	        //                      lancer_transform.GetWorldPosition()) *
+	        //       speed;
+        	// } else if (distancia > followDistance) {
+        	// 	lancer_physics.velocity =
+	        //       1.0f *
+	        //       glm::normalize(player_position -
+	        //                      lancer_transform.GetWorldPosition()) *
+	        //       speed;
+        	// } else {
+        	// 	lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+        	// }
+
+        	if (lancer.time_passed >= 8000.0f ) {
+        	//	lancer.is_resting = true;
         		lancer.is_attacking = false;
+            lancer.time_passed = 0.0f;
         	}
         } else {
-        	lancer.is_attacking = false;
-        	if (distancia < safeDistance) {
-        		lancer_physics.velocity =
-	              -1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              keepDistance;
-        	} else if (distancia > followDistance) {
-        		lancer_physics.velocity =
-	              1.0f *
-	              glm::normalize(player_position -
-	                             lancer_transform.GetWorldPosition()) *
-	              keepDistance;
-        	} else {
-        		lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-        	}   	
+          // Se queda quieto un tiempo
+          lancer.is_attacking = false;
+          //if (lancer.time_passed >= 8000.0f){
+            //speed = 10.0f;
+            //lancer.is_resting = false;
+            
+            lancer_physics.velocity =
+                   1.0f *
+                   glm::normalize(player_position -
+                                  lancer_transform.GetWorldPosition()) *
+                   30.0f;
+            // if (distancia < safeDistance) {
+            //   lancer_physics.velocity =
+            //       -1.0f *
+            //       glm::normalize(player_position -
+            //                      lancer_transform.GetWorldPosition()) *
+            //       keepDistance;
+            // } else if (distancia > followDistance) {
+            //   lancer_physics.velocity =
+            //       1.0f *
+            //       glm::normalize(player_position -
+            //                      lancer_transform.GetWorldPosition()) *
+            //       keepDistance;
+            // } else {
+            //   lancer_physics.velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+            // }     
+          //}    	
         }
     });
 }

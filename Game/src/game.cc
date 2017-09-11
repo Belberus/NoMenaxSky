@@ -89,6 +89,8 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<CharacterSelectionMenu>(this));
         break;
       case State::kDeathMenu:
+        scenes_.pop_back(); // Sacamos el floor
+        scenes_.pop_back(); // Sacamos la UI
         scenes_.push_back(std::make_unique<DeathMenu>(this, character));
         Engine::GetInstance().Get<AudioManager>().StopMusic();
         break;

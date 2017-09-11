@@ -100,6 +100,7 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.pop_back(); // Sacamos la UI
         scenes_.clear();
         scenes_.push_back(std::make_unique<VictoryMenu>(this));
+        break;
       case State::kText:
         scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
         scenes_.front()->events.emit<PauseGameEvent>();

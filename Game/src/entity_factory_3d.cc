@@ -3,8 +3,8 @@
 #include <engine/components/common/physics.h>
 #include <engine/components/common/transform.h>
 #include <engine/components/three_d/model.h>
-#include <engine/core/engine.h>
 #include <engine/components/two_d/aabb_collider.h>
+#include <engine/core/engine.h>
 
 #include "components.h"
 
@@ -18,16 +18,21 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
   std::vector<entityx::Entity> entities_created;
   auto player = entities.create();
   player.assign<engine::components::three_d::Model>(
-      "assets/3d/personajes/caballero/caballero.dae");
+      "assets/3d/personajes/caballero/caballero.fbx");
   player.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  player.assign<engine::components::common::Transform>(
-      position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  engine::components::common::Transform transform(position, nullptr,
+                                                  glm::vec3(0.2f, 0.2f, 0.2f));
+  //glm::quat rotation;
+  //rotation = glm::rotate(rotation, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+  //transform.SetLocalOrientation(rotation);;
+  player.assign<engine::components::common::Transform>(transform);
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(0.6f, 0.6f));
+                                                         glm::vec2(1.0f, 1.0));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
-  player.assign<Health>(300.0f, 300.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(300.0f, 300.0f,
+                        "assets/media/fx/gaunt/default/death.wav");
   player.assign<ThreeD>();
   entities_created.push_back(player);
 
@@ -66,16 +71,17 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
   std::vector<entityx::Entity> entities_created;
   auto player = entities.create();
   player.assign<engine::components::three_d::Model>(
-      "assets/3d/personajes/mago/mago.dae");
+      "assets/3d/personajes/mago/mago.fbx");
   player.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
   player.assign<engine::components::common::Transform>(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   player.assign<Player>(Player::Orientation::LEFT);
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(0.6f, 0.6f));
+                                                         glm::vec2(1.0f, 1.0f));
   player.assign<Wizard>();
   player.assign<Energy>(100.0f, 100.0f);
-  player.assign<Health>(200.0f, 200.0f, "assets/media/fx/gaunt/default/death.wav");
+  player.assign<Health>(200.0f, 200.0f,
+                        "assets/media/fx/gaunt/default/death.wav");
   player.assign<ThreeD>();
 
   entities_created.push_back(player);
@@ -100,7 +106,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
   t.SetLocalOrientation(rot);
   ghost.assign<engine::components::common::Transform>(t);
   ghost.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(1.0f, 1.0f));
+                                                        glm::vec2(1.0f, 1.0f));
   ghost.assign<Health>(10.0f, 10.0f, "assets/media/fx/ghost/default/death.wav");
   ghost.assign<Ghost>();
   ghost.assign<ThreeD>();
@@ -119,10 +125,12 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTurret(
   turret.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/torreta/torreta.dae");
   turret.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  turret.assign<engine::components::common::Transform>(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  turret.assign<engine::components::common::Transform>(
+      newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   turret.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(1.5f, 1.5f));
-  turret.assign<Health>(40.0f, 40.0f, "assets/media/fx/turret/default/death.wav");
+  turret.assign<Health>(40.0f, 40.0f,
+                        "assets/media/fx/turret/default/death.wav");
   turret.assign<Turret>(frecuencia);
   turret.assign<ThreeD>();
   entities_created.push_back(turret);
@@ -142,14 +150,14 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTrap(
       newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   trap.assign<ThreeD>();
   if (orient == "abajo") {
-      trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
-    } else if (orient == "arriba") {
-      trap.assign<Trap>(Trap::Orientation::UP, frecuencia);
-    } else if (orient == "izquierda") {
-      trap.assign<Trap>(Trap::Orientation::LEFT, frecuencia);
-    } else if (orient == "derecha") {
-      trap.assign<Trap>(Trap::Orientation::RIGHT, frecuencia);
-    }
+    trap.assign<Trap>(Trap::Orientation::DOWN, frecuencia);
+  } else if (orient == "arriba") {
+    trap.assign<Trap>(Trap::Orientation::UP, frecuencia);
+  } else if (orient == "izquierda") {
+    trap.assign<Trap>(Trap::Orientation::LEFT, frecuencia);
+  } else if (orient == "derecha") {
+    trap.assign<Trap>(Trap::Orientation::RIGHT, frecuencia);
+  }
   entities_created.push_back(trap);
 
   return entities_created;
@@ -157,7 +165,6 @@ std::vector<entityx::Entity> EntityFactory3D::MakeTrap(
 
 std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
     entityx::EntityManager& entities, const glm::vec3& position) {
-
   glm::vec3 newPosition = position;
   newPosition.z += 7.0f;
   std::vector<entityx::Entity> entities_created;
@@ -165,14 +172,15 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   manueleth.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/manueleth/manueleth.dae");
   manueleth.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  Transform t (newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   glm::quat rot;
   rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
   t.SetLocalOrientation(rot);
   manueleth.assign<engine::components::common::Transform>(t);
+
   manueleth.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(1.5f, 1.5f));
-  manueleth.assign<Health>(10.0f, 10.0f, "assets/media/fx/manueleth/default/death.wav");
+  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
   manueleth.assign<Manueleth>();
   manueleth.assign<ThreeD>();
   entities_created.push_back(manueleth);
@@ -182,7 +190,6 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
 
 std::vector<entityx::Entity> EntityFactory3D::MakeMenax(
     entityx::EntityManager& entities, const glm::vec3& position) {
-
   glm::vec3 newPosition = position;
   newPosition.z += 7.0f;
   std::vector<entityx::Entity> entities_created;
@@ -192,22 +199,23 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMenax(
   menax.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/menax/menax.dae");
   menax.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  Transform t (newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   glm::quat rot;
   rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
   t.SetLocalOrientation(rot);
   menax.assign<engine::components::common::Transform>(t);
   menax.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(4.0f, 4.0f));
-  menax.assign<Health>(600.0f, 600.0f, "assets/media/fx/menax/default/death.wav");
+                                                        glm::vec2(4.0f, 4.0f));
+  menax.assign<Health>(600.0f, 600.0f,
+                       "assets/media/fx/menax/default/death.wav");
   menax.assign<Menax>(newPosition, menaxHitBox);
   menax.assign<ThreeD>();
 
   menaxHitBox.assign<MenaxHitBox>(75.0f, menax);
-  menaxHitBox.assign<Transform>(glm::vec3(0.0f, 0.0f , 0.0f),
+  menaxHitBox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
                                 menax.component<Transform>().get());
-  menaxHitBox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                   glm::vec2(8.0f, 8.0f),true);
+  menaxHitBox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f), glm::vec2(8.0f, 8.0f),
+                                   true);
   menaxHitBox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
 
   entities_created.push_back(menax);
@@ -229,7 +237,8 @@ std::vector<entityx::Entity> EntityFactory3D::MakeSpawn(
 }
 
 std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
-  entityx::EntityManager& entities, const glm::vec3& position, const std::string &id, const bool &real) {
+    entityx::EntityManager& entities, const glm::vec3& position,
+    const std::string& id, const bool& real) {
   glm::vec3 newPosition = position;
   newPosition.z += 7.0f;
   std::vector<entityx::Entity> entities_created;
@@ -237,7 +246,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   masiatrix.assign<engine::components::three_d::Model>(
       "assets/3d/personajes/masiatrix/masiatrix.dae");
   masiatrix.assign<engine::components::common::Physics>(glm::vec3(0, 0, 0));
-  Transform t (newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   glm::quat rot;
   rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
   t.SetLocalOrientation(rot);
@@ -245,12 +254,11 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   masiatrix.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
                                                          glm::vec2(2.2f, 2.2f));
   //masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
-  std::cout << "real: " << real << std::endl;
   if(real){
-    masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/death.wav");
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
   }
   else{
-    masiatrix.assign<Health>(10.0f, 10.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
   }
   masiatrix.assign<Masiatrix>(id,position,real);
   masiatrix.assign<ThreeD>();
@@ -262,53 +270,53 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
 std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
     entityx::EntityManager& entities, const glm::vec3& position,
     const float& rotation, const glm::vec3& velocity, const std::string& type) {
-
   glm::vec3 newPosition = position;
   newPosition.z += 3.0f;
-  
+
   std::vector<entityx::Entity> entities_created;
   auto enemyProjectile = entities.create();
 
-  engine::components::common::Transform t(newPosition, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
-  //enemyProjectile.assign<Transform>(position);
+  engine::components::common::Transform t(newPosition, nullptr,
+                                          glm::vec3(0.2f, 0.2f, 0.2f));
+  // enemyProjectile.assign<Transform>(position);
   glm::quat model_rotation;
-  model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+  model_rotation =
+      glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
   t.SetLocalOrientation(model_rotation);
   enemyProjectile.assign<Transform>(t);
 
-  if(type == "torreta"){
+  if (type == "torreta") {
     enemyProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_torreta.dae");
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                           glm::vec2(0.6f, 0.6f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(
+        glm::vec2(0.0f, 0.0f), glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(15.0f);
-  }
-  else if(type == "trampa"){
+  } else if (type == "trampa") {
     enemyProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_trampa.dae");
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                           glm::vec2(0.6f, 0.6f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(
+        glm::vec2(0.0f, 0.0f), glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(20.0f);
-  }
-  else if(type == "manueleth"){
+  } else if (type == "manueleth") {
     enemyProjectile.assign<engine::components::three_d::Model>(
-        "assets/3d/proyectiles/proyectil_mago.dae"); //hacer algo para diferenciar
+        "assets/3d/proyectiles/proyectil_mago.dae");  // hacer algo para
+                                                      // diferenciar
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                           glm::vec2(0.6f, 0.6f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(
+        glm::vec2(0.0f, 0.0f), glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(20.0f);
-  }
-  else if(type == "masiatrix"){
+  } else if (type == "masiatrix") {
     enemyProjectile.assign<engine::components::three_d::Model>(
-        "assets/3d/proyectiles/proyectil_trampa.dae"); //hacer algo para diferenciar
+        "assets/3d/proyectiles/proyectil_trampa.dae");  // hacer algo para
+                                                        // diferenciar
     enemyProjectile.assign<engine::components::common::Physics>(velocity);
-    enemyProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                           glm::vec2(0.6f, 0.6f));
+    enemyProjectile.assign<engine::components::two_d::AABBCollider>(
+        glm::vec2(0.0f, 0.0f), glm::vec2(0.6f, 0.6f));
     enemyProjectile.assign<EnemyProjectile>(20.0f);
   }
-  
+
   entities_created.push_back(enemyProjectile);
 
   return entities_created;
@@ -317,36 +325,35 @@ std::vector<entityx::Entity> EntityFactory3D::MakeEnemyProjectile(
 std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
     entityx::EntityManager& entities, const glm::vec3& position,
     const float& rotation, const glm::vec3& velocity, const std::string& type) {
-
   glm::vec3 newPosition = position;
   newPosition.z += 9.0f;
 
   std::vector<entityx::Entity> entities_created;
   auto wizardProjectile = entities.create();
 
-    Transform t(position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
-    //enemyProjectile.assign<Transform>(position);
-    glm::quat model_rotation;
-    model_rotation = glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-    t.SetLocalOrientation(model_rotation);
+  Transform t(position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
+  // enemyProjectile.assign<Transform>(position);
+  glm::quat model_rotation;
+  model_rotation =
+      glm::rotate(model_rotation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+  t.SetLocalOrientation(model_rotation);
 
-  if(type == "normal"){
+  if (type == "normal") {
     wizardProjectile.assign<Transform>(t);
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
-    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                           glm::vec2(0.6f, 0.6f));
+    wizardProjectile.assign<engine::components::two_d::AABBCollider>(
+        glm::vec2(0.0f, 0.0f), glm::vec2(0.6f, 0.6f));
     wizardProjectile.assign<WizardProjectile>(10.0f);
-  }
-  else if(type == "special"){
-    t.SetLocalScale(glm::vec3(0.2,0.4,0.4));
+  } else if (type == "special") {
+    t.SetLocalScale(glm::vec3(0.2, 0.4, 0.4));
     wizardProjectile.assign<Transform>(t);
     wizardProjectile.assign<engine::components::three_d::Model>(
         "assets/3d/proyectiles/proyectil_mago.dae");
     wizardProjectile.assign<engine::components::common::Physics>(velocity);
-    wizardProjectile.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                           glm::vec2(0.8f, 0.8f));
+    wizardProjectile.assign<engine::components::two_d::AABBCollider>(
+        glm::vec2(0.0f, 0.0f), glm::vec2(0.8f, 0.8f));
     wizardProjectile.assign<WizardProjectile>(30.0f);
   }
   entities_created.push_back(wizardProjectile);
@@ -356,7 +363,6 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizardProjectile(
 
 std::vector<entityx::Entity> EntityFactory3D::MakeLancer(
     entityx::EntityManager& entities, const glm::vec3& position) {
-
   glm::vec3 newPosition = position;
   newPosition.z += 7.0f;
 
@@ -378,13 +384,14 @@ std::vector<entityx::Entity> EntityFactory3D::MakeLancer(
   lancer.assign<ThreeD>();
 
   // adding hitbox
-    auto lanc_hitbox = entities.create();
-    lanc_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                                   lancer.component<Transform>().get());
-    lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                      glm::vec2(4.0f, 4.0f), true);
-    lanc_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
-    lanc_hitbox.assign<LancerHitBox>(2.0f, lancer); 
+  auto lanc_hitbox = entities.create();
+  lanc_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                                 lancer.component<Transform>().get());
+  lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                    glm::vec2(4.0f, 4.0f), true);
+  lanc_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+  lanc_hitbox.assign<LancerHitBox>(2.0f, lancer);
+  entities_created.push_back(lanc_hitbox);
   entities_created.push_back(lancer);
 
   return entities_created;

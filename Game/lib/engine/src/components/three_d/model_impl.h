@@ -48,6 +48,7 @@ class ModelImpl {
           if (bone_weight[i] == 0.0f) {
             bone_id[i] = id;
             bone_weight[i] = weight;
+            return;
           }
         }
       }

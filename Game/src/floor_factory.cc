@@ -198,7 +198,6 @@ void FloorFactory::ParseRoomContents(
       auto properties = object.getProperties();
       BossDoor bossDoor(properties[0].getStringValue(),
                         properties[1].getStringValue());
-      std::cerr << level << std::endl;
       if (level == "1") {
         bossDoor.level = "1";
       } else if (level == "2") {
@@ -444,9 +443,7 @@ std::unique_ptr<Floor> FloorFactory::MakeFloorOne3D(
 
   if (role == "knight") {
     factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
-    // factory->MakeGhost(floor->entities, glm::vec3(0.0f,0.0f,7.0f));
   } else {
-    // factory->MakeKnight(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
     factory->MakeWizard(floor->entities, glm::vec3(0.0f, 0.0f, 7.0f));
   }
 

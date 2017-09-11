@@ -30,7 +30,8 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<MenaxAnimationSystem>();  
   systems.add<TrapIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
-  systems.add<engine::systems::two_d::ColliderRenderer>();
+  systems.add<KnighAnimationSystem3D>();
+  systems.add<WizardAnimationSystem3D>();
   systems.add<engine::systems::three_d::ModelRenderer>();
   systems.add<KnightAttackSystem>();
   systems.add<ShieldSystem>(); //Alias energy system
@@ -40,7 +41,6 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<EnemyProjectileSystem>();
   systems.add<HealthSystem>();
   systems.add<PauseInputSystem>();
-  systems.add<RotatePlayerSystem>();
   systems.configure();
 }
 
@@ -60,7 +60,6 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<MenaxAttackSystem>(dt);
     systems.update<MenaxAnimationSystem>(dt);
     systems.update<TrapIaSystem>(dt);
-    systems.update<RotatePlayerSystem>(dt);
     systems.update<engine::systems::two_d::Physics>(dt);
     systems.update<CameraFollowPlayerSystem>(dt);
     systems.update<KnightAttackSystem>(dt);
@@ -71,8 +70,9 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     //systems.update<TurretAttackSystem>(dt);
     systems.update<HealthSystem>(dt);    
     systems.update<PauseInputSystem>(dt);
+    systems.update<KnighAnimationSystem3D>(dt);
+    systems.update<WizardAnimationSystem3D>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(dt);
-    systems.update<engine::systems::two_d::ColliderRenderer>(dt);
   }
   else{
     systems.update<PlayerInputSystem>(dt);
@@ -97,6 +97,8 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<LeverSystem>(0);
     systems.update<HealthSystem>(0);
     systems.update<PauseInputSystem>(dt);
+    systems.update<KnighAnimationSystem3D>(0);
+    systems.update<WizardAnimationSystem3D>(0);
     systems.update<engine::systems::three_d::ModelRenderer>(0);
   }
 }
@@ -159,6 +161,11 @@ void Floor3D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
     PlayText pt("Que haces aqui.\nSolo los devs pueden estar aqui.\nTu no eres un dev.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
+
+  Engine::GetInstance().Get<AudioManager>().StopMusic();
+  Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/music/menax_theme.wav", false, 0.4f);
+
 
   glm::vec3 next_position_player;
   static const float kDisplacement = 2.0f;

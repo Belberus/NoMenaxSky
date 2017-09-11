@@ -188,6 +188,7 @@
   <object id="84" type="low" x="344.938" y="245" width="22.4375" height="16.125"/>
   <object id="89" x="395.957" y="356.435" width="21" height="5.69565"/>
   <object id="90" x="397.913" y="338.217" width="18.1304" height="3.91304"/>
+  <object id="106" x="382.727" y="259.727" width="48.4545" height="2.54545"/>
  </objectgroup>
  <objectgroup name="3.0">
   <object id="85" type="door" x="402.667" y="427.867" width="5.85556" height="0.4">
@@ -234,7 +235,6 @@
   <object id="105" type="enemySpawn" x="435.656" y="260.5" width="4.6875" height="2.5"/>
   <object id="92" type="menax" x="403.781" y="251.25" width="3.1875" height="4.25"/>
   <object id="104" type="enemySpawn" x="373.156" y="260.375" width="4.6875" height="2.5"/>
-  <object id="106" x="382.727" y="259.727" width="48.4545" height="2.54545"/>
  </objectgroup>
  <objectgroup name="Center">
   <object id="1" type="jugador" x="405" y="436" width="1" height="0.996094"/>

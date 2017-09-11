@@ -758,10 +758,10 @@ std::vector<entityx::Entity> EntityFactory2D::MakeSpawn(entityx::EntityManager &
     masiatrix.assign<ColorAnimation>(std::move(color_frames));
     masiatrix.assign<Masiatrix>(id, position, real);
     if(real){
-      masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+      masiatrix.assign<Health>(70.0f, 70.0f, "assets/media/fx/masiatrix/default/death.wav");
     }
     else{
-      masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+      masiatrix.assign<Health>(70.0f, 70.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
     }
      
     std::vector<engine::utils::Rectangle> moving_top;
@@ -893,7 +893,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::Entit
 	  } else if (type == "manueleth") {
 	  	enemyProjectile.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(2, 2));
   		enemyProjectile.assign<Physics>(velocity);
-  		enemyProjectile.assign<EnemyProjectile>(20.0f);
+  		enemyProjectile.assign<EnemyProjectile>(25.0f);
 
   		loadTexture = "assets/spritesheets/manueleth.png";
 
@@ -902,7 +902,7 @@ std::vector<entityx::Entity> EntityFactory2D::MakeEnemyProjectile(entityx::Entit
 	  } else if (type == "masiatrix") {
       enemyProjectile.assign<AABBCollider>(glm::vec2(0, 0), glm::vec2(2, 2));
       enemyProjectile.assign<Physics>(velocity);
-      enemyProjectile.assign<EnemyProjectile>(20.0f);
+      enemyProjectile.assign<EnemyProjectile>(25.0f);
 
       loadTexture = "assets/spritesheets/masiatrix.png";
 

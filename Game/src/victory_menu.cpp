@@ -43,7 +43,6 @@ VictoryMenu::VictoryMenu(engine::core::Scene *parent_scene)
 	systems.add<engine::systems::two_d::SpriteRenderer>();
 	systems.add<VictoryInputSystem>();
 	systems.configure();
-
 }
 
 void VictoryMenu::Update(entityx::TimeDelta dt) {

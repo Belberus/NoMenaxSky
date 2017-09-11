@@ -73,7 +73,6 @@ void Game::Update(entityx::TimeDelta dt) {
     current_state_ = next_state_;
     switch (next_state_) {
       case State::kMainMenu:
-        std::cout << "entra" << std::endl;
         scenes_.clear();
         new_game = true;
         scenes_.emplace_back(new MainMenuBackground());
@@ -90,8 +89,6 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<CharacterSelectionMenu>(this));
         break;
       case State::kDeathMenu:
-        scenes_.pop_back(); // Sacamos el floor
-        scenes_.pop_back(); // Sacamos la UI
         scenes_.push_back(std::make_unique<DeathMenu>(this, character));
         Engine::GetInstance().Get<AudioManager>().StopMusic();
         break;
@@ -99,6 +96,8 @@ void Game::Update(entityx::TimeDelta dt) {
         scenes_.push_back(std::make_unique<PauseMenu>(this,three_d));
         break;
       case State::kVictoryMenu:
+        scenes_.pop_back(); // Sacamos el floor
+        scenes_.pop_back(); // Sacamos la UI
         scenes_.clear();
         scenes_.push_back(std::make_unique<VictoryMenu>(this));
       case State::kText:

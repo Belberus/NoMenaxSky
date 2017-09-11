@@ -20,9 +20,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <string.h>
 #include <iostream>
-#include <unistd.h>
+#include <array>
 
 #include <fann.h>
 #include <fann_cpp.h>

@@ -117,19 +117,19 @@ bool engine::systems::two_d::Physics::TestAABBAABB(
   touching = true;
   if (std::fabs(glm::length(md_vertices[0] - origin) +
                 glm::length(origin - md_vertices[1]) -
-                glm::length(md_vertices[0] - md_vertices[1])) <= 0.1f) {
+                glm::length(md_vertices[0] - md_vertices[1])) <= 0.01f) {
     normal = glm::vec2(-1.0f, 0.0f);
   } else if (std::fabs(glm::length(md_vertices[1] - origin) +
                        glm::length(origin - md_vertices[2]) -
-                       glm::length(md_vertices[1] - md_vertices[2])) <= 0.1f) {
+                       glm::length(md_vertices[1] - md_vertices[2])) <= 0.01f) {
     normal = glm::vec2(0.0f, 1.0f);
   } else if (std::fabs(glm::length(md_vertices[2] - origin) +
                        glm::length(origin - md_vertices[3]) -
-                       glm::length(md_vertices[2] - md_vertices[3])) <= 0.1f) {
+                       glm::length(md_vertices[2] - md_vertices[3])) <= 0.01f) {
     normal = glm::vec2(1.0f, 0.0f);
   } else if (std::fabs(glm::length(md_vertices[3] - origin) +
                        glm::length(origin - md_vertices[0]) -
-                       glm::length(md_vertices[3] - md_vertices[0])) <= 0.1f) {
+                       glm::length(md_vertices[3] - md_vertices[0])) <= 0.01f) {
     normal = glm::vec2(0.0f, -1.0f);
   } else {
     // overlapping

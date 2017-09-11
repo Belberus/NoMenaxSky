@@ -49,7 +49,6 @@ Floor2D::Floor2D(Game* parent_scene) : Floor(parent_scene) {
   systems.add<SpriteAnimator>();
   systems.add<TilemapRenderer>();
   systems.add<SpriteRenderer>();
-  systems.add<ColliderRenderer>();
   systems.add<KnightAttackSystem>();
   systems.add<EnemyProjectileSystem>();
   systems.add<LancerAttackSystem>();
@@ -107,7 +106,6 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<ColorAnimator>(dt);
     systems.update<TilemapRenderer>(dt);
     systems.update<SpriteRenderer>(dt);
-    systems.update<ColliderRenderer>(dt);
     systems.update<ShieldSystem>(dt);
     systems.update<PauseInputSystem>(dt);
     systems.update<LeverSystem>(dt);
@@ -150,7 +148,6 @@ void Floor2D::Update(entityx::TimeDelta dt) {
     systems.update<ColorAnimator>(0);
     systems.update<TilemapRenderer>(0);
     systems.update<SpriteRenderer>(0);
-    systems.update<ColliderRenderer>(0);
     systems.update<ShieldSystem>(0);
     systems.update<PauseInputSystem>(dt);
     systems.update<LeverSystem>(0);

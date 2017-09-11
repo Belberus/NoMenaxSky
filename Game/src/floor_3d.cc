@@ -30,7 +30,6 @@ Floor3D::Floor3D(Game *parent_scene) : Floor(parent_scene) {
   systems.add<MenaxAnimationSystem>();  
   systems.add<TrapIaSystem>();
   systems.add<engine::systems::two_d::Physics>();
-  systems.add<engine::systems::two_d::ColliderRenderer>();
   systems.add<KnighAnimationSystem3D>();
   systems.add<WizardAnimationSystem3D>();
   systems.add<engine::systems::three_d::ModelRenderer>();
@@ -74,7 +73,6 @@ void Floor3D::Update(entityx::TimeDelta dt) {
     systems.update<KnighAnimationSystem3D>(dt);
     systems.update<WizardAnimationSystem3D>(dt);
     systems.update<engine::systems::three_d::ModelRenderer>(dt);
-    systems.update<engine::systems::two_d::ColliderRenderer>(dt);
   }
   else{
     systems.update<PlayerInputSystem>(dt);

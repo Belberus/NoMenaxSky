@@ -227,6 +227,10 @@ void Floor2D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
     PlayText pt("Que haces aqui.\nSolo los devs pueden estar aqui.\nTu no eres un dev.");
     GetParentScene()->events.emit<PlayText>(pt);
   }
+
+  Engine::GetInstance().Get<AudioManager>().StopMusic();
+  Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/music/menax_theme.wav", false, 0.5f);
   
   entities.each<Camera, Transform>(
       [&](entityx::Entity entity, Camera& camera, Transform& transform) {

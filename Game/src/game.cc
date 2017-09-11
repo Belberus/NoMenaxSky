@@ -73,7 +73,6 @@ void Game::Update(entityx::TimeDelta dt) {
     current_state_ = next_state_;
     switch (next_state_) {
       case State::kMainMenu:
-        std::cout << "entra" << std::endl;
         scenes_.clear();
         new_game = true;
         scenes_.emplace_back(new MainMenuBackground());
@@ -101,6 +100,7 @@ void Game::Update(entityx::TimeDelta dt) {
       case State::kVictoryMenu:
         scenes_.clear();
         scenes_.push_back(std::make_unique<VictoryMenu>(this));
+        break;
       case State::kText:
         scenes_.push_back(std::make_unique<Text>(this,text_to_play, text_to_play.substr(0,4)));
         scenes_.front()->events.emit<PauseGameEvent>();

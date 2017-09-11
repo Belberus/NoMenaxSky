@@ -28,7 +28,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeKnight(
   player.assign<engine::components::common::Transform>(transform);
   player.assign<Player>(Player::Orientation::DOWN);
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(0.6f, 0.6f));
+                                                         glm::vec2(1.0f, 1.0));
   player.assign<KnightAttack>(100, KnightAttack::Orientation::UP);
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(300.0f, 300.0f,
@@ -77,7 +77,7 @@ std::vector<entityx::Entity> EntityFactory3D::MakeWizard(
       position, nullptr, glm::vec3(0.2f, 0.2f, 0.2f));
   player.assign<Player>(Player::Orientation::LEFT);
   player.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
-                                                         glm::vec2(0.6f, 0.6f));
+                                                         glm::vec2(1.0f, 1.0f));
   player.assign<Wizard>();
   player.assign<Energy>(100.0f, 100.0f);
   player.assign<Health>(200.0f, 200.0f,
@@ -177,10 +177,10 @@ std::vector<entityx::Entity> EntityFactory3D::MakeManueleth(
   rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
   t.SetLocalOrientation(rot);
   manueleth.assign<engine::components::common::Transform>(t);
-  manueleth.assign<engine::components::two_d::AABBCollider>(
-      glm::vec2(0.0f, 0.0f), glm::vec2(1.5f, 1.5f));
-  manueleth.assign<Health>(10.0f, 10.0f,
-                           "assets/media/fx/manueleth/default/death.wav");
+
+  manueleth.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                                         glm::vec2(1.5f, 1.5f));
+  manueleth.assign<Health>(250.0f, 250.0f, "assets/media/fx/manueleth/default/death.wav");
   manueleth.assign<Manueleth>();
   manueleth.assign<ThreeD>();
   entities_created.push_back(manueleth);
@@ -251,19 +251,16 @@ std::vector<entityx::Entity> EntityFactory3D::MakeMasiatrix(
   rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
   t.SetLocalOrientation(rot);
   masiatrix.assign<engine::components::common::Transform>(t);
-  masiatrix.assign<engine::components::two_d::AABBCollider>(
-      glm::vec2(0.0f, 0.0f), glm::vec2(2.2f, 2.2f));
-  // masiatrix.assign<Health>(150.0f, 150.0f,
-  // "assets/media/fx/masiatrix/default/death.wav");
-  std::cout << "real: " << real << std::endl;
-  if (real) {
-    masiatrix.assign<Health>(10.0f, 10.0f,
-                             "assets/media/fx/masiatrix/default/death.wav");
-  } else {
-    masiatrix.assign<Health>(
-        10.0f, 10.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+  masiatrix.assign<engine::components::two_d::AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                                         glm::vec2(2.2f, 2.2f));
+  //masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
+  if(real){
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/death.wav");
   }
-  masiatrix.assign<Masiatrix>(id, position, real);
+  else{
+    masiatrix.assign<Health>(150.0f, 150.0f, "assets/media/fx/masiatrix/default/fake_death.wav");
+  }
+  masiatrix.assign<Masiatrix>(id,position,real);
   masiatrix.assign<ThreeD>();
   entities_created.push_back(masiatrix);
 
@@ -389,11 +386,12 @@ std::vector<entityx::Entity> EntityFactory3D::MakeLancer(
   // adding hitbox
   auto lanc_hitbox = entities.create();
   lanc_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
-                                lancer.component<Transform>().get());
-  lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f), glm::vec2(4.0f, 4.0f),
-                                   true);
+                                 lancer.component<Transform>().get());
+  lanc_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                    glm::vec2(4.0f, 4.0f), true);
   lanc_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
   lanc_hitbox.assign<LancerHitBox>(2.0f, lancer);
+  entities_created.push_back(lanc_hitbox);
   entities_created.push_back(lancer);
 
   return entities_created;

@@ -281,10 +281,14 @@ void MenuInputSystem::update(entityx::EntityManager &es,
         case ArrowMenu::Option::JUGAR:
           break;
         case ArrowMenu::Option::OPCIONES:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += 70;
           arrow_menu->option = ArrowMenu::Option::JUGAR;
           break;
         case ArrowMenu::Option::SALIR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += 70;
           arrow_menu->option = ArrowMenu::Option::OPCIONES;
           break;
@@ -294,10 +298,14 @@ void MenuInputSystem::update(entityx::EntityManager &es,
       down_pressed_ = false;
       switch (arrow_menu->option) {
         case ArrowMenu::Option::JUGAR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= 70;
           arrow_menu->option = ArrowMenu::Option::OPCIONES;
           break;
         case ArrowMenu::Option::OPCIONES:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= 70;
           arrow_menu->option = ArrowMenu::Option::SALIR;
           break;
@@ -308,9 +316,13 @@ void MenuInputSystem::update(entityx::EntityManager &es,
     if (enter_pressed_) {
       switch (arrow_menu->option) {
         case ArrowMenu::Option::JUGAR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           events.emit<CharSelect>();
           break;
         case ArrowMenu::Option::OPCIONES:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           events.emit<OptionMenu>();
           break;
         case ArrowMenu::Option::SALIR:
@@ -373,14 +385,20 @@ void PauseInputSystem::update(entityx::EntityManager &es,
         case PauseOptions::Option::CONTINUAR:
           break;
         case PauseOptions::Option::FX:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += displacement;
           arrow_menu->option = PauseOptions::Option::CONTINUAR;
         break;
         case PauseOptions::Option::MUSIC:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += displacement;
           arrow_menu->option = PauseOptions::Option::FX;
         break;       
         case PauseOptions::Option::SALIR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += displacement;
           arrow_menu->option = PauseOptions::Option::MUSIC;
         break;  
@@ -390,14 +408,20 @@ void PauseInputSystem::update(entityx::EntityManager &es,
       down_pressed_ = false;
       switch (arrow_menu->option) {
         case PauseOptions::Option::CONTINUAR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= displacement;
           arrow_menu->option = PauseOptions::Option::FX;
           break;
         case PauseOptions::Option::FX:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= displacement;
           arrow_menu->option = PauseOptions::Option::MUSIC;
           break;
         case PauseOptions::Option::MUSIC:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= displacement;
           arrow_menu->option = PauseOptions::Option::SALIR;
           break;  
@@ -408,15 +432,23 @@ void PauseInputSystem::update(entityx::EntityManager &es,
     if (enter_pressed_) {
       switch (arrow_menu->option) {
         case PauseOptions::Option::CONTINUAR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           events.emit<BackToGame>();
           break;
         case PauseOptions::Option::FX:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
             events.emit<MuteFx>();
           break;
         case PauseOptions::Option::MUSIC:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
             events.emit<MuteMusic>();  
           break;  
         case PauseOptions::Option::SALIR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
             events.emit<BackToMainMenu>();
           break;
       }
@@ -481,6 +513,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::MODE:
           break;
         case ArrowOptions::Option::MUSIC_VOL:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += 70;
 
           if (opciones->modo == GameOptions::Modo::TWO_D &&
@@ -496,6 +530,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           arrow_options->option = ArrowOptions::Option::MODE;
           break;
         case ArrowOptions::Option::FX_VOL:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += 70;
 
           if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
@@ -511,6 +547,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           arrow_options->option = ArrowOptions::Option::MUSIC_VOL;
           break;
         case ArrowOptions::Option::SALIR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y += 70;
 
           if (opciones->efectos == GameOptions::Efectos::FX_OFF) {
@@ -525,6 +563,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
       options_down_pressed_ = false;
       switch (arrow_options->option) {
         case ArrowOptions::Option::MODE:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= 70;
 
           if (opciones->modo == GameOptions::Modo::TWO_D &&
@@ -540,6 +580,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           arrow_options->option = ArrowOptions::Option::MUSIC_VOL;
           break;
         case ArrowOptions::Option::MUSIC_VOL:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= 70;
 
           if (opciones->musica == GameOptions::Musica::MUSIC_ON &&
@@ -555,6 +597,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
           arrow_options->option = ArrowOptions::Option::FX_VOL;
           break;
         case ArrowOptions::Option::FX_VOL:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           new_position.y -= 70;
 
           if (opciones->efectos == GameOptions::Efectos::FX_OFF) {
@@ -573,6 +617,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::MODE:
           switch (opciones->modo) {
             case GameOptions::Modo::TWO_D:
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
               new_position.x += 150;
               opciones->modo = GameOptions::Modo::THREE_D;
               mode = 0;
@@ -584,6 +630,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::MUSIC_VOL:
           switch (opciones->musica) {
             case GameOptions::Musica::MUSIC_ON:
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
               new_position.x += 150;
               opciones->musica = GameOptions::Musica::MUSIC_OFF;
               music = 0;
@@ -595,6 +643,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
         case ArrowOptions::Option::FX_VOL:
           switch (opciones->efectos) {
             case GameOptions::Efectos::FX_ON:
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
               new_position.x += 150;
               opciones->efectos = GameOptions::Efectos::FX_OFF;
               fx = 0;
@@ -615,6 +665,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Modo::TWO_D:
               break;
             case GameOptions::Modo::THREE_D:
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
               new_position.x -= 150;
               opciones->modo = GameOptions::Modo::TWO_D;
               mode = 1;
@@ -626,6 +678,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Musica::MUSIC_ON:
               break;
             case GameOptions::Musica::MUSIC_OFF:
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
               new_position.x -= 150;
               opciones->musica = GameOptions::Musica::MUSIC_ON;
               music = 1;
@@ -637,6 +691,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
             case GameOptions::Efectos::FX_ON:
               break;
             case GameOptions::Efectos::FX_OFF:
+              Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
               new_position.x -= 150;
               opciones->efectos = GameOptions::Efectos::FX_ON;
               fx = 1;
@@ -687,6 +743,8 @@ void OptionsInputSystem::update(entityx::EntityManager &es,
     //       }
            break;
         case ArrowOptions::Option::SALIR:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
           std::string filename = "assets/config/opciones.txt";
           
           std::ofstream outfile;
@@ -754,6 +812,8 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
        selection_right_pressed_ = false;
        switch (character->role) {
          case Characters::Role::KNIGHT:
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
             new_position.x += 315;
             character->role = Characters::Role::WIZARD;
             break;
@@ -768,6 +828,8 @@ void SelectionInputSystem::update(entityx::EntityManager &es,
          case Characters::Role::KNIGHT:
             break;
           case Characters::Role::WIZARD:
+            Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/gaunt/default/mov.wav", false, 0.5f);
             new_position.x -= 315;
             character->role = Characters::Role::KNIGHT;
             break;
@@ -3324,7 +3386,11 @@ void LancerAnimationSystem::update(entityx::EntityManager &es,
 
 
 void LancerAttackSystem::configure(entityx::EventManager &event_manager) {
+  event_manager_ = &event_manager;
   event_manager.subscribe<Collision>(*this);
+}
+LancerAttackSystem::~LancerAttackSystem(){
+  event_manager_->unsubscribe<Collision>(*this);
 }
 
 void LancerAttackSystem::receive(const Collision &collision) {
@@ -3961,9 +4027,9 @@ int enemies_alive = 0;
 void MenaxIaSystem::update(entityx::EntityManager &es,
                            entityx::EventManager &events,
                            entityx::TimeDelta dt) {
-  three_d = false;
-  for(auto e : es.entities_with_components<ThreeD>()){
-    three_d = true;
+  three_dd = false;
+  for(auto e : es.entities_with_components<Menax, ThreeD>()){
+    three_dd = true;
   }
   enemies_alive = 0;
   glm::vec3 player_position;
@@ -3984,7 +4050,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
   glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
   es.each<Menax, Transform, Physics>([&](entityx::Entity entity, Menax &menax, Transform &menax_transform, Physics &physics) {
     glm::vec3 menax_position;
-    if(three_d){
+    if(three_dd){
       menax_position = menax_transform.GetWorldPosition();
 
       glm::vec3 vector_player_menax(player_position.x - menax_position.x,
@@ -4012,7 +4078,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
             }
             else transform.SetLocalPosition(glm::vec3(menax.original_position.x, menax.original_position.y - 175.0f ,menax.original_position.z));
           });
-        if(three_d){
+        if(three_dd){
           menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 30.0f,menax.original_position.z));
         }
         else menax_transform.SetLocalPosition(glm::vec3(menax.original_position.x,menax.original_position.y - 75.0f,menax.original_position.z));
@@ -4030,7 +4096,7 @@ void MenaxIaSystem::update(entityx::EntityManager &es,
         menax.timer_attacking += (dt * 100.0f);
         // Movernos hacia Player y provocar animacion
         glm::vec3 new_velocity(0.0f, 0.0f, 0.0f);
-        if(three_d){
+        if(three_dd){
           new_velocity = glm::normalize(player_position -
                                       menax_transform.GetWorldPosition()) * 22.0f;
         }
@@ -4050,7 +4116,9 @@ void SpawnSystem::update(entityx::EntityManager &es,
   three_d = false;
   es.each<Menax>(
       [&](entityx::Entity entity, Menax &menax) {
-        three_d = true;
+        if(entity.component<ThreeD>()){
+          three_d = true;
+        }
         have_to_spawn = menax.spawn_enemies;
       });
 
@@ -4099,6 +4167,7 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
   entityx::ComponentHandle<Transform> transform;
   entityx::ComponentHandle<Physics> physics;
   entityx::ComponentHandle<SpriteAnimation> animation;
+  entityx::ComponentHandle<ThreeD> threed;
   
   std::string animToPlay;
   std::string animToPlayHit;
@@ -4132,6 +4201,28 @@ void MenaxAnimationSystem::update(entityx::EntityManager &es,
             menax->hitBox.component<MenaxHitBox>()->damaged = false;
             animToPlayHit = "dontDoDamage";
             menax->hitBox.component<SpriteAnimation>()->Play(animToPlayHit);
+          }   
+        }
+      } 
+    } 
+  }
+  for (entityx::Entity e0 : es.entities_with_components(
+           menax, transform, physics, threed)) {
+    
+    if (menax->comportamiento == Menax::Comportamiento::WAIT) {
+        Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/laugh.wav", false, 0.5f);
+    } else{
+      if (physics->velocity.y < 0 || physics->velocity.y > 0 || physics->velocity.x > 0 || physics->velocity.x < 0) {
+        menax->timer += (dt*100.0f);
+        if (menax->timer >= 200.0f) {
+          Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/fx/menax/default/mov.wav", false, 1);
+          menax->hitBox.component<MenaxHitBox>()->stomp = true;
+          if (menax->timer >= 300.0f) {
+            menax->timer = 0.0f;
+            menax->hitBox.component<MenaxHitBox>()->stomp = false;
+            menax->hitBox.component<MenaxHitBox>()->damaged = false;
           }   
         }
       } 

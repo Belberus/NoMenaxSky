@@ -6,6 +6,8 @@
 #include <engine/components/two_d/texture.h>
 #include <engine/core/engine.h>
 #include <engine/core/resource_manager.h>
+#include <engine/core/audio_manager.h>
+
 #include <engine/systems/two_d/sprite_animator.h>
 #include <engine/systems/two_d/sprite_renderer.h>
 
@@ -20,6 +22,11 @@ VictoryMenu::VictoryMenu(engine::core::Scene *parent_scene)
 	: parent_scene_(parent_scene) {
 
 	events.subscribe<BackToMainMenu>(*this);
+
+	Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+
+	Engine::GetInstance().Get<AudioManager>().PlaySound(
+            "assets/media/music/cakes_yay.wav", true, 0.5f);
 
   	auto camera = entities.create();
   	camera.assign<Transform>(glm::vec3(960.0f / 2.0f, 540.0f / 2.0f, 1));
@@ -52,5 +59,8 @@ void VictoryMenu::Update(entityx::TimeDelta dt) {
 }
 
 void VictoryMenu::receive(const BackToMainMenu &back_to_main) {
-	 parent_scene_->events.emit<BackToMainMenu>(back_to_main);
+	engine::core::Engine::GetInstance().EnableDepthTest(
+      engine::core::Engine::DepthTest::kAlways);
+	Engine::GetInstance().Get<AudioManager>().StopAllSounds();
+	parent_scene_->events.emit<BackToMainMenu>(back_to_main);
 }

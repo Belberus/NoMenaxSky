@@ -164,6 +164,11 @@ void Floor3D::OnPlayerEnteringBossDoorWithKey(BossDoor entering_door) {
     GetParentScene()->events.emit<PlayText>(pt);
   }
 
+  Engine::GetInstance().Get<AudioManager>().StopMusic();
+  Engine::GetInstance().Get<AudioManager>().PlaySound(
+          "assets/media/music/menax_theme.wav", false, 0.4f);
+
+
   glm::vec3 next_position_player;
   static const float kDisplacement = 2.0f;
   entities.each<BossDoor, engine::components::common::Transform,

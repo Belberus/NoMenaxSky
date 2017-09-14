@@ -112,6 +112,16 @@ std::vector<entityx::Entity> EntityFactory3D::MakeGhost(
   ghost.assign<ThreeD>();
   entities_created.push_back(ghost);
 
+  //hitbox
+  auto attack_hitbox = entities.create();
+  attack_hitbox.assign<GhostHitBox>(1.0f, ghost);
+  attack_hitbox.assign<Transform>(glm::vec3(0.0f, 0.0f, 0.0f),
+                                  ghost.component<Transform>().get());
+  attack_hitbox.assign<AABBCollider>(glm::vec2(0.0f, 0.0f),
+                                     glm::vec2(1.7f, 1.7f), true);
+  attack_hitbox.assign<Physics>(glm::vec3(0.0f, 0.0f, 0.0f));
+  entities_created.push_back(attack_hitbox);
+
   return entities_created;
 }
 

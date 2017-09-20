@@ -3641,7 +3641,7 @@ void WizardAttackSystem::receive(const Collision &collision) {
              collision_copy.e1.component<Lancer>()) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
-
+    std::cerr << "Estoy en el primero" << std::endl;
     entityx::Entity proyectil = collision.e0;
     proyectil.destroy();
 
@@ -3649,14 +3649,14 @@ void WizardAttackSystem::receive(const Collision &collision) {
         "assets/media/fx/lanc/default/hit.wav", false, 0.7f);
 
     if(!collision_copy.e1.component<ThreeD>()){
-      auto e0_color_animation = collision_copy.e0.component<ColorAnimation>();
-      e0_color_animation->Play();
+      auto e1_color_animation = collision_copy.e1.component<ColorAnimation>();
+      e1_color_animation->Play();
     }
   } else if (e1_weapon &&
              collision_copy.e0.component<Lancer>()) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
-
+    std::cerr << "Estoy en el segundo" << std::endl;
     entityx::Entity proyectil = collision.e1;
     proyectil.destroy();
 

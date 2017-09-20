@@ -3641,7 +3641,6 @@ void WizardAttackSystem::receive(const Collision &collision) {
              collision_copy.e1.component<Lancer>()) {
     auto e1_health = collision_copy.e1.component<Health>();
     e1_health->hp -= e0_weapon->damage;
-    std::cerr << "Estoy en el primero" << std::endl;
     entityx::Entity proyectil = collision.e0;
     proyectil.destroy();
 
@@ -3656,7 +3655,6 @@ void WizardAttackSystem::receive(const Collision &collision) {
              collision_copy.e0.component<Lancer>()) {
     auto e0_health = collision_copy.e0.component<Health>();
     e0_health->hp -= e1_weapon->damage;
-    std::cerr << "Estoy en el segundo" << std::endl;
     entityx::Entity proyectil = collision.e1;
     proyectil.destroy();
 
